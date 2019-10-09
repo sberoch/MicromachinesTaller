@@ -11,3 +11,6 @@ http://lazyfoo.net/tutorials/SDL/
 * cd build  
 * cmake ..  
 * make && make install  
+
+### Tp viejo (:c)
+https://github.com/sberoch/PortalTaller  
