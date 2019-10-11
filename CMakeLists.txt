@@ -19,3 +19,6 @@ target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer SDL2_ttf)
 
 add_executable(mm_server ${SERVER_SOURCES})
 target_link_libraries(mm_server)
+
+install(FILES assets/fondo.png DESTINATION ${CMAKE_BINARY_DIR})
+
