@@ -14,3 +14,6 @@ http://lazyfoo.net/tutorials/SDL/
 
 ### Tp viejo (:c)
 https://github.com/sberoch/PortalTaller  
+
+### Link al informe en Overleaf
+https://www.overleaf.com/2631233934cvftzgtzdygb
