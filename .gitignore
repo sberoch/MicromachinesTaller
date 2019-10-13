@@ -2,3 +2,7 @@ build/
 test/
 .vscode/
 *.pdf
+
+.idea
+cmake-build-debug
+
