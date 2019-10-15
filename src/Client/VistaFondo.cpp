@@ -1,7 +1,5 @@
 #include "VistaFondo.h"
 
-#include <iostream>
-
 VistaFondo::VistaFondo(const SdlTexture& tex) {
 	this->textura = tex;
 	Area srcArea(0, 0, 1920, 1080);

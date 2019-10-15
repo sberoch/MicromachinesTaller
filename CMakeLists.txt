@@ -21,4 +21,5 @@ add_executable(mm_server ${SERVER_SOURCES})
 target_link_libraries(mm_server)
 
 install(FILES assets/fondo.png DESTINATION ${CMAKE_BINARY_DIR})
-
+install(FILES assets/pista_recta.png DESTINATION ${CMAKE_BINARY_DIR})
+install(FILES assets/pista_curva.png DESTINATION ${CMAKE_BINARY_DIR})
