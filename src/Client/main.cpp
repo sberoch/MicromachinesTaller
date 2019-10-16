@@ -1,4 +1,5 @@
 
+#include "yaml-cpp/yaml.h"
 #include "SdlWindow.h"
 #include "SdlTexture.h"
 #include "BackgroundView.h"
@@ -6,27 +7,28 @@
 #include <SDL2/SDL.h>
 #include "TextureCreator.h"
 #include "../Common/Constants.h"
+#include "../Common/Converter.h"
+#include <map>
+
 
 #include <thread>
 #include <chrono>
 #include <iostream>
 
+Converter conv(100); //number depends on zoom
 SdlWindow window(1000,800);
 SdlTexture bkgTex("background.png", window);
 BackgroundView bkg(bkgTex);
 InputHandler handler(window);
-
+std::map<int, ObjectViewPtr> gameObjects;
 TextureCreator creator(window);
-ObjectViewPtr healthPowerup = creator.create(ID_HEALTH_POWERUP, 750, 450, 0);
-ObjectViewPtr boostPowerup = creator.create(ID_BOOST_POWERUP, 650, 350, 0);
-ObjectViewPtr straightTrack = creator.create(ID_STRAIGHT_TRACK, 700, 450, 90);
-ObjectViewPtr curveTrack1 = creator.create(ID_CURVE_TRACK, 700, 150, 90);
-ObjectViewPtr curveTrack2 = creator.create(ID_CURVE_TRACK, 700, 750, 270);
 
 static void draw();
+static void loadStage();
 
 int main(int argc, char const *argv[]) {
 
+	loadStage();
 	while(!handler.done()) {
 	    draw();
 	    handler.handle();
@@ -50,11 +52,24 @@ static void draw() {
 	}
 
 	//Views
-	straightTrack->drawAt(0, 0);
-	curveTrack1->drawAt(0, 0);
-	curveTrack2->drawAt(0, 0);
-	healthPowerup->drawAt(0, 0);
-	boostPowerup->drawAt(0, 0);
+	for (auto& it : gameObjects) {
+		it.second->drawAt(0, 0);
+	}
 
 	window.render();
+}
+
+static void loadStage() {
+	int id, x, y, angle;
+	YAML::Node yamlScene = YAML::LoadFile("scene.yaml");
+	YAML::Node objects = yamlScene["objects"];
+
+	for (size_t i = 0; i < objects.size(); ++i) {
+		id = objects[i]["type"].as<int>();
+		x = conv.blockToPixel(objects[i]["x"].as<int>());
+		y = conv.blockToPixel(objects[i]["y"].as<int>());
+		angle = objects[i]["angle"].as<int>();
+		ObjectViewPtr ov = creator.create(id, x, y, angle);
+		gameObjects.insert(std::make_pair(ov->getId(), ov));
+	}
 }

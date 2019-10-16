@@ -1,0 +1,31 @@
+---
+objects:
+  - type: 100
+    x: 7
+    y: 3
+    angle: 90
+  - type: 100
+    x: 10
+    y: 0
+    angle: 0
+  - type: 100
+    x: 4
+    y: 6
+    angle: 0
+  - type: 101
+    x: 7
+    y: 0
+    angle: 90
+  - type: 101
+    x: 7
+    y: 6
+    angle: 270
+  - type: 102
+    x: 8
+    y: 5
+    angle: 0
+  - type: 103
+    x: 6
+    y: 4
+    angle: 0
+...

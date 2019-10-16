@@ -7,19 +7,18 @@ message("[INFO] Cargando fuentes del servidor")
 file(GLOB_RECURSE SERVER_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Server/*.cpp" "src/Server/*.h")
 
 message("[INFO] Cargando fuentes compartidos")
-file(GLOB_RECURSE LIBS_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Common/*.cpp" "src/Common/*.h")
+file(GLOB_RECURSE COMMON_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Common/*.cpp" "src/Common/*.h")
 
 message("[INFO] Cargando fuentes del cliente")
 file(GLOB_RECURSE CLIENT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Client/*.cpp" "src/Client/*.h")
 
-#Agregar en add_executable ${LIBS_SOURCES} cuando se pongan cosas en Common
+add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES})
+target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer SDL2_ttf yaml-cpp)
 
-add_executable(mm_client ${CLIENT_SOURCES})
-target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer SDL2_ttf)
-
-add_executable(mm_server ${SERVER_SOURCES})
+add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES})
 target_link_libraries(mm_server)
 
+install(FILES assets/scene.yaml DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/background.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/straight_track.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/curve_track.png DESTINATION ${CMAKE_BINARY_DIR})
