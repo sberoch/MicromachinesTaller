@@ -5,6 +5,10 @@ SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11 -Wall  -Werror -pedantic -pe
 
 add_executable(tests
         testMain.cpp
-        Server/CarTest.h)
+        ../../src/Server/Model/Car.h
+        ../../src/Server/Model/Car.cpp
+        Server/CarTest.h
+        )
 
 target_link_libraries(tests cppunit)
+
