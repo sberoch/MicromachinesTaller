@@ -16,6 +16,7 @@ private:
 	//Textures
 	SdlTexture straightTrackTex;
 	SdlTexture curveTrackTex;
+	SdlTexture powerupTex;
 public:
 	TextureCreator(const SdlWindow& window);
 	ObjectViewPtr create(int type, int x, int y, int angle);

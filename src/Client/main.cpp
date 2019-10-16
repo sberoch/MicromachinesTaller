@@ -17,6 +17,8 @@ BackgroundView bkg(bkgTex);
 InputHandler handler(window);
 
 TextureCreator creator(window);
+ObjectViewPtr healthPowerup = creator.create(ID_HEALTH_POWERUP, 750, 450, 0);
+ObjectViewPtr boostPowerup = creator.create(ID_BOOST_POWERUP, 650, 350, 0);
 ObjectViewPtr straightTrack = creator.create(ID_STRAIGHT_TRACK, 700, 450, 90);
 ObjectViewPtr curveTrack1 = creator.create(ID_CURVE_TRACK, 700, 150, 90);
 ObjectViewPtr curveTrack2 = creator.create(ID_CURVE_TRACK, 700, 750, 270);
@@ -51,6 +53,8 @@ static void draw() {
 	straightTrack->drawAt(0, 0);
 	curveTrack1->drawAt(0, 0);
 	curveTrack2->drawAt(0, 0);
+	healthPowerup->drawAt(0, 0);
+	boostPowerup->drawAt(0, 0);
 
 	window.render();
 }
