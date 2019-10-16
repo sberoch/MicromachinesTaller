@@ -1,0 +1,3 @@
+/home/santy/MicromachinesTaller/test/CMakeFiles/rebuild_cache.dir
+/home/santy/MicromachinesTaller/test/CMakeFiles/tests.dir
+/home/santy/MicromachinesTaller/test/CMakeFiles/edit_cache.dir

@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/santy/MicromachinesTaller/src/Server/Model/Car.h
+
+/home/santy/MicromachinesTaller/test/Server/CarTest.h
+cppunit/extensions/HelperMacros.h
+-
+../../src/Server/Model/Car.h
+/home/santy/MicromachinesTaller/src/Server/Model/Car.h
+
+/home/santy/MicromachinesTaller/test/testMain.cpp
+cppunit/extensions/TestFactoryRegistry.h
+-
+cppunit/extensions/HelperMacros.h
+-
+cppunit/ui/text/TestRunner.h
+-
+Server/CarTest.h
+/home/santy/MicromachinesTaller/test/Server/CarTest.h
+

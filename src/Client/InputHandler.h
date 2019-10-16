@@ -9,11 +9,11 @@ private:
 	SdlWindow& window;
 
 	SDL_Event event;
-	bool terminado;
+	bool _done;
 	bool fullscreen;
 public:
 	InputHandler(SdlWindow& window);
-	bool termino();
+	bool done();
 	void handle();
 };
 

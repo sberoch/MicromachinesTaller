@@ -1,0 +1,3 @@
+//IDs
+#define ID_STRAIGHT_TRACK 100
+#define ID_CURVE_TRACK 101

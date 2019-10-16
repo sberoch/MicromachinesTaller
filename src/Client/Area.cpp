@@ -27,7 +27,7 @@ int Area::getHeight() const {
 	return this->height;
 }
 
-bool Area::estaAdentro(int x, int y) {
+bool Area::isInside(int x, int y) {
 	if (this->x > x || x > (this->x + this->width)) return false;
     if (this->y > y || y > (this->y + this->height)) return false;
 	return true;

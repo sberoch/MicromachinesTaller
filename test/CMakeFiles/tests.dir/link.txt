@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -Wall  -Werror -pedantic -pedantic-errors  -rdynamic CMakeFiles/tests.dir/testMain.cpp.o  -o tests -lcppunit 
