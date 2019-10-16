@@ -1,5 +1,5 @@
-#ifndef VISTA_CURVA_RECTA_H
-#define VISTA_CURVA_RECTA_H
+#ifndef CURVE_TRACK_VIEW
+#define CURVE_TRACK_VIEW
 
 #include "ObjectView.h"
 
@@ -12,4 +12,4 @@ public:
  	virtual ~CurveTrackView() {}
 };
 
-#endif // VISTA_CURVA_RECTA_H
+#endif // CURVE_TRACK_VIEW

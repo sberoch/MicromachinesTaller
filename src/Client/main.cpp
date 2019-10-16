@@ -17,8 +17,9 @@ BackgroundView bkg(bkgTex);
 InputHandler handler(window);
 
 TextureCreator creator(window);
-ObjectViewPtr straightTrack = creator.create(ID_STRAIGHT_TRACK, 800, 450, 90);
-ObjectViewPtr curveTrack = creator.create(ID_CURVE_TRACK, 800, 150, 90);
+ObjectViewPtr straightTrack = creator.create(ID_STRAIGHT_TRACK, 700, 450, 90);
+ObjectViewPtr curveTrack1 = creator.create(ID_CURVE_TRACK, 700, 150, 90);
+ObjectViewPtr curveTrack2 = creator.create(ID_CURVE_TRACK, 700, 750, 270);
 
 static void draw();
 
@@ -48,7 +49,8 @@ static void draw() {
 
 	//Views
 	straightTrack->drawAt(0, 0);
-	curveTrack->drawAt(0, 0);
+	curveTrack1->drawAt(0, 0);
+	curveTrack2->drawAt(0, 0);
 
 	window.render();
 }
