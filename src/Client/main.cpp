@@ -1,5 +1,3 @@
-
-#include "yaml-cpp/yaml.h"
 #include "SdlWindow.h"
 #include "SdlTexture.h"
 #include "BackgroundView.h"
@@ -8,12 +6,15 @@
 #include "TextureCreator.h"
 #include "../Common/Constants.h"
 #include "../Common/Converter.h"
-#include <map>
+#include "../Common/json.hpp"
 
+using json = nlohmann::json;
 
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include <fstream>
+#include <map>
 
 Converter conv(50); //number depends on zoom
 SdlWindow window(1000,800);
@@ -61,14 +62,15 @@ static void draw() {
 
 static void loadStage() {
 	int id, x, y, angle;
-	YAML::Node yamlScene = YAML::LoadFile("scene.yaml");
-	YAML::Node objects = yamlScene["objects"];
+	std::ifstream i("scene.json");
+	json j; i >> j;
 
-	for (size_t i = 0; i < objects.size(); ++i) {
-		id = objects[i]["type"].as<int>();
-		x = conv.blockToPixel(objects[i]["x"].as<int>());
-		y = conv.blockToPixel(objects[i]["y"].as<int>());
-		angle = objects[i]["angle"].as<int>();
+	json objects = j["objects"];
+	for (auto& obj : objects) {
+		id = obj["type"].get<int>();
+		x = conv.blockToPixel(obj["x"].get<int>());
+		y = conv.blockToPixel(obj["y"].get<int>());
+		angle = obj["angle"].get<int>();
 		ObjectViewPtr ov = creator.create(id, x, y, angle);
 		gameObjects.insert(std::make_pair(ov->getId(), ov));
 	}
