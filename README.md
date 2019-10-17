@@ -2,11 +2,11 @@
 Trabajo practico final para Taller de Programacion I
 
 ## Links utiles
-####SDL:  
+SDL:  
 https://www.willusher.io/pages/sdl2/  
 http://lazyfoo.net/tutorials/SDL/  
 
-####JSON:  
+JSON:  
 https://github.com/nlohmann/json/blob/develop/single_include/nlohmann/json.hpp  
 Ejemplo uso:  
 ```c++
