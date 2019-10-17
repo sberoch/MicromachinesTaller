@@ -17,6 +17,13 @@ private:
 	SdlTexture straightTrackTex;
 	SdlTexture curveTrackTex;
 	SdlTexture powerupTex;
+	SdlTexture rockTex;
+	SdlTexture car1Tex;
+	SdlTexture car2Tex;
+	SdlTexture car3Tex;
+	SdlTexture car4Tex;
+	SdlTexture oilTex;
+	SdlTexture mudTex;
 public:
 	TextureCreator(const SdlWindow& window);
 	ObjectViewPtr create(int type, int x, int y, int angle);
