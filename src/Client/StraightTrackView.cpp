@@ -3,10 +3,10 @@
 StraightTrackView::StraightTrackView(const SdlTexture& tex, const int& angle) :
 	angle(angle) {
 	this->texture = tex;
-	Area srcArea(0, 0, 512, 688);
+	Area srcArea(0, 0, 512, 512);
 	clips.push_back(srcArea);
-	horizontalScale = 300;
-	verticalScale = 300;
+	horizontalScale = 250;
+	verticalScale = 250;
 }
 
 void StraightTrackView::drawAt(int x, int y) {

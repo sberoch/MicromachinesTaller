@@ -15,7 +15,7 @@
 #include <chrono>
 #include <iostream>
 
-Converter conv(100); //number depends on zoom
+Converter conv(50); //number depends on zoom
 SdlWindow window(1000,800);
 SdlTexture bkgTex("background.png", window);
 BackgroundView bkg(bkgTex);
