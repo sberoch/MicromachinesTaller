@@ -10,3 +10,8 @@
 #define ID_CAR_4 108
 #define ID_OIL 109
 #define ID_MUD 110
+
+//Scenes
+#define SCENE_MENU 200
+#define SCENE_LOBBY 201
+#define SCENE_GAME 202
