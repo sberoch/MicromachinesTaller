@@ -17,6 +17,7 @@ public:
 
     virtual void update(Car& car){
         //Turn left
+        car.turnLeft();
     }
 };
 
