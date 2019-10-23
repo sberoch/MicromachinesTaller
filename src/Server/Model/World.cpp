@@ -1,36 +1,33 @@
 #include <fstream>
 #include "World.h"
 
-#include "../json.hpp"
+#include "../json/json.hpp"
 
 using json = nlohmann::json;
 
-World::World() : _n_of_cars(0){
+World::World(size_t n_of_cars) : _n_of_cars(n_of_cars){
     b2Vec2 gravity(0, -9.8);
     _world = new b2World(gravity);
 
     _carBodyDef.type = b2_dynamicBody;
-    _carBodyDef.angle = 0;
 }
 
-void World::_getCarPosition(float& x, float& y){
-    int id, x_init, y_init, angle;
-	std::ifstream i("scene.json");
-	json j; i >> j;
+void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
+    std::ifstream i("scene.json");
+    json j; i >> j;
 
-	json cars = j["cars"];
-	for (auto& car : cars){
-		id = obj["type"].get<int>();
-
-		angle = obj["angle"].get<int>();
-	}
+    json cars = j["cars"];
+    x = cars.at(id)["x_init"].get<float>();
+    y = cars.at(id)["y_init"].get<float>();
+    angle = cars.at(id)["angle"].get<float>();
+    //Exception if accesing more than we have?
 }
 
-b2Body* World::createCar(){
-    float x;
-    float y;
-    _getCarPosition(x, y);
-    _carBodyDef.position.Set(x, y);
+b2Body* World::createCar(size_t id){
+    float x_init, y_init, angle_init;
+    _getCarConfigData(id, x_init, y_init, angle_init);
+    _carBodyDef.position.Set(x_init, y_init);
+    _carBodyDef.angle = angle_init;
 
     b2Body* carBody;
     carBody = _world->CreateBody(&_carBodyDef);

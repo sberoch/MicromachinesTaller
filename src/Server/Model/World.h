@@ -11,12 +11,12 @@ private:
 
     int _n_of_cars;
     b2BodyDef _carBodyDef; //What can we do with this?
-    void _getCarPosition(float& x, float& y);
+    void _getCarConfigData(size_t id, float& x, float& y, float& angle);
 
 public:
-    World();
+    World(size_t n_of_cars);
 
-    b2Body* createCar();
+    b2Body* createCar(size_t id);
     void step(uint32_t velocityIt, uint32_t positionIt);
 
     ~World();
