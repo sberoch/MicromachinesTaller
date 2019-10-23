@@ -16,7 +16,7 @@ private:
     void _changeSpeed(float new_linear_velocity);
 
 public:
-    Car(b2Body* carBody, size_t id);
+    Car(b2Body* carBody);
 
     void start();
     void increaseSpeed(float to_increase);
