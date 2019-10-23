@@ -15,9 +15,7 @@ int main(int argc, char *argv[]) {
 //        if (argv[PORT_NUMBER_POSITION] != nullptr)
 //            portNumber = argv[PORT_NUMBER_POSITION];
 
-
-        Socket acceptSocket;
-        acceptSocket.setServerReady(portNumber);
+        Socket acceptSocket = Socket::createAcceptingSocket(portNumber);
 
         AcceptingThread acceptor(acceptSocket);
         acceptor.start();

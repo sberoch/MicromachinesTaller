@@ -10,20 +10,20 @@
 #include <vector>
 #include <list>
 
-class Protocol {
+class MessageProtocol {
 private:
     Socket skt;
 
 public:
     //Crea el protocolo de comunicacion, moviendo el socket de la
     // intercomunicacion cliente servidor al mismo.
-    explicit Protocol(Socket skt);
+    explicit MessageProtocol(Socket skt);
 
     //Recibe un mensaje hasta detectar un caracter '\n'.
-    std::string receive();
+    std::string messageReceive();
 
     //Destructor por default.
-    ~Protocol();
+    ~MessageProtocol();
 
     //Divide el message segun el delimitador recibido por parametro. Cada
     //division es guardada en un vector de strings y devuelto.
@@ -31,9 +31,7 @@ public:
             char delim);
 
     //Envia el mensaje, agregando un '\n' al final.
-    void send(std::string &message);
-
-    static bool isACommand(std::string &command);
+    void messageSend(std::string &message);
 
     void forceShutDown();
 };
