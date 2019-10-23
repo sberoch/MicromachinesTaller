@@ -4,7 +4,6 @@ project(Micromachines)
 # Quito los flags porque no compila Box2D sino, los warnings lo rebotan
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++11 -Wall -Werror -pedantic -pthread")
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -DDEBUG -fno-inline -std=c++11 -pthread")
-set (CMAKE_MODULE_PATH  "/home/miki_mustard/Desktop/Facultad/Taller/MicromachinesTaller/cmake-build-debug/CMakeFiles/3.14.5")
 
 message("[INFO] Agregando Box2D")
 option(BOX2D_BUILD_SHARED "Build Box2D shared libraries" OFF)
@@ -34,16 +33,7 @@ target_link_libraries(mm_server mm_server_library)
 
 install(FILES assets/fondo.png DESTINATION ${CMAKE_BINARY_DIR})
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-find_package(SDL2_ttf REQUIRED)
 
-include_directories(${SDL2_INCLUDE_DIR}
-        ${SDL2_IMAGE_INCLUDE_DIR}
-        ${SDL2_TTF_INCLUDE_DIR})
-target_link_libraries(mm_client ${SDL2_LIBRARY}
-        ${SDL2_IMAGE_LIBRARIES}
-        ${SDL2_TTF_LIBRARIES})
 
 
 
