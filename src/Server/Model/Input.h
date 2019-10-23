@@ -6,7 +6,9 @@ enum Input{
     PRESS_UP,
     PRESS_DOWN,
     PRESS_LEFT,
-    PRESS_RIGHT
+    RELEASE_LEFT,
+    PRESS_RIGHT,
+    RELEASE_RIGHT
 };
 
 #endif //MICROMACHINES_INPUT_H
