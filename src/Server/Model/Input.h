@@ -1,0 +1,12 @@
+#ifndef MICROMACHINES_INPUT_H
+#define MICROMACHINES_INPUT_H
+
+enum Input{
+    PRESS_NONE,
+    PRESS_UP,
+    PRESS_DOWN,
+    PRESS_LEFT,
+    PRESS_RIGHT
+};
+
+#endif //MICROMACHINES_INPUT_H
