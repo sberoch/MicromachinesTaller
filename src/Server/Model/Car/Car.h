@@ -1,6 +1,7 @@
 #ifndef MICROMACHINES_CAR_H
 #define MICROMACHINES_CAR_H
 
+#include <src/Server/Model/Car/Turning/CarTurningState.h>
 #include "../../../../Box2D/Box2D.h"
 #include "CarState.h"
 
@@ -12,6 +13,7 @@ private:
     size_t id;
     b2Body* _carBody;
     CarState* _state;
+    CarTurningState* _turningState;
 
     int _health; //TODO health
     float _previous_x, _previous_y;
@@ -23,6 +25,8 @@ public:
 
     void accelerate();
     void desaccelerate();
+    void turnLeft();
+    void turnRight();
 
     void resetCar();
 

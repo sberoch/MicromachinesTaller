@@ -1,4 +1,5 @@
 #include <src/Server/Model/Input.h>
+#include <src/Server/Model/Car/Turning/NotTurningState.h>
 #include "Car.h"
 #include "WithoutAcceleratingState.h"
 
@@ -18,7 +19,8 @@ Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0) {
     _carBody->SetAngularVelocity( 0 );
     _setShapeAndFixture();
 
-    _state = new WithoutAcceleratingState;
+    _state = new WithoutAcceleratingState();
+    _turningState = new NotTurningState();
 }
 
 void Car::resetCar(){
@@ -38,16 +40,30 @@ void Car::desaccelerate(){
     _carBody->ApplyForce(b2Vec2(0, -50), _carBody->GetWorldCenter(), true);
 }
 
+void Car::turnLeft(){
+    _carBody->ApplyTorque(-10, true);
+}
+
+void Car::turnRight(){
+    _carBody->ApplyTorque(10, true);
+}
+
 void Car::handleInput(Input input){
     CarState* state = _state->handleInput(*this, input);
     if (state != NULL){
         delete _state;
         _state = state;
     }
+    CarTurningState* turningState = _turningState->handleInput(*this, input);
+    if (turningState != NULL){
+        delete _turningState;
+        _turningState = turningState;
+    }
 }
 
 void Car::update(){
     _state->update(*this);
+    _turningState->update(*this);
 }
 
 const float Car::x(){
