@@ -32,7 +32,8 @@ void Car::resetCar(){
 
 void Car::accelerate(){
     //What to do with wake parameter?
-    _carBody->ApplyForce(b2Vec2(0, 50), _carBody->GetWorldCenter(), true);
+    if (_carBody->GetLinearVelocity().x < _max_speed && _carBody->GetLinearVelocity().y < _max_speed)
+        _carBody->ApplyForce(b2Vec2(0, 50), _carBody->GetWorldCenter(), true);
 }
 
 void Car::desaccelerate(){
@@ -41,15 +42,17 @@ void Car::desaccelerate(){
 }
 
 void Car::turnLeft(){
-    _carBody->ApplyTorque(-10, true);
+    //_carBody->ApplyTorque(-10, true);
+    _carBody->ApplyForce(b2Vec2(-50, 0), _carBody->GetWorldCenter(), true);
 }
 
 void Car::turnRight(){
-    _carBody->ApplyTorque(10, true);
+    //_carBody->ApplyTorque(10, true);
+    _carBody->ApplyForce(b2Vec2(50, 0), _carBody->GetWorldCenter(), true);
 }
 
 void Car::handleInput(Input input){
-    CarState* state = _state->handleInput(*this, input);
+    CarMovingState* state = _state->handleInput(*this, input);
     if (state != NULL){
         delete _state;
         _state = state;
