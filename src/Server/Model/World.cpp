@@ -28,7 +28,7 @@ void World::_setUpTrack(std::string track_config_file){
 }
 
 World::World(size_t n_of_cars) : _n_of_cars(n_of_cars){
-    b2Vec2 gravity(0, -9.8);
+    b2Vec2 gravity(0, 0);
     _world = new b2World(gravity);
 
     _carBodyDef.type = b2_dynamicBody;
