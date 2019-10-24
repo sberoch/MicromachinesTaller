@@ -1,15 +1,15 @@
-#ifndef MICROMACHINES_CARSTATE_H
-#define MICROMACHINES_CARSTATE_H
+#ifndef MICROMACHINES_CARMOVINGSTATE_H
+#define MICROMACHINES_CARMOVINGSTATE_H
 
 #include "../Input.h"
 
 class Car;
 
-class CarState{
+class CarMovingState{
 public:
-    virtual CarState* handleInput(Car& car, Input input){}
+    virtual CarMovingState* handleInput(Car& car, Input input){}
     virtual void update(Car& car){}
-    virtual ~CarState(){}
+    virtual ~CarMovingState(){}
 };
 
-#endif //MICROMACHINES_CARSTATE_H
+#endif //MICROMACHINES_CARMOVINGSTATE_H

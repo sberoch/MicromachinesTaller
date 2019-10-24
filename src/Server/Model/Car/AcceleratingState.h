@@ -1,15 +1,17 @@
 #ifndef MICROMACHINES_ACCELERATINGSTATE_H
 #define MICROMACHINES_ACCELERATINGSTATE_H
 
-#include "CarState.h"
+#include "CarMovingState.h"
 #include "../Input.h"
 #include "NegAcceleratingState.h"
 
-class AcceleratingState : public CarState {
+class AcceleratingState : public CarMovingState {
 public:
-    virtual CarState* handleInput(Car& car, Input input) {
+    virtual CarMovingState* handleInput(Car& car, Input input) {
         if (input == PRESS_DOWN){
            return new NegAcceleratingState();
+        } else if (input == PRESS_NONE) {
+            //return new WithoutAcceleratingState();
         }
         return nullptr;
     }

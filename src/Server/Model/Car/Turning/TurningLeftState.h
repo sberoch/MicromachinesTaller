@@ -3,6 +3,7 @@
 
 #include "src/Server/Model/Car/Turning/CarTurningState.h"
 #include "TurningRightState.h"
+#include "src/Server/Model/Car/Car.h"
 
 class TurningLeftState : public CarTurningState {
 public:
@@ -10,7 +11,7 @@ public:
         if (input == PRESS_RIGHT) {
             return new TurningRightState();
         } else if (input == RELEASE_LEFT) {
-            return new NotTurningState();
+            //return new NotTurningState();
         }
         return nullptr;
     }

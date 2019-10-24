@@ -3,14 +3,15 @@
 
 #include "CarTurningState.h"
 #include "NotTurningState.h"
+#include "src/Server/Model/Car/Car.h"
 
 class TurningRightState : public CarTurningState {
 public:
     virtual CarTurningState* handleInput(Car& car, Input input){
         if (input == PRESS_LEFT) {
-            return new TurnLeftState();
+            //return new TurnLeftState();
         } else if (input == RELEASE_RIGHT) {
-            return new NotTurningState();
+            //return new NotTurningState();
         }
         return nullptr;
     }
