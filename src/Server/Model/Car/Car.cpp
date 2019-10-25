@@ -13,7 +13,7 @@ void Car::_setShapeAndFixture(){
     _carBody->CreateFixture(&boxFixtureDef);
 }
 
-Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0) {
+Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _max_speed(100){
     _carBody = carBody;
     _carBody->SetLinearVelocity( b2Vec2( 0, 0 ) ); //not moving
     _carBody->SetAngularVelocity( 0 );

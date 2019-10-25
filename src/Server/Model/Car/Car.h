@@ -1,9 +1,12 @@
 #ifndef MICROMACHINES_CAR_H
 #define MICROMACHINES_CAR_H
 
-#include <src/Server/Model/Car/Turning/CarTurningState.h>
 #include "../../../../Box2D/Box2D.h"
-#include "CarMovingState.h"
+
+#include "../Input.h"
+
+class CarTurningState;
+class CarMovingState;
 
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
