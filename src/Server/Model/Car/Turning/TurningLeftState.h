@@ -12,6 +12,7 @@ public:
             return new TurningRightState();
         } else if (input == RELEASE_LEFT) {
             //return new NotTurningState();
+            return nullptr;
         }
         return nullptr;
     }

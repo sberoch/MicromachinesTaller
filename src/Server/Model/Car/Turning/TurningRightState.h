@@ -10,8 +10,10 @@ public:
     virtual CarTurningState* handleInput(Car& car, Input input){
         if (input == PRESS_LEFT) {
             //return new TurnLeftState();
+            return nullptr;
         } else if (input == RELEASE_RIGHT) {
             //return new NotTurningState();
+            return nullptr;
         }
         return nullptr;
     }
