@@ -12,7 +12,6 @@
 #include <cstring>
 #include "Thread.h"
 #include "../Common/Socket.h"
-#include "MessageProtocol.h"
 #include "ClientAttendant.h"
 #include "../Common/SocketError.h"
 

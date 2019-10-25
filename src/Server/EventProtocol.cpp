@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <netinet/in.h>
 #include <vector>
+#include <iostream>
 #include "EventProtocol.h"
 #include "../Common/SocketError.h"
 
@@ -16,23 +17,22 @@ std::string EventProtocol::receive(){
 
     //Recibo longitud en bytes.
     socket.receive(data, FOUR_BYTES);
-
     sscanf(data, "%d", &ret);
     int sizeIncoming = ntohl(ret);
 
-    char* buffer = new char[sizeIncoming];
+    std::vector<char> vector(sizeIncoming);
+    std::string auxiliar (vector.begin(), vector.end());
+    char* buffer = const_cast<char *>(auxiliar.c_str());
     socket.receive(buffer, sizeIncoming);
+
     std::string message(buffer);
 
-    delete [](buffer);
     return message;
 }
 
 EventProtocol::EventProtocol(Socket socket): socket(std::move(socket)) {}
 
-EventProtocol::~EventProtocol() {
-
-}
+EventProtocol::~EventProtocol() = default;
 
 //Se envia la longitud como entero de 4 bytes y luego
 //el mensaje verdadero
@@ -45,4 +45,8 @@ void EventProtocol::send(std::string message) {
     this->socket.send(numberBuffer, FOUR_BYTES);
     const char* messagePtr = message.c_str();
     this->socket.send(const_cast<char *>(messagePtr), messageLength);
+}
+
+void EventProtocol::forceShutDown() {
+    this->socket.stop();
 }

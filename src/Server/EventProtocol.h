@@ -12,13 +12,15 @@ class EventProtocol {
 private:
     Socket socket;
 public:
-    EventProtocol(Socket socket);
+    explicit EventProtocol(Socket socket);
 
     ~EventProtocol();
 
     std::string receive();
 
     void send(std::string message);
+
+    void forceShutDown();
 };
 
 
