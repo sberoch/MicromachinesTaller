@@ -5,8 +5,30 @@
 
 using json = nlohmann::json;
 
+void World::_createTrack(float x, float y, float angle){
+    b2BodyDef floor_body_def;
+    floor_body_def.position.Set(x, y);
+    floor_body_def.angle = angle;
+
+    b2Body* floor_body = _world->CreateBody(&floor_body_def);
+}
+
+void World::_setUpTrack(std::string track_config_file){
+    std::ifstream i(track_config_file);
+    json j; i >> j;
+    float x, y, angle;
+
+    json tracks = j["world1"];
+    for (auto& track : tracks){
+        x = tracks["x"].get<float>();
+        y = tracks["y"].get<float>();
+        angle = tracks["angle"].get<float>() * DEGTORAD;
+        _createTrack(x, y, angle);
+    }
+}
+
 World::World(size_t n_of_cars) : _n_of_cars(n_of_cars){
-    b2Vec2 gravity(0, -9.8);
+    b2Vec2 gravity(0, 0);
     _world = new b2World(gravity);
 
     _carBodyDef.type = b2_dynamicBody;
@@ -39,6 +61,7 @@ void World::step(uint32_t velocityIt, uint32_t positionIt){
     //how strongly to correct velocity
     //how strongly to correct position
     _world->Step( _timeStep, velocityIt, positionIt);
+    _world->ClearForces();
 }
 
 World::~World(){

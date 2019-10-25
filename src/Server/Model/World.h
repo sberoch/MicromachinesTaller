@@ -1,8 +1,10 @@
 #ifndef MICROMACHINES_WORLD_H
 #define MICROMACHINES_WORLD_H
 
+#define DEGTORAD 0.0174532925199432957f
+
 #include <Box2D/Box2D.h>
-#include "Car.h"
+#include "src/Server/Model/Car/Car.h"
 
 class World {
 private:
@@ -12,6 +14,11 @@ private:
     int _n_of_cars;
     b2BodyDef _carBodyDef; //What can we do with this?
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
+
+    b2BodyDef _track_body_def;
+
+    void _createTrack(float x, float y, float angle);
+    void _setUpTrack(std::string track_config_file);
 
 public:
     World(size_t n_of_cars);

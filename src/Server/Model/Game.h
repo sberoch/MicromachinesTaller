@@ -2,7 +2,7 @@
 #define MICROMACHINES_GAME_H
 
 #include <vector>
-#include "Car.h"
+#include "src/Server/Model/Car/Car.h"
 #include "World.h"
 
 class Game {
@@ -12,6 +12,7 @@ private:
 
 public:
     Game(size_t n_of_players);
+    
     ~Game();
 };
 

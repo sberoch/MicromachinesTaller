@@ -2,7 +2,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/ui/text/TestRunner.h>
 
-#include "Server/CarTest.h"
+#include "src/test/Server/CarTest.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CarTest );
 
