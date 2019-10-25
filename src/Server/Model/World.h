@@ -1,6 +1,8 @@
 #ifndef MICROMACHINES_WORLD_H
 #define MICROMACHINES_WORLD_H
 
+#define DEGTORAD 0.0174532925199432957f
+
 #include <Box2D/Box2D.h>
 #include "src/Server/Model/Car/Car.h"
 

@@ -22,7 +22,7 @@ void World::_setUpTrack(std::string track_config_file){
     for (auto& track : tracks){
         x = tracks["x"].get<float>();
         y = tracks["y"].get<float>();
-        angle = tracks["angle"].get<float>();
+        angle = tracks["angle"].get<float>() * DEGTORAD;
         _createTrack(x, y, angle);
     }
 }
