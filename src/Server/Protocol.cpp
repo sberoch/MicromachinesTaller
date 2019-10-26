@@ -6,12 +6,13 @@
 #include <netinet/in.h>
 #include <vector>
 #include <iostream>
-#include "EventProtocol.h"
+#include <sstream>
+#include "Protocol.h"
 #include "../Common/SocketError.h"
 
 #define FOUR_BYTES 4
 
-std::string EventProtocol::receive(){
+std::string Protocol::receive(){
     int32_t ret = 0;
     char *data = (char*)&ret;
 
@@ -30,13 +31,13 @@ std::string EventProtocol::receive(){
     return message;
 }
 
-EventProtocol::EventProtocol(Socket socket): socket(std::move(socket)) {}
+Protocol::Protocol(Socket socket): socket(std::move(socket)) {}
 
-EventProtocol::~EventProtocol() = default;
+Protocol::~Protocol() = default;
 
 //Se envia la longitud como entero de 4 bytes y luego
 //el mensaje verdadero
-void EventProtocol::send(std::string message) {
+void Protocol::send(std::string message) {
     int messageLength = message.size();
 
     uint32_t number = htonl(messageLength);
@@ -47,6 +48,18 @@ void EventProtocol::send(std::string message) {
     this->socket.send(const_cast<char *>(messagePtr), messageLength);
 }
 
-void EventProtocol::forceShutDown() {
+void Protocol::forceShutDown() {
     this->socket.stop();
 }
+
+std::vector<std::string> Protocol::splitCommand(std::string &message,
+                                                char delim) {
+    std::string aux;
+    std::stringstream fullLine(message);
+    std::vector<std::string> strings;
+    while (getline(fullLine, aux, delim)) {
+        strings.push_back(aux);
+    }
+    return strings;
+}
+

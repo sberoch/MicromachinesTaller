@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include "../Server/Protocol.h"
 
 
 struct Car {
@@ -21,10 +22,14 @@ class ServerSnapshot {
 private:
 	CarList carList;
 public:
+    ServerSnapshot(Protocol& protocol);
+
 	void setCar(float x, float y, int angle, int id);
-	//void send(socket/protocolo)
-	//void recv(socket/protocolo)
+
 	const CarList& getCars();
+
+	//Envia el estado de todos los autos.
+	void send(Protocol& protocol);
 };
 
 #endif // SERVER_SNAPSHOT_H

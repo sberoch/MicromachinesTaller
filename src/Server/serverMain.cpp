@@ -1,4 +1,5 @@
 #include <set>
+#include <sstream>
 #include "File.h"
 #include "../Common/Socket.h"
 #include "AcceptingThread.h"

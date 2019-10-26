@@ -6,21 +6,25 @@
 #define MICROMACHINES_EVENTPROTOCOL_H
 
 
+#include <vector>
 #include "../Common/Socket.h"
 
-class EventProtocol {
+class Protocol {
 private:
     Socket socket;
 public:
-    explicit EventProtocol(Socket socket);
+    explicit Protocol(Socket socket);
 
-    ~EventProtocol();
+    ~Protocol();
 
     std::string receive();
 
     void send(std::string message);
 
     void forceShutDown();
+
+    std::vector<std::string> splitCommand(std::string &message,
+                                          char delim);
 };
 
 

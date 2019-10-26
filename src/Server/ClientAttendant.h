@@ -9,14 +9,14 @@
 #include <unordered_map>
 #include <set>
 #include "../Common/Socket.h"
-#include "EventProtocol.h"
+#include "Protocol.h"
 
 
 
 
 class ClientAttendant {
 private:
-    EventProtocol protocol;
+    Protocol protocol;
 
 public:
     //Crea el atendedor, recibe el mapa, el socket con el que crea el protocolo
