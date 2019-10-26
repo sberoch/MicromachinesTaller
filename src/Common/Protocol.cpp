@@ -8,9 +8,15 @@
 #include <iostream>
 #include <sstream>
 #include "Protocol.h"
-#include "../Common/SocketError.h"
+#include "SocketError.h"
 
 #define FOUR_BYTES 4
+
+Protocol::Protocol(Socket socket): socket(std::move(socket)) {}
+
+Protocol::Protocol(const std::string& portName, const std::string& hostNumber){
+    this->socket.connectToServer(portName, hostNumber);
+}
 
 std::string Protocol::receive(){
     int32_t ret = 0;
@@ -30,10 +36,6 @@ std::string Protocol::receive(){
 
     return message;
 }
-
-Protocol::Protocol(Socket socket): socket(std::move(socket)) {}
-
-Protocol::~Protocol() = default;
 
 //Se envia la longitud como entero de 4 bytes y luego
 //el mensaje verdadero
@@ -63,3 +65,4 @@ std::vector<std::string> Protocol::splitCommand(std::string &message,
     return strings;
 }
 
+Protocol::~Protocol() = default;

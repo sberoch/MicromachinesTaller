@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "../Server/Protocol.h"
+#include "Protocol.h"
 
 
 struct Car {

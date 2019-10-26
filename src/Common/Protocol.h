@@ -7,10 +7,12 @@
 
 
 #include <vector>
-#include "../Common/Socket.h"
+#include "Socket.h"
 
 class Protocol {
 private:
+    Protocol(const std::string &portName, const std::string &hostNumber);
+
     Socket socket;
 public:
     explicit Protocol(Socket socket);

@@ -1,6 +1,6 @@
 #include <sstream>
 #include "ServerSnapshot.h"
-#include "../Server/Protocol.h"
+#include "Protocol.h"
 
 static std::string toString(int number){
     std::ostringstream ss;
