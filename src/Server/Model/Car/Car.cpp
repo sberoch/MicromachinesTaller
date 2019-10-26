@@ -1,7 +1,6 @@
 #include <src/Server/Model/Input.h>
 #include <src/Server/Model/Car/Turning/NotTurningState.h>
 #include "Car.h"
-#include "WithoutAcceleratingState.h"
 
 void Car::_setShapeAndFixture(){
     b2PolygonShape boxShape;
@@ -19,7 +18,7 @@ Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _max_s
     _carBody->SetAngularVelocity( 0 );
     _setShapeAndFixture();
 
-    _state = new WithoutAcceleratingState();
+    _state = CarMovingState::makeMovingState(PRESS_NONE, PRESS_NONE);
     _turningState = new NotTurningState();
 }
 
@@ -84,4 +83,59 @@ const float Car::speed(){
 
 Car::~Car(){
     delete _state;
+}
+
+
+class NegAcceleratingState : public CarMovingState {
+public:
+    CarMovingState* handleInput(Car& car, Input input){
+        return makeMovingState(input, PRESS_DOWN);
+    }
+
+    void update(Car& car){
+        car.desaccelerate();
+    }
+};
+
+class AcceleratingState : public CarMovingState {
+public:
+    CarMovingState* handleInput(Car& car, Input input) {
+        return makeMovingState(input, PRESS_UP);
+    }
+
+    void update(Car& car) {
+        //Accelerate
+        car.accelerate();
+    }
+};
+
+class WithoutAcceleratingState : public CarMovingState {
+public:
+    CarMovingState* handleInput(Car& car, Input input) {
+        return makeMovingState(input, PRESS_NONE);
+    }
+
+    void update(Car& car) {
+        //Mover a vel constante
+    }
+};
+
+CarMovingState* CarMovingState::makeMovingState(Input currentInput, Input prevInput){
+    if (prevInput == PRESS_NONE && currentInput == PRESS_NONE){
+        return new WithoutAcceleratingState();
+    } else if (prevInput == PRESS_NONE && currentInput == PRESS_UP) {
+        return new AcceleratingState();
+    } else if(prevInput == PRESS_UP && currentInput == PRESS_DOWN) {
+        return new NegAcceleratingState();
+    } else if (prevInput == PRESS_DOWN && currentInput == PRESS_UP) {
+        return new AcceleratingState();
+    } else if (prevInput == PRESS_UP && currentInput == PRESS_NONE) {
+        return new WithoutAcceleratingState();
+    } else if (prevInput == PRESS_DOWN && currentInput == PRESS_NONE) {
+        return new WithoutAcceleratingState();
+    } else if (prevInput == PRESS_NONE && currentInput == PRESS_DOWN) {
+        return new NegAcceleratingState();
+    }
+
+    return nullptr;
 }

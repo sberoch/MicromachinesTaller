@@ -7,6 +7,7 @@
 
 class CarTurningState;
 class CarMovingState;
+//#include "CarMovingState.h"
 
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
@@ -43,6 +44,18 @@ public:
 
     ~Car();
 };
+
+class CarMovingState{
+public:
+    static CarMovingState* makeMovingState(Input currentInput, Input prevInput);
+    virtual CarMovingState* handleInput(Car& car, Input input) = 0;
+    virtual void update(Car& car) = 0;
+    virtual ~CarMovingState(){}
+};
+
+
+
+
 
 
 #endif //MICROMACHINES_CAR_H
