@@ -5,7 +5,7 @@ int main(int argc, char const *argv[]) {
 	try {
 		SceneSelector sceneSelector(1000, 800);
 		sceneSelector.run();
-	} catch (std::runtime_error& e) {
+	} catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
 	} catch (...) {
 		std::cerr << "Unexpected error\n";

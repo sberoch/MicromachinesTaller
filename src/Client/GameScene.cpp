@@ -10,14 +10,15 @@
 
 using json = nlohmann::json;
 
-GameScene::GameScene(SdlWindow& window) : 
+GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue) : 
 	window(window),
 	isDone(false),
 	backgroundTex("background.png", window),
 	background(backgroundTex),
 	handler(window),
 	creator(window),
-	conv(50) {
+	conv(50),
+	recvQueue(recvQueue) {
 		window.fill();
 		loadStage();
 }
@@ -27,6 +28,23 @@ bool GameScene::done() {
 }
 
 void GameScene::update() {
+	ServerSnapshot* snap;
+	if (recvQueue.get(snap)) {
+		updateCars(snap->getCars());
+		updateGameEvents();
+		delete snap;
+	}
+}
+
+void GameScene::updateCars(CarList cars) {
+	for (auto& car : cars) {
+		ObjectViewPtr carView = gameObjects.at(car["id"]);
+		carView->setRotation(car["angle"]);
+		carView->move(car["x"], car["y"]);
+	}	
+}
+
+void GameScene::updateGameEvents() {
 
 }
 
