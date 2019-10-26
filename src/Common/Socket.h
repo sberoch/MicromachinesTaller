@@ -27,7 +27,7 @@ public:
 
     //Marca el socket como pasivo. Para el backlog, maximo numero de conexiones
     //pendientes en la cola, se usa SOMAXCONN.
-    void listen();
+    static void listen(int fdAccept);
 
     //Acepta al cliente y devuelve el socket.
     Socket accept();
@@ -40,7 +40,7 @@ public:
 
     //Ejecuta las operaciones, dejando al servidor listo para realizar el
     // loop aceptador.
-    void setServerReady(const char *portNumber);
+    static Socket setServerReady(const char *portNumber);
 
     //Shutdown y close forzado.
     void stop();
@@ -48,6 +48,8 @@ public:
     //Utilizado por el cliente para conectarse al servidor.
     void connectToServer(const std::string &hostName,
                         const std::string &portNumber);
+
+    static Socket createAcceptingSocket(const std::string &portNumber);
 
     //Shutdown y close.
     ~Socket();

@@ -45,11 +45,12 @@ void Socket::setHintsForServer(void* addrinfo){
     hints->ai_flags = AI_PASSIVE;
 }
 
-void Socket::setServerReady(const char* portNumber) {
+ Socket Socket::setServerReady(const char* portNumber) {
     struct addrinfo hints{};
     struct addrinfo *results;
     struct addrinfo *ptr;
     bool connected = false;
+    int fdAccept = 0;
 
     setHintsForServer(&hints);
 
@@ -59,29 +60,30 @@ void Socket::setServerReady(const char* portNumber) {
     }
 
     for (ptr = results; ptr != nullptr && !connected; ptr = ptr->ai_next) {
-        this->fd = socket(ptr->ai_family,
+        fdAccept = socket(ptr->ai_family,
                           ptr->ai_socktype, ptr->ai_protocol);
-        if (this->fd == -1){
+        if (fdAccept == -1){
             throw std::runtime_error("Error al obtener Socket");
         }
 
         int val = 1;
-        setsockopt(this->fd,
+        setsockopt(fdAccept,
                    SOL_SOCKET, SO_REUSEADDR, &val, sizeof(int));
 
-        s = bind(this->fd, ptr->ai_addr, ptr->ai_addrlen);
+        s = bind(fdAccept, ptr->ai_addr, ptr->ai_addrlen);
         if (s == -1){
             throw std::runtime_error("Error al bindear con el cliente");
         }
         connected = (s != -1);
     }
     freeaddrinfo(results);
-    listen();
+    listen(fdAccept);
+    return std::move(Socket(fdAccept));
 }
 
-void Socket::listen(){
+void Socket::listen(int fdAccept){
     int connectionsAllowed = SOMAXCONN;
-    int result = ::listen(this->fd, connectionsAllowed);
+    int result = ::listen(fdAccept, connectionsAllowed);
     if (result == -1){
         throw std::runtime_error("Error en la operacion listen");
     }
@@ -102,9 +104,11 @@ void Socket::send(char *buffer, int messageLength){
     int bytesSent = 0;
     while (messageLength > 0){
         bytesSent = ::send(this->fd, buffer, messageLength, MSG_NOSIGNAL);
-        if (bytesSent < 0){
-            throw std::runtime_error("Error al enviar mensaje");
+
+        if (bytesSent <= 0){
+            throw SocketError();
         }
+
         buffer += bytesSent;
         messageLength -= bytesSent;
     }
@@ -147,8 +151,7 @@ void Socket::connectToServer(const std::string& hostName,
     }
     bool connected = false;
     for (ptr = ai_list; ptr != nullptr && !connected; ptr = ptr->ai_next) {
-        this->fd =
-                socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+        this->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
         if (this->fd == -1){
             throw std::runtime_error("Error: File descriptor invalido");
         }
@@ -160,6 +163,11 @@ void Socket::connectToServer(const std::string& hostName,
         connected = (s != -1);
     }
     freeaddrinfo(ai_list);
+}
+
+Socket Socket::createAcceptingSocket(const std::string& portNumber) {
+    Socket acceptSocket = setServerReady(portNumber.c_str());
+    return std::move(acceptSocket);
 }
 
 
