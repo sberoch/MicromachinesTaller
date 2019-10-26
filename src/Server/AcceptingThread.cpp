@@ -13,6 +13,7 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
         while (running) {
             try {
                 Socket skt = this->acceptSocket.accept();
+                std::cout << "Client connected" << std::endl;
                 Thread* newClientThread = new ClientThread(std::move(skt));
 
                 newClientThread->start();

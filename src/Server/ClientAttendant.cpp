@@ -15,8 +15,6 @@ ClientAttendant::ClientAttendant(Socket skt) : protocol(std::move(skt)){}
 
 
 void ClientAttendant::receivingLoop() {
-    std::string bienvenida = "Bienvenido";
-    protocol.send(bienvenida);
     bool quitMessage = false;
     while (!quitMessage) {
         std::string message = this->protocol.receive();
