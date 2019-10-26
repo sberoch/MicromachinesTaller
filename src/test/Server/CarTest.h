@@ -11,9 +11,11 @@ class CarTest : public CppUnit::TestFixture {
 CPPUNIT_TEST_SUITE( CarTest );
         CPPUNIT_TEST( testCreateCarInTheExitLine );
         //CPPUNIT_TEST( testCreateMultipleCarsInTheExitLineOneNextToEachOther );
-        CPPUNIT_TEST( testStart );
-        CPPUNIT_TEST( testIncreaseSpeed );
-        CPPUNIT_TEST( testDecreaseSpeed );
+        CPPUNIT_TEST( testPressUpKey );
+        CPPUNIT_TEST( testPressDownKey );
+        CPPUNIT_TEST( testPressNoKey );
+        CPPUNIT_TEST( testPressUpThenNoKey );
+        
         CPPUNIT_TEST( testTurnRightWithHighManeuverabilityAndHighGrab );
         CPPUNIT_TEST( testTurnRightWithHighManeuverabilityAndLowGrab );
         CPPUNIT_TEST( testTurnRightWithLowManeuverabilityAndHighGrab );
@@ -77,8 +79,8 @@ public:
         std::cout << "OK\n";
     }
 
-    void testStart(){
-        std::cout << "TEST start car: \n";
+    void testPressUpKey(){
+        std::cout << "TEST press up key: \n";
 
         car1->handleInput(PRESS_UP);
         car1->update();
@@ -88,19 +90,58 @@ public:
         std::cout << "OK\n";
     }
 
-    void testIncreaseSpeed(){
-        std::cout << "TEST increase speed: \n";
+    void testPressDownKey(){
+        std::cout << "TEST press down key: \n";
 
-
-        //CPPUNIT_ASSERT(car1->speed() == );
+        car1->handleInput(PRESS_DOWN);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        CPPUNIT_ASSERT(car1->speed() < 0);
 
         std::cout << "OK\n";
     }
 
-    void testDecreaseSpeed(){
-        std::cout << "TEST decrease speed: \n";
+    void testPressNoKey(){
+        std::cout << "TEST press no key: \n";
 
-        //CPPUNIT_ASSERT(car1->speed() == );
+        car1->handleInput(PRESS_NONE);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        CPPUNIT_ASSERT(car1->speed() == 0);
+
+        std::cout << "OK\n";
+    }
+
+    void testPressUpThenNoKey(){
+        std::cout << "TEST press up and then no key: \n";
+
+        car1->handleInput(PRESS_UP);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+
+        car1->handleInput(PRESS_NONE);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+        float intermidiate_speed = car1->speed();
+        CPPUNIT_ASSERT(car1->speed() > 0);
+
+        std::cout << "OK\n";
+        std::cout << "Loses velocity in time\n";
+        car1->handleInput(PRESS_NONE);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+        CPPUNIT_ASSERT(car1->speed() < intermidiate_speed);
+
+        std::cout << "OK\n";
+        std::cout << "Eventually reaches zero speed\n";
+        car1->handleInput(PRESS_NONE);
+		car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+        CPPUNIT_ASSERT(car1->speed() == 0);        
 
         std::cout << "OK\n";
     }
