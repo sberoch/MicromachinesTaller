@@ -1,11 +1,17 @@
 #include "ReceiverThread.h"
 #include <iostream>
 
-ReceiverThread::ReceiverThread(Queue<ServerSnapshot*>& recvQueue) :
-	recvQueue(recvQueue) {}
+ReceiverThread::ReceiverThread(Queue<ServerSnapshot*>& recvQueue,
+		const std::string& host, const std::string& port) :
+	recvQueue(recvQueue),
+	/*protocol(host, port)*/ {}
 
 void ReceiverThread::run() {
-	//TODO: loop that recvs from server
+	/*ServerSnapshot* snap;
+	while(true) {
+		snap = new ServerSnapshot(protocol);
+		recvQueue.put(snap);
+	}*/
 
 	//Mock
 	ServerSnapshot* snap;

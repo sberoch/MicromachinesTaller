@@ -11,15 +11,19 @@ class SceneSelector {
 private:
 	SdlWindow window;
 	std::map<int, BaseScene*> scenes;
+
 	Queue<ServerSnapshot*> recvQueue;
 	//Queue (blocking?) sendQueue;
+
 	ReceiverThread receiver;
 	//SenderThread sender;
+	
 	int currentScene;
 
 
 public:
-	SceneSelector(int xScreen, int yScreen);
+	SceneSelector(int xScreen, int yScreen,
+		const std::string& host, const std::string& port);
 	void run();
 	~SceneSelector();
 };
