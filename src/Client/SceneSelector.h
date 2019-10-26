@@ -4,6 +4,7 @@
 #include "SdlWindow.h"
 #include "BaseScene.h"
 #include "ReceiverThread.h"
+#include "SenderThread.h"
 #include "../Common/Queue.h"
 #include <map>
 
@@ -12,11 +13,13 @@ private:
 	SdlWindow window;
 	std::map<int, BaseScene*> scenes;
 
+	//Protocol
+
 	Queue<ServerSnapshot*> recvQueue;
-	//Queue (blocking?) sendQueue;
+	Queue<std::string> sendQueue;
 
 	ReceiverThread receiver;
-	//SenderThread sender;
+	SenderThread sender;
 	
 	int currentScene;
 

@@ -1,10 +1,9 @@
 #include "ReceiverThread.h"
 #include <iostream>
 
-ReceiverThread::ReceiverThread(Queue<ServerSnapshot*>& recvQueue,
-		const std::string& host, const std::string& port) :
-	recvQueue(recvQueue),
-	/*protocol(host, port)*/ {}
+ReceiverThread::ReceiverThread(Queue<ServerSnapshot*>& recvQueue/*, protocol*/) :
+	recvQueue(recvQueue)
+	/*protocol(protocol)*/ {}
 
 void ReceiverThread::run() {
 	/*ServerSnapshot* snap;

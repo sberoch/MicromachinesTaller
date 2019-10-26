@@ -4,15 +4,13 @@
 #include "../Common/Thread.h"
 #include "../Common/ServerSnapshot.h"
 #include "../Common/Queue.h"
-#include "../Server/EventProtocol.cpp"
 
 class ReceiverThread : public Thread {
 private:
 	Queue<ServerSnapshot*>& recvQueue;
-	//EventProtocol protocol;
+	//EventProtocol& protocol;
 public:
-	ReceiverThread(Queue<ServerSnapshot*>& recvQueue,
-			const std::string& host, const std::string& port);
+	ReceiverThread(Queue<ServerSnapshot*>& recvQueue/*, protocol*/);
 	virtual void run() override;
 };
 
