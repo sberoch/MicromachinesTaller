@@ -2,15 +2,20 @@
 #include "../Common/Constants.h"
 #include "GameScene.h"
 
-SceneSelector::SceneSelector(int xScreen, int yScreen) : 
+//TODO: protocol
+
+SceneSelector::SceneSelector(int xScreen, int yScreen,
+		const std::string& host, const std::string& port) : 
 	window(xScreen, yScreen),
-	receiver(recvQueue),
+	receiver(recvQueue/*, protocol*/),
+	sender(sendQueue/*, protocol*/),
 	currentScene(SCENE_GAME) /*TODO: SCENE_MENU*/ {
 		//scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window)));
 		//scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window)));
 		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, recvQueue)));
-
+		
 		receiver.start();
+		sender.start();
 	}
 
 void SceneSelector::run() {
@@ -29,6 +34,7 @@ void SceneSelector::run() {
 
 SceneSelector::~SceneSelector() {
 	receiver.join();
+	sender.join();
 
 	for (auto& it : scenes) {
 		delete it.second;
