@@ -22,7 +22,8 @@ class ServerSnapshot {
 private:
 	CarList carList;
 public:
-    ServerSnapshot(Protocol& protocol);
+    //Hace un receive interno.
+    explicit ServerSnapshot(Protocol& protocol);
 
 	void setCar(float x, float y, int angle, int id);
 

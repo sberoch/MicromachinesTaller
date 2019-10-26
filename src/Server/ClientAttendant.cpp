@@ -21,7 +21,6 @@ void ClientAttendant::receivingLoop() {
     bool quitMessage = false;
     while (!quitMessage) {
         std::string message = this->protocol.receive();
-    
         std::cout << "Message: " << message << std::endl;
         quitMessage = message == QUIT_STRING;
     }
