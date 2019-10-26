@@ -23,8 +23,12 @@ private:
 	TextureCreator creator;
 	std::map<int, ObjectViewPtr> gameObjects;
 	Converter conv;
+	int cameraX, cameraY;
 
 	Queue<ServerSnapshot*>& recvQueue;
+
+	//Mock
+	int myID;
 
 public:
 	GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue);
