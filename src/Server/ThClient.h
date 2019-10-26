@@ -12,10 +12,6 @@
 #include <cstring>
 #include "Thread.h"
 #include "../Common/Socket.h"
-<<<<<<< Updated upstream
-=======
-#include "MessageProtocol.h"
->>>>>>> Stashed changes
 #include "ClientAttendant.h"
 #include "../Common/SocketError.h"
 

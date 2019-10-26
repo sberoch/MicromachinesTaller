@@ -9,20 +9,14 @@
 #include <unordered_map>
 #include <set>
 #include "../Common/Socket.h"
-<<<<<<< Updated upstream
 #include "EventProtocol.h"
-=======
-#include "MessageProtocol.h"
->>>>>>> Stashed changes
+
+
 
 
 class ClientAttendant {
 private:
-<<<<<<< Updated upstream
     EventProtocol protocol;
-=======
-    MessageProtocol protocol;
->>>>>>> Stashed changes
 
 public:
     //Crea el atendedor, recibe el mapa, el socket con el que crea el protocolo

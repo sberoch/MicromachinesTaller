@@ -15,12 +15,8 @@ file(GLOB_RECURSE CLIENT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Client/*.cpp"
 add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES})
 target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer SDL2_ttf)
 
-<<<<<<< Updated upstream
-add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES})
-=======
-add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES} src/Server/EventProtocol.cpp src/Server/EventProtocol.h)
 
->>>>>>> Stashed changes
+add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES})
 target_link_libraries(mm_server)
 
 install(FILES assets/scene.json DESTINATION ${CMAKE_BINARY_DIR})
