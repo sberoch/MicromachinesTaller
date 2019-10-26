@@ -20,6 +20,9 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue) :
 	conv(50),
 	recvQueue(recvQueue) {
 		window.fill();
+
+		//Mock
+		myID = 11;
 		loadStage();
 }
 
@@ -38,9 +41,16 @@ void GameScene::update() {
 
 void GameScene::updateCars(CarList cars) {
 	for (auto& car : cars) {
-		ObjectViewPtr carView = gameObjects.at(car["id"]);
-		carView->setRotation(car["angle"]);
-		carView->move(car["x"], car["y"]);
+		ObjectViewPtr carView = gameObjects.at(car.id);
+		carView->setRotation(car.angle);
+		carView->move(conv.blockToPixel(car.x),
+					  conv.blockToPixel(car.y));
+		if (car.id == myID) {
+			cameraX = conv.blockToPixel(car.x);
+			cameraY = conv.blockToPixel(car.y);
+			std::cout << "cameraX: " << cameraX << std::endl;
+	std::cout << "cameraY: " << cameraY << std::endl;
+		}
 	}	
 }
 
@@ -54,7 +64,7 @@ void GameScene::draw() {
 	drawBackground();
 	for (auto& it : gameObjects) {
 		//TODO: change this to support camera.
-		it.second->drawAt(0, 0);
+		it.second->drawAt(cameraX, cameraY);
 	}
 	window.render();
 }
@@ -81,6 +91,13 @@ void GameScene::loadStage() {
 		angle = obj["angle"].get<int>();
 		ObjectViewPtr ov = creator.create(id, x, y, angle);
 		gameObjects.insert(std::make_pair(ov->getId(), ov));
+		if (ov->getId() == myID) {
+			//Center camera in car
+			int screenX, screenY;
+			window.getWindowSize(&screenX, &screenY);
+			cameraX = screenX/2 - x;
+			cameraY = screenY/2 - y;
+		}
 	}
 }
 
