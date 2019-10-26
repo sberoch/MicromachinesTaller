@@ -9,6 +9,8 @@
 #include "BaseScene.h"
 #include <map>
 #include "../Common/Converter.h"
+#include "../Common/ServerSnapshot.h"
+#include "../Common/Queue.h"
 
 class GameScene : public BaseScene {
 private:
@@ -21,8 +23,11 @@ private:
 	TextureCreator creator;
 	std::map<int, ObjectViewPtr> gameObjects;
 	Converter conv;
+
+	Queue<ServerSnapshot*>& recvQueue;
+
 public:
-	GameScene(SdlWindow& window);
+	GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
@@ -31,6 +36,8 @@ public:
 private:
 	void loadStage();
 	void drawBackground();
+	void updateCars(CarList cars);
+	void updateGameEvents();
 };
 
 #endif // GAME_SCENE_H

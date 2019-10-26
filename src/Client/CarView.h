@@ -6,9 +6,12 @@
 class CarView : public ObjectView {
 private:
 	int angle;
+	int posX, posY;
 public:
 	CarView(const SdlTexture& tex, const int& angle);
  	virtual void drawAt(int x, int y) override;
+ 	virtual void move(int x, int y) override;
+ 	virtual void setRotation(int angle) override;
  	virtual ~CarView() {}
 };
 

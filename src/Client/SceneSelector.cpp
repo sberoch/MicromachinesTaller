@@ -4,10 +4,13 @@
 
 SceneSelector::SceneSelector(int xScreen, int yScreen) : 
 	window(xScreen, yScreen),
-	currentScene(SCENE_GAME) /*TODO: menu*/ {
+	receiver(recvQueue),
+	currentScene(SCENE_GAME) /*TODO: SCENE_MENU*/ {
 		//scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window)));
 		//scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window)));
-		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window)));
+		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, recvQueue)));
+
+		receiver.start();
 	}
 
 void SceneSelector::run() {
@@ -25,6 +28,8 @@ void SceneSelector::run() {
 }
 
 SceneSelector::~SceneSelector() {
+	receiver.join();
+
 	for (auto& it : scenes) {
 		delete it.second;
 	}
