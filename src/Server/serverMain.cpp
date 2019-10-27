@@ -1,7 +1,9 @@
 #include <set>
+#include <sstream>
 #include "File.h"
 #include "../Common/Socket.h"
 #include "AcceptingThread.h"
+#include "../Common/ServerSnapshot.h"
 
 #define Q_MINUSCULA 'q'
 #define PORT_NUMBER_POSITION 1

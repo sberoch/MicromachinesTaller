@@ -20,3 +20,4 @@ bool Queue<T>::get(T& elem) {
 
 template class Queue<ServerSnapshot*>;
 template class Queue<std::string>;
+template class Queue<ServerSnapshot*>;

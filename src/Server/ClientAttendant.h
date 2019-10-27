@@ -5,12 +5,10 @@
 #ifndef HONEYPOT_SERVERCLIENTATTENDANT_H
 #define HONEYPOT_SERVERCLIENTATTENDANT_H
 
-
 #include <unordered_map>
 #include <set>
 #include "../Common/Socket.h"
-#include "EventProtocol.h"
-
+#include "../Common/Protocol.h"
 
 class ClientAttendant {
 private:
