@@ -19,7 +19,7 @@ public:
     void setUp(){
         b2Vec2 gravity = b2Vec2(0,0);
         world = new b2World(gravity);
-        tire = new Tire(world);
+        tire = new Tire(world, 100, -20, 75);
     }
 
     void tearDown(){
@@ -42,6 +42,7 @@ public:
         std::cout << "TEST moving forward:\n";
 
         tire->updateFriction();
+        //tire->updateDrive(TDC_UP);
         world->Step( 1/30.0, 8, 3);
         CPPUNIT_ASSERT(tire->getForwardVelocity().x == 0);
         CPPUNIT_ASSERT(tire->getForwardVelocity().y > 0);

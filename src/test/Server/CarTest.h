@@ -33,11 +33,28 @@ private:
     Car *car1, *car2, *car3;
     float _car_x_init = 15;
     float _car_y_init = 7;
+    b2Body* groundBody;
 
 public:
     void setUp(){
         b2Vec2 gravity(0, 0);
         world = new b2World(gravity);
+
+        //Floor
+        b2BodyDef bodyDef;
+        groundBody = world->CreateBody( &bodyDef );
+
+        b2PolygonShape polygonShape;
+        b2FixtureDef fixtureDef;
+        fixtureDef.shape = &polygonShape;
+        fixtureDef.isSensor = true;
+
+        polygonShape.SetAsBox( _car_x_init -2, _car_y_init - 2, b2Vec2(0,0), 90*DEGTORAD );
+        b2Fixture* groundAreaFixture = groundBody->CreateFixture(&fixtureDef);
+        float frictionModifier = 0.5;
+        groundAreaFixture->SetUserData(&frictionModifier);
+        //groundAreaFixture->SetUserData( new GroundAreaFUD( 0.5f, false ) );
+
 
         b2BodyDef _carBodyDef;
         _carBodyDef.type = b2_dynamicBody;
@@ -50,6 +67,7 @@ public:
     }
 
     void tearDown(){
+        delete world;
         //delete car1;
     }
 
@@ -61,7 +79,7 @@ public:
         CPPUNIT_ASSERT(car1->x() == _car_x_init);
         CPPUNIT_ASSERT(car1->y() == _car_y_init);
         CPPUNIT_ASSERT(car1->speed() == 0);
-        //See how to check state
+
         std::cout << "OK\n";
     }
 
@@ -77,6 +95,7 @@ public:
 
         CPPUNIT_ASSERT(car3->x() == _car_x_init + 0.2);
         CPPUNIT_ASSERT(car3->y() == _car_y_init);
+
         std::cout << "OK\n";
     }
 
@@ -115,19 +134,6 @@ public:
 
     void testPressUpThenNoKey(){
         std::cout << "TEST press up and then no key: \n";
-        //Floor?
-        b2Body* floor;
-        b2PolygonShape polygonShape;
-        b2FixtureDef myFixtureDef;
-        myFixtureDef.shape = &polygonShape;
-        myFixtureDef.density = 1;
-        b2BodyDef myBodyDef;
-        myBodyDef.type = b2_staticBody;
-        myBodyDef.position.Set(_car_x_init, _car_y_init);
-
-        polygonShape.SetAsBox(10,10);
-        floor = world->CreateBody(&myBodyDef);
-        floor->CreateFixture(&myFixtureDef);
 
         car1->handleInput(PRESS_UP);
         car1->update();
