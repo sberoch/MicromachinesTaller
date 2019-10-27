@@ -12,7 +12,8 @@ void Car::_setShapeAndFixture(){
     _carBody->CreateFixture(&boxFixtureDef);
 }
 
-Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _max_speed(100){
+Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxSpeed(100), _maxForce(150),
+                            _onTrack(true), _onGrass(false), _currentTraction(1){
     _carBody = carBody;
     _carBody->SetLinearVelocity( b2Vec2( 0, 0 ) ); //not moving
     _carBody->SetAngularVelocity( 0 );
@@ -20,6 +21,8 @@ Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _max_s
 
     _state = CarMovingState::makeMovingState(PRESS_NONE, PRESS_NONE);
     _turningState = new NotTurningState();
+
+    _carBody->SetUserData(this);
 }
 
 void Car::resetCar(){
@@ -31,23 +34,39 @@ void Car::resetCar(){
 
 void Car::accelerate(){
     //What to do with wake parameter?
-    if (_carBody->GetLinearVelocity().x < _max_speed && _carBody->GetLinearVelocity().y < _max_speed)
-        _carBody->ApplyForce(b2Vec2(0, 50), _carBody->GetWorldCenter(), true);
+    if (_carBody->GetLinearVelocity().x < _maxSpeed && _carBody->GetLinearVelocity().y < _maxSpeed)
+        _carBody->ApplyForce(b2Vec2(0, 50 * _currentTraction), _carBody->GetWorldCenter(), true);
 }
 
 void Car::desaccelerate(){
     //What to do with wake parameter?
-    _carBody->ApplyForce(b2Vec2(0, -50), _carBody->GetWorldCenter(), true);
+    _carBody->ApplyForce(b2Vec2(0, -50 * _currentTraction), _carBody->GetWorldCenter(), true);
 }
 
 void Car::turnLeft(){
     //_carBody->ApplyTorque(-10, true);
-    _carBody->ApplyForce(b2Vec2(-50, 0), _carBody->GetWorldCenter(), true);
+    _carBody->ApplyForce(b2Vec2(-50 * _currentTraction, 0), _carBody->GetWorldCenter(), true);
 }
 
 void Car::turnRight(){
     //_carBody->ApplyTorque(10, true);
-    _carBody->ApplyForce(b2Vec2(50, 0), _carBody->GetWorldCenter(), true);
+    _carBody->ApplyForce(b2Vec2(50 * _currentTraction, 0), _carBody->GetWorldCenter(), true);
+}
+
+void Car::updateTraction(){
+    if (_onTrack) {
+        _currentTraction = 0.9f;
+    } else if (_onGrass) {
+        _currentTraction = 0.5f;
+    }
+}
+
+void Car::startContact(){
+    _onTrack = true;
+}
+
+void Car::endContact(){
+    _onTrack = false;
 }
 
 void Car::handleInput(Input input){
@@ -66,6 +85,7 @@ void Car::handleInput(Input input){
 void Car::update(){
     _state->update(*this);
     _turningState->update(*this);
+    updateTraction();
 }
 
 const float Car::x(){

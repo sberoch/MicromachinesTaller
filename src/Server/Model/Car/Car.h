@@ -7,14 +7,15 @@
 
 class CarTurningState;
 class CarMovingState;
-//#include "CarMovingState.h"
 
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
 
 class Car {
 private:
-    float _max_speed;
+    float _maxSpeed;
+    float _maxForce;
+
     size_t id;
     b2Body* _carBody;
     CarMovingState* _state;
@@ -22,6 +23,10 @@ private:
 
     int _health;
     float _previous_x, _previous_y;
+
+    bool _onTrack;
+    bool _onGrass;
+    float _currentTraction;
 
     void _setShapeAndFixture();
 
@@ -32,6 +37,11 @@ public:
     void desaccelerate();
     void turnLeft();
     void turnRight();
+
+    //Contact with floor
+    void startContact();
+    void endContact();
+    void updateTraction();
 
     void resetCar();
 
