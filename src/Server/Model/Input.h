@@ -3,11 +3,11 @@
 
 enum Input{
     PRESS_NONE,
-    PRESS_UP,
-    PRESS_DOWN,
-    PRESS_LEFT,
+    PRESS_LEFT = 0x1,
+    PRESS_RIGHT = 0x2,
+    PRESS_UP = 0x4,
+    PRESS_DOWN = 0x8,
     RELEASE_LEFT,
-    PRESS_RIGHT,
     RELEASE_RIGHT
 };
 
