@@ -3,8 +3,10 @@
 #include <cppunit/ui/text/TestRunner.h>
 
 #include "src/test/Server/CarTest.h"
+#include "src/test/Server/TireTest.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CarTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( TireTest );
 
 using CppUnit::TestFactoryRegistry;
 

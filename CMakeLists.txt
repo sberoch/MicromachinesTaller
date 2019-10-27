@@ -31,6 +31,8 @@ add_subdirectory(src/Server)
 add_executable(mm_server src/Server/serverMain.cpp)
 target_link_libraries(mm_server mm_server_library)
 
+add_subdirectory(src/test)
+
 install(FILES assets/fondo.png DESTINATION ${CMAKE_BINARY_DIR})
 
 

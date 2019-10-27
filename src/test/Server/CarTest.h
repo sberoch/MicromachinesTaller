@@ -15,7 +15,8 @@ CPPUNIT_TEST_SUITE( CarTest );
         CPPUNIT_TEST( testPressDownKey );
         CPPUNIT_TEST( testPressNoKey );
         CPPUNIT_TEST( testPressUpThenNoKey );
-        
+        CPPUNIT_TEST( testPressUpThenDownKey );
+
         CPPUNIT_TEST( testTurnRightWithHighManeuverabilityAndHighGrab );
         CPPUNIT_TEST( testTurnRightWithHighManeuverabilityAndLowGrab );
         CPPUNIT_TEST( testTurnRightWithLowManeuverabilityAndHighGrab );
@@ -114,6 +115,19 @@ public:
 
     void testPressUpThenNoKey(){
         std::cout << "TEST press up and then no key: \n";
+        //Floor?
+        b2Body* floor;
+        b2PolygonShape polygonShape;
+        b2FixtureDef myFixtureDef;
+        myFixtureDef.shape = &polygonShape;
+        myFixtureDef.density = 1;
+        b2BodyDef myBodyDef;
+        myBodyDef.type = b2_staticBody;
+        myBodyDef.position.Set(_car_x_init, _car_y_init);
+
+        polygonShape.SetAsBox(10,10);
+        floor = world->CreateBody(&myBodyDef);
+        floor->CreateFixture(&myFixtureDef);
 
         car1->handleInput(PRESS_UP);
         car1->update();
@@ -142,6 +156,23 @@ public:
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
         CPPUNIT_ASSERT(car1->speed() == 0);        
+
+        std::cout << "OK\n";
+    }
+
+    void testPressUpThenDownKey(){
+        std::cout << "TEST press up and then down key: \n";
+
+        car1->handleInput(PRESS_UP);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+
+        car1->handleInput(PRESS_DOWN);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+        CPPUNIT_ASSERT(car1->speed() == 0);
 
         std::cout << "OK\n";
     }

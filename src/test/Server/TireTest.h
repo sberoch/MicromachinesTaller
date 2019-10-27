@@ -7,7 +7,8 @@
 
 class TireTest : public CppUnit::TestFixture {
 CPPUNIT_TEST_SUITE( TireTest );
-
+    CPPUNIT_TEST(testAtFirstHasNoVelocity);
+    CPPUNIT_TEST(testMovingForward);
 CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -29,18 +30,23 @@ public:
     void testAtFirstHasNoVelocity(){
         std::cout << "TEST at first has no velocity:\n";
 
-        b2Vec2 expectedValue = b2Vec2(0,0);
-        CPPUNIT_ASSERT(tire->getForwardVelocity() == expectedValue);
+        world->Step( 1/30.0, 8, 3);
+        CPPUNIT_ASSERT(tire->getForwardVelocity().x == 0);
+        CPPUNIT_ASSERT(tire->getForwardVelocity().y == 0);
+
+        std::cout << "OK\n";
     }
 
     void testMovingForward(){
         std::cout << "TIRE TESTS: \n";
         std::cout << "TEST moving forward:\n";
 
-        b2Vec2 expectedValue = b2Vec2(0,0);
-
+        tire->updateFriction();
         world->Step( 1/30.0, 8, 3);
-        CPPUNIT_ASSERT(tire->getForwardVelocity() == expectedValue);
+        CPPUNIT_ASSERT(tire->getForwardVelocity().x == 0);
+        CPPUNIT_ASSERT(tire->getForwardVelocity().y > 0);
+
+        std::cout << "OK\n";
     }
 
 };
