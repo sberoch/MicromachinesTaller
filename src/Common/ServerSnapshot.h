@@ -21,6 +21,7 @@ class ServerSnapshot {
 private:
 	CarList carList;
 public:
+	ServerSnapshot() = default;
     //Hace un receive interno.
     explicit ServerSnapshot(Protocol& protocol);
 

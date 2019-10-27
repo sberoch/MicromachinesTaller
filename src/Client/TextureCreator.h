@@ -4,7 +4,7 @@
 #include "SdlWindow.h"
 #include <memory>
 #include "SdlTexture.h"
-#include "ObjectView.h"
+#include "View/ObjectView.h"
 
 typedef std::shared_ptr<ObjectView> ObjectViewPtr;
 

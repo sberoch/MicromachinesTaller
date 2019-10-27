@@ -12,7 +12,7 @@
 
 class ClientAttendant {
 private:
-    EventProtocol protocol;
+    Protocol protocol;
 
 public:
     //Crea el atendedor, recibe el mapa, el socket con el que crea el protocolo

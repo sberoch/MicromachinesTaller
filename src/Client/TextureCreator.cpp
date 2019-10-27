@@ -2,14 +2,14 @@
 #include <iostream>
 #include "../Common/Constants.h"
 
-#include "StraightTrackView.h"
-#include "CurveTrackView.h"
-#include "HealthPowerupView.h"
-#include "BoostPowerupView.h"
-#include "RockView.h"
-#include "CarView.h"
-#include "OilView.h"
-#include "MudView.h"
+#include "View/StraightTrackView.h"
+#include "View/CurveTrackView.h"
+#include "View/HealthPowerupView.h"
+#include "View/BoostPowerupView.h"
+#include "View/RockView.h"
+#include "View/CarView.h"
+#include "View/OilView.h"
+#include "View/MudView.h"
 
 TextureCreator::TextureCreator(const SdlWindow& window) :
 	straightTrackTex("straight_track.png", window),
