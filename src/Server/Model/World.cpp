@@ -32,6 +32,9 @@ World::World(size_t n_of_cars) : _n_of_cars(n_of_cars){
     _world = new b2World(gravity);
 
     _carBodyDef.type = b2_dynamicBody;
+
+    _contactListener = new ContactListener(_world);
+    _world->SetContactListener(_contactListener);
 }
 
 void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){

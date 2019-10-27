@@ -5,6 +5,7 @@
 
 #include <Box2D/Box2D.h>
 #include "src/Server/Model/Car/Car.h"
+#include "ContactListener.h"
 
 class World {
 private:
@@ -15,7 +16,9 @@ private:
     b2BodyDef _carBodyDef; //What can we do with this?
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
 
+    //Floor
     b2BodyDef _track_body_def;
+    ContactListener* _contactListener;
 
     void _createTrack(float x, float y, float angle);
     void _setUpTrack(std::string track_config_file);
