@@ -11,10 +11,10 @@
 
 class Protocol {
 private:
-    Protocol(const std::string &portName, const std::string &hostNumber);
-
     Socket socket;
 public:
+	Protocol(const std::string &portName, const std::string &hostNumber);
+	
     explicit Protocol(Socket socket);
 
     ~Protocol();

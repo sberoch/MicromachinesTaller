@@ -10,15 +10,17 @@
 
 using json = nlohmann::json;
 
-GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue) : 
+GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
+					BlockingQueue& sendQueue) : 
 	window(window),
 	isDone(false),
+	recvQueue(recvQueue),
+	sendQueue(sendQueue),	
 	backgroundTex("background.png", window),
 	background(backgroundTex),
-	handler(window),
+	handler(window, sendQueue),
 	creator(window),
-	conv(50),
-	recvQueue(recvQueue) {
+	conv(50) {
 		window.fill();
 
 		//Mock
@@ -45,11 +47,13 @@ void GameScene::updateCars(CarList cars) {
 		carView->setRotation(car.angle);
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
+		std::cout << "\nx: " << conv.blockToPixel(car.x);
+		std::cout << "\ny: " << conv.blockToPixel(car.x);
+		std::cout << "\nangle: " << car.angle;
+		std::cout << "\nid: " << car.id;
 		if (car.id == myID) {
-			cameraX = conv.blockToPixel(car.x);
-			cameraY = conv.blockToPixel(car.y);
-			std::cout << "cameraX: " << cameraX << std::endl;
-	std::cout << "cameraY: " << cameraY << std::endl;
+			//cameraX = conv.blockToPixel(car.x);
+			//cameraY = conv.blockToPixel(car.y);
 		}
 	}	
 }
@@ -64,7 +68,7 @@ void GameScene::draw() {
 	drawBackground();
 	for (auto& it : gameObjects) {
 		//TODO: change this to support camera.
-		it.second->drawAt(cameraX, cameraY);
+		it.second->drawAt(0, 0);
 	}
 	window.render();
 }
@@ -93,10 +97,10 @@ void GameScene::loadStage() {
 		gameObjects.insert(std::make_pair(ov->getId(), ov));
 		if (ov->getId() == myID) {
 			//Center camera in car
-			int screenX, screenY;
-			window.getWindowSize(&screenX, &screenY);
-			cameraX = screenX/2 - x;
-			cameraY = screenY/2 - y;
+			//int screenX, screenY;
+			//window.getWindowSize(&screenX, &screenY);
+			//cameraX = screenX/2 - x;
+			//cameraY = screenY/2 - y;
 		}
 	}
 }

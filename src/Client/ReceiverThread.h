@@ -8,9 +8,9 @@
 class ReceiverThread : public Thread {
 private:
 	Queue<ServerSnapshot*>& recvQueue;
-	//EventProtocol& protocol;
+	Protocol& protocol;
 public:
-	ReceiverThread(Queue<ServerSnapshot*>& recvQueue/*, protocol*/);
+	ReceiverThread(Queue<ServerSnapshot*>& recvQueue, Protocol& protocol);
 	virtual void run() override;
 };
 

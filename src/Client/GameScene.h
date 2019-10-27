@@ -8,14 +8,19 @@
 #include "TextureCreator.h"
 #include "BaseScene.h"
 #include <map>
+#include <string>
 #include "../Common/Converter.h"
 #include "../Common/ServerSnapshot.h"
 #include "../Common/Queue.h"
+#include "../Common/BlockingQueue.h"
 
 class GameScene : public BaseScene {
 private:
 	SdlWindow& window;
 	bool isDone;
+
+	Queue<ServerSnapshot*>& recvQueue;
+	BlockingQueue& sendQueue;
 
 	SdlTexture backgroundTex;
 	BackgroundView background;
@@ -25,13 +30,12 @@ private:
 	Converter conv;
 	int cameraX, cameraY;
 
-	Queue<ServerSnapshot*>& recvQueue;
-
 	//Mock
 	int myID;
 
 public:
-	GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue);
+	GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
+		BlockingQueue& sendQueue);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;

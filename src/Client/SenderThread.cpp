@@ -1,15 +1,13 @@
 #include "SenderThread.h"
 
-SenderThread::SenderThread(Queue<std::string>& sendQueue/*, protocol*/) : 
-	sendQueue(sendQueue)
-	/*protocol(protocol)*/ {}
+SenderThread::SenderThread(BlockingQueue& sendQueue, Protocol& protocol) : 
+	sendQueue(sendQueue),
+	protocol(protocol) {}
 
 void SenderThread::run() {
-	//TODO: cola bloqueante
-
-	/*while(true) {
-		std::string command;
-		sendQueue.get(command);
+	std::string command;
+	while(true) {
+		sendQueue.pop(command);
 		protocol.send(command);
-	}*/
+	}
 }
