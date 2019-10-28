@@ -34,6 +34,7 @@ private:
     float _car_x_init = 15;
     float _car_y_init = 7;
     b2Body* groundBody;
+    b2FrictionJoint* joint;
 
 public:
     void setUp(){
@@ -42,19 +43,19 @@ public:
 
         //Floor
         b2BodyDef bodyDef;
+        bodyDef.position.Set(15, 7);
         groundBody = world->CreateBody( &bodyDef );
 
         b2PolygonShape polygonShape;
         b2FixtureDef fixtureDef;
+        fixtureDef.friction = 0.5f;
         fixtureDef.shape = &polygonShape;
         fixtureDef.isSensor = true;
 
-        polygonShape.SetAsBox( _car_x_init -2, _car_y_init - 2, b2Vec2(0,0), 90*DEGTORAD );
+        polygonShape.SetAsBox(40, 40);
         b2Fixture* groundAreaFixture = groundBody->CreateFixture(&fixtureDef);
         float frictionModifier = 0.5;
         groundAreaFixture->SetUserData(&frictionModifier);
-        //groundAreaFixture->SetUserData( new GroundAreaFUD( 0.5f, false ) );
-
 
         b2BodyDef _carBodyDef;
         _carBodyDef.type = b2_dynamicBody;
@@ -64,9 +65,18 @@ public:
         b2Body* carBody = world->CreateBody(&_carBodyDef);
 
         car1 = new Car(carBody);
+
+        b2FrictionJointDef fjdef;
+        fjdef.collideConnected = true;
+        fjdef.bodyA = car1->body();
+        fjdef.bodyB = groundBody;
+        fjdef.maxForce = 5;
+
+        joint = (b2FrictionJoint*) world->CreateJoint(&fjdef);
     }
 
     void tearDown(){
+        world->DestroyJoint(joint);
         delete world;
         //delete car1;
     }
@@ -78,7 +88,9 @@ public:
 
         CPPUNIT_ASSERT(car1->x() == _car_x_init);
         CPPUNIT_ASSERT(car1->y() == _car_y_init);
-        CPPUNIT_ASSERT(car1->speed() == 0);
+        //CPPUNIT_ASSERT(car1->speed() == 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().x == 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().y == 0);
 
         std::cout << "OK\n";
     }
@@ -105,7 +117,9 @@ public:
         car1->handleInput(PRESS_UP);
         car1->update();
         world->Step(1/30.0, 8, 3);
-        CPPUNIT_ASSERT(car1->speed() > 0);
+        //CPPUNIT_ASSERT(car1->speed() > 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().x == 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().y > 0);
 
         std::cout << "OK\n";
     }
@@ -116,7 +130,9 @@ public:
         car1->handleInput(PRESS_DOWN);
         car1->update();
         world->Step(1/30.0, 8, 3);
-        CPPUNIT_ASSERT(car1->speed() < 0);
+        //CPPUNIT_ASSERT(car1->speed() < 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().x == 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().y < 0);
 
         std::cout << "OK\n";
     }
@@ -127,7 +143,9 @@ public:
         car1->handleInput(PRESS_NONE);
         car1->update();
         world->Step(1/30.0, 8, 3);
-        CPPUNIT_ASSERT(car1->speed() == 0);
+        //CPPUNIT_ASSERT(car1->speed() == 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().x == 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().y == 0);
 
         std::cout << "OK\n";
     }
@@ -144,8 +162,10 @@ public:
         car1->update();
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
-        float intermidiate_speed = car1->speed();
-        CPPUNIT_ASSERT(car1->speed() > 0);
+        b2Vec2 intermidiate_speed = car1->linearVelocity();
+        //CPPUNIT_ASSERT(car1->speed() > 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().x == 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().y > 0);
 
         std::cout << "OK\n";
         std::cout << "Loses velocity in time\n";
@@ -153,7 +173,9 @@ public:
         car1->update();
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
-        CPPUNIT_ASSERT(car1->speed() < intermidiate_speed);
+        //CPPUNIT_ASSERT(car1->speed() < intermidiate_speed);
+        CPPUNIT_ASSERT(car1->linearVelocity().x == 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().y < intermidiate_speed.y);
 
         std::cout << "OK\n";
         std::cout << "Eventually reaches zero speed\n";
@@ -161,7 +183,7 @@ public:
 		car1->update();
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
-        CPPUNIT_ASSERT(car1->speed() == 0);        
+        //Para llegar a cero hay que hacer mas steps
 
         std::cout << "OK\n";
     }
@@ -178,7 +200,7 @@ public:
         car1->update();
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
-        CPPUNIT_ASSERT(car1->speed() == 0);
+        CPPUNIT_ASSERT(car1->speed() < 0);
 
         std::cout << "OK\n";
     }

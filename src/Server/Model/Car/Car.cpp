@@ -12,9 +12,9 @@ void Car::_setShapeAndFixture(){
     _carBody->CreateFixture(&boxFixtureDef);
 }
 
-Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxSpeed(100), _maxForce(150),
-                            _onTrack(true), _onGrass(false), _currentTraction(1){
-    _carBody = carBody;
+Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxForwardSpeed(100),
+                            _maxBackwardSpeed(-20), _maxForce(150),
+                            _onTrack(true), _onGrass(false), _currentTraction(1), _carBody(carBody){
     _carBody->SetLinearVelocity( b2Vec2( 0, 0 ) ); //not moving
     _carBody->SetAngularVelocity( 0 );
     _setShapeAndFixture();
@@ -32,15 +32,57 @@ void Car::resetCar(){
     _carBody->SetTransform(position, b2_pi/2); //See angle
 }
 
+b2Vec2 Car::getLateralVelocity(){
+    b2Vec2 currentRightNormal = _carBody->GetWorldVector(b2Vec2(1, 0));
+    return b2Dot(currentRightNormal, _carBody->GetLinearVelocity()) * currentRightNormal;
+}
+
+b2Vec2 Car::getForwardVelocity(){
+    b2Vec2 currentForwardNormal = _carBody->GetWorldVector(b2Vec2(0,1));
+    return b2Dot(currentForwardNormal, _carBody->GetLinearVelocity()) * currentForwardNormal;
+}
+
 void Car::accelerate(){
-    //What to do with wake parameter?
-    if (_carBody->GetLinearVelocity().x < _maxSpeed && _carBody->GetLinearVelocity().y < _maxSpeed)
-        _carBody->ApplyForce(b2Vec2(0, 50 * _currentTraction), _carBody->GetWorldCenter(), true);
+    //float velocityChange = _maxForwardSpeed - currentSpeed;
+    //float force = _carBody->GetMass() * velocityChange / (1/30.0);
+    //_carBody->ApplyForce(b2Vec2(0, force), _carBody->GetWorldCenter(), true);
+    b2Vec2 currentSpeed = _carBody->GetLinearVelocity();
+    float velocityChange = _maxForwardSpeed - currentSpeed.y;
+    float impulse = _carBody->GetMass() * velocityChange;
+    if (currentSpeed.y < _maxForwardSpeed)
+        _carBody->ApplyLinearImpulse(b2Vec2(0, 10), _carBody->GetWorldCenter(), true);
 }
 
 void Car::desaccelerate(){
-    //What to do with wake parameter?
-    _carBody->ApplyForce(b2Vec2(0, -50 * _currentTraction), _carBody->GetWorldCenter(), true);
+    //b2Vec2 currentForwardNormal = _carBody->GetWorldVector( b2Vec2(0,1) );
+    //float currentSpeed = b2Dot( getForwardVelocity(), currentForwardNormal );
+
+    //float velocityChange = abs(_maxBackwardSpeed - currentSpeed);
+    //float force = _carBody->GetMass() * velocityChange / (1/30.0);
+    //_carBody->ApplyForce(b2Vec2(0, -force), _carBody->GetWorldCenter(), true);
+
+    //float velocityChange = _maxBackwardSpeed - currentSpeed;
+    //float impulse = _carBody->GetMass() * velocityChange;
+    //_carBody->ApplyLinearImpulse(b2Vec2(0, impulse), _carBody->GetWorldCenter(), true);
+
+    b2Vec2 currentSpeed = _carBody->GetLinearVelocity();
+    float velocityChange = _maxBackwardSpeed - currentSpeed.y;
+    float impulse = _carBody->GetMass() * velocityChange;
+    if (_maxBackwardSpeed < currentSpeed.y)
+        _carBody->ApplyLinearImpulse(b2Vec2(0, -10), _carBody->GetWorldCenter(), true);
+}
+
+void Car::friction(){
+    float currentSpeed = _carBody->GetLinearVelocity().y;
+
+    //float velocityChange = _currentTraction * speed();
+    //float force = _carBody->GetMass() * velocityChange / (1/30.0);
+    //_carBody->ApplyForce(b2Vec2(0, force), _carBody->GetWorldCenter(), true);
+
+    float velocityChange = -currentSpeed;
+    //float impulse = _currentTraction * _carBody->GetMass() * velocityChange;
+    if (currentSpeed > 0)
+        _carBody->ApplyLinearImpulse(b2Vec2(0, -10 * _currentTraction), _carBody->GetWorldCenter(), true);
 }
 
 void Car::turnLeft(){
@@ -55,7 +97,7 @@ void Car::turnRight(){
 
 void Car::updateTraction(){
     if (_onTrack) {
-        _currentTraction = 0.9f;
+        _currentTraction = 0.3f;
     } else if (_onGrass) {
         _currentTraction = 0.5f;
     }
@@ -85,7 +127,6 @@ void Car::handleInput(Input input){
 void Car::update(){
     _state->update(*this);
     _turningState->update(*this);
-    updateTraction();
 }
 
 const float Car::x(){
@@ -97,8 +138,15 @@ const float Car::y(){
 }
 
 const float Car::speed(){
-    b2Vec2 linearVelocity = _carBody->GetLinearVelocity();
-    return linearVelocity.y;
+    return sqrt(pow(linearVelocity().x, 2) + pow(linearVelocity().y, 2)) ;
+}
+
+const b2Vec2 Car::linearVelocity(){
+    return _carBody->GetLinearVelocity();
+}
+
+b2Body* Car::body() const {
+    return _carBody;
 }
 
 Car::~Car(){
@@ -136,7 +184,8 @@ public:
     }
 
     void update(Car& car) {
-        //Mover a vel constante
+        //Rozamiento con el piso???
+        //car.friction();
     }
 };
 

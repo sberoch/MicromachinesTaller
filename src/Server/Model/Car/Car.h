@@ -13,7 +13,8 @@ class CarMovingState;
 
 class Car {
 private:
-    float _maxSpeed;
+    float _maxForwardSpeed;
+    float _maxBackwardSpeed;
     float _maxForce;
 
     size_t id;
@@ -35,6 +36,7 @@ public:
 
     void accelerate();
     void desaccelerate();
+    void friction();
     void turnLeft();
     void turnRight();
 
@@ -42,6 +44,10 @@ public:
     void startContact();
     void endContact();
     void updateTraction();
+    void updateFriction();
+
+    b2Vec2 getLateralVelocity();
+    b2Vec2 getForwardVelocity();
 
     void resetCar();
 
@@ -51,6 +57,8 @@ public:
     const float x();
     const float y();
     const float speed();
+    const b2Vec2 linearVelocity();
+    b2Body* body() const ;
 
     ~Car();
 };
