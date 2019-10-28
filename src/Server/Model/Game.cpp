@@ -6,4 +6,8 @@ Game::Game(size_t n_of_players) : _world(n_of_players), _cars() {
     }
 }
 
+void Game::update(){
+    _world.step(8, 3);
+}
+
 Game::~Game(){}

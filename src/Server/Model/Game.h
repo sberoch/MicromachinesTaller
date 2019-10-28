@@ -12,7 +12,7 @@ private:
 
 public:
     Game(size_t n_of_players);
-    
+    void update();
     ~Game();
 };
 
