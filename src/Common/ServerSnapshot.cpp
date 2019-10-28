@@ -40,16 +40,18 @@ ServerSnapshot::ServerSnapshot(Protocol &protocol) {
         float x = toFloat(actualAttributes[0]);
         float y = toFloat(actualAttributes[1]);
         int angle = toInt(actualAttributes[2]);
-        int id = toInt(actualAttributes[3]);
-        this->setCar(x, y, angle, id);
+        int health = toInt(actualAttributes[3]);
+        int id = toInt(actualAttributes[4]);
+        this->setCar(x, y, angle, health, id);
     }
 }
 
-void ServerSnapshot::setCar(float x, float y, int angle, int id) {
+void ServerSnapshot::setCar(float x, float y, int angle, int health, int id) {
 	Car car;
 	car.x = x;
 	car.y = y;
 	car.angle = angle;
+    car.health = health;
 	car.id = id;
 	carList.push_back(car);
 }
@@ -65,6 +67,7 @@ void ServerSnapshot::send(Protocol& protocol){
         finalMessage.append(toString(car.x) + ' ');
         finalMessage.append(toString(car.y) + ' ');
         finalMessage.append(toString(car.angle) + ' ');
+        finalMessage.append(toString(car.health) + ' ');
         finalMessage.append(toString(car.id));
     }
     protocol.send(finalMessage);

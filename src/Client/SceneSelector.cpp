@@ -42,7 +42,6 @@ void SceneSelector::run() {
 	    //Check exec time and sleep
 	    std::clock_t end = clock();
 	    double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
-	    std::cout << 25 - execTime << std::endl;
 	    if (execTime < 25) this->sleep(25 - execTime);
 	}
 }
