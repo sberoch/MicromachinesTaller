@@ -11,10 +11,9 @@ HealthBarFrontView::HealthBarFrontView(const SdlTexture& tex) {
 }
 
 void HealthBarFrontView::drawAt(int x, int y) {
-	//Not affected by camera
 	Area srcArea = clips.front();
-	Area destArea(initialX - horizontalScale/2 + (100-health)/20,
-				  initialY - verticalScale/2,
+	Area destArea(x - horizontalScale/2 + (100-health)/20,
+				  y - verticalScale/2,
 				  3*health,
 				  verticalScale);
 	texture.render(srcArea, destArea);

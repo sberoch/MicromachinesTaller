@@ -8,7 +8,6 @@
 
 using json = nlohmann::json;
 
-//TODO: health bar in fixed position relative to screen size
 //TODO: class GameObjects
 
 GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
@@ -17,13 +16,21 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 	isDone(false),
 	recvQueue(recvQueue),
 	sendQueue(sendQueue),	
+
 	backgroundTex("background.png", window),
 	background(backgroundTex),
+	healthBarBackTex("health_background.png", window),
+	healthBackground(healthBarBackTex),
+	healthBarFrontTex("health_bar.png", window),
+	healthBar(healthBarFrontTex),
+
 	handler(window, sendQueue),
 	creator(window),
 	conv(50), 
 	cameraX(0), 
-	cameraY(0) {
+	cameraY(0),
+	xScreen(0),
+	yScreen(0) {
 		window.fill();
 
 		//Mock
@@ -36,6 +43,8 @@ bool GameScene::done() {
 }
 
 void GameScene::update() {
+	window.getWindowSize(&xScreen, &yScreen);
+
 	ServerSnapshot* snap;
 	if (recvQueue.get(snap)) {
 		updateCars(snap->getCars());
@@ -51,15 +60,10 @@ void GameScene::updateCars(CarList cars) {
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
 		if (car.id == myID) {
-			int screenX, screenY;
-			window.getWindowSize(&screenX, &screenY);
-			cameraX = screenX/2 - conv.blockToPixel(car.x);
-			cameraY = screenY/2 - conv.blockToPixel(car.y);
+			cameraX = xScreen/2 - conv.blockToPixel(car.x);
+			cameraY = yScreen/2 - conv.blockToPixel(car.y);
+			healthBar.resize(car.health);
 		}
-
-		//Mock
-		ObjectViewPtr healthBar = gameObjects.at(14);
-		healthBar->resize(car.health);
 	}	
 }
 
@@ -73,6 +77,7 @@ void GameScene::draw() {
 	for (auto& it : gameObjects) {
 		it.second->drawAt(cameraX, cameraY);
 	}
+	drawDisplayObjects();
 	window.render();
 }
 
@@ -87,31 +92,28 @@ int GameScene::handle() {
 
 void GameScene::loadStage() {
 	//TODO: this is sent by server
-	int id, x, y, angle;
+	int type, x, y, angle;
 	std::ifstream i("scene.json");
 	json j; i >> j;
 
 	json objects = j["objects"];
 	for (auto& obj : objects) {
-		id = obj["type"].get<int>();
+		type = obj["type"].get<int>();
 		x = conv.blockToPixel(obj["x"].get<int>());
 		y = conv.blockToPixel(obj["y"].get<int>());
 		angle = obj["angle"].get<int>();
-		ObjectViewPtr ov = creator.create(id, x, y, angle);
+		ObjectViewPtr ov = creator.create(type, x, y, angle);
 		gameObjects.insert(std::make_pair(ov->getId(), ov));
 		if (ov->getId() == myID) {
 			//Center camera in car
-			int screenX, screenY;
-			window.getWindowSize(&screenX, &screenY);
-			cameraX = screenX/2 - x;
-			cameraY = screenY/2 - y;
+			window.getWindowSize(&xScreen, &yScreen);
+			cameraX = xScreen/2 - x;
+			cameraY = yScreen/2 - y;
 		}
 	}
 }
 
-void GameScene::drawBackground() {
-	int xScreen, yScreen; 
-	window.getWindowSize(&xScreen, &yScreen); //Fullscreen
+void GameScene::drawBackground() { 
 	background.setDims(xScreen, yScreen);
 	for(int i = 0; i < 5; ++i) {
 		for(int j = 0; j < 3; ++j) {
@@ -120,4 +122,10 @@ void GameScene::drawBackground() {
 				-yScreen/2 + yScreen*j + cameraY);
 		}
 	}
+}
+
+void GameScene::drawDisplayObjects() {
+	//HealthBar
+	healthBackground.drawAt(xScreen*(0.8), yScreen*(0.9));
+	healthBar.drawAt(xScreen*(0.8), yScreen*(0.9));
 }

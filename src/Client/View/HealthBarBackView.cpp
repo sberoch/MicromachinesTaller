@@ -9,10 +9,9 @@ HealthBarBackView::HealthBarBackView(const SdlTexture& tex) {
 }
 
 void HealthBarBackView::drawAt(int x, int y) {
-	//Not affected by camera
 	Area srcArea = clips.front();
-	Area destArea(initialX - horizontalScale/2,
-				  initialY - verticalScale/2,
+	Area destArea(x - horizontalScale/2,
+				  y - verticalScale/2,
 				  horizontalScale, verticalScale);
 	texture.render(srcArea, destArea);
 }
