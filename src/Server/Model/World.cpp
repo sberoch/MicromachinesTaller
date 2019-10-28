@@ -1,4 +1,5 @@
 #include <fstream>
+#include <src/Server/Model/Car/Tire.h>
 #include "World.h"
 
 #include "../json/json.hpp"
@@ -32,6 +33,7 @@ World::World(size_t n_of_cars) : _n_of_cars(n_of_cars){
     _world = new b2World(gravity);
 
     _carBodyDef.type = b2_dynamicBody;
+    _carBodyDef.linearDamping = 0.1f;
 
     _contactListener = new ContactListener(_world);
     _world->SetContactListener(_contactListener);
@@ -76,4 +78,37 @@ World::~World(){
     }
 
     delete _world;
+}
+
+
+void World::BeginContact(b2Contact* contact){
+    handleContact(contact, true);
+}
+
+void World::EndContact(b2Contact* contact){
+    handleContact(contact, false);
+}
+
+void World::_tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaFixture, bool began){
+    Tire* tire = (Tire*)tireFixture->GetBody()->GetUserData();
+    GroundAreaFUD* gaFud = (GroundAreaFUD*)groundAreaFixture->GetUserData();
+    if (began)
+        tire->addGroundArea(gaFud);
+    else
+        tire->removeGroundArea(gaFud);
+}
+
+void World::handleContact(b2Contact* contact, bool began){
+    b2Fixture* a = contact->GetFixtureA();
+    b2Fixture* b = contact->GetFixtureB();
+    FixtureUserData* fudA = (FixtureUserData*)a->GetUserData();
+    FixtureUserData* fudB = (FixtureUserData*)b->GetUserData();
+
+    if (!fudA || !fudB)
+        return;
+
+    if (fudA->getType() == FUD_CAR_TIRE || fudB->getType() == FUD_GROUND_AREA)
+        _tire_vs_groundArea(a, b, began);
+    else if (fudA->getType() == FUD_GROUND_AREA || fudB->getType() == FUD_CAR_TIRE)
+        _tire_vs_groundArea(b, a, began);
 }
