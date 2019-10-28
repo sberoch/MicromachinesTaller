@@ -20,7 +20,7 @@ public:
 	virtual void setState(int state);
 	virtual void move(int x, int y);
 	virtual void setRotation(int angle);
-	virtual void flip(int flip);
+	virtual void resize(int newSize);
 	void setInitialPos(int x, int y);
 	void setId(int id);
 	int getId();

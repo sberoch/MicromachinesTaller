@@ -10,6 +10,8 @@
 #include "View/CarView.h"
 #include "View/OilView.h"
 #include "View/MudView.h"
+#include "View/HealthBarBackView.h"
+#include "View/HealthBarFrontView.h"
 
 TextureCreator::TextureCreator(const SdlWindow& window) :
 	straightTrackTex("straight_track.png", window),
@@ -38,7 +40,7 @@ ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
 		case ID_CAR_3: ov.reset(new CarView(car3Tex, angle)); break;
 		case ID_CAR_4: ov.reset(new CarView(car4Tex, angle)); break;
 		case ID_OIL: ov.reset(new OilView(oilTex, angle)); break;
-		case ID_MUD: ov.reset(new MudView(mudTex, angle)); break; 
+		case ID_MUD: ov.reset(new MudView(mudTex, angle)); break;
 		default: throw std::runtime_error("Texture Creator: Wrong view_id");
 	}
 	++idCounter;

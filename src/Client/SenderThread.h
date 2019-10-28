@@ -3,14 +3,16 @@
 
 #include "../Common/Thread.h"
 #include "../Common/Queue.h"
+#include "../Common/BlockingQueue.h"
+#include "../Common/Protocol.h"
 #include <string>
 
 class SenderThread : public Thread {
 private:
-	Queue<std::string>& sendQueue;
-	//EventProtocol& protocol;
+	BlockingQueue& sendQueue;
+	Protocol& protocol;
 public:
-	SenderThread(Queue<std::string>& sendQueue/*, protocol*/);
+	SenderThread(BlockingQueue& sendQueue, Protocol& protocol);
 	virtual void run() override;
 };
 

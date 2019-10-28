@@ -6,6 +6,8 @@
 #include "ReceiverThread.h"
 #include "SenderThread.h"
 #include "../Common/Queue.h"
+#include "../Common/BlockingQueue.h"
+#include "../Common/Protocol.h"
 #include <map>
 
 class SceneSelector {
@@ -13,10 +15,10 @@ private:
 	SdlWindow window;
 	std::map<int, BaseScene*> scenes;
 
-	//Protocol
+	Protocol protocol;
 
 	Queue<ServerSnapshot*> recvQueue;
-	Queue<std::string> sendQueue;
+	BlockingQueue sendQueue;
 
 	ReceiverThread receiver;
 	SenderThread sender;
@@ -29,6 +31,9 @@ public:
 		const std::string& host, const std::string& port);
 	void run();
 	~SceneSelector();
+
+private:
+	void sleep(int milliseconds);
 };
 
 #endif // SCENE_SELECTOR_H

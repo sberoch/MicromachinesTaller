@@ -13,8 +13,8 @@ void ObjectView::move(int x, int y) {
 	throw std::runtime_error("Moving wrong object type");
 }
 
-void ObjectView::flip(int flip) {
-	throw std::runtime_error("Flipping wrong object type");
+void ObjectView::resize(int newSize) {
+	throw std::runtime_error("Resizing wrong object type");
 }
 
 void ObjectView::setRotation(int angulo) {

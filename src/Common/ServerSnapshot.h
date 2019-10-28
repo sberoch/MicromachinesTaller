@@ -6,11 +6,11 @@
 #include <string>
 #include "Protocol.h"
 
-
 struct Car {
 	float x;
 	float y;
 	int angle;
+	int health;
 	int id;
 };
 
@@ -22,10 +22,11 @@ class ServerSnapshot {
 private:
 	CarList carList;
 public:
+	ServerSnapshot() = default;
     //Hace un receive interno.
     explicit ServerSnapshot(Protocol& protocol);
 
-	void setCar(float x, float y, int angle, int id);
+	void setCar(float x, float y, int angle, int health, int id);
 
 	const CarList& getCars();
 

@@ -1,5 +1,6 @@
 #include "Queue.h"
 #include "ServerSnapshot.h"
+#include <string>
 
 template<class T>
 void Queue<T>::put(T elem) {
@@ -18,3 +19,4 @@ bool Queue<T>::get(T& elem) {
 }
 
 template class Queue<ServerSnapshot*>;
+template class Queue<std::string>;
