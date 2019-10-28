@@ -1,5 +1,4 @@
 #include <src/Server/Model/Input.h>
-#include <src/Server/Model/Car/Turning/NotTurningState.h>
 #include "Car.h"
 
 void Car::_setShapeAndFixture(){
@@ -20,7 +19,7 @@ Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxFo
     _setShapeAndFixture();
 
     _state = CarMovingState::makeMovingState(PRESS_NONE, PRESS_NONE);
-    _turningState = new NotTurningState();
+    _turningState = CarTurningState::makeTurningState(PRESS_NONE, PRESS_NONE);
 
     _carBody->SetUserData(this);
 }
@@ -153,6 +152,7 @@ Car::~Car(){
     delete _state;
 }
 
+//////////////////////// CAR MOVING STATE ///////////////////////////
 
 class NegAcceleratingState : public CarMovingState {
 public:
@@ -204,6 +204,63 @@ CarMovingState* CarMovingState::makeMovingState(Input currentInput, Input prevIn
         return new WithoutAcceleratingState();
     } else if (prevInput == PRESS_NONE && currentInput == PRESS_DOWN) {
         return new NegAcceleratingState();
+    }
+
+    return nullptr;
+}
+
+//////////////////////// CAR TURNING STATE ///////////////////////////
+
+class NotTurningState : public CarTurningState{
+public:
+    CarTurningState* handleInput(Car& car, Input input){
+        return makeTurningState(PRESS_NONE, input);
+    }
+
+    void update(Car& car){
+        //Continue in straight direction
+    }
+};
+
+class TurningLeftState : public CarTurningState {
+public:
+    CarTurningState* handleInput(Car& car, Input input){
+        return makeTurningState(PRESS_LEFT, input);
+    }
+
+    void update(Car& car){
+        //Turn left
+        car.turnLeft();
+    }
+};
+
+class TurningRightState : public CarTurningState {
+public:
+    CarTurningState* handleInput(Car& car, Input input){
+        return makeTurningState(PRESS_RIGHT, input);
+    }
+
+    void update(Car& car){
+        //Turn right
+        car.turnRight();
+    }
+};
+
+CarTurningState* CarTurningState::makeTurningState(Input prevInput, Input currentInput){
+    if (prevInput == PRESS_NONE && currentInput == PRESS_NONE){
+        return new NotTurningState();
+    } else if (prevInput == PRESS_NONE && currentInput == PRESS_RIGHT) {
+        return new TurningRightState();
+    } else if(prevInput == PRESS_NONE && currentInput == PRESS_LEFT) {
+        return new TurningLeftState();
+    } else if (prevInput == PRESS_LEFT && currentInput == PRESS_RIGHT) {
+        return new TurningRightState();
+    } else if (prevInput == PRESS_LEFT && currentInput == RELEASE_LEFT) {
+        return new NotTurningState();
+    } else if (prevInput == PRESS_RIGHT && currentInput == RELEASE_RIGHT) {
+        return new NotTurningState;
+    } else if (prevInput == PRESS_RIGHT && currentInput == PRESS_LEFT) {
+        return new TurningLeftState();
     }
 
     return nullptr;

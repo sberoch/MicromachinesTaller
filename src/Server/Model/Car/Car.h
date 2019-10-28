@@ -58,7 +58,7 @@ public:
     const float y();
     const float speed();
     const b2Vec2 linearVelocity();
-    b2Body* body() const ;
+    b2Body* body() const;
 
     ~Car();
 };
@@ -71,9 +71,12 @@ public:
     virtual ~CarMovingState(){}
 };
 
-
-
-
-
+class CarTurningState {
+public:
+    static CarTurningState* makeTurningState(Input prevInput, Input currentInput);
+    virtual CarTurningState* handleInput(Car& car, Input input) = 0;
+    virtual void update(Car& car) = 0;
+    virtual ~CarTurningState(){}
+};
 
 #endif //MICROMACHINES_CAR_H
