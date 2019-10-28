@@ -58,6 +58,7 @@ public:
     const float x();
     const float y();
     const float angle();
+    const float health();
     const float speed();
     const b2Vec2 linearVelocity();
     b2Body* body() const;

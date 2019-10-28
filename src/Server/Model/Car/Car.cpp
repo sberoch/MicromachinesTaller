@@ -143,6 +143,10 @@ const float Car::angle(){
     return _carBody->GetAngle();
 }
 
+const float Car::health(){
+    return _health;
+}
+
 const float Car::speed(){
     return sqrt(pow(linearVelocity().x, 2) + pow(linearVelocity().y, 2)) ;
 }
