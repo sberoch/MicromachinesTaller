@@ -3,7 +3,7 @@
 
 #include "SdlWindow.h"
 #include "SdlTexture.h"
-#include "BackgroundView.h"
+#include "View/BackgroundView.h"
 #include "InputHandler.h"
 #include "TextureCreator.h"
 #include "BaseScene.h"

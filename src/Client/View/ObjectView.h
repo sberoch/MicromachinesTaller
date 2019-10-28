@@ -1,8 +1,8 @@
 #ifndef OBJECT_VIEW
 #define OBJECT_VIEW
 
-#include "Area.h"
-#include "SdlTexture.h"
+#include "../Area.h"
+#include "../SdlTexture.h"
 #include <vector>
 
 class ObjectView {
