@@ -1,6 +1,10 @@
 #include "SceneSelector.h"
 #include "../Common/Constants.h"
 #include "GameScene.h"
+#include <iostream>
+#include <ctime>
+#include <thread>
+#include <chrono>
 
 #define MAX_COMMANDS_ENQUEUED 100
 
@@ -24,6 +28,8 @@ void SceneSelector::run() {
 	BaseScene* scene;
 	bool done = false;
 	while(!done) {
+		std::clock_t begin = clock();
+
 	    scene = scenes.at(currentScene);
 	    scene->update();
 	    scene->draw();
@@ -32,7 +38,17 @@ void SceneSelector::run() {
 	    	done = true;
 	    	protocol.forceShutDown(); //No estoy seguro de que vaya aca
 	    }
+
+	    //Check exec time and sleep
+	    std::clock_t end = clock();
+	    double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
+	    std::cout << 25 - execTime << std::endl;
+	    if (execTime < 25) this->sleep(25 - execTime);
 	}
+}
+
+void SceneSelector::sleep(int milliseconds) {
+	std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
 }
 
 SceneSelector::~SceneSelector() {

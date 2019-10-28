@@ -1,3 +1,0 @@
-/home/sberoch/MicromachinesTaller/src/Test/CMakeFiles/rebuild_cache.dir
-/home/sberoch/MicromachinesTaller/src/Test/CMakeFiles/serverMock.dir
-/home/sberoch/MicromachinesTaller/src/Test/CMakeFiles/edit_cache.dir

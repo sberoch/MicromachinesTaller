@@ -1,7 +1,7 @@
 build/
 .vscode/
 *.pdf
-
+src/Test/build/
 .idea
 cmake-build-debug
 

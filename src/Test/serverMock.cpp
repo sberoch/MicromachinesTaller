@@ -29,13 +29,13 @@ int main(int argc, char const *argv[]) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		if (cmd == "a") {
 			std::cout << "a\n";
-			angle -= 10;
+			x -= 0.2;
 		} else if (cmd == "d") {
 			std::cout << "d\n";
-			angle += 10;
+			x += 0.2;
 		} else if (cmd == "w") {
 			std::cout << "w\n";
-			y -= 0.1;
+			y -= 0.2;
 		}
 		snap.setCar(x, y, angle, id);
 		snap.send(protocol);

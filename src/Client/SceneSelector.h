@@ -31,6 +31,9 @@ public:
 		const std::string& host, const std::string& port);
 	void run();
 	~SceneSelector();
+
+private:
+	void sleep(int milliseconds);
 };
 
 #endif // SCENE_SELECTOR_H

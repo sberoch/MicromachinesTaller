@@ -1,10 +1,7 @@
 #include "GameScene.h"
 #include "../Common/json.hpp"
 #include "../Common/Constants.h"
-
 #include <SDL2/SDL.h>
-#include <thread>
-#include <chrono>
 #include <iostream>
 #include <fstream>
 
@@ -20,7 +17,9 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 	background(backgroundTex),
 	handler(window, sendQueue),
 	creator(window),
-	conv(50) {
+	conv(50), 
+	cameraX(0), 
+	cameraY(0) {
 		window.fill();
 
 		//Mock
@@ -47,13 +46,11 @@ void GameScene::updateCars(CarList cars) {
 		carView->setRotation(car.angle);
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
-		std::cout << "\nx: " << conv.blockToPixel(car.x);
-		std::cout << "\ny: " << conv.blockToPixel(car.x);
-		std::cout << "\nangle: " << car.angle;
-		std::cout << "\nid: " << car.id;
 		if (car.id == myID) {
-			//cameraX = conv.blockToPixel(car.x);
-			//cameraY = conv.blockToPixel(car.y);
+			int screenX, screenY;
+			window.getWindowSize(&screenX, &screenY);
+			cameraX = screenX/2 - conv.blockToPixel(car.x);
+			cameraY = screenY/2 - conv.blockToPixel(car.y);
 		}
 	}	
 }
@@ -64,11 +61,9 @@ void GameScene::updateGameEvents() {
 
 void GameScene::draw() {
 	window.fill();
-	std::this_thread::sleep_for(std::chrono::milliseconds(20));
 	drawBackground();
 	for (auto& it : gameObjects) {
-		//TODO: change this to support camera.
-		it.second->drawAt(0, 0);
+		it.second->drawAt(cameraX, cameraY);
 	}
 	window.render();
 }
@@ -83,6 +78,7 @@ int GameScene::handle() {
 }
 
 void GameScene::loadStage() {
+	//TODO: sent by server
 	int id, x, y, angle;
 	std::ifstream i("scene.json");
 	json j; i >> j;
@@ -97,10 +93,10 @@ void GameScene::loadStage() {
 		gameObjects.insert(std::make_pair(ov->getId(), ov));
 		if (ov->getId() == myID) {
 			//Center camera in car
-			//int screenX, screenY;
-			//window.getWindowSize(&screenX, &screenY);
-			//cameraX = screenX/2 - x;
-			//cameraY = screenY/2 - y;
+			int screenX, screenY;
+			window.getWindowSize(&screenX, &screenY);
+			cameraX = screenX/2 - x;
+			cameraY = screenY/2 - y;
 		}
 	}
 }
@@ -111,8 +107,9 @@ void GameScene::drawBackground() {
 	background.setDims(xScreen, yScreen);
 	for(int i = 0; i < 5; ++i) {
 		for(int j = 0; j < 3; ++j) {
-			background.drawAt(-xScreen*2 + xScreen*i,
-						-yScreen/2 + yScreen*j);
+			background.drawAt(
+				-xScreen*2 + xScreen*i + cameraX,
+				-yScreen/2 + yScreen*j + cameraY);
 		}
 	}
 }
