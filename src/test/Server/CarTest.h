@@ -19,8 +19,10 @@ CPPUNIT_TEST_SUITE( CarTest );
         CPPUNIT_TEST( testPressUpThenDownKey );
 
         CPPUNIT_TEST(testCarDoesntTurnIfItsNotMoving);
-        CPPUNIT_TEST(testPressNoneThenRight);
-        CPPUNIT_TEST(testPressNoneThenLeft);
+        CPPUNIT_TEST(testPressRightWhenMovingForward);
+        CPPUNIT_TEST(testPressLeftWhenMovingForward);
+        CPPUNIT_TEST(testPressRightWhenMovingBackwards);
+        CPPUNIT_TEST(testPressLeftWhenMovingBackwards);
 
         CPPUNIT_TEST( testTurnRightWithHighManeuverabilityAndHighGrab );
         CPPUNIT_TEST( testTurnRightWithHighManeuverabilityAndLowGrab );
@@ -224,7 +226,7 @@ public:
         std::cout << "OK\n";
     }
 
-    void testPressNoneThenRight(){
+    void testPressRightWhenMovingForward(){
         std::cout << "TEST press none then right when car is moving turns right: \n";
 
         car1->handleInput(PRESS_UP, PRESS_RIGHT);
@@ -238,7 +240,7 @@ public:
         std::cout << "OK\n";
     }
 
-    void testPressNoneThenLeft(){
+    void testPressLeftWhenMovingForward(){
         std::cout << "TEST press none then left when car is moving turns left: \n";
 
         car1->handleInput(PRESS_UP, PRESS_LEFT);
@@ -252,9 +254,37 @@ public:
         std::cout << "OK\n";
     }
 
+    void testPressRightWhenMovingBackwards(){
+        std::cout << "TEST press none then right when car is moving backwards turns right: \n";
+
+        car1->handleInput(PRESS_DOWN, PRESS_RIGHT);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+        float angle = car1->angle() * RADTODEG;
+        std::cout << angle << std::endl;
+        CPPUNIT_ASSERT(car1->angle() < 180 * DEGTORAD);
+
+        std::cout << "OK\n";
+    }
+
+    void testPressLeftWhenMovingBackwards(){
+        std::cout << "TEST press none then left when car is moving backwards turns left: \n";
+
+        car1->handleInput(PRESS_DOWN, PRESS_LEFT);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+        float angle = car1->angle() * RADTODEG;
+        std::cout << angle << std::endl;
+        CPPUNIT_ASSERT(car1->angle() > 180 * DEGTORAD);
+
+        std::cout << "OK\n";
+    }
+
     void testTurnRightWithLowManeuverabilityAndLowGrab(){
         std::cout << "TEST turn right with low maneuvrability and low grab: \n";
-
+        //low grab -> higher lineal dumping
 
         std::cout << "OK\n";
     }
