@@ -21,6 +21,7 @@ private:
     b2Body* _carBody;
     CarMovingState* _state;
     CarTurningState* _turningState;
+    bool _isMoving;
 
     int _health;
     float _previous_x, _previous_y;
@@ -51,11 +52,12 @@ public:
 
     void resetCar();
 
-    virtual void handleInput(Input input);
+    virtual void handleInput(Input movInput, Input turnInput);
     virtual void update();
 
     const float x();
     const float y();
+    const float angle();
     const float speed();
     const b2Vec2 linearVelocity();
     b2Body* body() const;

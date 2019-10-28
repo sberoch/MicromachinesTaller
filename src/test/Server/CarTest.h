@@ -2,6 +2,7 @@
 #define MICROMACHINES_TESTCAR_H
 
 #define DEGTORAD 0.0174532925199432957f
+#define RADTODEG 57.295779513082320876f
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -16,6 +17,10 @@ CPPUNIT_TEST_SUITE( CarTest );
         CPPUNIT_TEST( testPressNoKey );
         CPPUNIT_TEST( testPressUpThenNoKey );
         CPPUNIT_TEST( testPressUpThenDownKey );
+
+        CPPUNIT_TEST(testCarDoesntTurnIfItsNotMoving);
+        CPPUNIT_TEST(testPressNoneThenRight);
+        CPPUNIT_TEST(testPressNoneThenLeft);
 
         CPPUNIT_TEST( testTurnRightWithHighManeuverabilityAndHighGrab );
         CPPUNIT_TEST( testTurnRightWithHighManeuverabilityAndLowGrab );
@@ -114,7 +119,7 @@ public:
     void testPressUpKey(){
         std::cout << "TEST press up key: \n";
 
-        car1->handleInput(PRESS_UP);
+        car1->handleInput(PRESS_UP, PRESS_NONE);
         car1->update();
         world->Step(1/30.0, 8, 3);
         //CPPUNIT_ASSERT(car1->speed() > 0);
@@ -127,7 +132,7 @@ public:
     void testPressDownKey(){
         std::cout << "TEST press down key: \n";
 
-        car1->handleInput(PRESS_DOWN);
+        car1->handleInput(PRESS_DOWN, PRESS_NONE);
         car1->update();
         world->Step(1/30.0, 8, 3);
         //CPPUNIT_ASSERT(car1->speed() < 0);
@@ -140,7 +145,7 @@ public:
     void testPressNoKey(){
         std::cout << "TEST press no key: \n";
 
-        car1->handleInput(PRESS_NONE);
+        car1->handleInput(PRESS_NONE, PRESS_NONE);
         car1->update();
         world->Step(1/30.0, 8, 3);
         //CPPUNIT_ASSERT(car1->speed() == 0);
@@ -153,12 +158,12 @@ public:
     void testPressUpThenNoKey(){
         std::cout << "TEST press up and then no key: \n";
 
-        car1->handleInput(PRESS_UP);
+        car1->handleInput(PRESS_UP, PRESS_NONE);
         car1->update();
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
 
-        car1->handleInput(PRESS_NONE);
+        car1->handleInput(PRESS_NONE, PRESS_NONE);
         car1->update();
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
@@ -169,7 +174,7 @@ public:
 
         std::cout << "OK\n";
         std::cout << "Loses velocity in time\n";
-        car1->handleInput(PRESS_NONE);
+        car1->handleInput(PRESS_NONE, PRESS_NONE);
         car1->update();
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
@@ -179,7 +184,7 @@ public:
 
         std::cout << "OK\n";
         std::cout << "Eventually reaches zero speed\n";
-        car1->handleInput(PRESS_NONE);
+        car1->handleInput(PRESS_NONE, PRESS_NONE);
 		car1->update();
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
@@ -191,22 +196,65 @@ public:
     void testPressUpThenDownKey(){
         std::cout << "TEST press up and then down key: \n";
 
-        car1->handleInput(PRESS_UP);
+        car1->handleInput(PRESS_UP, PRESS_NONE);
         car1->update();
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
 
-        car1->handleInput(PRESS_DOWN);
+        car1->handleInput(PRESS_DOWN, PRESS_NONE);
         car1->update();
         world->Step(1/30.0, 8, 3);
         world->ClearForces();
-        CPPUNIT_ASSERT(car1->speed() < 0);
+        CPPUNIT_ASSERT(car1->linearVelocity().y < 0);
+
+        std::cout << "OK\n";
+    }
+
+    void testCarDoesntTurnIfItsNotMoving(){
+        std::cout << "TEST car doesn't turn if it's not moving \n";
+
+        car1->handleInput(PRESS_NONE, PRESS_RIGHT);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+
+        CPPUNIT_ASSERT(car1->speed() == 0);
+        CPPUNIT_ASSERT(car1->angle() == 180 * DEGTORAD);
+
+        std::cout << "OK\n";
+    }
+
+    void testPressNoneThenRight(){
+        std::cout << "TEST press none then right when car is moving turns right: \n";
+
+        car1->handleInput(PRESS_UP, PRESS_RIGHT);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+        float angle = car1->angle() * RADTODEG;
+        std::cout << angle << std::endl;
+        CPPUNIT_ASSERT(car1->angle() < 180 * DEGTORAD);
+
+        std::cout << "OK\n";
+    }
+
+    void testPressNoneThenLeft(){
+        std::cout << "TEST press none then left when car is moving turns left: \n";
+
+        car1->handleInput(PRESS_UP, PRESS_LEFT);
+        car1->update();
+        world->Step(1/30.0, 8, 3);
+        world->ClearForces();
+        float angle = car1->angle() * RADTODEG;
+        std::cout << angle << std::endl;
+        CPPUNIT_ASSERT(car1->angle() > 180 * DEGTORAD);
 
         std::cout << "OK\n";
     }
 
     void testTurnRightWithLowManeuverabilityAndLowGrab(){
         std::cout << "TEST turn right with low maneuvrability and low grab: \n";
+
 
         std::cout << "OK\n";
     }
@@ -254,6 +302,8 @@ public:
 
         std::cout << "OK\n";
     }
+
+    void testCrashesWithAnotherCarLosesHealth(){}
 
     void testExplodesWhenHealthIn0(){
         std::cout << "TEST explodes when health is 0: \n";

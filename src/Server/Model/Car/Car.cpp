@@ -12,7 +12,7 @@ void Car::_setShapeAndFixture(){
 }
 
 Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxForwardSpeed(100),
-                            _maxBackwardSpeed(-20), _maxForce(150),
+                            _maxBackwardSpeed(-20), _maxForce(150), _isMoving(false),
                             _onTrack(true), _onGrass(false), _currentTraction(1), _carBody(carBody){
     _carBody->SetLinearVelocity( b2Vec2( 0, 0 ) ); //not moving
     _carBody->SetAngularVelocity( 0 );
@@ -45,6 +45,7 @@ void Car::accelerate(){
     //float velocityChange = _maxForwardSpeed - currentSpeed;
     //float force = _carBody->GetMass() * velocityChange / (1/30.0);
     //_carBody->ApplyForce(b2Vec2(0, force), _carBody->GetWorldCenter(), true);
+    _isMoving = true;
     b2Vec2 currentSpeed = _carBody->GetLinearVelocity();
     float velocityChange = _maxForwardSpeed - currentSpeed.y;
     float impulse = _carBody->GetMass() * velocityChange;
@@ -63,7 +64,7 @@ void Car::desaccelerate(){
     //float velocityChange = _maxBackwardSpeed - currentSpeed;
     //float impulse = _carBody->GetMass() * velocityChange;
     //_carBody->ApplyLinearImpulse(b2Vec2(0, impulse), _carBody->GetWorldCenter(), true);
-
+    _isMoving = true;
     b2Vec2 currentSpeed = _carBody->GetLinearVelocity();
     float velocityChange = _maxBackwardSpeed - currentSpeed.y;
     float impulse = _carBody->GetMass() * velocityChange;
@@ -85,13 +86,15 @@ void Car::friction(){
 }
 
 void Car::turnLeft(){
-    //_carBody->ApplyTorque(-10, true);
-    _carBody->ApplyForce(b2Vec2(-50 * _currentTraction, 0), _carBody->GetWorldCenter(), true);
+    if (_isMoving)
+        //_carBody->ApplyLinearImpulse(b2Vec2(-2, 0), _carBody->GetWorldCenter(), true);
+        _carBody->ApplyAngularImpulse(2, true);
 }
 
 void Car::turnRight(){
-    //_carBody->ApplyTorque(10, true);
-    _carBody->ApplyForce(b2Vec2(50 * _currentTraction, 0), _carBody->GetWorldCenter(), true);
+    if (_isMoving)
+        //_carBody->ApplyLinearImpulse(b2Vec2(2, 0), _carBody->GetWorldCenter(), true);
+        _carBody->ApplyTorque(-2, true);
 }
 
 void Car::updateTraction(){
@@ -110,13 +113,13 @@ void Car::endContact(){
     _onTrack = false;
 }
 
-void Car::handleInput(Input input){
-    CarMovingState* state = _state->handleInput(*this, input);
+void Car::handleInput(Input movInput, Input turnInput){
+    CarMovingState* state = _state->handleInput(*this, movInput);
     if (state != NULL){
         delete _state;
         _state = state;
     }
-    CarTurningState* turningState = _turningState->handleInput(*this, input);
+    CarTurningState* turningState = _turningState->handleInput(*this, turnInput);
     if (turningState != NULL){
         delete _turningState;
         _turningState = turningState;
@@ -134,6 +137,10 @@ const float Car::x(){
 
 const float Car::y(){
     return _carBody->GetPosition().y;
+}
+
+const float Car::angle(){
+    return _carBody->GetAngle();
 }
 
 const float Car::speed(){
