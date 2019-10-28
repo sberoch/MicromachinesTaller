@@ -6,7 +6,15 @@ Game::Game(size_t n_of_players) : _world(n_of_players), _cars() {
     }
 }
 
-void Game::update(){
+std::vector<Car> Game::getCars(){
+    return _cars;
+}
+
+void Game::update(Input movInput, Input turnInput){
+    for (size_t i=0; i<_cars.size(); ++i){
+        _cars[i].handleInput(movInput, turnInput);
+        _cars[i].update();
+    }
     _world.step(8, 3);
 }
 

@@ -12,7 +12,9 @@ private:
 
 public:
     Game(size_t n_of_players);
-    void update();
+    void update(Input movInput, Input turnInput);
+
+    std::vector<Car> getCars();
     ~Game();
 };
 
