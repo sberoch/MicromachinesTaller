@@ -10,6 +10,8 @@
 #include "View/CarView.h"
 #include "View/OilView.h"
 #include "View/MudView.h"
+#include "View/HealthBarBackView.h"
+#include "View/HealthBarFrontView.h"
 
 TextureCreator::TextureCreator(const SdlWindow& window) :
 	straightTrackTex("straight_track.png", window),
@@ -21,7 +23,9 @@ TextureCreator::TextureCreator(const SdlWindow& window) :
 	car3Tex("car_3.png", window),
 	car4Tex("car_4.png", window),
 	oilTex("oil.png", window),
-	mudTex("mud.png", window) {
+	mudTex("mud.png", window),
+	healthBarBackTex("health_background.png", window),
+	healthBarFrontTex("health_bar.png", window) {
 		idCounter = 0;
 }
 
@@ -38,7 +42,9 @@ ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
 		case ID_CAR_3: ov.reset(new CarView(car3Tex, angle)); break;
 		case ID_CAR_4: ov.reset(new CarView(car4Tex, angle)); break;
 		case ID_OIL: ov.reset(new OilView(oilTex, angle)); break;
-		case ID_MUD: ov.reset(new MudView(mudTex, angle)); break; 
+		case ID_MUD: ov.reset(new MudView(mudTex, angle)); break;
+		case ID_HEALTH_BAR_BACK: ov.reset(new HealthBarBackView(healthBarBackTex)); break;
+		case ID_HEALTH_BAR_FRONT: ov.reset(new HealthBarFrontView(healthBarFrontTex)); break; 
 		default: throw std::runtime_error("Texture Creator: Wrong view_id");
 	}
 	++idCounter;

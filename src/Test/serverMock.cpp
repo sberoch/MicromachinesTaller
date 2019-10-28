@@ -26,8 +26,10 @@ int main(int argc, char const *argv[]) {
 		std::string cmd = protocol.receive();
 		if (cmd == "a") {
 			angle -= 10;
+			if (health >= 10) health -= 10;
 		} else if (cmd == "d") {
 			angle += 10;
+			if (health < 100) health += 10;
 		} else if (cmd == "w") {
 			y -= 0.2;
 		}

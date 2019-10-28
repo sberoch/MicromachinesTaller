@@ -1,11 +1,15 @@
 #include "GameScene.h"
 #include "../Common/json.hpp"
 #include "../Common/Constants.h"
+#include "View/HealthBarFrontView.h"
 #include <SDL2/SDL.h>
 #include <iostream>
 #include <fstream>
 
 using json = nlohmann::json;
+
+//TODO: health bar in fixed position relative to screen size
+//TODO: class GameObjects
 
 GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
 					BlockingQueue& sendQueue) : 
@@ -52,6 +56,10 @@ void GameScene::updateCars(CarList cars) {
 			cameraX = screenX/2 - conv.blockToPixel(car.x);
 			cameraY = screenY/2 - conv.blockToPixel(car.y);
 		}
+
+		//Mock
+		ObjectViewPtr healthBar = gameObjects.at(14);
+		healthBar->resize(car.health);
 	}	
 }
 

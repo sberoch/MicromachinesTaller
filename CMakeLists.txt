@@ -30,4 +30,5 @@ install(FILES assets/curve_track.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/powerups.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/oil.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/mud.png DESTINATION ${CMAKE_BINARY_DIR})
-
+install(FILES assets/health_bar.png DESTINATION ${CMAKE_BINARY_DIR})
+install(FILES assets/health_background.png DESTINATION ${CMAKE_BINARY_DIR})

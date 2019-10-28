@@ -10,6 +10,8 @@
 #define ID_CAR_4 108
 #define ID_OIL 109
 #define ID_MUD 110
+#define ID_HEALTH_BAR_BACK 111
+#define ID_HEALTH_BAR_FRONT 112
 
 //Scenes
 #define SCENE_MENU 200
