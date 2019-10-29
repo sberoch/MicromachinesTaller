@@ -24,7 +24,7 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 	healthBarFrontTex("health_bar.png", window),
 	healthBar(healthBarFrontTex),
 
-	handler(window, sendQueue),
+	handler(window, audio, sendQueue),
 	creator(window),
 	conv(50), 
 	cameraX(0), 
@@ -43,6 +43,7 @@ bool GameScene::done() {
 }
 
 void GameScene::update() {
+	audio.playMusic();
 	window.getWindowSize(&xScreen, &yScreen);
 
 	ServerSnapshot* snap;

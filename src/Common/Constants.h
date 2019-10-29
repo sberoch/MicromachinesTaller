@@ -17,3 +17,9 @@
 #define SCENE_MENU 200
 #define SCENE_LOBBY 201
 #define SCENE_GAME 202
+
+//Audio
+#define SFX_CAR_ENGINE 300
+#define SFX_CAR_BREAK 301
+#define SFX_CAR_EXPLOSION 302
+#define SFX_BUTTON 303

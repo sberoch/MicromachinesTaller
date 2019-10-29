@@ -1,7 +1,10 @@
 #include "InputHandler.h"
+#include "../Common/Constants.h"
 
-InputHandler::InputHandler(SdlWindow& window, BlockingQueue& sendQueue) :
+InputHandler::InputHandler(SdlWindow& window, Audio& audio, 
+					BlockingQueue& sendQueue) :
 	window(window),
+	audio(audio),
 	sendQueue(sendQueue) {
 	_done = false;
 	fullscreen = true;
@@ -32,10 +35,11 @@ void InputHandler::handle() {
 				}
 				case SDLK_w: {
 					//Accelerate
+					audio.playEffect(SFX_CAR_ENGINE);
 					sendQueue.push("w");
 					break;
 				}
-				case SDLK_F11:
+				case SDLK_F11: {
 					if (fullscreen) {
 						window.setFullscreen(false);
 						fullscreen = false;
@@ -44,6 +48,22 @@ void InputHandler::handle() {
 						fullscreen = true;
 					}
 					break;
+				}
+
+				//Mock
+				case SDLK_k: {
+					audio.playEffect(SFX_CAR_EXPLOSION);
+					break;
+				}
+				case SDLK_l: {
+					audio.playEffect(SFX_BUTTON);
+					break;
+				}
+			}
+		} else if (event.type == SDL_KEYUP) {
+			SDL_KeyboardEvent& keyEvent = (SDL_KeyboardEvent&) event;
+			if (keyEvent.keysym.sym == SDLK_w) {
+				audio.stopEffect(SFX_CAR_ENGINE);
 			}
 		}
 	}

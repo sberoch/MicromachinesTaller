@@ -39,3 +39,8 @@ install(FILES assets/oil.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/mud.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/health_bar.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/health_background.png DESTINATION ${CMAKE_BINARY_DIR})
+install(FILES assets/background.mp3 DESTINATION ${CMAKE_BINARY_DIR})
+install(FILES assets/car_engine.wav DESTINATION ${CMAKE_BINARY_DIR})
+install(FILES assets/car_explosion.wav DESTINATION ${CMAKE_BINARY_DIR})
+install(FILES assets/menu_button.wav DESTINATION ${CMAKE_BINARY_DIR})
+
