@@ -1,39 +1,49 @@
-#include <set>
-#include <sstream>
-#include "File.h"
 #include "../Common/Socket.h"
-#include "AcceptingThread.h"
+#include "../Common/Protocol.h"
 #include "../Common/ServerSnapshot.h"
+#include <iostream>
+#include <string>
 
-#define Q_MINUSCULA 'q'
-#define PORT_NUMBER_POSITION 1
+#include "Model/Game.h"
+#include "Model/Input.h"
+#include "Model/Car/Car.h"
+#include <vector>
 
+int main(int argc, char const *argv[]) {
 
+	Game game(1);
 
-int main(int argc, char *argv[]) {
-    try {
-        const char *portNumber = "8888";
+	//Creo socket aceptador
+	const char *portNumber = "8888";
+	Socket acceptSocket = Socket::createAcceptingSocket(portNumber);
 
-//        if (argv[PORT_NUMBER_POSITION] != nullptr)
-//            portNumber = argv[PORT_NUMBER_POSITION];
+	//Acepto 1 cliente
+	Socket skt = acceptSocket.accept();
+	Protocol protocol(std::move(skt));
 
-        Socket acceptSocket = Socket::createAcceptingSocket(portNumber);
+	//Defino valores iniciales para la posicion del auto
+	std::string buffer;
+	float x, y; 
+	int angle, health, id;
+	x = 15.0; y = 7.0; angle = 180; health = 100, id = 11;
 
-        AcceptingThread acceptor(acceptSocket);
-        acceptor.start();
+	//Recibo el comando y devuelvo el cambio de posicion/angulo. (muy basico)
+	while(true) {
+		ServerSnapshot snap;
+		std::string cmd = protocol.receive();
+		if (cmd == "a") {
+			game.update(PRESS_NONE, PRESS_LEFT);
 
-        char c = (char) getchar();
+		} else if (cmd == "d") {
+			game.update(PRESS_NONE, PRESS_RIGHT);
 
-        if (c == Q_MINUSCULA){
-            acceptSocket.stop();
-        }
+		} else if (cmd == "w") {
+			game.update(PRESS_UP, PRESS_NONE);
+		}
+		std::vector<Car*> cars = game.getCars();
+		snap.setCar(cars[0]->x(), cars[0]->y(), cars[0]->angle(), cars[0]->health(), 11);
+		snap.send(protocol);
+	}
 
-        acceptor.join();
-    } catch(const std::exception &e) {
-        printf("ERROR: %s", e.what());
-    } catch(...) {
-        printf("Unknown error from main.");
-    }
-
-    return 0;
+	return 0;
 }

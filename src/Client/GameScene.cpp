@@ -93,7 +93,7 @@ int GameScene::handle() {
 void GameScene::loadStage() {
 	//TODO: this is sent by server
 	int type, x, y, angle;
-	std::ifstream i("scene.json");
+	std::ifstream i("test_scene.json");
 	json j; i >> j;
 
 	json objects = j["objects"];

@@ -1,0 +1,17 @@
+{
+  "world" : [{
+    "gravity" : -9.8
+  }],
+  "car_configuration": [{
+    "max_velocity" : 10,
+    "acceleration" : 5,
+    "maneuvrability" : 10,
+    "grab" : 10,
+    "health_init" : 100
+  }],
+  "track_configuration" : [{
+    "density" : 0,
+    "friction" : 3,
+    "restitution" : 0
+  }]
+}

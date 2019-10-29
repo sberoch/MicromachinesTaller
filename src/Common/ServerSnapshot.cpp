@@ -47,7 +47,7 @@ ServerSnapshot::ServerSnapshot(Protocol &protocol) {
 }
 
 void ServerSnapshot::setCar(float x, float y, int angle, int health, int id) {
-	Car car;
+	CarStruct car;
 	car.x = x;
 	car.y = y;
 	car.angle = angle;
