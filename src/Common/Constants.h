@@ -12,6 +12,7 @@
 #define ID_MUD 110
 #define ID_HEALTH_BAR_BACK 111
 #define ID_HEALTH_BAR_FRONT 112
+#define ID_EXPLOSION 113
 
 //Scenes
 #define SCENE_MENU 200

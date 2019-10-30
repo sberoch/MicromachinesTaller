@@ -24,6 +24,7 @@ private:
 	SdlTexture car4Tex;
 	SdlTexture oilTex;
 	SdlTexture mudTex;
+	SdlTexture explosionTex;
 public:
 	TextureCreator(const SdlWindow& window);
 	ObjectViewPtr create(int type, int x, int y, int angle);

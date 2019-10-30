@@ -12,6 +12,7 @@
 #include "View/MudView.h"
 #include "View/HealthBarBackView.h"
 #include "View/HealthBarFrontView.h"
+#include "View/ExplosionView.h"
 
 TextureCreator::TextureCreator(const SdlWindow& window) :
 	straightTrackTex("straight_track.png", window),
@@ -23,7 +24,8 @@ TextureCreator::TextureCreator(const SdlWindow& window) :
 	car3Tex("car_3.png", window),
 	car4Tex("car_4.png", window),
 	oilTex("oil.png", window),
-	mudTex("mud.png", window) {
+	mudTex("mud.png", window),
+	explosionTex("explosion.png", window) {
 		idCounter = 0;
 }
 
@@ -41,6 +43,7 @@ ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
 		case ID_CAR_4: ov.reset(new CarView(car4Tex, angle)); break;
 		case ID_OIL: ov.reset(new OilView(oilTex, angle)); break;
 		case ID_MUD: ov.reset(new MudView(mudTex, angle)); break;
+		case ID_EXPLOSION: ov.reset(new ExplosionView(explosionTex)); break;
 		default: throw std::runtime_error("Texture Creator: Wrong view_id");
 	}
 	++idCounter;

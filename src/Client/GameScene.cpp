@@ -112,6 +112,10 @@ void GameScene::loadStage() {
 			cameraY = yScreen/2 - y;
 		}
 	}
+
+	//Mock
+	ObjectViewPtr asd = creator.create(113, 100, 100, 0);
+	gameObjects.insert(std::make_pair(100, asd));
 }
 
 void GameScene::drawBackground() { 
