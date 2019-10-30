@@ -1,22 +1,22 @@
-#include "Game.h"
+#include "GameThread.h"
 #include <iostream>
 
-Game::Game(size_t n_of_players) : _world(n_of_players), _cars() {
+GameThread::GameThread(size_t n_of_players) : _world(n_of_players), _cars() {
     for (size_t i=0; i<n_of_players; ++i) {
         _cars.push_back(new Car(_world.createCar(i)));
     }
     _tire = _world.createTire();
 }
 
-std::vector<Car*> Game::getCars(){
+std::vector<Car*> GameThread::getCars(){
     return _cars;
 }
 
-Tire* Game::getTire(){
+Tire* GameThread::getTire(){
     return _tire;
 }
 
-void Game::update(int control){
+void GameThread::update(int control){
     //_tire->updateTraction();
     _tire->updateDrive(control);
     _tire->updateTurn(control);
@@ -24,7 +24,7 @@ void Game::update(int control){
     _world.step(8, 3);
 }
 
-void Game::update(Input movInput, Input turnInput){
+void GameThread::update(Input movInput, Input turnInput){
     for (size_t i=0; i<_cars.size(); ++i){
         _cars[i]->handleInput(movInput, turnInput);
         _cars[i]->update();
@@ -36,7 +36,7 @@ void Game::update(Input movInput, Input turnInput){
     _world.step(8, 3);
 }
 
-Game::~Game() {
+GameThread::~GameThread() {
 	for (auto& car : _cars) {
 		delete car;
 	}
