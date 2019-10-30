@@ -35,6 +35,7 @@ World::World(size_t n_of_cars) : _n_of_cars(n_of_cars){
 
     _carBodyDef.type = b2_dynamicBody;
     _carBodyDef.linearDamping = 0.1f;
+    _carBodyDef.angularDamping = 0.2f;
 
     _contactListener = new ContactListener(_world);
     _world->SetContactListener(_contactListener);
@@ -55,12 +56,17 @@ b2Body* World::createCar(size_t id){
     float x_init, y_init, angle_init;
     _getCarConfigData(id, x_init, y_init, angle_init);
     _carBodyDef.position.Set(x_init, y_init);
-    _carBodyDef.angle = angle_init;
+    _carBodyDef.angle = angle_init * DEGTORAD;
 
     b2Body* carBody;
     carBody = _world->CreateBody(&_carBodyDef);
 
     return carBody;
+}
+
+Tire* World::createTire(){
+    Tire* tire = new Tire(_world, 100, -20, 150, 100);
+    return tire;
 }
 
 void World::step(uint32_t velocityIt, uint32_t positionIt){
