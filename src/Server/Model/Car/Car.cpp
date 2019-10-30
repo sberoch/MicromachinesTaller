@@ -235,9 +235,9 @@ CarMovingState* CarMovingState::makeMovingState(Input prevInput, Input currentIn
         return new NegAcceleratingState();
     } else if (prevInput == PRESS_DOWN && currentInput == PRESS_UP) {
         return new AcceleratingState();
-    } else if (prevInput == PRESS_UP && currentInput == PRESS_NONE) {
+    } else if (prevInput == PRESS_UP && currentInput == RELEASE_UP) {
         return new WithoutAcceleratingState();
-    } else if (prevInput == PRESS_DOWN && currentInput == PRESS_NONE) {
+    } else if (prevInput == PRESS_DOWN && currentInput == RELEASE_DOWN) {
         return new WithoutAcceleratingState();
     } else if (prevInput == PRESS_NONE && currentInput == PRESS_DOWN) {
         return new NegAcceleratingState();
