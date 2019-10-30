@@ -1,6 +1,10 @@
 {
   "world" : [{
-    "gravity" : -9.8
+    "gravityX" : 0,
+    "gravityY" : 0,
+    "FPS" : 25,
+    "velocityIterations" : 8,
+    "positionIterations" : 3
   }],
   "car_configuration": [{
     "max_velocity" : 10,
