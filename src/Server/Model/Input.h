@@ -7,6 +7,8 @@ enum Input{
     PRESS_RIGHT = 0x2,
     PRESS_UP = 0x4,
     PRESS_DOWN = 0x8,
+    RELEASE_UP,
+    RELEASE_DOWN,
     RELEASE_LEFT,
     RELEASE_RIGHT
 };

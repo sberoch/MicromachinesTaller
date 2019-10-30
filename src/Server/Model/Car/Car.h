@@ -15,7 +15,7 @@ class Car {
 private:
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
-    float _maxForce;
+    float _maxDriveForce;
 
     size_t id;
     b2Body* _carBody;
@@ -68,7 +68,7 @@ public:
 
 class CarMovingState{
 public:
-    static CarMovingState* makeMovingState(Input currentInput, Input prevInput);
+    static CarMovingState* makeMovingState(Input prevInput, Input currentInput);
     virtual CarMovingState* handleInput(Car& car, Input input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarMovingState(){}

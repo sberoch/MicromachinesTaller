@@ -6,11 +6,12 @@
 #include <Box2D/Box2D.h>
 #include "Car/Car.h"
 #include "ContactListener.h"
+#include "Car/Tire.h"
 
 class World {
 private:
     b2World* _world;
-    float _timeStep = 1/30.0;
+    float _timeStep = 1/25.0;
 
     int _n_of_cars;
     b2BodyDef _carBodyDef; //What can we do with this?
@@ -29,6 +30,8 @@ public:
     World(size_t n_of_cars);
 
     b2Body* createCar(size_t id);
+    Tire* createTire(); //Desp con move
+
     void step(uint32_t velocityIt, uint32_t positionIt);
 
     void BeginContact(b2Contact* contact);

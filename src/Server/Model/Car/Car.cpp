@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Car.h"
 
 void Car::_setShapeAndFixture(){
@@ -10,8 +11,8 @@ void Car::_setShapeAndFixture(){
     _carBody->CreateFixture(&boxFixtureDef);
 }
 
-Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxForwardSpeed(100),
-                            _maxBackwardSpeed(-20), _maxForce(150), _isMoving(false),
+Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxForwardSpeed(25),
+                            _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false),
                             _onTrack(true), _onGrass(false), _currentTraction(1), _carBody(carBody){
     _carBody->SetLinearVelocity( b2Vec2( 0, 0 ) ); //not moving
     _carBody->SetAngularVelocity( 0 );
@@ -41,34 +42,43 @@ b2Vec2 Car::getForwardVelocity(){
 }
 
 void Car::accelerate(){
-    //float velocityChange = _maxForwardSpeed - currentSpeed;
-    //float force = _carBody->GetMass() * velocityChange / (1/30.0);
-    //_carBody->ApplyForce(b2Vec2(0, force), _carBody->GetWorldCenter(), true);
+    std::cout << "Acelerando\n";
     _isMoving = true;
-    b2Vec2 currentSpeed = _carBody->GetLinearVelocity();
-    float velocityChange = _maxForwardSpeed - currentSpeed.y;
-    float impulse = _carBody->GetMass() * velocityChange;
-    if (currentSpeed.y < _maxForwardSpeed)
-        _carBody->ApplyLinearImpulse(b2Vec2(0, 10), _carBody->GetWorldCenter(), true);
+    float desiredSpeed = _maxForwardSpeed;
+
+    //find current speed in forward direction
+    b2Vec2 currentForwardNormal = _carBody->GetWorldVector( b2Vec2(0,1) );
+    float currentSpeed = b2Dot(getForwardVelocity(), currentForwardNormal);
+
+    //apply necessary force
+    float force = 0;
+    if (desiredSpeed > currentSpeed)
+        force = _maxDriveForce;
+    else if (desiredSpeed < currentSpeed)
+        force = -_maxDriveForce;
+    else
+        return;
+    _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
 }
 
 void Car::desaccelerate(){
-    //b2Vec2 currentForwardNormal = _carBody->GetWorldVector( b2Vec2(0,1) );
-    //float currentSpeed = b2Dot( getForwardVelocity(), currentForwardNormal );
-
-    //float velocityChange = abs(_maxBackwardSpeed - currentSpeed);
-    //float force = _carBody->GetMass() * velocityChange / (1/30.0);
-    //_carBody->ApplyForce(b2Vec2(0, -force), _carBody->GetWorldCenter(), true);
-
-    //float velocityChange = _maxBackwardSpeed - currentSpeed;
-    //float impulse = _carBody->GetMass() * velocityChange;
-    //_carBody->ApplyLinearImpulse(b2Vec2(0, impulse), _carBody->GetWorldCenter(), true);
+    std::cout << "Descelerando\n";
     _isMoving = true;
-    b2Vec2 currentSpeed = _carBody->GetLinearVelocity();
-    float velocityChange = _maxBackwardSpeed - currentSpeed.y;
-    float impulse = _carBody->GetMass() * velocityChange;
-    if (_maxBackwardSpeed < currentSpeed.y)
-        _carBody->ApplyLinearImpulse(b2Vec2(0, -10), _carBody->GetWorldCenter(), true);
+    float desiredSpeed = _maxBackwardSpeed;
+
+    //find current speed in forward direction
+    b2Vec2 currentForwardNormal = _carBody->GetWorldVector( b2Vec2(0,1) );
+    float currentSpeed = b2Dot(getForwardVelocity(), currentForwardNormal);
+
+    //apply necessary force
+    float force = 0;
+    if ( desiredSpeed > currentSpeed )
+        force = _maxDriveForce;
+    else if ( desiredSpeed < currentSpeed )
+        force = -_maxDriveForce;
+    else
+        return;
+    _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
 }
 
 void Car::friction(){
@@ -85,15 +95,31 @@ void Car::friction(){
 }
 
 void Car::turnLeft(){
+    std::cout << "Turn left\n";
+    float desiredTorque = -50;
     if (_isMoving)
-        //_carBody->ApplyLinearImpulse(b2Vec2(-2, 0), _carBody->GetWorldCenter(), true);
-        _carBody->ApplyAngularImpulse(2, true);
+        _carBody->ApplyTorque( desiredTorque, true );
 }
 
 void Car::turnRight(){
+    std::cout << "Turn right\n";
+    float desiredTorque = 50;
     if (_isMoving)
-        //_carBody->ApplyLinearImpulse(b2Vec2(2, 0), _carBody->GetWorldCenter(), true);
-        _carBody->ApplyTorque(-2, true);
+        _carBody->ApplyTorque( desiredTorque, true );
+}
+
+void Car::updateFriction(){
+    float maxLateralImpulse = 2.5f;
+    b2Vec2 impulse = _carBody->GetMass() * -getLateralVelocity();
+    if (impulse.Length() > maxLateralImpulse)
+        impulse *= maxLateralImpulse / impulse.Length();
+    _carBody->ApplyLinearImpulse(impulse, _carBody->GetWorldCenter(), true);
+    _carBody->ApplyAngularImpulse(0.9f * _carBody->GetInertia() * -_carBody->GetAngularVelocity(), true);
+
+    b2Vec2 currentForwardNormal = getForwardVelocity();
+    float currentForwardSpeed = currentForwardNormal.Normalize();
+    float dragForceMagnitude = -2 * currentForwardSpeed;
+    _carBody->ApplyForce(dragForceMagnitude * currentForwardNormal, _carBody->GetWorldCenter(), true);
 }
 
 void Car::updateTraction(){
@@ -128,6 +154,7 @@ void Car::handleInput(Input movInput, Input turnInput){
 void Car::update(){
     _state->update(*this);
     _turningState->update(*this);
+    updateFriction();
 }
 
 const float Car::x(){
@@ -167,7 +194,7 @@ Car::~Car(){
 class NegAcceleratingState : public CarMovingState {
 public:
     CarMovingState* handleInput(Car& car, Input input){
-        return makeMovingState(input, PRESS_DOWN);
+        return makeMovingState(PRESS_DOWN, input);
     }
 
     void update(Car& car){
@@ -178,7 +205,7 @@ public:
 class AcceleratingState : public CarMovingState {
 public:
     CarMovingState* handleInput(Car& car, Input input) {
-        return makeMovingState(input, PRESS_UP);
+        return makeMovingState(PRESS_UP, input);
     }
 
     void update(Car& car) {
@@ -190,7 +217,7 @@ public:
 class WithoutAcceleratingState : public CarMovingState {
 public:
     CarMovingState* handleInput(Car& car, Input input) {
-        return makeMovingState(input, PRESS_NONE);
+        return makeMovingState(PRESS_NONE, input );
     }
 
     void update(Car& car) {
@@ -199,7 +226,7 @@ public:
     }
 };
 
-CarMovingState* CarMovingState::makeMovingState(Input currentInput, Input prevInput){
+CarMovingState* CarMovingState::makeMovingState(Input prevInput, Input currentInput){
     if (prevInput == PRESS_NONE && currentInput == PRESS_NONE){
         return new WithoutAcceleratingState();
     } else if (prevInput == PRESS_NONE && currentInput == PRESS_UP) {
@@ -208,9 +235,9 @@ CarMovingState* CarMovingState::makeMovingState(Input currentInput, Input prevIn
         return new NegAcceleratingState();
     } else if (prevInput == PRESS_DOWN && currentInput == PRESS_UP) {
         return new AcceleratingState();
-    } else if (prevInput == PRESS_UP && currentInput == PRESS_NONE) {
+    } else if (prevInput == PRESS_UP && currentInput == RELEASE_UP) {
         return new WithoutAcceleratingState();
-    } else if (prevInput == PRESS_DOWN && currentInput == PRESS_NONE) {
+    } else if (prevInput == PRESS_DOWN && currentInput == RELEASE_DOWN) {
         return new WithoutAcceleratingState();
     } else if (prevInput == PRESS_NONE && currentInput == PRESS_DOWN) {
         return new NegAcceleratingState();
@@ -224,11 +251,13 @@ CarMovingState* CarMovingState::makeMovingState(Input currentInput, Input prevIn
 class NotTurningState : public CarTurningState{
 public:
     CarTurningState* handleInput(Car& car, Input input){
+
         return makeTurningState(PRESS_NONE, input);
     }
 
     void update(Car& car){
         //Continue in straight direction
+
     }
 };
 
