@@ -35,6 +35,10 @@ void InputHandler::handle() {
 					sendQueue.push("w");
 					break;
 				}
+				case SDLK_s: {
+				    sendQueue.push("s");
+				    break;
+				}
 				case SDLK_F11:
 					if (fullscreen) {
 						window.setFullscreen(false);
