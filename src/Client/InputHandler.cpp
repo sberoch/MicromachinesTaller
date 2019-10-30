@@ -44,8 +44,8 @@ void InputHandler::handle() {
 			}
 			case SDLK_w: {
 				//Accelerate
-				audio.playEffect(SFX_CAR_ENGINE);
 				if (!up_pressed) {
+					audio.playEffect(SFX_CAR_ENGINE);
 					sendQueue.push("w");
 				}
 				up_pressed = true;
@@ -53,8 +53,8 @@ void InputHandler::handle() {
 			}
 			case SDLK_s: {
 				//Break
-				//audio.playEffect(SFX_CAR_BREAK);
 				if (!down_pressed) {
+					audio.playEffect(SFX_CAR_BRAKE);
 					sendQueue.push("s");
 				}
 				down_pressed = true;
@@ -102,16 +102,15 @@ void InputHandler::handle() {
 			}
 			case SDLK_w: {
 				//Stop accelerating
-				audio.stopEffect(SFX_CAR_ENGINE);
 				if (up_pressed) {
+					audio.stopEffect(SFX_CAR_ENGINE);
 					sendQueue.push("w_stop");
 				}
 				up_pressed = false;
 				break;
 			}
 			case SDLK_s: {
-				//Stop breaking
-				//audio.playEffect(SFX_CAR_BREAK);
+				//Stop braking
 				if (down_pressed) {
 					sendQueue.push("s_stop");
 				}

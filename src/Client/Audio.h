@@ -10,7 +10,7 @@ class Audio {
 private:
 	Mix_Music* backgroundMusic = NULL;
 	Mix_Chunk* carEngine = NULL;
-	Mix_Chunk* carBreak = NULL;
+	Mix_Chunk* carBrake = NULL;
 	Mix_Chunk* carExplosion = NULL;
 	Mix_Chunk* menuButton = NULL;
 

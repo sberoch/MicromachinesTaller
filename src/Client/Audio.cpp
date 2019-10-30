@@ -21,10 +21,10 @@ Audio::Audio() {
 	carEngine = Mix_LoadWAV("car_engine.wav");
 	if (carEngine == NULL) printf("%s\n", Mix_GetError());
 	effects.insert(std::make_pair(SFX_CAR_ENGINE, carEngine));
-/*
-	carBreak = Mix_LoadWAV("car_break.wav");
-	if (carBreak == NULL) printf("%s\n", Mix_GetError());
-	effects.insert(std::make_pair(SFX_CAR_BREAK, carBreak));*/
+
+	carBrake = Mix_LoadWAV("car_brake.wav");
+	if (carBrake == NULL) printf("%s\n", Mix_GetError());
+	effects.insert(std::make_pair(SFX_CAR_BRAKE, carBrake));
 
 	carExplosion = Mix_LoadWAV("car_explosion.wav");
 	if (carExplosion == NULL) printf("%s\n", Mix_GetError());

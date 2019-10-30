@@ -6,6 +6,9 @@
 #include <iostream>
 #include <fstream>
 
+//Mock
+#include "View/MudSplatView.h"
+
 using json = nlohmann::json;
 
 //TODO: class GameObjects
@@ -30,7 +33,11 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 	cameraX(0), 
 	cameraY(0),
 	xScreen(0),
-	yScreen(0) {
+	yScreen(0),
+
+	//Mock
+	splatTestTex("mud_splat.png", window),
+	splatTest(splatTestTex) {
 		window.fill();
 
 		//Mock
@@ -133,4 +140,8 @@ void GameScene::drawDisplayObjects() {
 	//HealthBar
 	healthBackground.drawAt(xScreen*(0.8), yScreen*(0.9));
 	healthBar.drawAt(xScreen*(0.8), yScreen*(0.9));
+
+	//Mock (mudSplat)
+	splatTest.setDims(xScreen, yScreen);
+	splatTest.drawAt(xScreen/2, yScreen/2);
 }

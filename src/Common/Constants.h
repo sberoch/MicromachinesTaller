@@ -13,6 +13,7 @@
 #define ID_HEALTH_BAR_BACK 111
 #define ID_HEALTH_BAR_FRONT 112
 #define ID_EXPLOSION 113
+#define ID_MUD_SPLAT 114
 
 //Scenes
 #define SCENE_MENU 200
@@ -21,6 +22,6 @@
 
 //Audio
 #define SFX_CAR_ENGINE 300
-#define SFX_CAR_BREAK 301
+#define SFX_CAR_BRAKE 301
 #define SFX_CAR_EXPLOSION 302
 #define SFX_BUTTON 303
