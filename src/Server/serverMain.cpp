@@ -21,16 +21,11 @@ int main(int argc, char const *argv[]) {
 	Socket skt = acceptSocket.accept();
 	Protocol protocol(std::move(skt));
 
-	//Defino valores iniciales para la posicion del auto
-	std::string buffer;
-	float x, y; 
-	int angle, health, id;
-	x = 15.0; y = 7.0; angle = 180; health = 100, id = 11;
-
 	//Recibo el comando y devuelvo el cambio de posicion/angulo. (muy basico)
 	while(true) {
 		ServerSnapshot snap;
 		std::string cmd = protocol.receive();
+		std::cout << cmd << std::endl;
 		if (cmd == "a") {
 			game.update(PRESS_NONE, PRESS_LEFT);
 

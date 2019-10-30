@@ -8,6 +8,10 @@ InputHandler::InputHandler(SdlWindow& window, Audio& audio,
 	sendQueue(sendQueue) {
 	_done = false;
 	fullscreen = true;
+	up_pressed = false;
+	left_pressed = false;
+	down_pressed = false;
+	right_pressed = false;
 }
 
 bool InputHandler::done() {
@@ -24,18 +28,36 @@ void InputHandler::handle() {
 		switch (keyEvent.keysym.sym) {
 			case SDLK_a: {
 				//Turn left
-				sendQueue.push("a");
+				if (!left_pressed) {
+					sendQueue.push("a");
+				}
+				left_pressed = true;
 				break;
 			}
 			case SDLK_d: {
 				//Turn right
-				sendQueue.push("d");
+				if (!right_pressed) {
+					sendQueue.push("d");
+				}
+				right_pressed = true;
 				break;
 			}
 			case SDLK_w: {
 				//Accelerate
 				audio.playEffect(SFX_CAR_ENGINE);
-				sendQueue.push("w");
+				if (!up_pressed) {
+					sendQueue.push("w");
+				}
+				up_pressed = true;
+				break;
+			}
+			case SDLK_s: {
+				//Break
+				//audio.playEffect(SFX_CAR_BREAK);
+				if (!down_pressed) {
+					sendQueue.push("s");
+				}
+				down_pressed = true;
 				break;
 			}
 			case SDLK_F11: {
@@ -61,8 +83,41 @@ void InputHandler::handle() {
 		}
 	} else if (event.type == SDL_KEYUP) {
 		SDL_KeyboardEvent& keyEvent = (SDL_KeyboardEvent&) event;
-		if (keyEvent.keysym.sym == SDLK_w) {
-			audio.stopEffect(SFX_CAR_ENGINE);
+		switch (keyEvent.keysym.sym) {
+			case SDLK_a: {
+				//Stop turning left
+				if (left_pressed) {
+					sendQueue.push("a_stop");
+				}
+				left_pressed = false;
+				break;
+			}
+			case SDLK_d: {
+				//Stop turning right
+				if (right_pressed) {
+					sendQueue.push("d_stop");
+				}
+				right_pressed = false;
+				break;
+			}
+			case SDLK_w: {
+				//Stop accelerating
+				audio.stopEffect(SFX_CAR_ENGINE);
+				if (up_pressed) {
+					sendQueue.push("w_stop");
+				}
+				up_pressed = false;
+				break;
+			}
+			case SDLK_s: {
+				//Stop breaking
+				//audio.playEffect(SFX_CAR_BREAK);
+				if (down_pressed) {
+					sendQueue.push("s_stop");
+				}
+				down_pressed = false;
+				break;
+			}
 		}
 	}
 }
