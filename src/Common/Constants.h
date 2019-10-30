@@ -1,4 +1,4 @@
-//IDs
+//Object types
 #define ID_STRAIGHT_TRACK 100
 #define ID_CURVE_TRACK 101
 #define ID_HEALTH_POWERUP 102
@@ -25,3 +25,22 @@
 #define SFX_CAR_BRAKE 301
 #define SFX_CAR_EXPLOSION 302
 #define SFX_BUTTON 303
+
+//Pixel sizes (horizontal and vertical)
+#define HOR_PS_STRAIGHT_TRACK 250
+#define HOR_PS_CURVE_TRACK 250
+#define HOR_PS_HEALTH_POWERUP 50
+#define HOR_PS_BOOST_POWERUP 50
+#define HOR_PS_ROCK 50
+#define HOR_PS_CAR 50
+#define HOR_PS_OIL 100
+#define HOR_PS_MUD 100
+
+#define VER_PS_STRAIGHT_TRACK 250
+#define VER_PS_CURVE_TRACK 250
+#define VER_PS_HEALTH_POWERUP 50
+#define VER_PS_BOOST_POWERUP 50
+#define VER_PS_ROCK 50
+#define VER_PS_CAR 100
+#define VER_PS_OIL 50
+#define VER_PS_MUD 50

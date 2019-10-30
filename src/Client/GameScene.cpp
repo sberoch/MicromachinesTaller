@@ -142,6 +142,6 @@ void GameScene::drawDisplayObjects() {
 	healthBar.drawAt(xScreen*(0.8), yScreen*(0.9));
 
 	//Mock (mudSplat)
-	splatTest.setDims(xScreen, yScreen);
-	splatTest.drawAt(xScreen/2, yScreen/2);
+	//splatTest.setDims(xScreen, yScreen);
+	//splatTest.drawAt(xScreen/2, yScreen/2);
 }

@@ -3,6 +3,7 @@
 
 #include "../Area.h"
 #include "../SdlTexture.h"
+#include "../../Common/Constants.h"
 #include <vector>
 
 class ObjectView {
