@@ -3,25 +3,21 @@
 
 #include <string>
 #include <Box2D/Box2D.h>
+#include "Configuration.h"
 
 class Track {
 private:
     int _type;
-    float _x_size;
-    float _y_size;
-    float _friction;
-    float _density;
-    float _restitution;
 
-    b2BodyDef _body_def;
-    b2FixtureDef _fixture_def;
+    b2BodyDef _bodyDef;
+    b2FixtureDef _fixtureDef;
     b2Body* _body;
 
-    void _setBodyDef();
-    void _setFixtureDef();
+    void _setBodyDef(float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
+    void _setFixtureDef(std::shared_ptr<Configuration> configuration);
 
 public:
-    Track(std::string config_filename, b2Body* body);
+    Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
     ~Track();
 };
 
