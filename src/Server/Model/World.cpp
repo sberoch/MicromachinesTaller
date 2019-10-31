@@ -34,24 +34,27 @@ Car* World::createCar(size_t id){
     return new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
 }
 
-void World::_getTrackConfigData(size_t id, float& x, float& y, float& angle, int& type){
+std::vector<Track*> World::createTrack(){
+    std::vector<Track*> track;
+
     std::ifstream i("scene.json");
     json j; i >> j;
-
-    json tracks = j["tracks"];
-    x = tracks.at(id)["x"].get<float>();
-    y = tracks.at(id)["y"].get<float>();
-    angle = tracks.at(id)["angle"].get<float>();
-    type = tracks.at(id)["type"].get<float>();
-}
-
-Track* World::createTrack(){
-    size_t id;
+    size_t id = 0;
     float x, y, angle;
     int type;
 
-    _getTrackConfigData(id, x, y, angle, type);
-    Track* track = new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration);
+    json tracks = j["tracks"];
+    for (auto t : tracks){
+        x = t["x"].get<float>();
+        y = t["y"].get<float>();
+        angle = t["angle"].get<float>();
+        type = t["type"].get<float>();
+        id++;
+        Track* _track = new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration);
+        track.push_back(_track);
+    }
+
+    return track;
 }
 
 Tire* World::createTire(){

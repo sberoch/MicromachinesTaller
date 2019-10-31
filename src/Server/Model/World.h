@@ -17,20 +17,17 @@ private:
 
     int _n_of_cars;
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
-    void _getTrackConfigData(size_t id, float& x, float& y, float& angle, int& type);
 
     //Floor
     b2BodyDef _track_body_def;
     ContactListener* _contactListener;
-
-
 
     void _tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaFixture, bool began);
 
 public:
     World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
 
-    Track* createTrack();
+    std::vector<Track*> createTrack();
     Car* createCar(size_t id);
     Tire* createTire(); //Desp con move
 
