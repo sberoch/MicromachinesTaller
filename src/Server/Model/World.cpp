@@ -29,13 +29,9 @@ void World::_setUpTrack(std::string track_config_file){
     }
 }
 
-World::World(size_t n_of_cars) : _n_of_cars(n_of_cars){
-    b2Vec2 gravity(0, 0);
+World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) : _n_of_cars(n_of_cars), configuration(configuration){
+    b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
     _world = new b2World(gravity);
-
-    _carBodyDef.type = b2_dynamicBody;
-    _carBodyDef.linearDamping = 0.1f;
-    _carBodyDef.angularDamping = 0.2f;
 
     _contactListener = new ContactListener(_world);
     _world->SetContactListener(_contactListener);
@@ -52,16 +48,11 @@ void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
     //Exception if accesing more than we have?
 }
 
-b2Body* World::createCar(size_t id){
+Car* World::createCar(size_t id){
     float x_init, y_init, angle_init;
     _getCarConfigData(id, x_init, y_init, angle_init);
-    _carBodyDef.position.Set(x_init, y_init);
-    _carBodyDef.angle = angle_init * DEGTORAD;
 
-    b2Body* carBody;
-    carBody = _world->CreateBody(&_carBodyDef);
-
-    return carBody;
+    return new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, configuration);
 }
 
 Tire* World::createTire(){
@@ -118,4 +109,8 @@ void World::handleContact(b2Contact* contact, bool began){
         _tire_vs_groundArea(a, b, began);
     else if (fudA->getType() == FUD_GROUND_AREA || fudB->getType() == FUD_CAR_TIRE)
         _tire_vs_groundArea(b, a, began);
+}
+
+b2World* World::getWorld(){
+    return _world;
 }

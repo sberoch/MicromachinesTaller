@@ -3,7 +3,7 @@
 
 void Car::_setShapeAndFixture(){
     b2PolygonShape boxShape;
-    boxShape.SetAsBox(1,2);
+    boxShape.SetAsBox(0.5f,1.0f);
 
     b2FixtureDef boxFixtureDef;
     boxFixtureDef.shape = &boxShape;
@@ -16,6 +16,28 @@ Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxFo
                             _onTrack(true), _onGrass(false), _currentTraction(1), _carBody(carBody){
     _carBody->SetLinearVelocity( b2Vec2( 0, 0 ) ); //not moving
     _carBody->SetAngularVelocity( 0 );
+    _setShapeAndFixture();
+
+    _state = CarMovingState::makeMovingState(PRESS_NONE, PRESS_NONE);
+    _turningState = CarTurningState::makeTurningState(PRESS_NONE, PRESS_NONE);
+
+    _carBody->SetUserData(this);
+}
+
+void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration){
+    _carBodyDef.type = b2_dynamicBody;
+    _carBodyDef.linearDamping = configuration->getLinearDamping();
+    _carBodyDef.angularDamping = configuration->getAngularDamping();
+    _carBodyDef.position.Set(x_init, y_init);
+    _carBodyDef.angle = angle;
+}
+
+Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+                                        _id(id), _previous_x(x_init), _previous_y(y_init){
+    _setBodyDef(x_init, y_init, angle, configuration);
+    _carBody = world->CreateBody(&_carBodyDef);
+    _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
+    _carBody->SetAngularVelocity( configuration->getAngularVelocityInit() );
     _setShapeAndFixture();
 
     _state = CarMovingState::makeMovingState(PRESS_NONE, PRESS_NONE);
@@ -186,6 +208,7 @@ b2Body* Car::body() const {
 }
 
 Car::~Car(){
+    _carBody->GetWorld()->DestroyBody(_carBody);
     delete _state;
 }
 

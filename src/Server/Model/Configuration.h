@@ -19,6 +19,10 @@ private:
     float _maxHealth;
     float _maxForwardVelocity;
     float _maxBackwardsVelocity;
+    float _linearDamping;
+    float _angularDamping;
+    float _linearVelocityInit;
+    float _angularVelocityInit;
 
     //Track
     float _trackHalfWidth;
@@ -42,14 +46,21 @@ public:
     float getFPS();
     float getVelocityIterations();
     float getPositionIterations();
+
     float getCarWidth();
     float getCarHeight();
+    float getLinearDamping();
+    float getAngularDamping();
+    float getLinearVelocityInit();
+    float getAngularVelocityInit();
+
+
     float getTrackWidth();
     float getTrackHeight();
     float getRockHalfLen();
     float getMudHalfLen();
     float getHealthPowerUpHalfLen();
-    ~Configuration();
+
 };
 
 #endif //MICROMACHINES_CONFIGURATION_H

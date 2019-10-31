@@ -11,10 +11,10 @@
 class World {
 private:
     b2World* _world;
-    float _timeStep = 1/25.0;
+    float _timeStep;
+    std::shared_ptr<Configuration> configuration;
 
     int _n_of_cars;
-    b2BodyDef _carBodyDef; //What can we do with this?
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
 
     //Floor
@@ -27,9 +27,9 @@ private:
     void _tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaFixture, bool began);
 
 public:
-    World(size_t n_of_cars);
+    World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
 
-    b2Body* createCar(size_t id);
+    Car* createCar(size_t id);
     Tire* createTire(); //Desp con move
 
     void step(uint32_t velocityIt, uint32_t positionIt);
@@ -37,6 +37,8 @@ public:
     void BeginContact(b2Contact* contact);
     void EndContact(b2Contact* contact);
     void handleContact(b2Contact* contact, bool began);
+
+    b2World* getWorld();
 
     ~World();
 };

@@ -9,6 +9,7 @@
 #include "InputHandler.h"
 #include "TextureCreator.h"
 #include "BaseScene.h"
+#include "Audio.h"
 #include <map>
 #include <string>
 #include "../Common/Converter.h"
@@ -16,9 +17,13 @@
 #include "../Common/Queue.h"
 #include "../Common/BlockingQueue.h"
 
+//Mock
+#include "View/MudSplatView.h"
+
 class GameScene : public BaseScene {
 private:
 	SdlWindow& window;
+	Audio audio;
 	bool isDone;
 
 	Queue<ServerSnapshot*>& recvQueue;
@@ -40,6 +45,9 @@ private:
 
 	//Mock
 	int myID;
+
+	SdlTexture splatTestTex;
+	MudSplatView splatTest;
 
 public:
 	GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,

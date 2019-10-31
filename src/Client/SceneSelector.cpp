@@ -1,6 +1,7 @@
 #include "SceneSelector.h"
 #include "../Common/Constants.h"
 #include "GameScene.h"
+#include "MenuScene.h"
 #include <iostream>
 #include <ctime>
 #include <thread>
@@ -15,8 +16,8 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 	sendQueue(MAX_COMMANDS_ENQUEUED),
 	receiver(recvQueue, protocol),
 	sender(sendQueue, protocol),
-	currentScene(SCENE_GAME) /*TODO: SCENE_MENU*/ {
-		//scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window)));
+	currentScene(SCENE_MENU) {
+		scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window)));
 		//scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window)));
 		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, recvQueue, sendQueue)));
 		

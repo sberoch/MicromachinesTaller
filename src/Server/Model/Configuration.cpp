@@ -16,6 +16,17 @@ Configuration::Configuration() {
     _FPS = worldConfig["FPS"].get<float>();
     _velocityIterations = worldConfig["velocityIterations"].get<float>();
     _positionIterations = worldConfig["positionIterations"].get<float>();
+
+    json carConfig = j["car"];
+    _carHalfWidth = carConfig["carHalfWidth"].get<float>();
+    _carHalfHeight = carConfig["carHalfHeight"].get<float>();
+    _maxHealth = carConfig["maxHealth"].get<float>();
+    _maxForwardVelocity = carConfig["maxForwardVelocity"].get<float>();
+    _maxBackwardsVelocity = carConfig["maxBackwardsVelocity"].get<float>();
+    _linearDamping = carConfig["linearDamping"].get<float>();
+    _angularDamping = carConfig["angularDamping"].get<float>();
+    _linearVelocityInit = carConfig["linearVelocityInit"].get<float>();
+    _angularVelocityInit = carConfig["angularVelocityInit"].get<float>();
 }
 
 float Configuration::getGravityX(){
@@ -44,6 +55,22 @@ float Configuration::getCarWidth(){
 
 float Configuration::getCarHeight(){
     return _carHalfHeight;
+}
+
+float Configuration::getLinearDamping(){
+    return _linearDamping;
+}
+
+float Configuration::getAngularDamping(){
+    return _angularDamping;
+}
+
+float Configuration::getLinearVelocityInit(){
+    return _linearVelocityInit;
+}
+
+float Configuration::getAngularVelocityInit(){
+    return _angularVelocityInit;
 }
 
 float Configuration::getTrackWidth(){

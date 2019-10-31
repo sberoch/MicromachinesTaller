@@ -4,6 +4,7 @@
 #include "../../../3rd-party/Box2D/Box2D.h"
 
 #include "../Input.h"
+#include "../Configuration.h"
 
 class CarTurningState;
 class CarMovingState;
@@ -17,7 +18,8 @@ private:
     float _maxBackwardSpeed;
     float _maxDriveForce;
 
-    size_t id;
+    size_t _id;
+    b2BodyDef _carBodyDef;
     b2Body* _carBody;
     CarMovingState* _state;
     CarTurningState* _turningState;
@@ -30,10 +32,12 @@ private:
     bool _onGrass;
     float _currentTraction;
 
+    void _setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
     void _setShapeAndFixture();
 
 public:
     Car(b2Body* carBody);
+    Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
 
     void accelerate();
     void desaccelerate();
