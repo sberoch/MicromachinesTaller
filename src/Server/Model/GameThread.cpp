@@ -4,13 +4,14 @@
 using namespace std::chrono;
 
 GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> configuration) :
+                                             _configuration(configuration),
                                              _world(n_of_players, configuration),
-                                             _cars(), _gameToStart(true),
+                                             _cars(), _track(), _gameToStart(true),
                                              _gameStarted(false),
                                              _gameEnded(false) {
     for (size_t i=0; i<n_of_players; ++i)
         _cars.push_back(_world.createCar(i));
-
+    _track = _world.createTrack();
 }
 
 void GameThread::run(){
@@ -44,7 +45,7 @@ void GameThread::update(Input movInput, Input turnInput){
         _cars[i]->update();
     }
 
-    _world.step(8, 3);
+    _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
 }
 
 GameThread::~GameThread() {
