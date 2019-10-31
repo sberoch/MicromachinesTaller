@@ -8,6 +8,8 @@
 #include "View/HealthBarFrontView.h"
 #include "InputHandler.h"
 #include "TextureCreator.h"
+#include "GameObjects.h"
+#include "BotHandler.h"
 #include "BaseScene.h"
 #include "Audio.h"
 #include <map>
@@ -38,13 +40,17 @@ private:
 
 	InputHandler handler;
 	TextureCreator creator;
-	std::map<int, ObjectViewPtr> gameObjects;
+
+	GameObjects gameObjects;
+	BotHandler bot;
+
 	Converter conv;
 	int cameraX, cameraY;
 	int xScreen, yScreen;
 
 	//Mock
 	int myID;
+	bool isBot;
 
 	SdlTexture splatTestTex;
 	MudSplatView splatTest;

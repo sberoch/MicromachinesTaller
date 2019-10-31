@@ -27,6 +27,8 @@
 #define SFX_BUTTON 303
 
 //Pixel sizes (horizontal and vertical)
+#define PIXELS_PER_BLOCK 50
+
 #define HOR_PS_STRAIGHT_TRACK 250
 #define HOR_PS_CURVE_TRACK 250
 #define HOR_PS_HEALTH_POWERUP 50

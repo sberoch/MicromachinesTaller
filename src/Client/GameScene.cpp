@@ -11,8 +11,6 @@
 
 using json = nlohmann::json;
 
-//TODO: class GameObjects
-
 GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
 					BlockingQueue& sendQueue) : 
 	window(window),
@@ -29,7 +27,11 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 
 	handler(window, audio, sendQueue),
 	creator(window),
-	conv(50), 
+
+	gameObjects(creator),
+	bot(gameObjects),
+
+	conv(PIXELS_PER_BLOCK), 
 	cameraX(0), 
 	cameraY(0),
 	xScreen(0),
@@ -42,6 +44,7 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 
 		//Mock
 		myID = 11;
+		isBot = false;
 		loadStage();
 }
 
@@ -63,7 +66,7 @@ void GameScene::update() {
 
 void GameScene::updateCars(CarList cars) {
 	for (auto& car : cars) {
-		ObjectViewPtr carView = gameObjects.at(car.id);
+		ObjectViewPtr carView = gameObjects.get(car.id);
 		carView->setRotation(car.angle);
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
@@ -82,17 +85,20 @@ void GameScene::updateGameEvents() {
 void GameScene::draw() {
 	window.fill();
 	drawBackground();
-	for (auto& it : gameObjects) {
-		it.second->drawAt(cameraX, cameraY);
-	}
+	gameObjects.draw(cameraX, cameraY);
 	drawDisplayObjects();
 	window.render();
 }
 
 int GameScene::handle() {
-	handler.handle();
-	if (handler.done()) {
-		isDone = true;
+	if (isBot) {
+		bot.handle();
+
+	} else {
+		handler.handle();
+		if (handler.done()) {
+			isDone = true;
+		}
 	}
 	//TODO: change this to support a final scene.
 	return SCENE_GAME;
@@ -111,7 +117,7 @@ void GameScene::loadStage() {
 		y = conv.blockToPixel(obj["y"].get<int>());
 		angle = obj["angle"].get<int>();
 		ObjectViewPtr ov = creator.create(type, x, y, angle);
-		gameObjects.insert(std::make_pair(ov->getId(), ov));
+		gameObjects.add(std::make_pair(ov->getId(), ov));
 		if (ov->getId() == myID) {
 			//Center camera in car
 			window.getWindowSize(&xScreen, &yScreen);
@@ -119,10 +125,6 @@ void GameScene::loadStage() {
 			cameraY = yScreen/2 - y;
 		}
 	}
-
-	//Mock
-	ObjectViewPtr asd = creator.create(113, 100, 100, 0);
-	gameObjects.insert(std::make_pair(100, asd));
 }
 
 void GameScene::drawBackground() { 
