@@ -7,29 +7,8 @@
 
 using json = nlohmann::json;
 
-void World::_createTrack(float x, float y, float angle){
-    b2BodyDef floor_body_def;
-    floor_body_def.position.Set(x, y);
-    floor_body_def.angle = angle;
-
-    b2Body* floor_body = _world->CreateBody(&floor_body_def);
-}
-
-void World::_setUpTrack(std::string track_config_file){
-    std::ifstream i(track_config_file);
-    json j; i >> j;
-    float x, y, angle;
-
-    json tracks = j["world1"];
-    for (auto& track : tracks){
-        x = tracks["x"].get<float>();
-        y = tracks["y"].get<float>();
-        angle = tracks["angle"].get<float>() * DEGTORAD;
-        _createTrack(x, y, angle);
-    }
-}
-
-World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) : _n_of_cars(n_of_cars), configuration(configuration){
+World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
+            _timeStep(1/25.0), _n_of_cars(n_of_cars), _configuration(configuration){
     b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
     _world = new b2World(gravity);
 
@@ -52,7 +31,27 @@ Car* World::createCar(size_t id){
     float x_init, y_init, angle_init;
     _getCarConfigData(id, x_init, y_init, angle_init);
 
-    return new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, configuration);
+    return new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
+}
+
+void World::_getTrackConfigData(size_t id, float& x, float& y, float& angle, int& type){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    json tracks = j["tracks"];
+    x = tracks.at(id)["x"].get<float>();
+    y = tracks.at(id)["y"].get<float>();
+    angle = tracks.at(id)["angle"].get<float>();
+    type = tracks.at(id)["type"].get<float>();
+}
+
+Track* World::createTrack(){
+    size_t id;
+    float x, y, angle;
+    int type;
+
+    _getTrackConfigData(id, x, y, angle, type);
+    Track* track = new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration);
 }
 
 Tire* World::createTire(){

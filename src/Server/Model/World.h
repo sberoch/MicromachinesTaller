@@ -7,28 +7,30 @@
 #include "Car/Car.h"
 #include "ContactListener.h"
 #include "Car/Tire.h"
+#include "Track.h"
 
 class World {
 private:
     b2World* _world;
     float _timeStep;
-    std::shared_ptr<Configuration> configuration;
+    std::shared_ptr<Configuration> _configuration;
 
     int _n_of_cars;
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
+    void _getTrackConfigData(size_t id, float& x, float& y, float& angle, int& type);
 
     //Floor
     b2BodyDef _track_body_def;
     ContactListener* _contactListener;
 
-    void _createTrack(float x, float y, float angle);
-    void _setUpTrack(std::string track_config_file);
+
 
     void _tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaFixture, bool began);
 
 public:
     World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
 
+    Track* createTrack();
     Car* createCar(size_t id);
     Tire* createTire(); //Desp con move
 
