@@ -1,16 +1,16 @@
 #include <iostream>
 #include "Car.h"
 
-void Car::_setShapeAndFixture(){
+void Car::_setShapeAndFixture(std::shared_ptr<Configuration> configuration){
     b2PolygonShape boxShape;
-    boxShape.SetAsBox(0.5f,1.0f);
+    boxShape.SetAsBox(configuration->getCarWidth(),configuration->getCarHeight());
 
     b2FixtureDef boxFixtureDef;
     boxFixtureDef.shape = &boxShape;
     boxFixtureDef.density = 1; //Cuanta densidad?
     _carBody->CreateFixture(&boxFixtureDef);
 }
-
+/*
 Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxForwardSpeed(25),
                             _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false),
                             _onTrack(true), _onGrass(false), _currentTraction(1), _carBody(carBody){
@@ -22,7 +22,7 @@ Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxFo
     _turningState = CarTurningState::makeTurningState(PRESS_NONE, PRESS_NONE);
 
     _carBody->SetUserData(this);
-}
+}*/
 
 void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration){
     _carBodyDef.type = b2_dynamicBody;
@@ -33,12 +33,14 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 }
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-                                        _id(id), _previous_x(x_init), _previous_y(y_init){
+                                        _id(id), _previous_x(x_init), _previous_y(y_init), _health(100), _maxForwardSpeed(25),
+                                        _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false),
+                                        _onTrack(true), _onGrass(false), _currentTraction(1){
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
     _carBody->SetAngularVelocity( configuration->getAngularVelocityInit() );
-    _setShapeAndFixture();
+    _setShapeAndFixture(configuration);
 
     _state = CarMovingState::makeMovingState(PRESS_NONE, PRESS_NONE);
     _turningState = CarTurningState::makeTurningState(PRESS_NONE, PRESS_NONE);
@@ -67,6 +69,7 @@ void Car::accelerate(){
     std::cout << "Acelerando\n";
     _isMoving = true;
     float desiredSpeed = _maxForwardSpeed;
+    std::cout << "max speed " << _maxForwardSpeed;
 
     //find current speed in forward direction
     b2Vec2 currentForwardNormal = _carBody->GetWorldVector( b2Vec2(0,1) );

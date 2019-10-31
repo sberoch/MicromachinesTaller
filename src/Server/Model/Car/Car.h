@@ -33,10 +33,10 @@ private:
     float _currentTraction;
 
     void _setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
-    void _setShapeAndFixture();
+    void _setShapeAndFixture(std::shared_ptr<Configuration> configuration);
 
 public:
-    Car(b2Body* carBody);
+    //Car(b2Body* carBody);
     Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
 
     void accelerate();
