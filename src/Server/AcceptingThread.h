@@ -10,7 +10,8 @@
 #include "Thread.h"
 #include "../Common/Socket.h"
 #include "ThClient.h"
-#include "File.h"
+#include "Room.h"
+#include "RoomController.h"
 #include <list>
 #include <mutex>
 #include <sys/socket.h>
@@ -19,8 +20,9 @@
 
 class AcceptingThread: public Thread {
 private:
-    std::list<Thread*> clients;
+    std::list<std::shared_ptr<ClientThread>> clients;
     Socket &acceptSocket;
+    RoomController roomController;
 
 public:
     //Asigna las referencias al socket aceptador y al archivo.

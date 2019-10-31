@@ -14,24 +14,58 @@
 #include "../Common/Socket.h"
 #include "ClientAttendant.h"
 #include "../Common/SocketError.h"
+#include "../Common/SafeQueue.h"
+#include <sstream>
+
+#define QUIT_STRING "QUIT"
 
 class ClientThread: public Thread {
 private:
     std::atomic<bool> keepTalking;
-    ClientAttendant attendant;
+    Protocol protocol;
+    SafeQueue<std::string> nonBlockingQueue;
+    int roomId;
 
 public:
     //Inicializa la variable atomica booleana y el atendedor de clientes.
     //Para este ultimo mueve el socket de la comunicacion.
-    explicit ClientThread(Socket skt):
+    explicit ClientThread(Protocol protocol):
                         keepTalking(true),
-                        attendant(std::move(skt)) {}
+                        protocol(std::move(protocol)),
+                        nonBlockingQueue(false),
+                        roomId(0){}
+
+    static int toInt(const std::string& string){
+        std::stringstream ss(string);
+        int x = 0;
+        ss >> x;
+        return x;
+    }
+
+    int getRoomId(){
+        std::string message = "Ingrese el numero de sala: ";
+        protocol.send(message);
+        int id = toInt(protocol.receive());
+        return id;
+    }
 
     void run() override{
         try {
             while (this->keepTalking) {
                 try {
-                    this->attendant.receivingLoop();
+                    protocol.send("Bienvenide");
+
+                    bool quitMessage = false;
+                    while (!quitMessage) {
+                        std::string message = this->protocol.receive();
+                        quitMessage = message == QUIT_STRING;
+                        if (!quitMessage){
+                            std::cout << "Pushing: " << message << std::endl;
+                            this->nonBlockingQueue.push(message);
+                        } else {
+                            std::cout << "Quitting" << std::endl;
+                        }
+                    }
                 } catch (SocketError &e) {
                     keepTalking = false;
                 }
@@ -44,10 +78,16 @@ public:
         }
     }
 
+    std::string popElement(){
+        std::string element;
+        this->nonBlockingQueue.pop(element);
+        return element;
+    }
+
     //Detiene la ejecucion del cliente y pone la variable booleana en falso
     //para que el recolector de clientes muertos pueda reconocerlo como tal.
     void stop() override{
-        attendant.forceShutdown();
+        protocol.forceShutDown();
         keepTalking = false;
     }
 

@@ -4,19 +4,19 @@
 #include <SDL2/SDL.h>
 #include "SdlWindow.h"
 #include "../Common/Queue.h"
-#include "../Common/BlockingQueue.h"
+#include "../Common/SafeQueue.h"
 #include <string>
 
 class InputHandler {
 private:
 	SdlWindow& window;
-	BlockingQueue& sendQueue;
+	SafeQueue& sendQueue;
 
 	SDL_Event event;
 	bool _done;
 	bool fullscreen;
 public:
-	InputHandler(SdlWindow& window, BlockingQueue& sendQueue);
+	InputHandler(SdlWindow& window, SafeQueue& sendQueue);
 	bool done();
 	void handle();
 };

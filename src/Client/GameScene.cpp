@@ -10,8 +10,8 @@ using json = nlohmann::json;
 
 //TODO: class GameObjects
 
-GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
-					BlockingQueue& sendQueue) : 
+GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
+                     SafeQueue& sendQueue) : 
 	window(window),
 	isDone(false),
 	recvQueue(recvQueue),

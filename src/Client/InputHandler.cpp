@@ -1,6 +1,6 @@
 #include "InputHandler.h"
 
-InputHandler::InputHandler(SdlWindow& window, BlockingQueue& sendQueue) :
+InputHandler::InputHandler(SdlWindow& window, SafeQueue& sendQueue) :
 	window(window),
 	sendQueue(sendQueue) {
 	_done = false;

@@ -2,10 +2,13 @@
 // Created by alvaro on 30/9/19.
 //
 
+
+#include <future>
 #include "AcceptingThread.h"
 
 AcceptingThread::AcceptingThread(Socket &acceptSocket):
         acceptSocket(acceptSocket){}
+
 
  void AcceptingThread::run() {
     try {
@@ -14,19 +17,12 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
             try {
                 Socket skt = this->acceptSocket.accept();
                 std::cout << "Client connected" << std::endl;
-                Thread* newClientThread = new ClientThread(std::move(skt));
+                Protocol newProtocol(std::move(skt));
+                std::shared_ptr<ClientThread> newClientThread
+                                        (new ClientThread(std::move(newProtocol)));
 
-                newClientThread->start();
-                this->clients.push_back(newClientThread);
+                roomController.addClient(newClientThread);
 
-                for (auto &&client: clients) {
-                    if (client->isDead()) {
-                        client->join();
-                        delete client;
-                        client = nullptr;
-                    }
-                }
-                clients.remove(nullptr);
             } catch (SocketError &e){
                 running = false;
             }
@@ -39,10 +35,5 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
 }
 
 AcceptingThread::~AcceptingThread(){
-    for (auto &&client: clients){
-        client->stop();
-        client->join();
-        delete client;
-    }
 }
 

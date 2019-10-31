@@ -65,4 +65,6 @@ std::vector<std::string> Protocol::splitCommand(std::string &message,
     return strings;
 }
 
+Protocol::Protocol(Protocol &&other) noexcept: socket(std::move(other.socket)){}
+
 Protocol::~Protocol() = default;

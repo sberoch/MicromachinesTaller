@@ -6,7 +6,7 @@
 #include "ReceiverThread.h"
 #include "SenderThread.h"
 #include "../Common/Queue.h"
-#include "../Common/BlockingQueue.h"
+#include "../Common/SafeQueue.h"
 #include "../Common/Protocol.h"
 #include <map>
 
@@ -18,7 +18,7 @@ private:
 	Protocol protocol;
 
 	Queue<ServerSnapshot*> recvQueue;
-	BlockingQueue sendQueue;
+	SafeQueue sendQueue;
 
 	ReceiverThread receiver;
 	SenderThread sender;

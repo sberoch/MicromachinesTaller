@@ -14,7 +14,7 @@
 #include "../Common/Converter.h"
 #include "../Common/ServerSnapshot.h"
 #include "../Common/Queue.h"
-#include "../Common/BlockingQueue.h"
+#include "../Common/SafeQueue.h"
 
 class GameScene : public BaseScene {
 private:
@@ -22,7 +22,7 @@ private:
 	bool isDone;
 
 	Queue<ServerSnapshot*>& recvQueue;
-	BlockingQueue& sendQueue;
+	SafeQueue& sendQueue;
 
 	SdlTexture backgroundTex;
 	BackgroundView background;
@@ -43,7 +43,7 @@ private:
 
 public:
 	GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
-		BlockingQueue& sendQueue);
+              SafeQueue& sendQueue);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;

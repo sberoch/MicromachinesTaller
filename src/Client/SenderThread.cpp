@@ -1,6 +1,6 @@
 #include "SenderThread.h"
 
-SenderThread::SenderThread(BlockingQueue& sendQueue, Protocol& protocol) : 
+SenderThread::SenderThread(SafeQueue& sendQueue, Protocol& protocol) :
 	sendQueue(sendQueue),
 	protocol(protocol) {}
 
