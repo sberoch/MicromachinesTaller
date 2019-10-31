@@ -8,6 +8,7 @@
 class Track {
 private:
     int _type;
+    size_t _id;
 
     b2BodyDef _bodyDef;
     b2FixtureDef _fixtureDef;

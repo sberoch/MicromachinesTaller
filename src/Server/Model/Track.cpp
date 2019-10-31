@@ -19,7 +19,8 @@ void Track::_setFixtureDef(std::shared_ptr<Configuration> configuration){
     _body->CreateFixture(&_fixtureDef);
 }
 
-Track::Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration){
+Track::Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration) :
+             _id(id), _type(type) {
     _setBodyDef(x_init, y_init, angle_init, configuration);
     _body = world->CreateBody(&_bodyDef);
     _setFixtureDef(configuration);
