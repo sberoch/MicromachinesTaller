@@ -28,6 +28,8 @@ private:
     float _trackHalfWidth;
     float _trackHalfHeight;
     float _trackFriction;
+    float _trackDensity;
+    float _trackRestitution;
 
     //Grass
     float _grassHalfWidth;
@@ -54,9 +56,12 @@ public:
     float getLinearVelocityInit();
     float getAngularVelocityInit();
 
-
     float getTrackWidth();
     float getTrackHeight();
+    float getTrackDensity();
+    float getTrackFriction();
+    float getTrackRestitution();
+
     float getRockHalfLen();
     float getMudHalfLen();
     float getHealthPowerUpHalfLen();

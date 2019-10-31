@@ -2,7 +2,7 @@
 #include "Configuration.h"
 #include <iostream>
 
-#define CONFIG_FILE "../json/configuration.json"
+#define CONFIG_FILE "/home/miki_mustard/Desktop/Facultad/Taller/clientmm/MicromachinesTaller/src/Server/json/configuration.json"
 
 using json = nlohmann::json;
 
@@ -10,14 +10,14 @@ Configuration::Configuration() {
     std::ifstream i(CONFIG_FILE);
     json j; i >> j;
 
-    json worldConfig = j["world"];
+    json worldConfig = j["world_configuration"];
     _gravityX = worldConfig["gravityX"].get<float>();
     _gravityY = worldConfig["gravityY"].get<float>();
     _FPS = worldConfig["FPS"].get<float>();
     _velocityIterations = worldConfig["velocityIterations"].get<float>();
     _positionIterations = worldConfig["positionIterations"].get<float>();
 
-    json carConfig = j["car"];
+    json carConfig = j["car_configuration"];
     _carHalfWidth = carConfig["carHalfWidth"].get<float>();
     _carHalfHeight = carConfig["carHalfHeight"].get<float>();
     _maxHealth = carConfig["maxHealth"].get<float>();
@@ -27,6 +27,10 @@ Configuration::Configuration() {
     _angularDamping = carConfig["angularDamping"].get<float>();
     _linearVelocityInit = carConfig["linearVelocityInit"].get<float>();
     _angularVelocityInit = carConfig["angularVelocityInit"].get<float>();
+
+    json trackConfig = j["track_configuration"];
+    _trackHalfWidth = trackConfig["halfWidth"].get<float>();
+    _trackHalfHeight = trackConfig["halfHeight"].get<float>();
 }
 
 float Configuration::getGravityX(){
@@ -79,6 +83,18 @@ float Configuration::getTrackWidth(){
 
 float Configuration::getTrackHeight(){
     return _trackHalfHeight;
+}
+
+float Configuration::getTrackDensity(){
+    return _trackDensity;
+}
+
+float Configuration::getTrackFriction(){
+    return _trackFriction;
+}
+
+float Configuration::getTrackRestitution(){
+    return _trackRestitution;
 }
 
 float Configuration::getRockHalfLen(){

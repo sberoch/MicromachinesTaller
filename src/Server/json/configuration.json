@@ -1,25 +1,33 @@
 {
-  "world" : [{
+  "world_configuration" :
+    {
     "gravityX" : 0,
     "gravityY" : 0,
     "FPS" : 25,
     "velocityIterations" : 8,
     "positionIterations" : 3
-  }],
-  "car_configuration": [{
-    "max_velocity" : 10,
-    "acceleration" : 5,
-    "maneuvrability" : 10,
-    "grab" : 10,
-    "health_init" : 100,
-    "linearDamping" : 0.1,
-    "angularDamping" : 3,
-    "linearVelocityInit" : 0,
-    "angularVelocityInit" : 0
-  }],
-  "track_configuration" : [{
-    "density" : 0,
-    "friction" : 3,
-    "restitution" : 0
-  }]
+    },
+  "car_configuration":
+    {
+      "carHalfWidth" : 0.5,
+      "carHalfHeight" : 1,
+      "maxHealth" : 100,
+      "maxForwardVelocity" : 25,
+      "maxBackwardsVelocity" : -5,
+      "acceleration" : 5,
+      "maneuvrability" : 10,
+      "grab" : 10,
+      "linearDamping" : 0.1,
+      "angularDamping" : 3,
+      "linearVelocityInit" : 0,
+      "angularVelocityInit" : 0
+    },
+  "track_configuration" :
+    {
+      "halfWidth" : 2.5,
+      "halfHeight" : 2.5,
+      "density" : 0,
+      "friction" : 3,
+      "restitution" : 0
+    }
 }
