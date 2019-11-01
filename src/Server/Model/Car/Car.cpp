@@ -10,19 +10,6 @@ void Car::_setShapeAndFixture(std::shared_ptr<Configuration> configuration){
     boxFixtureDef.density = 1; //Cuanta densidad?
     _carBody->CreateFixture(&boxFixtureDef);
 }
-/*
-Car::Car(b2Body* carBody) : _health(100), _previous_x(0), _previous_y(0), _maxForwardSpeed(25),
-                            _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false),
-                            _onTrack(true), _onGrass(false), _currentTraction(1), _carBody(carBody){
-    _carBody->SetLinearVelocity( b2Vec2( 0, 0 ) ); //not moving
-    _carBody->SetAngularVelocity( 0 );
-    _setShapeAndFixture();
-
-    _state = CarMovingState::makeMovingState(PRESS_NONE, PRESS_NONE);
-    _turningState = CarTurningState::makeTurningState(PRESS_NONE, PRESS_NONE);
-
-    _carBody->SetUserData(this);
-}*/
 
 void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration){
     _carBodyDef.type = b2_dynamicBody;
@@ -48,6 +35,84 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std
     _carBody->SetUserData(this);
 }
 
+Car::Car(Car&& other){
+    this->_maxForwardSpeed = other._maxForwardSpeed;
+    this->_maxBackwardSpeed = other._maxBackwardSpeed;
+    this->_maxDriveForce = other._maxDriveForce;
+    this->_id = other._id;
+    this->_carBodyDef = other._carBodyDef;
+    this->_carBody = other._carBody;
+    this->_state = other._state;
+    this->_turningState = other._turningState;
+    this->_isMoving = other._isMoving;
+    this->_health = other._health;
+    this->_previous_x = other._previous_x;
+    this->_previous_y = other._previous_y;
+    this->_onTrack = other._onTrack;
+    this->_onGrass = other._onGrass;
+    this->_currentTraction = other._currentTraction;
+
+    other._maxForwardSpeed = 0;
+    other._maxDriveForce = 0;
+    other._id = 0;
+    //other._carBodyDef = nullptr;
+    other._carBody = nullptr;
+    other._state = nullptr;
+    other._turningState = nullptr;
+    other._isMoving = false;
+    other._health = 0;
+    other._previous_x = 0;
+    other._previous_y = 0;
+    other._onTrack = false;
+    other._onGrass = false;
+    other._currentTraction = 0;
+}
+
+Car& Car::operator=(Car&& other){
+    if (this == &other){
+        return *this;
+    }
+    if (this->_carBody)
+        free(this->_carBody);
+    if (this->_state)
+        free(this->_state);
+    if (this->_turningState)
+        free(this->_turningState);
+    this->_maxForwardSpeed = other._maxForwardSpeed;
+    this->_maxBackwardSpeed = other._maxBackwardSpeed;
+    this->_maxDriveForce = other._maxDriveForce;
+    this->_id = other._id;
+    this->_carBodyDef = other._carBodyDef;
+    this->_carBody = other._carBody;
+    this->_state = other._state;
+    this->_turningState = other._turningState;
+    this->_isMoving = other._isMoving;
+    this->_health = other._health;
+    this->_previous_x = other._previous_x;
+    this->_previous_y = other._previous_y;
+    this->_onTrack = other._onTrack;
+    this->_onGrass = other._onGrass;
+    this->_currentTraction = other._currentTraction;
+
+    other._maxForwardSpeed = 0;
+    other._maxDriveForce = 0;
+    other._id = 0;
+    //other._carBodyDef = nullptr;
+    other._carBody = nullptr;
+    other._state = nullptr;
+    other._turningState = nullptr;
+    other._isMoving = false;
+    other._health = 0;
+    other._previous_x = 0;
+    other._previous_y = 0;
+    other._onTrack = false;
+    other._onGrass = false;
+    other._currentTraction = 0;
+
+    return *this;
+}
+
+
 void Car::resetCar(){
     _health = 100;
     //x should be middle, check if thereś already a car?
@@ -69,7 +134,6 @@ void Car::accelerate(){
     std::cout << "Acelerando\n";
     _isMoving = true;
     float desiredSpeed = _maxForwardSpeed;
-    std::cout << "max speed " << _maxForwardSpeed;
 
     //find current speed in forward direction
     b2Vec2 currentForwardNormal = _carBody->GetWorldVector( b2Vec2(0,1) );
@@ -83,7 +147,9 @@ void Car::accelerate(){
         force = -_maxDriveForce;
     else
         return;
+    std::cout << " force " << force;
     _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
+    std::cout << "  x " << x() << " y " << y() << " angle" << angle();
 }
 
 void Car::desaccelerate(){
@@ -104,6 +170,7 @@ void Car::desaccelerate(){
     else
         return;
     _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
+    std::cout << "x " << x() << " y " << y() << " angle" << angle();
 }
 
 void Car::friction(){
@@ -124,6 +191,7 @@ void Car::turnLeft(){
     float desiredTorque = -50;
     if (_isMoving)
         _carBody->ApplyTorque( desiredTorque, true );
+    std::cout << " x " << x() << " y " << y() << " angle" << angle();
 }
 
 void Car::turnRight(){
@@ -131,6 +199,7 @@ void Car::turnRight(){
     float desiredTorque = 50;
     if (_isMoving)
         _carBody->ApplyTorque( desiredTorque, true );
+    std::cout << " x " << x() << " y " << y() << " angle" << angle();
 }
 
 void Car::updateFriction(){
@@ -213,6 +282,7 @@ b2Body* Car::body() const {
 Car::~Car(){
     _carBody->GetWorld()->DestroyBody(_carBody);
     delete _state;
+    delete _turningState;
 }
 
 //////////////////////// CAR MOVING STATE ///////////////////////////

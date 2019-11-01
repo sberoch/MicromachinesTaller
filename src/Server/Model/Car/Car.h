@@ -39,6 +39,11 @@ public:
     //Car(b2Body* carBody);
     Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
 
+    Car(const Car &other) = delete;
+    Car& operator=(const Car &other) = delete;
+    Car(Car&& other);
+    Car& operator=(Car&& other);
+
     void accelerate();
     void desaccelerate();
     void friction();
