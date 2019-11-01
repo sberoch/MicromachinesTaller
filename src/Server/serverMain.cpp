@@ -4,32 +4,35 @@
 #include <iostream>
 #include <string>
 
-#include "Model/Game.h"
+#include "Model/Configuration.h"
+#include "Model/GameThread.h"
 #include "Model/Input.h"
 #include "Model/Car/Car.h"
-#include "json/json.hpp"
 #include <vector>
 #include <chrono>
 #include <thread>
 
 int main(int argc, char const *argv[]) {
+    try {
+        std::shared_ptr<Configuration> configuration(std::make_shared<Configuration>());
+        GameThread game(1, configuration);
 
-	Game game(1);
+        game.run();
+        game.join();
+    } catch (...) {
+        std::cout << "Server UnknownException.\n";
+    }
 
+	/*
 	//Creo socket aceptador
 	const char *portNumber = "8888";
-	Socket acceptSocket = Socket::createAcceptingSocket(portNumber);
+	Socket acceptSocket = Socket::createAcceptingSocket(portNumber);*/
 
+	/*
 	//Acepto 1 cliente
 	Socket skt = acceptSocket.accept();
-	Protocol protocol(std::move(skt));
-
-	//Defino valores iniciales para la posicion del auto
-	std::string buffer;
-	float x, y;
-	int angle, health, id;
-	x = 15.0; y = 7.0; angle = 180; health = 100, id = 11;
-
+	Protocol protocol(std::move(skt));*/
+    /*
 	//Recibo el comando y devuelvo el cambio de posicion/angulo. (muy basico)
 	while(true) {
         std::clock_t begin = clock();
@@ -37,7 +40,14 @@ int main(int argc, char const *argv[]) {
 		std::string cmd = protocol.receive();
 		if (cmd == "a") {
 			game.update(PRESS_NONE, PRESS_LEFT);
-
+		} else if (cmd == "a_stop") {
+            game.update(PRESS_NONE, RELEASE_LEFT);
+		} else if (cmd == "d_stop") {
+            game.update(PRESS_NONE, RELEASE_RIGHT);
+		} else if (cmd == "w_stop") {
+            game.update(RELEASE_UP, PRESS_NONE);
+		} else if (cmd == "s_stop") {
+            game.update(RELEASE_DOWN, PRESS_NONE);
 		} else if (cmd == "d") {
 			game.update(PRESS_NONE, PRESS_RIGHT);
 
@@ -59,7 +69,8 @@ int main(int argc, char const *argv[]) {
         }
 
 
-	}
+	}*/
+
 
 	return 0;
 }

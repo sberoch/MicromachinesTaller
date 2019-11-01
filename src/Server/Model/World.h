@@ -7,29 +7,28 @@
 #include "Car/Car.h"
 #include "ContactListener.h"
 #include "Car/Tire.h"
+#include "Track.h"
 
 class World {
 private:
     b2World* _world;
-    float _timeStep = 1/25.0;
+    float _timeStep;
+    std::shared_ptr<Configuration> _configuration;
 
     int _n_of_cars;
-    b2BodyDef _carBodyDef; //What can we do with this?
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
 
     //Floor
     b2BodyDef _track_body_def;
     ContactListener* _contactListener;
 
-    void _createTrack(float x, float y, float angle);
-    void _setUpTrack(std::string track_config_file);
-
     void _tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaFixture, bool began);
 
 public:
-    World(size_t n_of_cars);
+    World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
 
-    b2Body* createCar(size_t id);
+    std::vector<Track*> createTrack();
+    Car* createCar(size_t id); //TODO move
     Tire* createTire(); //Desp con move
 
     void step(uint32_t velocityIt, uint32_t positionIt);
@@ -37,6 +36,8 @@ public:
     void BeginContact(b2Contact* contact);
     void EndContact(b2Contact* contact);
     void handleContact(b2Contact* contact, bool began);
+
+    b2World* getWorld();
 
     ~World();
 };

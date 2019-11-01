@@ -11,19 +11,20 @@ class GameThread {
 private:
     World _world;
     std::vector<Car*> _cars;
-    Tire* _tire;
+    std::vector<Track*> _track;
+    std::shared_ptr<Configuration> _configuration;
 
     bool _gameToStart, _gameStarted, _gameEnded;
     std::thread _gameLoop;
 
 public:
-    GameThread(size_t n_of_players);
+    GameThread(size_t n_of_players, std::shared_ptr<Configuration> configuration);
     void update(Input movInput, Input turnInput);
 
     void run();
-    void update(int control);
+    void join();
+
     std::vector<Car*> getCars();
-    Tire* getTire();
     ~GameThread();
 };
 

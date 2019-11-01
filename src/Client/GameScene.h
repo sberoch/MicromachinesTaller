@@ -18,9 +18,6 @@
 #include "../Common/Queue.h"
 #include "../Common/BlockingQueue.h"
 
-//Mock
-#include "View/MudSplatView.h"
-
 class GameScene : public BaseScene {
 private:
 	SdlWindow& window;
@@ -47,9 +44,6 @@ private:
 	//Mock
 	int myID;
 	bool isBot;
-
-	SdlTexture splatTestTex;
-	MudSplatView splatTest;
 
 public:
 	GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,

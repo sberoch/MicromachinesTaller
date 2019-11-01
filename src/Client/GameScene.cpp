@@ -30,11 +30,7 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
-	yScreen(0),
-
-	//Mock
-	splatTestTex("mud_splat.png", window),
-	splatTest(splatTestTex) {
+	yScreen(0) {
 		window.fill();
 
 		//Mock
@@ -120,6 +116,9 @@ void GameScene::loadStage() {
 			display.cam_y = yScreen/2 - y;
 		}
 	}
+
+	//Mock
+	display.showMudSplat();
 }
 
 void GameScene::drawBackground() { 
@@ -132,9 +131,3 @@ void GameScene::drawBackground() {
 		}
 	}
 }
-
-//void GameScene::drawDisplayObjects() {
-	//Mock (mudSplat)
-	//splatTest.setDims(xScreen, yScreen);
-	//splatTest.drawAt(xScreen/2, yScreen/2);
-//}

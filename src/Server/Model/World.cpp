@@ -7,35 +7,10 @@
 
 using json = nlohmann::json;
 
-void World::_createTrack(float x, float y, float angle){
-    b2BodyDef floor_body_def;
-    floor_body_def.position.Set(x, y);
-    floor_body_def.angle = angle;
-
-    b2Body* floor_body = _world->CreateBody(&floor_body_def);
-}
-
-void World::_setUpTrack(std::string track_config_file){
-    std::ifstream i(track_config_file);
-    json j; i >> j;
-    float x, y, angle;
-
-    json tracks = j["world1"];
-    for (auto& track : tracks){
-        x = tracks["x"].get<float>();
-        y = tracks["y"].get<float>();
-        angle = tracks["angle"].get<float>() * DEGTORAD;
-        _createTrack(x, y, angle);
-    }
-}
-
-World::World(size_t n_of_cars) : _n_of_cars(n_of_cars){
-    b2Vec2 gravity(0, 0);
+World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
+            _timeStep(1/25.0), _n_of_cars(n_of_cars), _configuration(configuration){
+    b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
     _world = new b2World(gravity);
-
-    _carBodyDef.type = b2_dynamicBody;
-    _carBodyDef.linearDamping = 0.1f;
-    _carBodyDef.angularDamping = 0.2f;
 
     _contactListener = new ContactListener(_world);
     _world->SetContactListener(_contactListener);
@@ -52,20 +27,39 @@ void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
     //Exception if accesing more than we have?
 }
 
-b2Body* World::createCar(size_t id){
+Car* World::createCar(size_t id){
     float x_init, y_init, angle_init;
     _getCarConfigData(id, x_init, y_init, angle_init);
-    _carBodyDef.position.Set(x_init, y_init);
-    _carBodyDef.angle = angle_init * DEGTORAD;
 
-    b2Body* carBody;
-    carBody = _world->CreateBody(&_carBodyDef);
+    //return std::move(Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration));
+    return new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
+}
 
-    return carBody;
+std::vector<Track*> World::createTrack(){
+    std::vector<Track*> track;
+
+    std::ifstream i("scene.json");
+    json j; i >> j;
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json tracks = j["tracks"];
+    for (auto t : tracks){
+        x = t["x"].get<float>();
+        y = t["y"].get<float>();
+        angle = t["angle"].get<float>();
+        type = t["type"].get<float>();
+        id++;
+        Track* _track = new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration);
+        track.push_back(_track);
+    }
+
+    return track;
 }
 
 Tire* World::createTire(){
-    Tire* tire = new Tire(_world, 100, -20, 150/*, 100 lo saque sino no compilaba*/);
+    Tire* tire = new Tire(_world, 100, -20, 150);
     return tire;
 }
 
@@ -118,4 +112,8 @@ void World::handleContact(b2Contact* contact, bool began){
         _tire_vs_groundArea(a, b, began);
     else if (fudA->getType() == FUD_GROUND_AREA || fudB->getType() == FUD_CAR_TIRE)
         _tire_vs_groundArea(b, a, began);
+}
+
+b2World* World::getWorld(){
+    return _world;
 }

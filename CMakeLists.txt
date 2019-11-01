@@ -26,6 +26,8 @@ add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES} src/Common/Eventos/
 target_link_libraries(mm_server Box2D)
 
 install(FILES assets/test_scene.json DESTINATION ${CMAKE_BINARY_DIR})
+install(FILES assets/scene.json DESTINATION ${CMAKE_BINARY_DIR})
+install(FILES assets/configuration.json DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_1.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_2.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_3.png DESTINATION ${CMAKE_BINARY_DIR})

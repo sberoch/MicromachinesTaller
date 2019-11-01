@@ -19,11 +19,17 @@ private:
     float _maxHealth;
     float _maxForwardVelocity;
     float _maxBackwardsVelocity;
+    float _linearDamping;
+    float _angularDamping;
+    float _linearVelocityInit;
+    float _angularVelocityInit;
 
     //Track
     float _trackHalfWidth;
     float _trackHalfHeight;
     float _trackFriction;
+    float _trackDensity;
+    float _trackRestitution;
 
     //Grass
     float _grassHalfWidth;
@@ -42,14 +48,24 @@ public:
     float getFPS();
     float getVelocityIterations();
     float getPositionIterations();
+
     float getCarWidth();
     float getCarHeight();
+    float getLinearDamping();
+    float getAngularDamping();
+    float getLinearVelocityInit();
+    float getAngularVelocityInit();
+
     float getTrackWidth();
     float getTrackHeight();
+    float getTrackDensity();
+    float getTrackFriction();
+    float getTrackRestitution();
+
     float getRockHalfLen();
     float getMudHalfLen();
     float getHealthPowerUpHalfLen();
-    ~Configuration();
+
 };
 
 #endif //MICROMACHINES_CONFIGURATION_H
