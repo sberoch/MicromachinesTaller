@@ -2,7 +2,7 @@
 #include "Configuration.h"
 #include <iostream>
 
-#define CONFIG_FILE "/home/miki_mustard/Desktop/Facultad/Taller/clientmm/MicromachinesTaller/src/Server/json/configuration.json"
+#define CONFIG_FILE "configuration.json"
 
 using json = nlohmann::json;
 
