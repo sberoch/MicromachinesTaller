@@ -31,6 +31,7 @@ Car* World::createCar(size_t id){
     float x_init, y_init, angle_init;
     _getCarConfigData(id, x_init, y_init, angle_init);
 
+    //return std::move(Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration));
     return new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
 }
 
