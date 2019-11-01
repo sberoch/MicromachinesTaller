@@ -15,6 +15,16 @@
 #define ID_EXPLOSION 113
 #define ID_MUD_SPLAT 114
 
+//InputEnum
+#define ACCELERATE 1
+#define STOP_ACCELERATING 2
+#define DESACCELERATE 3
+#define STOP_DESACCELERATING 4
+#define TURN_RIGHT 5
+#define STOP_TURNING_RIGHT 6
+#define TURN_LEFT 7
+#define STOP_TURNING_LEFT 8
+
 //Scenes
 #define SCENE_MENU 200
 #define SCENE_LOBBY 201
