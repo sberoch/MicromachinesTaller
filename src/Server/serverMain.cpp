@@ -7,6 +7,7 @@
 #include "Model/Game.h"
 #include "Model/Input.h"
 #include "Model/Car/Car.h"
+#include "json/json.hpp"
 #include <vector>
 #include <chrono>
 #include <thread>
@@ -25,7 +26,7 @@ int main(int argc, char const *argv[]) {
 
 	//Defino valores iniciales para la posicion del auto
 	std::string buffer;
-	float x, y; 
+	float x, y;
 	int angle, health, id;
 	x = 15.0; y = 7.0; angle = 180; health = 100, id = 11;
 

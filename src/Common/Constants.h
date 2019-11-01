@@ -25,6 +25,15 @@
 #define TURN_LEFT 7
 #define STOP_TURNING_LEFT 8
 
+//Event types.
+#define COMMAND 1
+#define SNAPSHOT 2
+#define ENTER_LOBBY 3
+#define PLAY_AS_USER 4
+#define PLAY_AS_BOT 5
+#define ENTER_ROOM 6
+
+
 //Scenes
 #define SCENE_MENU 200
 #define SCENE_LOBBY 201

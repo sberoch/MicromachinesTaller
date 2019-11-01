@@ -4,12 +4,12 @@
 
 #include "CommandEvent.h"
 
-CommandEvent::CommandEvent() {}
 
-void CommandEvent::sendEvent(Protocol &protocol, int id) {
+void CommandEvent::send(Protocol &protocol, int id) {
+    j["type"] = COMMAND;
     j["id"] = id;
     std::string toSend = j.dump();
     protocol.send(toSend);
 }
 
-CommandEvent::~CommandEvent() {}
+CommandEvent::~CommandEvent() = default;
