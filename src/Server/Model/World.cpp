@@ -1,5 +1,4 @@
 #include <fstream>
-#include "Car/Tire.h"
 #include "World.h"
 
 #include "../json/json.hpp"
@@ -58,11 +57,6 @@ std::vector<Track*> World::createTrack(){
     return track;
 }
 
-Tire* World::createTire(){
-    Tire* tire = new Tire(_world, 100, -20, 150, 100);
-    return tire;
-}
-
 void World::step(uint32_t velocityIt, uint32_t positionIt){
     //how strongly to correct velocity
     //how strongly to correct position
@@ -91,12 +85,12 @@ void World::EndContact(b2Contact* contact){
 }
 
 void World::_tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaFixture, bool began){
-    Tire* tire = (Tire*)tireFixture->GetBody()->GetUserData();
+//    Tire* tire = (Tire*)tireFixture->GetBody()->GetUserData();
     GroundAreaFUD* gaFud = (GroundAreaFUD*)groundAreaFixture->GetUserData();
-    if (began)
-        tire->addGroundArea(gaFud);
-    else
-        tire->removeGroundArea(gaFud);
+    //if (began)
+        //tire->addGroundArea(gaFud);
+    //else
+        //tire->removeGroundArea(gaFud);
 }
 
 void World::handleContact(b2Contact* contact, bool began){

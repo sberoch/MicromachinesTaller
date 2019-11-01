@@ -4,8 +4,6 @@
 #include <vector>
 #include "Car/Car.h"
 #include "World.h"
-#include "Car/Tire.h"
-#include "Car/TDCar.h"
 #include <thread>
 
 class GameThread {
