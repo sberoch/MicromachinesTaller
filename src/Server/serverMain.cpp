@@ -13,20 +13,26 @@
 #include <thread>
 
 int main(int argc, char const *argv[]) {
-    std::shared_ptr<Configuration> configuration(std::make_shared<Configuration>());
-	GameThread game(1, configuration);
+    try {
+        std::shared_ptr<Configuration> configuration(std::make_shared<Configuration>());
+        GameThread game(1, configuration);
 
+        game.run();
+        game.join();
+    } catch (...) {
+        std::cout << "Server UnknownException.\n";
+    }
+
+	/*
 	//Creo socket aceptador
 	const char *portNumber = "8888";
-	Socket acceptSocket = Socket::createAcceptingSocket(portNumber);
+	Socket acceptSocket = Socket::createAcceptingSocket(portNumber);*/
 
+	/*
 	//Acepto 1 cliente
 	Socket skt = acceptSocket.accept();
-	Protocol protocol(std::move(skt));
-
-	//Defino valores iniciales para la posicion del auto
-	std::string buffer;
-
+	Protocol protocol(std::move(skt));*/
+    /*
 	//Recibo el comando y devuelvo el cambio de posicion/angulo. (muy basico)
 	while(true) {
         std::clock_t begin = clock();
@@ -63,7 +69,8 @@ int main(int argc, char const *argv[]) {
         }
 
 
-	}
+	}*/
+
 
 	return 0;
 }
