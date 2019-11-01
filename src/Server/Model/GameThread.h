@@ -23,6 +23,7 @@ public:
     void update(Input movInput, Input turnInput);
 
     void run();
+    void join();
 
     std::vector<Car*> getCars();
     ~GameThread();
