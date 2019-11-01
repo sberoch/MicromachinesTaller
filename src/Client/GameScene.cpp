@@ -16,10 +16,11 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 	window(window),
 	isDone(false),
 	recvQueue(recvQueue),
-	sendQueue(sendQueue),	
+	sendQueue(sendQueue),
 
 	backgroundTex("background.png", window),
 	background(backgroundTex),
+	display(window),
 	
 	handler(window, audio, sendQueue),
 	creator(window),
@@ -28,8 +29,6 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 	bot(gameObjects),
 
 	conv(PIXELS_PER_BLOCK), 
-	cameraX(0), 
-	cameraY(0),
 	xScreen(0),
 	yScreen(0),
 
@@ -67,9 +66,9 @@ void GameScene::updateCars(CarList cars) {
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
 		if (car.id == myID) {
-			cameraX = xScreen/2 - conv.blockToPixel(car.x);
-			cameraY = yScreen/2 - conv.blockToPixel(car.y);
-			healthBar.resize(car.health);
+			display.update(xScreen/2 - conv.blockToPixel(car.x),
+						   yScreen/2 - conv.blockToPixel(car.y),
+						   car.health);
 		}
 	}	
 }
@@ -81,8 +80,8 @@ void GameScene::updateGameEvents() {
 void GameScene::draw() {
 	window.fill();
 	drawBackground();
-	gameObjects.draw(cameraX, cameraY);
-	drawDisplayObjects();
+	gameObjects.draw(display.cam_x, display.cam_y);
+	display.draw();
 	window.render();
 }
 
@@ -117,8 +116,8 @@ void GameScene::loadStage() {
 		if (ov->getId() == myID) {
 			//Center camera in car
 			window.getWindowSize(&xScreen, &yScreen);
-			cameraX = xScreen/2 - x;
-			cameraY = yScreen/2 - y;
+			display.cam_x = xScreen/2 - x;
+			display.cam_y = yScreen/2 - y;
 		}
 	}
 }
@@ -128,14 +127,14 @@ void GameScene::drawBackground() {
 	for(int i = 0; i < 5; ++i) {
 		for(int j = 0; j < 3; ++j) {
 			background.drawAt(
-				-xScreen*2 + xScreen*i + cameraX,
-				-yScreen/2 + yScreen*j + cameraY);
+				-xScreen*2 + xScreen*i + display.cam_x,
+				-yScreen/2 + yScreen*j + display.cam_y);
 		}
 	}
 }
 
-void GameScene::drawDisplayObjects() {
+//void GameScene::drawDisplayObjects() {
 	//Mock (mudSplat)
 	//splatTest.setDims(xScreen, yScreen);
 	//splatTest.drawAt(xScreen/2, yScreen/2);
-}
+//}

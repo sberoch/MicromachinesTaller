@@ -1,6 +1,10 @@
 #ifndef PLAYER_DISPLAY_H
 #define PLAYER_DISPLAY_H
 
+#include "SdlWindow.h"
+#include "View/HealthBarBackView.h"
+#include "View/HealthBarFrontView.h"
+
 class PlayerDisplay {
 private:
 	SdlWindow& window;

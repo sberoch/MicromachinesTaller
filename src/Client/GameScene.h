@@ -4,10 +4,9 @@
 #include "SdlWindow.h"
 #include "SdlTexture.h"
 #include "View/BackgroundView.h"
-#include "View/HealthBarBackView.h"
-#include "View/HealthBarFrontView.h"
 #include "InputHandler.h"
 #include "TextureCreator.h"
+#include "PlayerDisplay.h"
 #include "GameObjects.h"
 #include "BotHandler.h"
 #include "BaseScene.h"
@@ -33,10 +32,7 @@ private:
 
 	SdlTexture backgroundTex;
 	BackgroundView background;
-	SdlTexture healthBarBackTex;
-	HealthBarBackView healthBackground;
-	SdlTexture healthBarFrontTex;
-	HealthBarFrontView healthBar;
+	PlayerDisplay display;
 
 	InputHandler handler;
 	TextureCreator creator;
@@ -66,7 +62,6 @@ public:
 private:
 	void loadStage();
 	void drawBackground();
-	void drawDisplayObjects();
 	void updateCars(CarList cars);
 	void updateGameEvents();
 };
