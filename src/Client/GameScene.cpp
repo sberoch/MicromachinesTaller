@@ -135,10 +135,6 @@ void GameScene::drawBackground() {
 }
 
 void GameScene::drawDisplayObjects() {
-	//HealthBar
-	healthBackground.drawAt(xScreen*(0.8), yScreen*(0.9));
-	healthBar.drawAt(xScreen*(0.8), yScreen*(0.9));
-
 	//Mock (mudSplat)
 	//splatTest.setDims(xScreen, yScreen);
 	//splatTest.drawAt(xScreen/2, yScreen/2);

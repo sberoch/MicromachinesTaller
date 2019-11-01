@@ -33,6 +33,10 @@ private:
 
 	SdlTexture backgroundTex;
 	BackgroundView background;
+	SdlTexture healthBarBackTex;
+	HealthBarBackView healthBackground;
+	SdlTexture healthBarFrontTex;
+	HealthBarFrontView healthBar;
 
 	InputHandler handler;
 	TextureCreator creator;
