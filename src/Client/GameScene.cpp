@@ -20,11 +20,7 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 
 	backgroundTex("background.png", window),
 	background(backgroundTex),
-	healthBarBackTex("health_background.png", window),
-	healthBackground(healthBarBackTex),
-	healthBarFrontTex("health_bar.png", window),
-	healthBar(healthBarFrontTex),
-
+	
 	handler(window, audio, sendQueue),
 	creator(window),
 

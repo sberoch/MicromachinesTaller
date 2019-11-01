@@ -56,6 +56,6 @@ int LobbyScene::handle() {
 }
 
 bool LobbyScene::insidePlayUserButton(int x, int y) {
-	Area playBtn(0.7*xScreen, 0.7*yScreen, 0.3*xScreen, 0.1*yScreen);
+	Area playBtn(0.7*xScreen, 0.75*yScreen, 0.3*xScreen, 0.1*yScreen);
 	return playBtn.isInside(x, y);
 }
