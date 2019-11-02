@@ -11,11 +11,12 @@ using namespace std::chrono;
 GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> configuration) :
                                              _configuration(configuration),
                                              _world(n_of_players, configuration),
-                                             _cars(), _track(), _gameToStart(true),
+                                             _cars(), _track(), _grass(), _gameToStart(true),
                                              _gameStarted(true),
                                              _gameEnded(false){
                                              //_gameLoop(&GameThread::run, this){
     _world.createTrack(_track);
+    _world.createGrass(_grass);
 }
 
 void GameThread::run(){
