@@ -3,21 +3,13 @@
 GameObjects::GameObjects(TextureCreator& creator) :
 	creator(creator) {}
 
-void GameObjects::addInteractiveObject() {
-
-}
-
-void GameObjects::removeInteractiveObject() {
-
-}
-
 void GameObjects::draw(int cameraX, int cameraY) {
 	for (auto& it : objectsMap) {
 		it.second->drawAt(cameraX, cameraY);
 	}
 }
 
-void GameObjects::add(std::pair<int, ObjectViewPtr> obj) {
+void GameObjects::add(int type, std::pair<int, ObjectViewPtr> obj) {
 	objectsMap.insert(obj);
 }
 
