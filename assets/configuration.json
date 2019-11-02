@@ -29,5 +29,13 @@
       "density" : 0,
       "friction" : 3,
       "restitution" : 0
+    },
+  "grass_configuration" :
+    {
+      "halfWidth" : 2.5,
+      "halfHeight" : 2.5,
+      "density" : 0,
+      "friction" : 8,
+      "restitution" : 0
     }
 }

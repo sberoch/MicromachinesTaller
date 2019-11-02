@@ -100,6 +100,26 @@ float Configuration::getTrackRestitution(){
     return _trackRestitution;
 }
 
+float Configuration::getGrassWidth(){
+    return _grassHalfWidth;
+}
+
+float Configuration::getGrassHeight(){
+    return _grassHalfHeight;
+}
+
+float Configuration::getGrassDensity(){
+    return _grassDensity;
+}
+
+float Configuration::getGrassFriction(){
+    return _grassFriction;
+}
+
+float Configuration::getGrassRestitution(){
+    return _grassRestitution;
+}
+
 float Configuration::getRockHalfLen(){
     return _rockHalfLen;
 }
