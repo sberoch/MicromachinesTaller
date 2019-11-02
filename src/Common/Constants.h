@@ -1,6 +1,7 @@
 //Object types
 #define ID_STRAIGHT_TRACK 100
 #define ID_CURVE_TRACK 101
+#define ID_GRASS 120
 #define ID_HEALTH_POWERUP 102
 #define ID_BOOST_POWERUP 103
 #define ID_ROCK 104

@@ -11,6 +11,7 @@ private:
 
     b2BodyDef _bodyDef;
     b2FixtureDef _fixtureDef;
+    b2Fixture* _fixture;
     b2Body* _body;
 
     void _setBodyDef(float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
