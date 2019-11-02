@@ -4,7 +4,6 @@
 #include <vector>
 #include "Car/Car.h"
 #include "World.h"
-#include "Car/Tire.h"
 #include <thread>
 
 class GameThread {
@@ -12,6 +11,7 @@ private:
     World _world;
     std::vector<Car*> _cars;
     std::vector<Track*> _track;
+    std::vector<Grass*> _grass;
     std::shared_ptr<Configuration> _configuration;
 
     bool _gameToStart, _gameStarted, _gameEnded;

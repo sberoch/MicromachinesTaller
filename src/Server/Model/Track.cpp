@@ -1,5 +1,6 @@
 #include "../json/json.hpp"
 #include <fstream>
+#include <iostream>
 #include "Track.h"
 
 void Track::_setBodyDef(float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration){
@@ -15,12 +16,13 @@ void Track::_setFixtureDef(std::shared_ptr<Configuration> configuration){
     _fixtureDef.density = configuration->getTrackDensity();
     _fixtureDef.friction = configuration->getTrackFriction();
     _fixtureDef.restitution = configuration->getTrackRestitution();
+    _fixtureDef.isSensor = true; //TODO SEE SENSOR AND CONTACTLISTENER
 
     _body->CreateFixture(&_fixtureDef);
 }
 
 Track::Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration) :
-             _id(id), _type(type) {
+             _id(id), _type(type), _fixtureDef() {
     _setBodyDef(x_init, y_init, angle_init, configuration);
     _body = world->CreateBody(&_bodyDef);
     _setFixtureDef(configuration);

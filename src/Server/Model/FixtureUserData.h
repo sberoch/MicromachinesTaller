@@ -3,7 +3,7 @@
 
 //types of fixture user data
 enum fixtureUserDataType {
-    FUD_CAR_TIRE,
+    FUD_CAR,
     FUD_GROUND_AREA
 };
 
@@ -18,9 +18,9 @@ public:
 };
 
 //class to allow marking a fixture as a car tire
-class CarTireFUD : public FixtureUserData {
+class CarFUD : public FixtureUserData {
 public:
-    CarTireFUD() : FixtureUserData(FUD_CAR_TIRE) {}
+    CarFUD() : FixtureUserData(FUD_CAR) {}
 };
 
 //class to allow marking a fixture as a ground area
@@ -28,10 +28,16 @@ class GroundAreaFUD : public FixtureUserData {
 public:
     float frictionModifier;
     bool outOfCourse;
+    bool grass;
 
-    GroundAreaFUD(float fm, bool ooc) : FixtureUserData(FUD_GROUND_AREA) {
+    GroundAreaFUD(float fm, bool ooc, bool grass) : FixtureUserData(FUD_GROUND_AREA) {
         frictionModifier = fm;
         outOfCourse = ooc;
+        grass = grass;
+    }
+
+    bool isGrass(){
+        return grass;
     }
 };
 

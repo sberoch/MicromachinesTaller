@@ -35,6 +35,8 @@ private:
     float _grassHalfWidth;
     float _grassHalfHeight;
     float _grassFriction;
+    float _grassDensity;
+    float _grassRestitution;
 
     //Modifiers
     float _rockHalfLen;
@@ -61,6 +63,13 @@ public:
     float getTrackDensity();
     float getTrackFriction();
     float getTrackRestitution();
+
+    float getGrassWidth();
+    float getGrassHeight();
+    float getGrassDensity();
+    float getGrassFriction();
+    float getGrassRestitution();
+
 
     float getRockHalfLen();
     float getMudHalfLen();

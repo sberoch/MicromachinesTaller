@@ -1,3 +1,4 @@
+
 #ifndef MICROMACHINES_WORLD_H
 #define MICROMACHINES_WORLD_H
 
@@ -6,8 +7,9 @@
 #include <Box2D/Box2D.h>
 #include "Car/Car.h"
 #include "ContactListener.h"
-#include "Car/Tire.h"
 #include "Track.h"
+#include "FixtureUserData.h"
+#include "Grass.h"
 
 class World {
 private:
@@ -27,9 +29,9 @@ private:
 public:
     World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
 
-    std::vector<Track*> createTrack();
+    void createTrack(std::vector<Track*>& track);
+    void createGrass(std::vector<Grass*>& grass);
     Car* createCar(size_t id); //TODO move
-    Tire* createTire(); //Desp con move
 
     void step(uint32_t velocityIt, uint32_t positionIt);
 
