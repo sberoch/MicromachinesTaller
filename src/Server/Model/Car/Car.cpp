@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Car.h"
+#include "../FixtureUserData.h"
 
 void Car::_setShapeAndFixture(std::shared_ptr<Configuration> configuration){
     b2PolygonShape boxShape;
@@ -8,7 +9,8 @@ void Car::_setShapeAndFixture(std::shared_ptr<Configuration> configuration){
     b2FixtureDef boxFixtureDef;
     boxFixtureDef.shape = &boxShape;
     boxFixtureDef.density = 1; //Cuanta densidad?
-    _carBody->CreateFixture(&boxFixtureDef);
+    _fixture = _carBody->CreateFixture(&boxFixtureDef);
+    _fixture->SetUserData(new CarFUD());
 }
 
 void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration){
@@ -22,18 +24,18 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
                                         _id(id), _previous_x(x_init), _previous_y(y_init), _health(100), _maxForwardSpeed(25),
                                         _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false),
-                                        _onTrack(true), _onGrass(false), _currentTraction(1){
+                                        _currentTraction(1), _groundArea() {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
     _carBody->SetAngularVelocity( configuration->getAngularVelocityInit() );
+
     _setShapeAndFixture(configuration);
 
     _state = CarMovingState::makeMovingState(PRESS_NONE, PRESS_NONE);
     _turningState = CarTurningState::makeTurningState(PRESS_NONE, PRESS_NONE);
 
     _carBody->SetUserData(this);
-
     //Friction joint
     _jointDef.collideConnected = true;
     _jointDef.bodyA = _carBody;
@@ -53,8 +55,7 @@ Car::Car(Car&& other){
     this->_health = other._health;
     this->_previous_x = other._previous_x;
     this->_previous_y = other._previous_y;
-    this->_onTrack = other._onTrack;
-    this->_onGrass = other._onGrass;
+    this->_groundArea = other._groundArea;
     this->_currentTraction = other._currentTraction;
 
     other._maxForwardSpeed = 0;
@@ -68,8 +69,7 @@ Car::Car(Car&& other){
     other._health = 0;
     other._previous_x = 0;
     other._previous_y = 0;
-    other._onTrack = false;
-    other._onGrass = false;
+    other._groundArea = nullptr;
     other._currentTraction = 0;
 }
 
@@ -95,8 +95,7 @@ Car& Car::operator=(Car&& other){
     this->_health = other._health;
     this->_previous_x = other._previous_x;
     this->_previous_y = other._previous_y;
-    this->_onTrack = other._onTrack;
-    this->_onGrass = other._onGrass;
+    this->_groundArea = other._groundArea;
     this->_currentTraction = other._currentTraction;
 
     other._maxForwardSpeed = 0;
@@ -110,8 +109,7 @@ Car& Car::operator=(Car&& other){
     other._health = 0;
     other._previous_x = 0;
     other._previous_y = 0;
-    other._onTrack = false;
-    other._onGrass = false;
+    other._groundArea = nullptr;
     other._currentTraction = 0;
 
     return *this;
@@ -152,7 +150,6 @@ void Car::accelerate(){
         force = -_maxDriveForce;
     else
         return;
-    std::cout << " force " << force;
     _carBody->ApplyForce(_currentTraction * force * currentForwardNormal, _carBody->GetWorldCenter(), true);
     std::cout << "  x " << x() << " y " << y() << " angle" << angle() << '\n';
 }
@@ -192,7 +189,7 @@ void Car::friction(){
 }
 
 void Car::turnLeft(){
-    std::cout << "Turn left\n";
+    std::cout << "\nTurn left";
     float desiredTorque = -50;
     if (_isMoving)
         _carBody->ApplyTorque( desiredTorque, true );
@@ -200,7 +197,7 @@ void Car::turnLeft(){
 }
 
 void Car::turnRight(){
-    std::cout << "Turn right\n";
+    std::cout << "\nTurn right";
     float desiredTorque = 50;
     if (_isMoving)
         _carBody->ApplyTorque( desiredTorque, true );
@@ -222,23 +219,20 @@ void Car::updateFriction(){
 }
 
 void Car::updateTraction(){
-    if (_onTrack) {
-        _currentTraction = 0.9f;
-    } else if (_onGrass) {
-        _currentTraction = 0.5f;
-    }
+    if (_groundArea)
+        _currentTraction = _groundArea->frictionModifier;
+    else
+        _currentTraction = 1;
 }
 
-void Car::startContact(b2Body* ground){
-    _onTrack = true;
-    _jointDef.collideConnected = true;
-    _jointDef.bodyB = ground;
-    //_joint = (b2FrictionJoint*) _carBody->GetWorld()->CreateJoint(&_jointDef);
+void Car::addGroundArea(GroundAreaFUD* ga){
+    _groundArea = ga;
+    std::cout << "Added gd with " << _groundArea->frictionModifier ;
 }
 
-void Car::endContact(b2Body* ground){
-    _onTrack = false;
-    //_carBody->GetWorld()->DestroyJoint(_joint);
+void Car::removeGroundArea(GroundAreaFUD* ga){
+    _groundArea = nullptr;
+    std::cout << "No more ga\n";
 }
 
 void Car::handleInput(Input movInput, Input turnInput){
@@ -258,7 +252,7 @@ void Car::update(){
     _state->update(*this);
     _turningState->update(*this);
     updateFriction();
-    //updateTraction();
+    updateTraction();
 }
 
 const float Car::x(){

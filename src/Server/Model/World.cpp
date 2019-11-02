@@ -19,7 +19,6 @@ void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
     json j; i >> j;
 
     json cars = j["cars"];
-    std::cout << cars;
     x = cars.at(id)["x_init"].get<float>();
     y = cars.at(id)["y_init"].get<float>();
     angle = cars.at(id)["angle"].get<float>();
@@ -52,8 +51,26 @@ void World::createTrack(std::vector<Track*>& track){
         Track* _track = new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration);
         track.push_back(_track);
     }
+}
 
-    return track;
+void World::createGrass(std::vector<Grass*>& grass){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json gr = j["grass"];
+    for (auto& g : gr){
+        x = g["x"].get<float>();
+        y = g["y"].get<float>();
+        angle = g["angle"].get<float>();
+        type = g["type"].get<float>();
+        id++;
+        Grass* _grass = new Grass(_world, id, type, x, y, angle * DEGTORAD, _configuration);
+        grass.push_back(_grass);
+    }
 }
 
 void World::step(uint32_t velocityIt, uint32_t positionIt){
@@ -61,6 +78,24 @@ void World::step(uint32_t velocityIt, uint32_t positionIt){
     //how strongly to correct position
     _world->Step( _timeStep, velocityIt, positionIt);
     _world->ClearForces();
+}
+
+void World::BeginContact(b2Contact* contact){
+    handleContact(contact, true);
+}
+
+void World::EndContact(b2Contact* contact){
+    handleContact(contact, false);
+}
+
+void World::handleContact(b2Contact* contact, bool began){
+    void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
+    if ( bodyUserData )
+        static_cast<Car*>( bodyUserData );
+}
+
+b2World* World::getWorld(){
+    return _world;
 }
 
 World::~World(){
@@ -72,41 +107,4 @@ World::~World(){
     }
 
     delete _world;
-}
-
-
-void World::BeginContact(b2Contact* contact){
-    handleContact(contact, true);
-}
-
-void World::EndContact(b2Contact* contact){
-    handleContact(contact, false);
-}
-
-void World::_tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaFixture, bool began){
-//    Tire* tire = (Tire*)tireFixture->GetBody()->GetUserData();
-    GroundAreaFUD* gaFud = (GroundAreaFUD*)groundAreaFixture->GetUserData();
-    //if (began)
-        //tire->addGroundArea(gaFud);
-    //else
-        //tire->removeGroundArea(gaFud);
-}
-
-void World::handleContact(b2Contact* contact, bool began){
-    b2Fixture* a = contact->GetFixtureA();
-    b2Fixture* b = contact->GetFixtureB();
-    FixtureUserData* fudA = (FixtureUserData*)a->GetUserData();
-    FixtureUserData* fudB = (FixtureUserData*)b->GetUserData();
-
-    if (!fudA || !fudB)
-        return;
-
-    if (fudA->getType() == FUD_CAR_TIRE || fudB->getType() == FUD_GROUND_AREA)
-        _tire_vs_groundArea(a, b, began);
-    else if (fudA->getType() == FUD_GROUND_AREA || fudB->getType() == FUD_CAR_TIRE)
-        _tire_vs_groundArea(b, a, began);
-}
-
-b2World* World::getWorld(){
-    return _world;
 }

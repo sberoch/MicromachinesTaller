@@ -1,33 +1,47 @@
 #include <iostream>
 #include "Car/Car.h"
 #include "ContactListener.h"
+#include "FixtureUserData.h"
 
 ContactListener::ContactListener(b2World *world) : _world(world) {}
 
 void ContactListener::BeginContact(b2Contact *contact){
     std::cout << "\n\nBegin contact!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-    // Get the first and second fixture in this contact
-    b2Fixture* GetFixtureA();
-    b2Fixture* GetFixtureB();
-
-    //check if fixture A was a car
-    void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
-    if ( bodyUserData )
-        static_cast<Car*>( bodyUserData )->startContact(contact->GetFixtureB()->GetBody());
-
-    //check if fixture B was a car
-    bodyUserData = contact->GetFixtureB()->GetBody()->GetUserData();
-    if ( bodyUserData )
-        static_cast<Car*>( bodyUserData )->startContact(contact->GetFixtureA()->GetBody());
+    handleContact(contact, true);
 }
 
 void ContactListener::EndContact(b2Contact *contact){
     std::cout << "\n\nEnd contact!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111\n";
-    void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
-    if ( bodyUserData )
-        static_cast<Car*>( bodyUserData )->endContact(contact->GetFixtureB()->GetBody());
+    handleContact(contact, false);
+}
 
-    bodyUserData = contact->GetFixtureB()->GetBody()->GetUserData();
-    if ( bodyUserData )
-        static_cast<Car*>( bodyUserData )->endContact(contact->GetFixtureA()->GetBody());
+void ContactListener::carVsGroundArea(b2Fixture* carFixture, b2Fixture* groundAreaFixture, bool began){
+    Car* car = (Car*) carFixture->GetBody()->GetUserData();
+    if (!car)
+        std::cout << "NOT CAR\n";
+    GroundAreaFUD* gaFud = (GroundAreaFUD*)groundAreaFixture->GetUserData();
+    if (began)
+        car->addGroundArea(gaFud);
+    else
+        car->removeGroundArea(gaFud);
+}
+
+void ContactListener::handleContact(b2Contact* contact, bool began){
+    b2Fixture* a = contact->GetFixtureA();
+    b2Fixture* b = contact->GetFixtureB();
+    FixtureUserData* fudA = (FixtureUserData*) a->GetUserData();
+    FixtureUserData* fudB = (FixtureUserData*) b->GetUserData();
+
+    if (!fudA || !fudB){
+        return;
+    }
+
+    if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_GROUND_AREA){
+        std::cout << "Is ground area with " << ((GroundAreaFUD*) fudB)->frictionModifier << '\n';
+        carVsGroundArea(a, b, began);
+    } else if (fudA->getType() == FUD_GROUND_AREA && fudB->getType() == FUD_CAR){
+        std::cout << "Is ground area with " << ((GroundAreaFUD*) fudA)->frictionModifier << '\n';
+        carVsGroundArea(b, a, began);
+    }
+
 }

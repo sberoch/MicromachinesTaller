@@ -5,6 +5,7 @@
 
 #include "../Input.h"
 #include "../Configuration.h"
+#include "../FixtureUserData.h"
 
 class CarTurningState;
 class CarMovingState;
@@ -19,6 +20,7 @@ private:
     float _maxDriveForce;
 
     size_t _id;
+    b2Fixture* _fixture;
     b2BodyDef _carBodyDef;
     b2Body* _carBody;
     CarMovingState* _state;
@@ -32,8 +34,7 @@ private:
     int _health;
     float _previous_x, _previous_y;
 
-    bool _onTrack;
-    bool _onGrass;
+    GroundAreaFUD* _groundArea;
     float _currentTraction;
 
     void _setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
@@ -55,8 +56,8 @@ public:
     void turnRight();
 
     //Contact with floor
-    void startContact(b2Body* ground);
-    void endContact(b2Body* ground);
+    void addGroundArea(GroundAreaFUD* ga);
+    void removeGroundArea(GroundAreaFUD* ga);
     void updateTraction();
     void updateFriction();
 
