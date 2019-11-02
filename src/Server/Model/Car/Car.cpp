@@ -33,6 +33,11 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std
     _turningState = CarTurningState::makeTurningState(PRESS_NONE, PRESS_NONE);
 
     _carBody->SetUserData(this);
+
+    //Friction joint
+    _jointDef.collideConnected = true;
+    _jointDef.bodyA = _carBody;
+    _jointDef.maxForce = 5;
 }
 
 Car::Car(Car&& other){
@@ -131,7 +136,7 @@ b2Vec2 Car::getForwardVelocity(){
 }
 
 void Car::accelerate(){
-    std::cout << "Acelerando\n";
+    std::cout << "Acelerando ";
     _isMoving = true;
     float desiredSpeed = _maxForwardSpeed;
 
@@ -148,12 +153,12 @@ void Car::accelerate(){
     else
         return;
     std::cout << " force " << force;
-    _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
-    std::cout << "  x " << x() << " y " << y() << " angle" << angle();
+    _carBody->ApplyForce(_currentTraction * force * currentForwardNormal, _carBody->GetWorldCenter(), true);
+    std::cout << "  x " << x() << " y " << y() << " angle" << angle() << '\n';
 }
 
 void Car::desaccelerate(){
-    std::cout << "Descelerando\n";
+    std::cout << "Descelerando ";
     _isMoving = true;
     float desiredSpeed = _maxBackwardSpeed;
 
@@ -169,8 +174,8 @@ void Car::desaccelerate(){
         force = -_maxDriveForce;
     else
         return;
-    _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
-    std::cout << "x " << x() << " y " << y() << " angle" << angle();
+    _carBody->ApplyForce(_currentTraction * force * currentForwardNormal, _carBody->GetWorldCenter(), true);
+    std::cout << "x " << x() << " y " << y() << " angle" << angle()<< '\n';
 }
 
 void Car::friction(){
@@ -218,18 +223,22 @@ void Car::updateFriction(){
 
 void Car::updateTraction(){
     if (_onTrack) {
-        _currentTraction = 0.3f;
+        _currentTraction = 0.9f;
     } else if (_onGrass) {
         _currentTraction = 0.5f;
     }
 }
 
-void Car::startContact(){
+void Car::startContact(b2Body* ground){
     _onTrack = true;
+    _jointDef.collideConnected = true;
+    _jointDef.bodyB = ground;
+    //_joint = (b2FrictionJoint*) _carBody->GetWorld()->CreateJoint(&_jointDef);
 }
 
-void Car::endContact(){
+void Car::endContact(b2Body* ground){
     _onTrack = false;
+    //_carBody->GetWorld()->DestroyJoint(_joint);
 }
 
 void Car::handleInput(Input movInput, Input turnInput){
@@ -249,6 +258,7 @@ void Car::update(){
     _state->update(*this);
     _turningState->update(*this);
     updateFriction();
+    //updateTraction();
 }
 
 const float Car::x(){
@@ -280,6 +290,7 @@ b2Body* Car::body() const {
 }
 
 Car::~Car(){
+    _carBody->GetWorld()->DestroyJoint(_joint);
     _carBody->GetWorld()->DestroyBody(_carBody);
     delete _state;
     delete _turningState;
