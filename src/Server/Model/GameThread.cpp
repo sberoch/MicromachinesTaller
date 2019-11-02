@@ -15,10 +15,7 @@ GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> confi
                                              _gameStarted(true),
                                              _gameEnded(false){
                                              //_gameLoop(&GameThread::run, this){
-
-    for (size_t i=0; i<n_of_players; ++i)
-        //_cars.push_back(_world.createCar(i));
-    _track = _world.createTrack();
+    _world.createTrack(_track);
 }
 
 void GameThread::run(){
