@@ -27,7 +27,7 @@ private:
 public:
     World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
 
-    std::vector<Track*> createTrack();
+    void createTrack(std::vector<Track*>& track);
     Car* createCar(size_t id); //TODO move
 
     void step(uint32_t velocityIt, uint32_t positionIt);

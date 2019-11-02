@@ -1,6 +1,5 @@
 #include <fstream>
 #include "World.h"
-
 #include "../json/json.hpp"
 #include <iostream>
 
@@ -20,6 +19,7 @@ void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
     json j; i >> j;
 
     json cars = j["cars"];
+    std::cout << cars;
     x = cars.at(id)["x_init"].get<float>();
     y = cars.at(id)["y_init"].get<float>();
     angle = cars.at(id)["angle"].get<float>();
@@ -34,17 +34,16 @@ Car* World::createCar(size_t id){
     return new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
 }
 
-std::vector<Track*> World::createTrack(){
-    std::vector<Track*> track;
-
+void World::createTrack(std::vector<Track*>& track){
     std::ifstream i("scene.json");
     json j; i >> j;
+
     size_t id = 0;
     float x, y, angle;
     int type;
 
     json tracks = j["tracks"];
-    for (auto t : tracks){
+    for (auto& t : tracks){
         x = t["x"].get<float>();
         y = t["y"].get<float>();
         angle = t["angle"].get<float>();
