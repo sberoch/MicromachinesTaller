@@ -45,3 +45,18 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
     }
 
 }
+
+void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold){
+    b2Fixture* a = contact->GetFixtureA();
+    b2Fixture* b = contact->GetFixtureB();
+    FixtureUserData* fudA = (FixtureUserData*) a->GetUserData();
+    FixtureUserData* fudB = (FixtureUserData*) b->GetUserData();
+
+    if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_CAR){
+        std::cout << "Cars crashing\n";
+        Car* cara = (Car*) a->GetBody()->GetUserData();
+        Car* carb = (Car*) b->GetBody()->GetUserData();
+        cara->crash();
+        carb->crash();
+    }
+}

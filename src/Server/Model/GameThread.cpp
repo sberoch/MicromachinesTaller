@@ -27,7 +27,10 @@ void GameThread::run(){
 
         //Acepto 1 cliente -> Despues va a aceptar hasta que no este llena y no pongan empezar
         Socket skt = acceptSocket.accept();
-        Player player(std::move(skt), _world.createCar(0));
+        Player player1(std::move(skt), _world.createCar(0));
+
+        Socket skt2 = acceptSocket.accept();
+        Player player2(std::move(skt2), _world.createCar(1));
 
         //Protocol protocol(std::move(skt));
         while (_gameStarted) {
@@ -37,36 +40,15 @@ void GameThread::run(){
             //ServerSnapshot snap;
             //std::string cmd = protocol.receive();
             std::string cmd;
-            player.receive(cmd);
+            player1.receive(cmd);
             //player.handleInput((InputEnum) cmd[0]);
-            player.handleInput(cmd);
-            /*
-            if (cmd == "a") {
-                update(PRESS_NONE, PRESS_LEFT);
-            } else if (cmd == "a_stop") {
-                update(PRESS_NONE, RELEASE_LEFT);
-            } else if (cmd == "d_stop") {
-                update(PRESS_NONE, RELEASE_RIGHT);
-            } else if (cmd == "w_stop") {
-                update(RELEASE_UP, PRESS_NONE);
-            } else if (cmd == "s_stop") {
-                update(RELEASE_DOWN, PRESS_NONE);
-            } else if (cmd == "d") {
-                update(PRESS_NONE, PRESS_RIGHT);
-            } else if (cmd == "w") {
-                update(PRESS_UP, PRESS_NONE);
-            } else if (cmd == "s") {
-                update(PRESS_DOWN, PRESS_NONE);
-            }*/
-            /*
-            std::vector<Car*> cars = getCars();
-            snap.setCar(cars[0]->x(), cars[0]->y(), cars[0]->angle() * RADTODEG, cars[0]->health(), 11);
-            snap.send(protocol);
-            */
+            player1.handleInput(cmd);
+
+            
             //Step del world
             _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
 
-            player.send();
+            player1.send();
             //Sleep
             std::clock_t end = clock();
             double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);

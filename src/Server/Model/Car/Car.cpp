@@ -283,6 +283,10 @@ b2Body* Car::body() const {
     return _carBody;
 }
 
+void Car::crash(){
+    _health -= 10;
+}
+
 Car::~Car(){
     _carBody->GetWorld()->DestroyJoint(_joint);
     _carBody->GetWorld()->DestroyBody(_carBody);

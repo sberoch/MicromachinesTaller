@@ -13,7 +13,7 @@ class CarMovingState;
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
 
-class Car {
+class Car{
 private:
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
@@ -60,6 +60,9 @@ public:
     void removeGroundArea(GroundAreaFUD* ga);
     void updateTraction();
     void updateFriction();
+
+    //Crashing
+    void crash();
 
     b2Vec2 getLateralVelocity();
     b2Vec2 getForwardVelocity();
