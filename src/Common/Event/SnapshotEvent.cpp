@@ -32,7 +32,7 @@ const CarList& SnapshotEvent::getCars() {
 }
 
 
-void SnapshotEvent::send(Protocol& protocol, int id){
+void SnapshotEvent::send(Protocol& protocol) {
     std::string finalMessage;
     json jVec;
 

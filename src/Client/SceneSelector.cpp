@@ -14,7 +14,7 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 		const std::string& host, const std::string& port) : 
 	window(xScreen, yScreen),
 	protocol(host, port),
-	sendQueue(MAX_COMMANDS_ENQUEUED),
+	sendQueue(true),
 	receiver(recvQueue, protocol),
 	sender(sendQueue, protocol),
 	currentScene(SCENE_MENU) {

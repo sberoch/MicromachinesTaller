@@ -9,13 +9,11 @@
 #include "../Protocol.h"
 #include "Event.h"
 
-class EnterLobbyEvent: public Event{
+class EnterLobbyEvent: public Event {
 public:
-    void send(Protocol &protocol, int id) override;
-
-    void receive(Protocol &protocol) override {}
-
-    ~EnterLobbyEvent() override;
+	//TODO: falta constructor con parametros
+    virtual void send(Protocol &protocol) override;
+    virtual ~EnterLobbyEvent() = default;
 };
 
 

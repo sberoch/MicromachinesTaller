@@ -9,8 +9,8 @@ private:
 	std::queue<T> elems;
 public:
 	Queue() = default;
-	void put(T elem);
-	bool get(T& elem);
+	void push(T elem);
+	bool pop(T& elem);
 };
 
 #endif // QUEUE_H

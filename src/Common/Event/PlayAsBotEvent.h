@@ -10,11 +10,9 @@
 
 class PlayAsBotEvent: public Event{
 public:
-    void send(Protocol &protocol, int id) override;
-
-    void receive(Protocol &protocol) override {}
-
-    ~PlayAsBotEvent() override;
+	//TODO: falta constructor con atributos
+    virtual void send(Protocol &protocol) override;
+    virtual ~PlayAsBotEvent() = default;
 };
 
 

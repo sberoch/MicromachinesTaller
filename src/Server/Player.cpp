@@ -11,10 +11,10 @@ void Player::handleInput(const InputEnum& input){
             _car->handleInput(PRESS_UP, PRESS_NONE);
             break;
         case STOP_ACCELERATING:
-            _car->handleInput(PRESS_NONE, RELEASE_LEFT);
+            _car->handleInput(RELEASE_UP, PRESS_NONE);
             break;
         case DESACCELERATE:
-            _car->handleInput(PRESS_UP, PRESS_NONE);
+            _car->handleInput(PRESS_DOWN, PRESS_NONE);
             break;
         case STOP_DESACCELERATING:
             _car->handleInput(RELEASE_DOWN, PRESS_NONE);
@@ -35,29 +35,6 @@ void Player::handleInput(const InputEnum& input){
 
     _car->update();
 }
-
-void Player::handleInput(std::string& input){
-    //TODO change to inoutenum
-    if (input == "a") {
-        _car->handleInput(PRESS_NONE, PRESS_LEFT);
-    } else if (input == "a_stop") {
-        _car->handleInput(PRESS_NONE, RELEASE_LEFT);
-    } else if (input == "d_stop") {
-        _car->handleInput(PRESS_NONE, RELEASE_RIGHT);
-    } else if (input == "w_stop") {
-        _car->handleInput(RELEASE_UP, PRESS_NONE);
-    } else if (input == "s_stop") {
-        _car->handleInput(RELEASE_DOWN, PRESS_NONE);
-    } else if (input == "d") {
-        _car->handleInput(PRESS_NONE, PRESS_RIGHT);
-    } else if (input == "w") {
-        _car->handleInput(PRESS_UP, PRESS_NONE);
-    } else if (input == "s") {
-        _car->handleInput(PRESS_DOWN, PRESS_NONE);
-    }
-    _car->update();
-}
-
 
 void Player::receive(std::string& received){
     received = _protocol.receive();

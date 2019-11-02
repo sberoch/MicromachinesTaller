@@ -12,7 +12,7 @@
 using json = nlohmann::json;
 
 GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
-					BlockingQueue& sendQueue) : 
+					SafeQueue<Event*>& sendQueue) : 
 	window(window),
 	isDone(false),
 	recvQueue(recvQueue),
@@ -48,7 +48,7 @@ void GameScene::update() {
 	window.getWindowSize(&xScreen, &yScreen);
 
 	ServerSnapshot* snap;
-	if (recvQueue.get(snap)) {
+	if (recvQueue.pop(snap)) {
 		updateCars(snap->getCars());
 		updateGameEvents();
 		delete snap;

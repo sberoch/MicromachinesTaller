@@ -4,15 +4,14 @@
 #include <SDL2/SDL.h>
 #include "SdlWindow.h"
 #include "Audio.h"
-#include "../Common/Queue.h"
-#include "../Common/BlockingQueue.h"
-#include <string>
+#include "../Common/Event/Event.h"
+#include "../Common/SafeQueue.h"
 
 class InputHandler {
 private:
 	SdlWindow& window;
 	Audio& audio;
-	BlockingQueue& sendQueue;
+	SafeQueue<Event*>& sendQueue;
 
 	SDL_Event event;
 	bool _done;
@@ -20,7 +19,7 @@ private:
 	bool up_pressed, left_pressed, down_pressed, right_pressed;
 public:
 	InputHandler(SdlWindow& window, Audio& audio,
-		BlockingQueue& sendQueue);
+		SafeQueue<Event*>& sendQueue);
 	bool done();
 	void handle();
 };

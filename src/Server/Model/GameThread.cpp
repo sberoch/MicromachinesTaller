@@ -6,6 +6,8 @@
 #include "../../Common/SocketError.h"
 #include <iostream>
 
+#include "../../Common/Event/EventCreator.h"
+
 using namespace std::chrono;
 
 GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> configuration) :
@@ -31,40 +33,18 @@ void GameThread::run(){
         Socket skt = acceptSocket.accept();
         Player player(std::move(skt), _world.createCar(0));
 
-        //Protocol protocol(std::move(skt));
+        EventCreator eventCreator; 
+
         while (_gameStarted) {
             //Get initial time
             std::clock_t begin = clock();
 
-            //ServerSnapshot snap;
-            //std::string cmd = protocol.receive();
+            player.send();
             std::string cmd;
             player.receive(cmd);
-            //player.handleInput((InputEnum) cmd[0]);
-            player.handleInput(cmd);
-            /*
-            if (cmd == "a") {
-                update(PRESS_NONE, PRESS_LEFT);
-            } else if (cmd == "a_stop") {
-                update(PRESS_NONE, RELEASE_LEFT);
-            } else if (cmd == "d_stop") {
-                update(PRESS_NONE, RELEASE_RIGHT);
-            } else if (cmd == "w_stop") {
-                update(RELEASE_UP, PRESS_NONE);
-            } else if (cmd == "s_stop") {
-                update(RELEASE_DOWN, PRESS_NONE);
-            } else if (cmd == "d") {
-                update(PRESS_NONE, PRESS_RIGHT);
-            } else if (cmd == "w") {
-                update(PRESS_UP, PRESS_NONE);
-            } else if (cmd == "s") {
-                update(PRESS_DOWN, PRESS_NONE);
-            }*/
-            /*
-            std::vector<Car*> cars = getCars();
-            snap.setCar(cars[0]->x(), cars[0]->y(), cars[0]->angle() * RADTODEG, cars[0]->health(), 11);
-            snap.send(protocol);
-            */
+            
+            std::shared_ptr<Event> event = eventCreator.makeEvent(cmd);
+            player.handleInput((InputEnum) event->j["cmd_id"].get<int>());
             //Step del world
             _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
 

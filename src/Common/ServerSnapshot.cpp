@@ -28,7 +28,7 @@ void ServerSnapshot::setCar(float x, float y, int angle, int health, int id) {
     carList.push_back(car);
 }
 
-const CarList& ServerSnapshot::getCars() {
+CarList& ServerSnapshot::getCars() {
     return carList;
 }
 

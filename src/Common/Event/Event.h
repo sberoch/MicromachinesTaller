@@ -10,23 +10,20 @@
 
 using json = nlohmann::json;
 
-enum Type{
-    COMMAND,
-    SNAPSHOT,
-    ENTER_LOBBY,
-    PLAY_AS_USER,
-    PLAY_AS_BOT,
-    ENTER_ROOM
+enum Type {
+    COMMAND = 0,
+    SNAPSHOT = 1,
+    ENTER_LOBBY = 2,
+    PLAY_AS_USER = 3,
+    PLAY_AS_BOT = 4,
+    ENTER_ROOM = 5
 };
 
 class Event {
-protected:
+public:
     json j;
 public:
-    virtual void send(Protocol& protocol, int id) = 0;
-
-    virtual void receive(Protocol& protocol) = 0;
-
+    virtual void send(Protocol& protocol) = 0;
     virtual ~Event() = default;
 };
 

@@ -19,10 +19,10 @@ file(GLOB_RECURSE COMMON_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Common/*.cpp"
 message("[INFO] Cargando fuentes del cliente")
 file(GLOB_RECURSE CLIENT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Client/*.cpp" "src/Client/*.h")
 
-add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES} src/Common/Eventos/EventCreator.cpp)
-target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer SDL2_ttf)
+add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES})
+target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer)
 
-add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES} src/Common/Eventos/EventCreator.cpp)
+add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES})
 target_link_libraries(mm_server Box2D)
 
 install(FILES assets/test_scene.json DESTINATION ${CMAKE_BINARY_DIR})

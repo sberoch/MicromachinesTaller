@@ -15,23 +15,13 @@
 #define ID_EXPLOSION 113
 #define ID_MUD_SPLAT 114
 
-//InputEnum
-#define ACCELERATE 1
-#define STOP_ACCELERATING 2
-#define DESACCELERATE 3
-#define STOP_DESACCELERATING 4
-#define TURN_RIGHT 5
-#define STOP_TURNING_RIGHT 6
-#define TURN_LEFT 7
-#define STOP_TURNING_LEFT 8
-
 //Event types.
-#define COMMAND 1
-#define SNAPSHOT 2
-#define ENTER_LOBBY 3
-#define PLAY_AS_USER 4
-#define PLAY_AS_BOT 5
-#define ENTER_ROOM 6
+#define EVENT_COMMAND 1
+#define EVENT_SNAPSHOT 2
+#define EVENT_ENTER_LOBBY 3
+#define EVENT_PLAY_AS_USER 4
+#define EVENT_PLAY_AS_BOT 5
+#define EVENT_ENTER_ROOM 6
 
 
 //Scenes

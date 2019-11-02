@@ -10,11 +10,9 @@
 
 class PlayAsUserEvent: public Event{
 public:
-    void send(Protocol &protocol, int id) override;
-
-    void receive(Protocol &protocol) override {}
-
-    ~PlayAsUserEvent() override;
+	//TODO: falta constructor con argumentos
+    virtual void send(Protocol &protocol) override;
+    virtual ~PlayAsUserEvent() = default;
 };
 
 

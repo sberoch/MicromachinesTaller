@@ -10,11 +10,9 @@
 
 class EnterRoomEvent: public Event{
 public:
-    void send(Protocol &protocol, int id) override;
-
-    void receive(Protocol &protocol) override {}
-
-    ~EnterRoomEvent() override;
+	//TODO: falta constructor con argumentos
+    virtual void send(Protocol &protocol) override;
+    virtual ~EnterRoomEvent() = default;
 };
 
 

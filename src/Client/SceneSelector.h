@@ -5,8 +5,10 @@
 #include "BaseScene.h"
 #include "ReceiverThread.h"
 #include "SenderThread.h"
+#include "../Common/SafeQueue.h"
 #include "../Common/Queue.h"
-#include "../Common/BlockingQueue.h"
+#include "../Common/Event/Event.h"
+#include "../Common/ServerSnapshot.h"
 #include "../Common/Protocol.h"
 #include <map>
 
@@ -18,7 +20,7 @@ private:
 	Protocol protocol;
 
 	Queue<ServerSnapshot*> recvQueue;
-	BlockingQueue sendQueue;
+	SafeQueue<Event*> sendQueue;
 
 	ReceiverThread receiver;
 	SenderThread sender;

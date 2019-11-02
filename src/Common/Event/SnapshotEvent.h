@@ -22,13 +22,15 @@ private:
 	CarList carList;
 public:
     //Envia el estado de todos los autos.
-    void send(Protocol &protocol, int id) override;
+    void send(Protocol &protocol) override;
 
-    void receive(Protocol &protocol) override ;
+    void receive(Protocol &protocol);
 
 	void setCar(float x, float y, int angle, int health, int id);
 
 	const CarList& getCars();
+	
+	virtual ~SnapshotEvent() = default;
 };
 
 #endif // SERVER_SNAPSHOT_H
