@@ -7,7 +7,7 @@
 #include "../Protocol.h"
 #include "Event.h"
 
-struct Car {
+struct CarStruct {
 	float x;
 	float y;
 	int angle;
@@ -15,7 +15,7 @@ struct Car {
 	int id;
 };
 
-typedef std::vector<Car> CarList;
+typedef std::vector<CarStruct> CarList;
 
 class SnapshotEvent: public Event {
 private:
@@ -29,10 +29,6 @@ public:
 	void setCar(float x, float y, int angle, int health, int id);
 
 	const CarList& getCars();
-
-
-
-
 };
 
 #endif // SERVER_SNAPSHOT_H
