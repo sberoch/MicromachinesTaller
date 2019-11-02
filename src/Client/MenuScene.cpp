@@ -36,10 +36,10 @@ int MenuScene::handle() {
 			if (insideQuitButton(x, y)) {
 				audio.playEffect(SFX_BUTTON);	
 				_done = true;
-			}	
-			if (insidePlayButton(x, y)) {
+				
+			} else if (insidePlayButton(x, y)) {
 				audio.playEffect(SFX_BUTTON);
-				nextScene = SCENE_GAME; //TODO: SCENE_LOBBY
+				nextScene = SCENE_LOBBY;
 			}
 
 		} else if (e.type == SDL_KEYDOWN) {

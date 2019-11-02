@@ -9,5 +9,5 @@ void SenderThread::run() {
 	while(true) {
 		sendQueue.pop(command);
 		protocol.send(command);
-	}
+	} //TODO: ver condicion
 }

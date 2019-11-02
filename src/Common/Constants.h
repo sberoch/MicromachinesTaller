@@ -15,6 +15,25 @@
 #define ID_EXPLOSION 113
 #define ID_MUD_SPLAT 114
 
+//InputEnum
+#define ACCELERATE 1
+#define STOP_ACCELERATING 2
+#define DESACCELERATE 3
+#define STOP_DESACCELERATING 4
+#define TURN_RIGHT 5
+#define STOP_TURNING_RIGHT 6
+#define TURN_LEFT 7
+#define STOP_TURNING_LEFT 8
+
+//Event types.
+#define COMMAND 1
+#define SNAPSHOT 2
+#define ENTER_LOBBY 3
+#define PLAY_AS_USER 4
+#define PLAY_AS_BOT 5
+#define ENTER_ROOM 6
+
+
 //Scenes
 #define SCENE_MENU 200
 #define SCENE_LOBBY 201
@@ -27,6 +46,8 @@
 #define SFX_BUTTON 303
 
 //Pixel sizes (horizontal and vertical)
+#define PIXELS_PER_BLOCK 50
+
 #define HOR_PS_STRAIGHT_TRACK 250
 #define HOR_PS_CURVE_TRACK 250
 #define HOR_PS_HEALTH_POWERUP 50
