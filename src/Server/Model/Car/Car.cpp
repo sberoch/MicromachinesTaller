@@ -283,8 +283,18 @@ b2Body* Car::body() const {
     return _carBody;
 }
 
+//TODO que impacten bien y que al llegar a cero explote
+void Car::crash(b2Vec2 impactVel){
+    std::cout << "\nImpact vel: " << impactVel.x << ' ' << impactVel.y << '\n';
+    _health -= 10;
+    std::cout << "\nHealth: " << _health << '\n';
+    if (_health > 0)
+        _carBody->ApplyLinearImpulse(10 * impactVel, _carBody->GetWorldCenter(), true);
+}
+
 void Car::crash(){
     _health -= 10;
+    std::cout << "\nHealth: " << _health << '\n';
 }
 
 Car::~Car(){

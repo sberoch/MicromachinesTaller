@@ -56,6 +56,33 @@ void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold
         std::cout << "Cars crashing\n";
         Car* cara = (Car*) a->GetBody()->GetUserData();
         Car* carb = (Car*) b->GetBody()->GetUserData();
+
+        //...world manifold is helpful for getting locations
+        b2WorldManifold worldManifold;
+        contact->GetWorldManifold( &worldManifold );
+
+        b2Vec2 vel1 = a->GetBody()->GetLinearVelocityFromWorldPoint( worldManifold.points[0] );
+        b2Vec2 vel2 = b->GetBody()->GetLinearVelocityFromWorldPoint( worldManifold.points[0] );
+        b2Vec2 impactVelocity = vel1 - vel2;
+
+        contact->SetEnabled(false);
+
+        cara->crash(impactVelocity);
+        carb->crash(impactVelocity);
+    }
+}
+
+void ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse){
+    b2Fixture* a = contact->GetFixtureA();
+    b2Fixture* b = contact->GetFixtureB();
+    FixtureUserData* fudA = (FixtureUserData*) a->GetUserData();
+    FixtureUserData* fudB = (FixtureUserData*) b->GetUserData();
+
+    if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_CAR){
+        std::cout << "Post solve Cars crashing\n";
+        Car* cara = (Car*) a->GetBody()->GetUserData();
+        Car* carb = (Car*) b->GetBody()->GetUserData();
+
         cara->crash();
         carb->crash();
     }

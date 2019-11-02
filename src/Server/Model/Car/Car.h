@@ -62,6 +62,7 @@ public:
     void updateFriction();
 
     //Crashing
+    void crash(b2Vec2 impactVel);
     void crash();
 
     b2Vec2 getLateralVelocity();
