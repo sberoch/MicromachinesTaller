@@ -23,7 +23,6 @@
 #define EVENT_PLAY_AS_BOT 5
 #define EVENT_ENTER_ROOM 6
 
-
 //Scenes
 #define SCENE_MENU 200
 #define SCENE_LOBBY 201

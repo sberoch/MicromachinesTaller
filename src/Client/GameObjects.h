@@ -12,6 +12,7 @@ class GameObjects {
 private:
 	TextureCreator& creator;
 	std::map<int, ObjectViewPtr> objectsMap;
+
 public:
 	GameObjects(TextureCreator& creator);
 	//TODO: parameters?

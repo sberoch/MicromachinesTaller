@@ -55,7 +55,7 @@ void InputHandler::handle() {
 					break;
 				}
 				case SDLK_s: {
-					//Break
+					//Brake
 					if (!down_pressed) {
 						audio.playEffect(SFX_CAR_BRAKE);
 						sendQueue.push(new CommandEvent(DESACCELERATE));

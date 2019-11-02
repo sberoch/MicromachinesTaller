@@ -14,14 +14,14 @@
 
 int main(int argc, char const *argv[]) {
     try {
-        std::shared_ptr<Configuration> configuration(
-                std::make_shared<Configuration>());
+        std::shared_ptr<Configuration> configuration(std::make_shared<Configuration>());
         GameThread game(1, configuration);
 
         game.run();
         game.join();
-    } catch(const std::exception &e) {
+    } catch (const std::exception &e) {
         printf("ERROR: %s", e.what());
+        
     } catch (...) {
         std::cout << "Server UnknownException.\n";
     }

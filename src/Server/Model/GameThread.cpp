@@ -45,6 +45,7 @@ void GameThread::run(){
             
             std::shared_ptr<Event> event = eventCreator.makeEvent(cmd);
             player.handleInput((InputEnum) event->j["cmd_id"].get<int>());
+
             //Step del world
             _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
 
