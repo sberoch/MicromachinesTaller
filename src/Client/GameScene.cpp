@@ -108,7 +108,8 @@ void GameScene::loadStage() {
 		y = conv.blockToPixel(obj["y"].get<int>());
 		angle = obj["angle"].get<int>();
 		ObjectViewPtr ov = creator.create(type, x, y, angle);
-		gameObjects.add(std::make_pair(ov->getId(), ov));
+		//TODO: chequear esto
+		gameObjects.add(type, std::make_pair(ov->getId(), ov));
 		if (ov->getId() == myID) {
 			//Center camera in car
 			window.getWindowSize(&xScreen, &yScreen);
