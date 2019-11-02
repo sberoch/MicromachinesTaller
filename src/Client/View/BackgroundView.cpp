@@ -2,7 +2,7 @@
 
 BackgroundView::BackgroundView(const SdlTexture& tex) {
 	this->texture = tex;
-	Area srcArea(0, 0, 1920, 1080);
+	Area srcArea(0, 0, 2048, 1152);
 	clips.push_back(srcArea);
 	horizontalScale = 0;
 	verticalScale = 0;

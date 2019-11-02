@@ -10,7 +10,6 @@
 #include "Thread.h"
 #include "../Common/Socket.h"
 #include "ThClient.h"
-#include "File.h"
 #include <list>
 #include <mutex>
 #include <sys/socket.h>
