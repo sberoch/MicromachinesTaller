@@ -17,7 +17,7 @@ void Track::_setFixtureDef(std::shared_ptr<Configuration> configuration){
     _fixtureDef.density = configuration->getTrackDensity();
     _fixtureDef.friction = configuration->getTrackFriction();
     _fixtureDef.restitution = configuration->getTrackRestitution();
-    //_fixtureDef.isSensor = true; //TODO SEE SENSOR AND CONTACTLISTENER
+    _fixtureDef.isSensor = true; //TODO SEE SENSOR AND CONTACTLISTENER
 
     _fixture = _body->CreateFixture(&_fixtureDef);
     _fixture->SetUserData(new GroundAreaFUD(0.9f, false, false, _id));
