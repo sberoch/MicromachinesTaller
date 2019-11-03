@@ -24,7 +24,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
                                         _id(id), _previous_x(x_init), _previous_y(y_init), _health(100), _maxForwardSpeed(25),
                                         _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false),
-                                        _currentTraction(1), _groundArea() {
+                                        _currentTraction(1), _groundArea(), _createJoint(true) {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
@@ -134,7 +134,7 @@ b2Vec2 Car::getForwardVelocity(){
 }
 
 void Car::accelerate(){
-    std::cout << "Acelerando ";
+    //std::cout << "Acelerando ";
     _isMoving = true;
     float desiredSpeed = _maxForwardSpeed;
 
@@ -151,11 +151,11 @@ void Car::accelerate(){
     else
         return;
     _carBody->ApplyForce(_currentTraction * force * currentForwardNormal, _carBody->GetWorldCenter(), true);
-    std::cout << "  x " << x() << " y " << y() << " angle" << angle() << '\n';
+    //std::cout << "  x " << x() << " y " << y() << " angle" << angle() << '\n';
 }
 
 void Car::desaccelerate(){
-    std::cout << "Descelerando ";
+    //std::cout << "Descelerando ";
     _isMoving = true;
     float desiredSpeed = _maxBackwardSpeed;
 
@@ -172,7 +172,7 @@ void Car::desaccelerate(){
     else
         return;
     _carBody->ApplyForce(_currentTraction * force * currentForwardNormal, _carBody->GetWorldCenter(), true);
-    std::cout << "x " << x() << " y " << y() << " angle" << angle()<< '\n';
+    //std::cout << "x " << x() << " y " << y() << " angle" << angle()<< '\n';
 }
 
 void Car::friction(){
@@ -189,19 +189,19 @@ void Car::friction(){
 }
 
 void Car::turnLeft(){
-    std::cout << "\nTurn left";
+    //std::cout << "\nTurn left";
     float desiredTorque = -50;
     if (_isMoving)
         _carBody->ApplyTorque( desiredTorque, true );
-    std::cout << " x " << x() << " y " << y() << " angle" << angle();
+    //std::cout << " x " << x() << " y " << y() << " angle" << angle();
 }
 
 void Car::turnRight(){
-    std::cout << "\nTurn right";
+    //std::cout << "\nTurn right";
     float desiredTorque = 50;
     if (_isMoving)
         _carBody->ApplyTorque( desiredTorque, true );
-    std::cout << " x " << x() << " y " << y() << " angle" << angle();
+    //std::cout << " x " << x() << " y " << y() << " angle" << angle();
 }
 
 void Car::updateFriction(){
@@ -235,6 +235,32 @@ void Car::removeGroundArea(GroundAreaFUD* ga){
     std::cout << "No more ga\n";
 }
 
+void Car::startContact(b2Body* ground){
+    _jointDef.collideConnected = true;
+    if (!_jointDef.bodyB){
+        _createJoint = true;
+        _jointDef.bodyB = ground;
+    }
+
+    //_joint = (b2FrictionJoint*) _carBody->GetWorld()->CreateJoint(&_jointDef);
+}
+
+void Car::endContact(b2Body* ground){
+    _jointDef.bodyB = nullptr;
+    _createJoint = false;
+    //_carBody->GetWorld()->DestroyJoint(_joint);
+}
+
+void Car::createFrictionJoint(){
+    std::cout << "Create\n";
+    _joint = (b2FrictionJoint*) _carBody->GetWorld()->CreateJoint(&_jointDef);
+}
+
+void Car::destroyFrictionJoint(){
+    std::cout << "Destoy\n";
+    _carBody->GetWorld()->DestroyJoint(_joint);
+}
+
 void Car::handleInput(Input movInput, Input turnInput){
     CarMovingState* state = _state->handleInput(*this, movInput);
     if (state != NULL){
@@ -253,6 +279,11 @@ void Car::update(){
     _turningState->update(*this);
     updateFriction();
     updateTraction();
+
+    if (_jointDef.bodyB && _createJoint)
+        createFrictionJoint();
+    else if (!_createJoint)
+        destroyFrictionJoint();
 }
 
 const float Car::x(){

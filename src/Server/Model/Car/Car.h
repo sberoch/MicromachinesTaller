@@ -30,6 +30,7 @@ private:
     //Floor friction
     b2FrictionJoint* _joint;
     b2FrictionJointDef _jointDef;
+    bool _createJoint;
 
     int _health;
     float _previous_x, _previous_y;
@@ -56,6 +57,11 @@ public:
     void turnRight();
 
     //Contact with floor
+    void startContact(b2Body* ground);
+    void endContact(b2Body* ground);
+    void createFrictionJoint();
+    void destroyFrictionJoint();
+
     void addGroundArea(GroundAreaFUD* ga);
     void removeGroundArea(GroundAreaFUD* ga);
     void updateTraction();
