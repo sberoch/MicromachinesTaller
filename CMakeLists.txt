@@ -22,7 +22,7 @@ file(GLOB_RECURSE CLIENT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Client/*.cpp"
 add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES} src/Common/InputEnum.h src/Common/InputEnum.h)
 target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer SDL2_ttf)
 
-add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES} src/Server/Model/GameThread.cpp src/Server/Model/Configuration.cpp src/Server/Model/Configuration.h src/Server/Player.cpp src/Server/Player.h src/Server/Model/Grass.cpp src/Server/Model/Grass.h)
+add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES} src/Server/Model/GameThread.cpp src/Server/Model/Configuration.cpp src/Server/Model/Configuration.h src/Server/Player.cpp src/Server/Player.h src/Server/Model/Grass.cpp src/Server/Model/Grass.h src/Server/Model/Modifier.cpp src/Server/Model/Modifier.h)
 target_link_libraries(mm_server Box2D)
 
 install(FILES assets/configuration.json DESTINATION ${CMAKE_BINARY_DIR})
