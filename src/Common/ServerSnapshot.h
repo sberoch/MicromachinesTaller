@@ -28,7 +28,7 @@ public:
 
 	void setCar(float x, float y, int angle, int health, int id);
 
-	const CarList& getCars();
+	CarList& getCars();
 
 	//Envia el estado de todos los autos.
 	void send(Protocol& protocol);

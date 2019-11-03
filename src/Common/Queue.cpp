@@ -3,12 +3,12 @@
 #include <string>
 
 template<class T>
-void Queue<T>::put(T elem) {
+void Queue<T>::push(T elem) {
 	elems.push(elem);
 }
 
 template<class T>
-bool Queue<T>::get(T& elem) {
+bool Queue<T>::pop(T& elem) {
 	if (elems.empty()) {
 		return false; 
 	} else {

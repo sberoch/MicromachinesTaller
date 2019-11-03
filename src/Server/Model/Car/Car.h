@@ -3,9 +3,10 @@
 
 #include "../../../3rd-party/Box2D/Box2D.h"
 
-#include "../Input.h"
 #include "../Configuration.h"
 #include "../FixtureUserData.h"
+#include "../../../Common/Event/CommandEvent.h"
+
 
 class CarTurningState;
 class CarMovingState;
@@ -79,7 +80,9 @@ public:
 
     void resetCar();
 
-    virtual void handleInput(Input movInput, Input turnInput);
+    //virtual void handleInput(Input movInput, Input turnInput);
+
+    virtual void handleInput(const InputEnum& input);
     virtual void update();
 
     const float x();
@@ -95,16 +98,20 @@ public:
 
 class CarMovingState{
 public:
-    static CarMovingState* makeMovingState(Input prevInput, Input currentInput);
-    virtual CarMovingState* handleInput(Car& car, Input input) = 0;
+    //static CarMovingState* makeMovingState(Input prevInput, Input currentInput);
+    static CarMovingState* makeMovingState(const InputEnum& input);
+    //virtual CarMovingState* handleInput(Car& car, Input input) = 0;
+    virtual CarMovingState* handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarMovingState(){}
 };
 
 class CarTurningState {
 public:
-    static CarTurningState* makeTurningState(Input prevInput, Input currentInput);
-    virtual CarTurningState* handleInput(Car& car, Input input) = 0;
+    //static CarTurningState* makeTurningState(Input prevInput, Input currentInput);
+    static CarTurningState* makeTurningState(const InputEnum& input);
+    //virtual CarTurningState* handleInput(Car& car, Input input) = 0;
+    virtual CarTurningState* handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarTurningState(){}
 };

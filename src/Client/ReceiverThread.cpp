@@ -9,6 +9,6 @@ void ReceiverThread::run() {
 	ServerSnapshot* snap;
 	while(true) {
 		snap = new ServerSnapshot(protocol);
-		recvQueue.put(snap);
+		recvQueue.push(snap);
 	} //TODO: ver condicion
 }

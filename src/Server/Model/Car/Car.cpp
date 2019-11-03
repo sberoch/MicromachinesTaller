@@ -32,8 +32,8 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std
 
     _setShapeAndFixture(configuration);
 
-    _state = CarMovingState::makeMovingState(PRESS_NONE, PRESS_NONE);
-    _turningState = CarTurningState::makeTurningState(PRESS_NONE, PRESS_NONE);
+    _state = CarMovingState::makeMovingState(STOP_ACCELERATING);
+    _turningState = CarTurningState::makeTurningState(STOP_TURNING_RIGHT);
 
     _carBody->SetUserData(this);
     //Friction joint
@@ -261,13 +261,26 @@ void Car::destroyFrictionJoint(){
     _carBody->GetWorld()->DestroyJoint(_joint);
 }
 
-void Car::handleInput(Input movInput, Input turnInput){
+/*void Car::handleInput(Input movInput, Input turnInput){
     CarMovingState* state = _state->handleInput(*this, movInput);
     if (state != NULL){
         delete _state;
         _state = state;
     }
     CarTurningState* turningState = _turningState->handleInput(*this, turnInput);
+    if (turningState != NULL){
+        delete _turningState;
+        _turningState = turningState;
+    }
+}*/
+
+void Car::handleInput(const InputEnum& input){
+    CarMovingState* state = _state->handleInput(*this, input);
+    if (state != NULL){
+        delete _state;
+        _state = state;
+    }
+    CarTurningState* turningState = _turningState->handleInput(*this, input);
     if (turningState != NULL){
         delete _turningState;
         _turningState = turningState;
@@ -280,10 +293,10 @@ void Car::update(){
     updateFriction();
     updateTraction();
 
-    if (_jointDef.bodyB && _createJoint)
+    /*if (_jointDef.bodyB && _createJoint)
         createFrictionJoint();
     else if (!_createJoint)
-        destroyFrictionJoint();
+        destroyFrictionJoint();*/
 }
 
 const float Car::x(){
@@ -352,8 +365,12 @@ Car::~Car(){
 
 class NegAcceleratingState : public CarMovingState {
 public:
-    CarMovingState* handleInput(Car& car, Input input){
+    /*CarMovingState* handleInput(Car& car, Input input){
         return makeMovingState(PRESS_DOWN, input);
+    }*/
+
+    CarMovingState* handleInput(Car& car, const InputEnum& input){
+        return makeMovingState(input);
     }
 
     void update(Car& car){
@@ -363,8 +380,12 @@ public:
 
 class AcceleratingState : public CarMovingState {
 public:
-    CarMovingState* handleInput(Car& car, Input input) {
+    /*CarMovingState* handleInput(Car& car, Input input) {
         return makeMovingState(PRESS_UP, input);
+    }*/
+
+    CarMovingState* handleInput(Car& car, const InputEnum& input){
+        return makeMovingState(input);
     }
 
     void update(Car& car) {
@@ -375,8 +396,12 @@ public:
 
 class WithoutAcceleratingState : public CarMovingState {
 public:
-    CarMovingState* handleInput(Car& car, Input input) {
+    /*CarMovingState* handleInput(Car& car, Input input) {
         return makeMovingState(PRESS_NONE, input );
+    }*/
+
+    CarMovingState* handleInput(Car& car, const InputEnum& input){
+        return makeMovingState(input);
     }
 
     void update(Car& car) {
@@ -385,6 +410,18 @@ public:
     }
 };
 
+CarMovingState* CarMovingState::makeMovingState(const InputEnum& input){
+    if (input == STOP_ACCELERATING || input == STOP_DESACCELERATING){
+        return new WithoutAcceleratingState();
+    } else if (input == ACCELERATE) {
+        return new AcceleratingState();
+    } else if(input == DESACCELERATE) {
+        return new NegAcceleratingState();
+    }
+    return nullptr;
+}
+
+/*
 CarMovingState* CarMovingState::makeMovingState(Input prevInput, Input currentInput){
     if (prevInput == PRESS_NONE && currentInput == PRESS_NONE){
         return new WithoutAcceleratingState();
@@ -403,15 +440,19 @@ CarMovingState* CarMovingState::makeMovingState(Input prevInput, Input currentIn
     }
 
     return nullptr;
-}
+}*/
 
 //////////////////////// CAR TURNING STATE ///////////////////////////
 
 class NotTurningState : public CarTurningState{
 public:
-    CarTurningState* handleInput(Car& car, Input input){
+    /*CarTurningState* handleInput(Car& car, Input input){
 
         return makeTurningState(PRESS_NONE, input);
+    }*/
+
+    CarTurningState* handleInput(Car& car, const InputEnum& input){
+        return makeTurningState(input);
     }
 
     void update(Car& car){
@@ -422,9 +463,14 @@ public:
 
 class TurningLeftState : public CarTurningState {
 public:
-    CarTurningState* handleInput(Car& car, Input input){
+    /*CarTurningState* handleInput(Car& car, Input input){
         return makeTurningState(PRESS_LEFT, input);
+    }*/
+
+    CarTurningState* handleInput(Car& car, const InputEnum& input){
+        return makeTurningState(input);
     }
+
 
     void update(Car& car){
         //Turn left
@@ -434,9 +480,14 @@ public:
 
 class TurningRightState : public CarTurningState {
 public:
-    CarTurningState* handleInput(Car& car, Input input){
+    /*CarTurningState* handleInput(Car& car, Input input){
         return makeTurningState(PRESS_RIGHT, input);
+    }*/
+
+    CarTurningState* handleInput(Car& car, const InputEnum& input){
+        return makeTurningState(input);
     }
+
 
     void update(Car& car){
         //Turn right
@@ -444,7 +495,19 @@ public:
     }
 };
 
-CarTurningState* CarTurningState::makeTurningState(Input prevInput, Input currentInput){
+CarTurningState* CarTurningState::makeTurningState(const InputEnum& input){
+    if (input == STOP_TURNING_LEFT || input == STOP_TURNING_RIGHT) {
+        return new NotTurningState();
+    } else if (input == TURN_RIGHT) {
+        return new TurningRightState();
+    } else if(input == TURN_LEFT) {
+        return new TurningLeftState();
+    }
+
+    return nullptr;
+}
+
+/*CarTurningState* CarTurningState::makeTurningState(Input prevInput, Input currentInput){
     if (prevInput == PRESS_NONE && currentInput == PRESS_NONE){
         return new NotTurningState();
     } else if (prevInput == PRESS_NONE && currentInput == PRESS_RIGHT) {
@@ -462,4 +525,4 @@ CarTurningState* CarTurningState::makeTurningState(Input prevInput, Input curren
     }
 
     return nullptr;
-}
+}*/

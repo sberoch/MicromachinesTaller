@@ -4,18 +4,17 @@
 #include "Model/Car/Car.h"
 #include "../Common/Socket.h"
 #include "../Common/Protocol.h"
-#include "../Common/InputEnum.h"
+#include "../Common/Event/CommandEvent.h"
 
 class Player {
 private:
     Protocol _protocol;
     Car* _car; //TODO move car
-    int _id;
+    size_t _id;
 
 public:
-    Player(Socket socket, Car* car, int id);
+    Player(Socket socket, Car* car, size_t id);
     void handleInput(const InputEnum& input);
-    void handleInput(std::string& input);
     void receive(std::string& received);
     void send();
 
