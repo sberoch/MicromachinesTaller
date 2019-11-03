@@ -110,6 +110,58 @@ BoostPowerup* World::createBoostPowerup(){
     return new BoostPowerup(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
+Mud* World::createMud(){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json muds = j["muds"];
+    x = muds.at(0)["x"].get<float>();
+    y = muds.at(0)["y"].get<float>();
+    angle = muds.at(0)["angle"].get<float>();
+    type = muds.at(0)["type"].get<float>();
+
+    return new Mud(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+}
+
+Oil* World::createOil(){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json oils = j["oils"];
+    x = oils.at(0)["x"].get<float>();
+    y = oils.at(0)["y"].get<float>();
+    angle = oils.at(0)["angle"].get<float>();
+    type = oils.at(0)["type"].get<float>();
+
+    return new Oil(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+}
+
+Rock* World::createRock(){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json rocks = j["rocks"];
+    x = rocks.at(0)["x"].get<float>();
+    y = rocks.at(0)["y"].get<float>();
+    angle = rocks.at(0)["angle"].get<float>();
+    type = rocks.at(0)["type"].get<float>();
+
+    return new Rock(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+}
+
+
 void World::step(uint32_t velocityIt, uint32_t positionIt){
     //how strongly to correct velocity
     //how strongly to correct position

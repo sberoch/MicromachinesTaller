@@ -18,6 +18,9 @@ GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> confi
     _world.createGrass(_grass);
     _hPowerup = _world.createHealthPowerup();
     _bPowerup = _world.createBoostPowerup();
+    _mud = _world.createMud();
+    _rock = _world.createRock();
+    _oil = _world.createOil();
 }
 
 void GameThread::run(){

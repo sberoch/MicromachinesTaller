@@ -34,6 +34,9 @@ public:
     //Modifiers
     HealthPowerup* createHealthPowerup();
     BoostPowerup* createBoostPowerup();
+    Mud* createMud();
+    Oil* createOil();
+    Rock* createRock();
 
     void step(uint32_t velocityIt, uint32_t positionIt);
 
