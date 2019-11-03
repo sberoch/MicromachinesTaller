@@ -84,7 +84,7 @@ void GameScene::addObject(GameEventStruct gameEvent) {
 										conv.blockToPixel(gameEvent.x), 
 										conv.blockToPixel(gameEvent.y), 
 										gameEvent.angle);
-	gameObjects.add(gameEvent.id, ov);
+	gameObjects.add(ov->getId(), ov);
 }
 
 void GameScene::removeObject(GameEventStruct gameEvent) {
@@ -136,7 +136,7 @@ void GameScene::loadStage() {
 	}
 
 	//Mock
-	display.showMudSplat();
+	//display.showMudSplat();
 }
 
 void GameScene::drawBackground() { 

@@ -14,7 +14,6 @@ void GameObjects::removeInteractiveObject() {
 
 void GameObjects::draw(int cameraX, int cameraY) {
 	for (auto& it : objectsMap) {
-		std::cout << it.second->getId() << std::endl;
 		it.second->drawAt(cameraX, cameraY);
 	}
 }
