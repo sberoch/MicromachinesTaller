@@ -64,7 +64,6 @@ void Player::receive(std::string& received){
 }
 
 void Player::send(){
-    std::cout << "Sending\n";
     ServerSnapshot snap;
     snap.setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), 11);
     snap.send(_protocol);
