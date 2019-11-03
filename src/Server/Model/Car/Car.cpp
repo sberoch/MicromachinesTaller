@@ -261,19 +261,6 @@ void Car::destroyFrictionJoint(){
     _carBody->GetWorld()->DestroyJoint(_joint);
 }
 
-/*void Car::handleInput(Input movInput, Input turnInput){
-    CarMovingState* state = _state->handleInput(*this, movInput);
-    if (state != NULL){
-        delete _state;
-        _state = state;
-    }
-    CarTurningState* turningState = _turningState->handleInput(*this, turnInput);
-    if (turningState != NULL){
-        delete _turningState;
-        _turningState = turningState;
-    }
-}*/
-
 void Car::handleInput(const InputEnum& input){
     CarMovingState* state = _state->handleInput(*this, input);
     if (state != NULL){
@@ -293,6 +280,8 @@ void Car::update(){
     updateFriction();
     updateTraction();
 
+    _previous_x = _carBody->GetPosition().x;
+    _previous_y = _carBody->GetPosition().y;
     /*if (_jointDef.bodyB && _createJoint)
         createFrictionJoint();
     else if (!_createJoint)
@@ -337,13 +326,14 @@ void Car::crash(b2Vec2 impactVel){
         _carBody->ApplyLinearImpulse(-3 * impactVel, _carBody->GetWorldCenter(), true);
         std::cout << "Car " << _id << " x: " << x() << " y: " << y() << " angle: " << angle() << '\n';
     } else {
+        resetCar();
         std::cout << "Health is 0\n";
     }
 }
 
 void Car::handleHealthPowerup(){
     std::cout << "\nHealth bhp: " << _health;
-    _health += 20;
+    _health += 10;
     std::cout << "\nHealth ahp: " << _health;
 }
 
@@ -352,6 +342,25 @@ void Car::handleBoostPowerup(){
     _maxForwardSpeed += 10;
     std::cout << "Max speed abp: " << _maxForwardSpeed << '\n';
     //Ver como ponerlo por un rato nada mas
+}
+
+void Car::handleMud(MudFUD* mudFud){
+    //Mandar msj a vista para imagen de barro
+    float actionTime = mudFud->getActionTime();
+}
+
+void Car::handleOil(OilFUD* oilFud){
+    float damping = oilFud->getDamping();
+
+    _carBody->SetLinearDamping(damping);
+}
+
+void Car::handleRock(RockFUD* rockFud){
+    float velToReduce = rockFud->getVelToReduce();
+    float healthToReduce = rockFud->getHealthToReduce();
+
+    _health -= healthToReduce;
+    _maxForwardSpeed -= velToReduce; //???
 }
 
 Car::~Car(){
@@ -365,10 +374,6 @@ Car::~Car(){
 
 class NegAcceleratingState : public CarMovingState {
 public:
-    /*CarMovingState* handleInput(Car& car, Input input){
-        return makeMovingState(PRESS_DOWN, input);
-    }*/
-
     CarMovingState* handleInput(Car& car, const InputEnum& input){
         return makeMovingState(input);
     }
@@ -380,10 +385,6 @@ public:
 
 class AcceleratingState : public CarMovingState {
 public:
-    /*CarMovingState* handleInput(Car& car, Input input) {
-        return makeMovingState(PRESS_UP, input);
-    }*/
-
     CarMovingState* handleInput(Car& car, const InputEnum& input){
         return makeMovingState(input);
     }
@@ -396,10 +397,6 @@ public:
 
 class WithoutAcceleratingState : public CarMovingState {
 public:
-    /*CarMovingState* handleInput(Car& car, Input input) {
-        return makeMovingState(PRESS_NONE, input );
-    }*/
-
     CarMovingState* handleInput(Car& car, const InputEnum& input){
         return makeMovingState(input);
     }
@@ -421,36 +418,11 @@ CarMovingState* CarMovingState::makeMovingState(const InputEnum& input){
     return nullptr;
 }
 
-/*
-CarMovingState* CarMovingState::makeMovingState(Input prevInput, Input currentInput){
-    if (prevInput == PRESS_NONE && currentInput == PRESS_NONE){
-        return new WithoutAcceleratingState();
-    } else if (prevInput == PRESS_NONE && currentInput == PRESS_UP) {
-        return new AcceleratingState();
-    } else if(prevInput == PRESS_UP && currentInput == PRESS_DOWN) {
-        return new NegAcceleratingState();
-    } else if (prevInput == PRESS_DOWN && currentInput == PRESS_UP) {
-        return new AcceleratingState();
-    } else if (prevInput == PRESS_UP && currentInput == RELEASE_UP) {
-        return new WithoutAcceleratingState();
-    } else if (prevInput == PRESS_DOWN && currentInput == RELEASE_DOWN) {
-        return new WithoutAcceleratingState();
-    } else if (prevInput == PRESS_NONE && currentInput == PRESS_DOWN) {
-        return new NegAcceleratingState();
-    }
-
-    return nullptr;
-}*/
 
 //////////////////////// CAR TURNING STATE ///////////////////////////
 
 class NotTurningState : public CarTurningState{
 public:
-    /*CarTurningState* handleInput(Car& car, Input input){
-
-        return makeTurningState(PRESS_NONE, input);
-    }*/
-
     CarTurningState* handleInput(Car& car, const InputEnum& input){
         return makeTurningState(input);
     }
@@ -463,14 +435,9 @@ public:
 
 class TurningLeftState : public CarTurningState {
 public:
-    /*CarTurningState* handleInput(Car& car, Input input){
-        return makeTurningState(PRESS_LEFT, input);
-    }*/
-
     CarTurningState* handleInput(Car& car, const InputEnum& input){
         return makeTurningState(input);
     }
-
 
     void update(Car& car){
         //Turn left
@@ -480,14 +447,9 @@ public:
 
 class TurningRightState : public CarTurningState {
 public:
-    /*CarTurningState* handleInput(Car& car, Input input){
-        return makeTurningState(PRESS_RIGHT, input);
-    }*/
-
     CarTurningState* handleInput(Car& car, const InputEnum& input){
         return makeTurningState(input);
     }
-
 
     void update(Car& car){
         //Turn right
@@ -506,23 +468,3 @@ CarTurningState* CarTurningState::makeTurningState(const InputEnum& input){
 
     return nullptr;
 }
-
-/*CarTurningState* CarTurningState::makeTurningState(Input prevInput, Input currentInput){
-    if (prevInput == PRESS_NONE && currentInput == PRESS_NONE){
-        return new NotTurningState();
-    } else if (prevInput == PRESS_NONE && currentInput == PRESS_RIGHT) {
-        return new TurningRightState();
-    } else if(prevInput == PRESS_NONE && currentInput == PRESS_LEFT) {
-        return new TurningLeftState();
-    } else if (prevInput == PRESS_LEFT && currentInput == PRESS_RIGHT) {
-        return new TurningRightState();
-    } else if (prevInput == PRESS_LEFT && currentInput == RELEASE_LEFT) {
-        return new NotTurningState();
-    } else if (prevInput == PRESS_RIGHT && currentInput == RELEASE_RIGHT) {
-        return new NotTurningState;
-    } else if (prevInput == PRESS_RIGHT && currentInput == PRESS_LEFT) {
-        return new TurningLeftState();
-    }
-
-    return nullptr;
-}*/

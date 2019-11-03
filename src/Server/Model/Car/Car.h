@@ -6,13 +6,10 @@
 #include "../Configuration.h"
 #include "../FixtureUserData.h"
 #include "../../../Common/Event/CommandEvent.h"
-
+#include "../../../Common/Constants.h"
 
 class CarTurningState;
 class CarMovingState;
-
-#define DEGTORAD 0.0174532925199432957f
-#define RADTODEG 57.295779513082320876f
 
 class Car{
 private:
@@ -74,13 +71,14 @@ public:
     //Modifiers
     void handleHealthPowerup();
     void handleBoostPowerup();
+    void handleMud(MudFUD* mudFud);
+    void handleOil(OilFUD* oilFud);
+    void handleRock(RockFUD* rockFud);
 
     b2Vec2 getLateralVelocity();
     b2Vec2 getForwardVelocity();
 
     void resetCar();
-
-    //virtual void handleInput(Input movInput, Input turnInput);
 
     virtual void handleInput(const InputEnum& input);
     virtual void update();
