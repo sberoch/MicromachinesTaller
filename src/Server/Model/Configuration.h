@@ -49,15 +49,20 @@ private:
 
     float _rockHalfWidth;
     float _rockHalfHeight;
-    float _rockHalfDensity;
+    float _rockDensity;
+    float _velToReduce;
+    float _healthToReduce;
 
     float _mudHalfWidth;
     float _mudHalfHeight;
-    float _mudHalfDensity;
+    float _mudDensity;
+    float _mudTime;
 
     float _oilHalfWidth;
     float _oilHalfHeight;
     float _oilDensity;
+    float _newDamping;
+    float _oilTime;
 
 public:
     Configuration();
@@ -96,15 +101,20 @@ public:
 
     float getRockHalfWidth();
     float getRockHalfHeight();
-    float getRockHalfDensity();
+    float getRockDensity();
+    float getRockVelToReduce();
+    float getRockHealthToReduce();
 
     float getMudHalfWidth();
     float getMudHalfHeight();
-    float getMudHalfDensity();
+    float getMudDensity();
+    float getMudTime();
 
     float getOilHalfWidth();
     float getOilHalfHeight();
     float getOilDensity();
+    float getOilTime();
+    float getOilDamping();
 
 };
 

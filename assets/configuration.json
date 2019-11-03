@@ -54,18 +54,23 @@
   {
     "halfWidth" : 1,
     "halfHeight" : 0.5,
-    "density" : 1
+    "density" : 1,
+    "time" : 10
   },
   "rockConfiguration" :
   {
     "halfWidth" : 0.5,
     "halfHeight" : 0.5,
-    "density" : 1
+    "density" : 1,
+    "velToReduce" : 10,
+    "healthToReduce" : 10
   },
   "oilConfiguration" :
   {
     "halfWidth" : 1,
     "halfHeight" : 0.5,
-    "density" : 1
+    "density" : 1,
+    "time" : 10,
+    "damping" : 10
   }
 }

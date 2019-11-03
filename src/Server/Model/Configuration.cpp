@@ -51,6 +51,27 @@ Configuration::Configuration() {
     _boostPowerUpHalfWidth = boostPUConfig["halfWidth"].get<float>();
     _boostPowerUpHalfHeight = boostPUConfig["halfHeight"].get<float>();
     _boostPowerUpDensity = boostPUConfig["density"].get<float>();
+
+    json mudConfig = j["mudConfiguration"];
+    _mudHalfWidth = mudConfig["halfWidth"].get<float>();
+    _mudHalfHeight = mudConfig["halfHeight"].get<float>();
+    _mudDensity = mudConfig["density"].get<float>();
+    _mudTime = mudConfig["time"].get<float>();
+
+    json rockConfig = j["rockConfiguration"];
+    _rockHalfWidth = rockConfig["halfWidth"].get<float>();
+    _rockHalfHeight = rockConfig["halfHeight"].get<float>();
+    _rockDensity = rockConfig["density"].get<float>();
+    _velToReduce = rockConfig["velToReduce"].get<float>();
+    _healthToReduce = rockConfig["healthToReduce"].get<float>();
+
+    json oilConfig = j["oilConfiguration"];
+    std::cout << oilConfig;
+    _oilHalfWidth = oilConfig["halfWidth"].get<float>();
+    _oilHalfHeight = oilConfig["halfHeight"].get<float>();
+    _oilDensity = oilConfig["density"].get<float>();
+    _oilTime = oilConfig["time"].get<float>();
+    _newDamping = oilConfig["damping"].get<float>();
 }
 
 float Configuration::getGravityX(){
@@ -169,8 +190,16 @@ float Configuration::getRockHalfHeight(){
     return _rockHalfHeight;
 }
 
-float Configuration::getRockHalfDensity(){
-    return _rockHalfDensity;
+float Configuration::getRockDensity(){
+    return _rockDensity;
+}
+
+float Configuration::getRockVelToReduce(){
+    return _velToReduce;
+}
+
+float Configuration::getRockHealthToReduce(){
+    return _healthToReduce;
 }
 
 float Configuration::getMudHalfWidth(){
@@ -181,8 +210,12 @@ float Configuration::getMudHalfHeight(){
     return _mudHalfHeight;
 }
 
-float Configuration::getMudHalfDensity(){
-    return _mudHalfDensity;
+float Configuration::getMudDensity(){
+    return _mudDensity;
+}
+
+float Configuration::getMudTime(){
+    return _mudTime;
 }
 
 float Configuration::getOilHalfWidth(){
@@ -195,4 +228,12 @@ float Configuration::getOilHalfHeight(){
 
 float Configuration::getOilDensity(){
     return _oilDensity;
+}
+
+float Configuration::getOilTime(){
+    return _oilTime;
+}
+
+float Configuration::getOilDamping(){
+    return _newDamping;
 }
