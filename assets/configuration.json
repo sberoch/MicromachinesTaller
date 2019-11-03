@@ -37,5 +37,35 @@
       "density" : 0,
       "friction" : 8,
       "restitution" : 0
-    }
+    },
+  "healthPowerupConfiguration" :
+    {
+      "halfWidth" : 0.5,
+      "halfHeight" : 0.5,
+      "density" : 1
+    },
+  "boostPowerupConfiguration" :
+  {
+    "halfWidth" : 0.5,
+    "halfHeight" : 0.5,
+    "density" : 1
+  },
+  "mudConfiguration" :
+  {
+    "halfWidth" : 1,
+    "halfHeight" : 0.5,
+    "density" : 1
+  },
+  "rockConfiguration" :
+  {
+    "halfWidth" : 0.5,
+    "halfHeight" : 0.5,
+    "density" : 1
+  },
+  "oilConfiguration" :
+  {
+    "halfWidth" : 1,
+    "halfHeight" : 0.5,
+    "density" : 1
+  }
 }

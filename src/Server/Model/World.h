@@ -9,6 +9,7 @@
 #include "Track.h"
 #include "FixtureUserData.h"
 #include "Grass.h"
+#include "Modifier.h"
 
 class World {
 private:
@@ -29,6 +30,10 @@ public:
     void createTrack(std::vector<Track*>& track);
     void createGrass(std::vector<Grass*>& grass);
     Car* createCar(size_t id); //TODO move
+
+    //Modifiers
+    HealthPowerup* createHealthPowerup();
+    BoostPowerup* createBoostPowerup();
 
     void step(uint32_t velocityIt, uint32_t positionIt);
 

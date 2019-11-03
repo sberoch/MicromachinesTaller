@@ -73,6 +73,43 @@ void World::createGrass(std::vector<Grass*>& grass){
     }
 }
 
+HealthPowerup* World::createHealthPowerup(){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json hpowerups = j["health_powerups"];
+    for (auto& hp : hpowerups){
+        type = hp["type"].get<int>();
+        x = hp["x"].get<float>();
+        y = hp["y"].get<float>();
+        angle = hp["angle"].get<float>();
+
+        return new HealthPowerup(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    }
+}
+
+BoostPowerup* World::createBoostPowerup(){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json bpowerups = j["boost_powerups"];
+    std::cout << bpowerups;
+    x = bpowerups.at(0)["x"].get<float>();
+    y = bpowerups.at(0)["y"].get<float>();
+    angle = bpowerups.at(0)["angle"].get<float>();
+    type = bpowerups.at(0)["type"].get<float>();
+
+    return new BoostPowerup(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+}
+
 void World::step(uint32_t velocityIt, uint32_t positionIt){
     //how strongly to correct velocity
     //how strongly to correct position

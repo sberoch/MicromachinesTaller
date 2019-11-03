@@ -39,9 +39,25 @@ private:
     float _grassRestitution;
 
     //Modifiers
-    float _rockHalfLen;
-    float _mudHalfLen;
-    float _healthPowerUpHalfLen;
+    float _healthPowerUpHalfWidth;
+    float _healthPowerUpHalfHeight;
+    float _healthPowerUpDensity;
+
+    float _boostPowerUpHalfWidth;
+    float _boostPowerUpHalfHeight;
+    float _boostPowerUpDensity;
+
+    float _rockHalfWidth;
+    float _rockHalfHeight;
+    float _rockHalfDensity;
+
+    float _mudHalfWidth;
+    float _mudHalfHeight;
+    float _mudHalfDensity;
+
+    float _oilHalfWidth;
+    float _oilHalfHeight;
+    float _oilDensity;
 
 public:
     Configuration();
@@ -70,10 +86,25 @@ public:
     float getGrassFriction();
     float getGrassRestitution();
 
+    float getHealthPowerUpHalfWidth();
+    float getHealthPowerUpHalfHeight();
+    float getHealthPowerUpDensity();
 
-    float getRockHalfLen();
-    float getMudHalfLen();
-    float getHealthPowerUpHalfLen();
+    float getBoostPowerUpHalfWidth();
+    float getBoostPowerUpHalfHeight();
+    float getBoostPowerUpDensity();
+
+    float getRockHalfWidth();
+    float getRockHalfHeight();
+    float getRockHalfDensity();
+
+    float getMudHalfWidth();
+    float getMudHalfHeight();
+    float getMudHalfDensity();
+
+    float getOilHalfWidth();
+    float getOilHalfHeight();
+    float getOilDensity();
 
 };
 

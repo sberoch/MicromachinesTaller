@@ -12,6 +12,9 @@ private:
     std::vector<Car*> _cars;
     std::vector<Track*> _track;
     std::vector<Grass*> _grass;
+    HealthPowerup* _hPowerup;
+    BoostPowerup* _bPowerup;
+
     std::shared_ptr<Configuration> _configuration;
 
     bool _gameToStart, _gameStarted, _gameEnded;

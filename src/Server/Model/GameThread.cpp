@@ -17,6 +17,8 @@ GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> confi
                                              //_gameLoop(&GameThread::run, this){
     _world.createTrack(_track);
     _world.createGrass(_grass);
+    _hPowerup = _world.createHealthPowerup();
+    _bPowerup = _world.createBoostPowerup();
 }
 
 void GameThread::run(){
