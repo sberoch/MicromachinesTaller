@@ -55,22 +55,57 @@ public:
 
 class BoostPowerupFUD : public FixtureUserData {
 public:
-    BoostPowerupFUD(size_t id) : FixtureUserData(FUD_BOOST_POWERUP, id) {}
+    float time;
+
+    BoostPowerupFUD(float time, size_t id) : FixtureUserData(FUD_BOOST_POWERUP, id), time(time) {}
+
+    float getActionTime(){
+        return time;
+    }
 };
 
 class OilFUD : public FixtureUserData {
 public:
-    OilFUD(size_t id) : FixtureUserData(FUD_OIL, id) {}
+    float damping;
+    float time;
+
+    OilFUD(float damping, float time, size_t id) : FixtureUserData(FUD_OIL, id), damping(damping), time(time) {}
+
+    float getDamping(){
+        return damping;
+    }
+
+    float getActionTime(){
+        return time;
+    }
 };
 
 class MudFUD : public FixtureUserData {
 public:
-    MudFUD(size_t id) : FixtureUserData(FUD_MUD, id) {}
+    float time;
+
+    MudFUD(float time, size_t id) : FixtureUserData(FUD_MUD, id), time(time) {}
+
+    float getActionTime(){
+        return time;
+    }
 };
 
 class RockFUD : public FixtureUserData {
 public:
-    RockFUD(size_t id) : FixtureUserData(FUD_ROCK, id) {}
+    float velToReduce;
+    float healthToReduce;
+
+    RockFUD(float velToReduce, float healthToReduce, size_t id) : FixtureUserData(FUD_ROCK, id),
+                                                                  velToReduce(velToReduce), healthToReduce(healthToReduce) {}
+
+    float getVelToReduce(){
+        return velToReduce;
+    }
+
+    float getHealthToReduce(){
+        return healthToReduce;
+    }
 };
 
 #endif //MICROMACHINES_FIXTUREUSERDATA_H
