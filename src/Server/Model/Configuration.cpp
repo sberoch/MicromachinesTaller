@@ -66,7 +66,6 @@ Configuration::Configuration() {
     _healthToReduce = rockConfig["healthToReduce"].get<float>();
 
     json oilConfig = j["oilConfiguration"];
-    std::cout << oilConfig;
     _oilHalfWidth = oilConfig["halfWidth"].get<float>();
     _oilHalfHeight = oilConfig["halfHeight"].get<float>();
     _oilDensity = oilConfig["density"].get<float>();
