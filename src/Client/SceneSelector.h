@@ -8,7 +8,7 @@
 #include "../Common/SafeQueue.h"
 #include "../Common/Queue.h"
 #include "../Common/Event/Event.h"
-#include "../Common/ServerSnapshot.h"
+#include "../Common/Event/SnapshotEvent.h"
 #include "../Common/Protocol.h"
 #include <map>
 
@@ -19,7 +19,7 @@ private:
 
 	Protocol protocol;
 
-	Queue<ServerSnapshot*> recvQueue;
+	Queue<SnapshotEvent*> recvQueue;
 	SafeQueue<Event*> sendQueue;
 
 	ReceiverThread receiver;

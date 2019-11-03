@@ -4,7 +4,7 @@
 #include "Model/Car/Car.h"
 #include "../Common/Socket.h"
 #include "../Common/Protocol.h"
-#include "../Common/InputEnum.h"
+#include "../Common/Event/CommandEvent.h"
 
 class Player {
 private:

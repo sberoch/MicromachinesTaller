@@ -14,7 +14,7 @@
 #include <map>
 #include <string>
 #include "../Common/Converter.h"
-#include "../Common/ServerSnapshot.h"
+#include "../Common/Event/SnapshotEvent.h"
 #include "../Common/Event/Event.h"
 #include "../Common/SafeQueue.h"
 #include "../Common/Queue.h"
@@ -26,7 +26,7 @@ private:
 	Audio audio;
 	bool isDone;
 
-	Queue<ServerSnapshot*>& recvQueue; 
+	Queue<SnapshotEvent*>& recvQueue; 
 	SafeQueue<Event*>& sendQueue;
 
 	SdlTexture backgroundTex;
@@ -48,7 +48,7 @@ private:
 	bool isBot;
 
 public:
-	GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
+	GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
 					SafeQueue<Event*>& sendQueue);
 	virtual bool done() override;
 	virtual void update() override;
@@ -59,7 +59,9 @@ private:
 	void loadStage();
 	void drawBackground();
 	void updateCars(CarList cars);
-	void updateGameEvents();
+	void updateGameEvents(GameEventsList gameEvents);
+	void addObject(GameEventStruct gameEvent);
+	void removeObject(GameEventStruct gameEvent);
 };
 
 #endif // GAME_SCENE_H

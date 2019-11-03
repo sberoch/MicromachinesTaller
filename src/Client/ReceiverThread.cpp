@@ -1,14 +1,14 @@
 #include "ReceiverThread.h"
 #include <iostream>
 
-ReceiverThread::ReceiverThread(Queue<ServerSnapshot*>& recvQueue, Protocol& protocol) :
+ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& recvQueue, Protocol& protocol) :
 	recvQueue(recvQueue),
 	protocol(protocol) {}
 
 void ReceiverThread::run() {
-	ServerSnapshot* snap;
+	SnapshotEvent* snap;
 	while(true) {
-		snap = new ServerSnapshot(protocol);
+		snap = new SnapshotEvent(protocol);
 		recvQueue.push(snap);
 	} //TODO: ver condicion
 }

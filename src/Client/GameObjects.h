@@ -21,7 +21,7 @@ public:
 
 	//TODO: no se si queda esto
 	void draw(int cameraX, int cameraY);
-	void add(std::pair<int, ObjectViewPtr> obj);
+	void add(int id, ObjectViewPtr obj);
 	ObjectViewPtr get(int id);
 	
 };

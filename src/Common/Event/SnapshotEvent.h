@@ -7,6 +7,20 @@
 #include "../Protocol.h"
 #include "Event.h"
 
+enum SnapshotGameEventType {
+	ADD = 0,
+	REMOVE = 1
+};
+
+struct GameEventStruct {
+	SnapshotGameEventType eventType;
+	int objectType; //TODO: enum?
+	float x;
+	float y;
+	int angle;
+	int id;
+};
+
 struct CarStruct {
 	float x;
 	float y;
@@ -16,21 +30,28 @@ struct CarStruct {
 };
 
 typedef std::vector<CarStruct> CarList;
+typedef std::vector<GameEventStruct> GameEventsList;
 
 class SnapshotEvent: public Event {
 private:
 	CarList carList;
+	GameEventsList gameEventsList;
 public:
-    //Envia el estado de todos los autos.
+	SnapshotEvent() = default;
+	SnapshotEvent(Protocol &protocol);
     void send(Protocol &protocol) override;
 
-    void receive(Protocol &protocol);
-
 	void setCar(float x, float y, int angle, int health, int id);
-
 	const CarList& getCars();
+
+	void addExplosion(float x, float y);
+	const GameEventsList& getGameEvents();
 	
 	virtual ~SnapshotEvent() = default;
+
+private:
+	void setGameEvent(SnapshotGameEventType eventType, 
+			int objectType, float x, float y, int angle, int id);
 };
 
 #endif // SERVER_SNAPSHOT_H

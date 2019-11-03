@@ -1,5 +1,5 @@
 #include "Queue.h"
-#include "ServerSnapshot.h"
+#include "Event/SnapshotEvent.h"
 #include <string>
 
 template<class T>
@@ -18,5 +18,5 @@ bool Queue<T>::pop(T& elem) {
 	}
 }
 
-template class Queue<ServerSnapshot*>;
+template class Queue<SnapshotEvent*>;
 template class Queue<std::string>;

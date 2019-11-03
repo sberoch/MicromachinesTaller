@@ -1,4 +1,5 @@
 #include "ExplosionView.h"
+#include <iostream>
 
 ExplosionView::ExplosionView(const SdlTexture& tex) {
 	this->texture = tex;

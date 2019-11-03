@@ -1,19 +1,19 @@
 //Object types
-#define ID_STRAIGHT_TRACK 100
-#define ID_CURVE_TRACK 101
-#define ID_HEALTH_POWERUP 102
-#define ID_BOOST_POWERUP 103
-#define ID_ROCK 104
-#define ID_CAR_1 105
-#define ID_CAR_2 106
-#define ID_CAR_3 107
-#define ID_CAR_4 108
-#define ID_OIL 109
-#define ID_MUD 110
-#define ID_HEALTH_BAR_BACK 111
-#define ID_HEALTH_BAR_FRONT 112
-#define ID_EXPLOSION 113
-#define ID_MUD_SPLAT 114
+#define TYPE_STRAIGHT_TRACK 100
+#define TYPE_CURVE_TRACK 101
+#define TYPE_HEALTH_POWERUP 102
+#define TYPE_BOOST_POWERUP 103
+#define TYPE_ROCK 104
+#define TYPE_CAR_1 105
+#define TYPE_CAR_2 106
+#define TYPE_CAR_3 107
+#define TYPE_CAR_4 108
+#define TYPE_OIL 109
+#define TYPE_MUD 110
+#define TYPE_HEALTH_BAR_BACK 111
+#define TYPE_HEALTH_BAR_FRONT 112
+#define TYPE_EXPLOSION 113
+#define TYPE_MUD_SPLAT 114
 
 //Event types.
 #define EVENT_COMMAND 1

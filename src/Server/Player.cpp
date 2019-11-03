@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Player.h"
-#include "../Common/ServerSnapshot.h"
+#include "../Common/Event/SnapshotEvent.h"
 
 Player::Player(Socket socket, Car* car) : _protocol(std::move(socket)), _car(car){}
 
@@ -42,7 +42,8 @@ void Player::receive(std::string& received){
 
 void Player::send(){
     std::cout << "Sending\n";
-    ServerSnapshot snap;
+    SnapshotEvent snap;
+    snap.addExplosion(_car->x(), _car->y());
     snap.setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), 11);
     snap.send(_protocol);
 }

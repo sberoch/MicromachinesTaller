@@ -34,19 +34,19 @@ TextureCreator::TextureCreator(const SdlWindow& window) :
 ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
 	ObjectViewPtr ov;
 	switch (type) {
-		case ID_STRAIGHT_TRACK: ov.reset(new StraightTrackView(straightTrackTex, angle)); break;
-		case ID_CURVE_TRACK: ov.reset(new CurveTrackView(curveTrackTex, angle)); break;
-		case ID_HEALTH_POWERUP: ov.reset(new HealthPowerupView(powerupTex)); break;
-		case ID_BOOST_POWERUP: ov.reset(new BoostPowerupView(powerupTex)); break;
-		case ID_ROCK: ov.reset(new RockView(rockTex)); break;
-		case ID_CAR_1: ov.reset(new CarView(car1Tex, angle)); break;
-		case ID_CAR_2: ov.reset(new CarView(car2Tex, angle)); break;
-		case ID_CAR_3: ov.reset(new CarView(car3Tex, angle)); break;
-		case ID_CAR_4: ov.reset(new CarView(car4Tex, angle)); break;
-		case ID_OIL: ov.reset(new OilView(oilTex, angle)); break;
-		case ID_MUD: ov.reset(new MudView(mudTex, angle)); break;
-		case ID_EXPLOSION: ov.reset(new ExplosionView(explosionTex)); break;
-		case ID_MUD_SPLAT: ov.reset(new MudSplatView(mudSplatTex)); break;
+		case TYPE_STRAIGHT_TRACK: ov.reset(new StraightTrackView(straightTrackTex, angle)); break;
+		case TYPE_CURVE_TRACK: ov.reset(new CurveTrackView(curveTrackTex, angle)); break;
+		case TYPE_HEALTH_POWERUP: ov.reset(new HealthPowerupView(powerupTex)); break;
+		case TYPE_BOOST_POWERUP: ov.reset(new BoostPowerupView(powerupTex)); break;
+		case TYPE_ROCK: ov.reset(new RockView(rockTex)); break;
+		case TYPE_CAR_1: ov.reset(new CarView(car1Tex, angle)); break;
+		case TYPE_CAR_2: ov.reset(new CarView(car2Tex, angle)); break;
+		case TYPE_CAR_3: ov.reset(new CarView(car3Tex, angle)); break;
+		case TYPE_CAR_4: ov.reset(new CarView(car4Tex, angle)); break;
+		case TYPE_OIL: ov.reset(new OilView(oilTex, angle)); break;
+		case TYPE_MUD: ov.reset(new MudView(mudTex, angle)); break;
+		case TYPE_EXPLOSION: ov.reset(new ExplosionView(explosionTex)); break;
+		case TYPE_MUD_SPLAT: ov.reset(new MudSplatView(mudSplatTex)); break;
 		default: throw std::runtime_error("Texture Creator: Wrong view_id");
 	}
 	++idCounter;

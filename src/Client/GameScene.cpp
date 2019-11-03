@@ -11,7 +11,7 @@
 
 using json = nlohmann::json;
 
-GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
+GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
 					SafeQueue<Event*>& sendQueue) : 
 	window(window),
 	isDone(false),
@@ -47,10 +47,10 @@ void GameScene::update() {
 	audio.playMusic();
 	window.getWindowSize(&xScreen, &yScreen);
 
-	ServerSnapshot* snap;
+	SnapshotEvent* snap;
 	if (recvQueue.pop(snap)) {
 		updateCars(snap->getCars());
-		updateGameEvents();
+		updateGameEvents(snap->getGameEvents());
 		delete snap;
 	}
 }
@@ -69,7 +69,25 @@ void GameScene::updateCars(CarList cars) {
 	}	
 }
 
-void GameScene::updateGameEvents() {
+void GameScene::updateGameEvents(GameEventsList gameEvents) {
+	for (auto& gameEvent : gameEvents) {
+		switch(gameEvent.eventType) {
+			case ADD: addObject(gameEvent); break;
+			case REMOVE: removeObject(gameEvent); break;
+			default: break;
+		}
+	}
+}
+
+void GameScene::addObject(GameEventStruct gameEvent) {
+	ObjectViewPtr ov = creator.create(gameEvent.objectType, 
+										conv.blockToPixel(gameEvent.x), 
+										conv.blockToPixel(gameEvent.y), 
+										gameEvent.angle);
+	gameObjects.add(gameEvent.id, ov);
+}
+
+void GameScene::removeObject(GameEventStruct gameEvent) {
 
 }
 
@@ -108,7 +126,7 @@ void GameScene::loadStage() {
 		y = conv.blockToPixel(obj["y"].get<int>());
 		angle = obj["angle"].get<int>();
 		ObjectViewPtr ov = creator.create(type, x, y, angle);
-		gameObjects.add(std::make_pair(ov->getId(), ov));
+		gameObjects.add(ov->getId(), ov);
 		if (ov->getId() == myID) {
 			//Center camera in car
 			window.getWindowSize(&xScreen, &yScreen);

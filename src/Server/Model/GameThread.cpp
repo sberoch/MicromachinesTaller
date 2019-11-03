@@ -1,7 +1,6 @@
 #include "GameThread.h"
 #include "../../Common/Socket.h"
 #include "../../Common/Protocol.h"
-#include "../../Common/InputEnum.h"
 #include "../Player.h"
 #include "../../Common/SocketError.h"
 #include <iostream>

@@ -1,4 +1,5 @@
 #include "GameObjects.h"
+#include <iostream>
 
 GameObjects::GameObjects(TextureCreator& creator) :
 	creator(creator) {}
@@ -13,12 +14,13 @@ void GameObjects::removeInteractiveObject() {
 
 void GameObjects::draw(int cameraX, int cameraY) {
 	for (auto& it : objectsMap) {
+		std::cout << it.second->getId() << std::endl;
 		it.second->drawAt(cameraX, cameraY);
 	}
 }
 
-void GameObjects::add(std::pair<int, ObjectViewPtr> obj) {
-	objectsMap.insert(obj);
+void GameObjects::add(int id, ObjectViewPtr obj) {
+	objectsMap.insert(std::make_pair(id, obj));
 }
 
 ObjectViewPtr GameObjects::get(int id) {
