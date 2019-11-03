@@ -101,7 +101,6 @@ BoostPowerup* World::createBoostPowerup(){
     int type;
 
     json bpowerups = j["boost_powerups"];
-    std::cout << bpowerups;
     x = bpowerups.at(0)["x"].get<float>();
     y = bpowerups.at(0)["y"].get<float>();
     angle = bpowerups.at(0)["angle"].get<float>();
