@@ -9,7 +9,6 @@
 class GameThread {
 private:
     World _world;
-    std::vector<Car*> _cars;
     std::vector<Track*> _track;
     std::vector<Grass*> _grass;
     HealthPowerup* _hPowerup;
@@ -22,12 +21,10 @@ private:
 
 public:
     GameThread(size_t n_of_players, std::shared_ptr<Configuration> configuration);
-    void update(Input movInput, Input turnInput);
 
     void run();
     void join();
 
-    std::vector<Car*> getCars();
     ~GameThread();
 };
 

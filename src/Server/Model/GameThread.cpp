@@ -1,17 +1,16 @@
 #include "GameThread.h"
 #include "../../Common/Socket.h"
-#include "../../Common/Protocol.h"
-#include "../../Common/InputEnum.h"
 #include "../Player.h"
 #include "../../Common/SocketError.h"
 #include <iostream>
+#include "../../Common/Event/EventCreator.h"
 
 using namespace std::chrono;
 
 GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> configuration) :
                                              _configuration(configuration),
                                              _world(n_of_players, configuration),
-                                             _cars(), _track(), _grass(), _gameToStart(true),
+                                             _track(), _grass(), _gameToStart(true),
                                              _gameStarted(true),
                                              _gameEnded(false){
                                              //_gameLoop(&GameThread::run, this){
@@ -34,17 +33,18 @@ void GameThread::run(){
         Socket skt2 = acceptSocket.accept();
         Player player2(std::move(skt2), _world.createCar(1), 12);
 
+        EventCreator eventCreator;
         //Protocol protocol(std::move(skt));
         while (_gameStarted) {
             //Get initial time
             std::clock_t begin = clock();
 
-            //ServerSnapshot snap;
-            //std::string cmd = protocol.receive();
+            player1.send();
             std::string cmd;
             player1.receive(cmd);
-            //player.handleInput((InputEnum) cmd[0]);
-            player1.handleInput(cmd);
+
+            std::shared_ptr<Event> event = eventCreator.makeEvent(cmd);
+            player1.handleInput((InputEnum) event->j["cmd_id"].get<int>());
             
             //Step del world
             _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
@@ -69,19 +69,4 @@ void GameThread::join(){
     _gameLoop.join();
 }
 
-std::vector<Car*> GameThread::getCars(){
-    return _cars;
-}
-
-void GameThread::update(Input movInput, Input turnInput){
-    for (size_t i=0; i<_cars.size(); ++i){
-        _cars[i]->handleInput(movInput, turnInput);
-        _cars[i]->update();
-    }
-
-    _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
-}
-
-GameThread::~GameThread() {
-
-}
+GameThread::~GameThread() {}
