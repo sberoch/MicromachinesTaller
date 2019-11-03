@@ -35,6 +35,13 @@ Configuration::Configuration() {
     _trackFriction = trackConfig["friction"].get<float>();
     _trackRestitution = trackConfig["restitution"].get<float>();
 
+    json grassConfig = j["grass_configuration"];
+    _grassHalfWidth = grassConfig["halfWidth"].get<float>();
+    _grassHalfHeight = grassConfig["halfHeight"].get<float>();
+    _grassDensity = grassConfig["density"].get<float>();
+    _grassFriction = grassConfig["friction"].get<float>();
+    _grassRestitution = grassConfig["restitution"].get<float>();
+
     json healthPUConfig = j["healthPowerupConfiguration"];
     _healthPowerUpHalfWidth = healthPUConfig["halfWidth"].get<float>();
     _healthPowerUpHalfHeight = healthPUConfig["halfHeight"].get<float>();
