@@ -20,7 +20,7 @@ void Track::_setFixtureDef(std::shared_ptr<Configuration> configuration){
     _fixtureDef.isSensor = true; //TODO SEE SENSOR AND CONTACTLISTENER
 
     _fixture = _body->CreateFixture(&_fixtureDef);
-    _fixture->SetUserData(new GroundAreaFUD(0.9f, false, false));
+    _fixture->SetUserData(new GroundAreaFUD(0.9f, false, false, _id));
 }
 
 Track::Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration) :
