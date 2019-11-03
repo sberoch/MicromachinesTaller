@@ -14,6 +14,7 @@
 #define ID_HEALTH_BAR_FRONT 112
 #define ID_EXPLOSION 113
 #define ID_MUD_SPLAT 114
+#define ID_GRASS 120
 
 //Event types.
 #define EVENT_COMMAND 1

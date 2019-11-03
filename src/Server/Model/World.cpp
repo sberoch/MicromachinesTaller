@@ -70,6 +70,7 @@ void World::createGrass(std::vector<Grass*>& grass){
         id++;
         Grass* _grass = new Grass(_world, id, type, x, y, angle * DEGTORAD, _configuration);
         grass.push_back(_grass);
+        //std::cout << "\nCreating grass x: " << x << " y: " << y << " angle: " << angle;
     }
 }
 

@@ -19,7 +19,7 @@ file(GLOB_RECURSE COMMON_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Common/*.cpp"
 message("[INFO] Cargando fuentes del cliente")
 file(GLOB_RECURSE CLIENT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Client/*.cpp" "src/Client/*.h")
 
-add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES} src/Common/InputEnum.h src/Common/InputEnum.h)
+add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES})
 target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer SDL2_ttf)
 
 add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES} src/Server/Model/GameThread.cpp src/Server/Model/Configuration.cpp src/Server/Model/Configuration.h src/Server/Player.cpp src/Server/Player.h src/Server/Model/Grass.cpp src/Server/Model/Grass.h src/Server/Model/Modifier.cpp src/Server/Model/Modifier.h)
