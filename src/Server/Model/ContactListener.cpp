@@ -2,6 +2,7 @@
 #include "Car/Car.h"
 #include "ContactListener.h"
 #include "FixtureUserData.h"
+#include "Modifier.h"
 
 ContactListener::ContactListener(b2World *world) : _world(world) {}
 
@@ -17,7 +18,7 @@ void ContactListener::EndContact(b2Contact *contact){
     FixtureUserData* fudA = (FixtureUserData*) a->GetUserData();
     FixtureUserData* fudB = (FixtureUserData*) b->GetUserData();
     if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_CAR){
-
+        std::cout << "end contact cars\n";
     } else {
         handleContact(contact, false);
     }
@@ -58,10 +59,30 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
         b2Vec2 vel2 = b->GetBody()->GetLinearVelocityFromWorldPoint( worldManifold.points[0] );
         b2Vec2 impactVelocity = vel1 - vel2;
 
-        cara->crash(impactVelocity);
+        cara->crash(-impactVelocity);
         carb->crash(impactVelocity);
 
         contact->SetEnabled(false);
+    } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_HEALTH_POWERUP){
+        std::cout << "Health powerup\n";
+        Car* car = (Car*) a->GetBody()->GetUserData();
+
+        car->handleHealthPowerup();
+    } else if (fudA->getType() == FUD_HEALTH_POWERUP && fudB->getType() == FUD_CAR){
+        std::cout << "Health powerup\n";
+        Car* car = (Car*) b->GetBody()->GetUserData();
+
+        car->handleHealthPowerup();
+    } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_BOOST_POWERUP){
+        std::cout << "Boost powerup\n";
+        Car* car = (Car*) a->GetBody()->GetUserData();
+
+        car->handleBoostPowerup();
+    } else if (fudA->getType() == FUD_BOOST_POWERUP && fudB->getType() == FUD_CAR){
+        std::cout << "Boost powerup\n";
+        Car* car = (Car*) b->GetBody()->GetUserData();
+
+        car->handleBoostPowerup();
     }
 
     if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_GROUND_AREA){
