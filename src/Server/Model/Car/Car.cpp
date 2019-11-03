@@ -10,7 +10,7 @@ void Car::_setShapeAndFixture(std::shared_ptr<Configuration> configuration){
     boxFixtureDef.shape = &boxShape;
     boxFixtureDef.density = 1; //Cuanta densidad?
     _fixture = _carBody->CreateFixture(&boxFixtureDef);
-    _fixture->SetUserData(new CarFUD());
+    _fixture->SetUserData(new CarFUD(_id));
 }
 
 void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration){
@@ -291,9 +291,23 @@ void Car::crash(b2Vec2 impactVel){
     std::cout << "\nHealth: " << _health;
     if (_health > 0){
         _carBody->ApplyLinearImpulse(-3 * impactVel, _carBody->GetWorldCenter(), true);
+        std::cout << "Car " << _id << " x: " << x() << " y: " << y() << " angle: " << angle() << '\n';
     } else {
         std::cout << "Health is 0\n";
     }
+}
+
+void Car::handleHealthPowerup(){
+    std::cout << "\nHealth bhp: " << _health;
+    _health += 20;
+    std::cout << "\nHealth ahp: " << _health;
+}
+
+void Car::handleBoostPowerup(){
+    std::cout << "Max speed bbp: " << _maxForwardSpeed << ' ';
+    _maxForwardSpeed += 10;
+    std::cout << "Max speed abp: " << _maxForwardSpeed << '\n';
+    //Ver como ponerlo por un rato nada mas
 }
 
 Car::~Car(){

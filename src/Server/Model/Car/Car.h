@@ -64,6 +64,10 @@ public:
     //Crashing
     void crash(b2Vec2 impactVel);
 
+    //Modifiers
+    void handleHealthPowerup();
+    void handleBoostPowerup();
+
     b2Vec2 getLateralVelocity();
     b2Vec2 getForwardVelocity();
 
