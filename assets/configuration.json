@@ -27,7 +27,7 @@
       "halfWidth" : 2.5,
       "halfHeight" : 2.5,
       "density" : 0,
-      "friction" : 3,
+      "friction" : 1,
       "restitution" : 0
     },
   "grass_configuration" :
@@ -35,7 +35,7 @@
       "halfWidth" : 2.5,
       "halfHeight" : 2.5,
       "density" : 0,
-      "friction" : 8,
+      "friction" : 5,
       "restitution" : 0
     },
   "healthPowerupConfiguration" :
