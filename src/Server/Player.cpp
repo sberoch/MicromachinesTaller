@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "../Common/ServerSnapshot.h"
 
-Player::Player(Socket socket, Car* car) : _protocol(std::move(socket)), _car(car){}
+Player::Player(Socket socket, Car* car, int id) : _protocol(std::move(socket)), _car(car), _id(id){}
 
 void Player::handleInput(const InputEnum& input){
     std::cout << "In handle input: " << input << '\n';
@@ -65,6 +65,6 @@ void Player::receive(std::string& received){
 
 void Player::send(){
     ServerSnapshot snap;
-    snap.setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), 11);
+    snap.setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), _id);
     snap.send(_protocol);
 }

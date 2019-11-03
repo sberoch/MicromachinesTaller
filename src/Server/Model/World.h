@@ -23,8 +23,6 @@ private:
     b2BodyDef _track_body_def;
     ContactListener* _contactListener;
 
-    void _tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaFixture, bool began);
-
 public:
     World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
 
@@ -33,10 +31,6 @@ public:
     Car* createCar(size_t id); //TODO move
 
     void step(uint32_t velocityIt, uint32_t positionIt);
-
-    void BeginContact(b2Contact* contact);
-    void EndContact(b2Contact* contact);
-    void handleContact(b2Contact* contact, bool began);
 
     b2World* getWorld();
 

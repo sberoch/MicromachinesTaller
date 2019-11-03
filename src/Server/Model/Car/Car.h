@@ -63,7 +63,6 @@ public:
 
     //Crashing
     void crash(b2Vec2 impactVel);
-    void crash();
 
     b2Vec2 getLateralVelocity();
     b2Vec2 getForwardVelocity();

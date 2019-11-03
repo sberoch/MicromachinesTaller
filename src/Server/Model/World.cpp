@@ -80,20 +80,6 @@ void World::step(uint32_t velocityIt, uint32_t positionIt){
     _world->ClearForces();
 }
 
-void World::BeginContact(b2Contact* contact){
-    handleContact(contact, true);
-}
-
-void World::EndContact(b2Contact* contact){
-    handleContact(contact, false);
-}
-
-void World::handleContact(b2Contact* contact, bool began){
-    void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
-    if ( bodyUserData )
-        static_cast<Car*>( bodyUserData );
-}
-
 b2World* World::getWorld(){
     return _world;
 }

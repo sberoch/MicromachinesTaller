@@ -27,10 +27,10 @@ void GameThread::run(){
 
         //Acepto 1 cliente -> Despues va a aceptar hasta que no este llena y no pongan empezar
         Socket skt = acceptSocket.accept();
-        Player player1(std::move(skt), _world.createCar(0));
+        Player player1(std::move(skt), _world.createCar(0), 11);
 
         Socket skt2 = acceptSocket.accept();
-        Player player2(std::move(skt2), _world.createCar(1));
+        Player player2(std::move(skt2), _world.createCar(1), 12);
 
         //Protocol protocol(std::move(skt));
         while (_gameStarted) {
@@ -43,7 +43,6 @@ void GameThread::run(){
             player1.receive(cmd);
             //player.handleInput((InputEnum) cmd[0]);
             player1.handleInput(cmd);
-
             
             //Step del world
             _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
