@@ -13,13 +13,6 @@ void ContactListener::BeginContact(b2Contact *contact){
 
 void ContactListener::EndContact(b2Contact *contact){
     std::cout << "\n\nEnd contact!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111\n";
-    b2Fixture* a = contact->GetFixtureA();
-    b2Fixture* b = contact->GetFixtureB();
-    FixtureUserData* fudA = (FixtureUserData*) a->GetUserData();
-    FixtureUserData* fudB = (FixtureUserData*) b->GetUserData();
-    if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_CAR){
-        std::cout << "end contact cars\n";
-    }
     handleContact(contact, false);
 }
 
@@ -61,6 +54,8 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
             cara->crash(impactVelocity);
             carb->crash(impactVelocity);
             //contact->SetEnabled(false);
+        } else {
+            std::cout << "End contact cars\n";
         }
 
     } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_HEALTH_POWERUP){
@@ -92,57 +87,18 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
     if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_GROUND_AREA){
         std::cout << "Is ground area with " << ((GroundAreaFUD*) fudB)->frictionModifier << '\n';
         carVsGroundArea(a, b, began);
-        if (began){
+        /*if (began){
             Car* car = (Car*) a->GetBody()->GetUserData();
             car->startContact(b->GetBody());
-        }
+        }*/
     } else if (fudA->getType() == FUD_GROUND_AREA && fudB->getType() == FUD_CAR){
         std::cout << "Is ground area with " << ((GroundAreaFUD*) fudA)->frictionModifier << '\n';
         carVsGroundArea(b, a, began);
-        if (began) {
+        /*if (began) {
             Car* car = (Car*) b->GetBody()->GetUserData();
             car->startContact(a->GetBody());
-        }
+        }*/
     }
 
 }
 
-void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold){
-    //std::cout << "\n-------------------------In presolve-----------------------\n";
-    b2Fixture* a = contact->GetFixtureA();
-    b2Fixture* b = contact->GetFixtureB();
-    FixtureUserData* fudA = (FixtureUserData*) a->GetUserData();
-    FixtureUserData* fudB = (FixtureUserData*) b->GetUserData();
-
-    if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_GROUND_AREA){
-        //std::cout << "Creating joint with " << ((GroundAreaFUD*) fudB)->frictionModifier << '\n';
-        //Car* car = (Car*) a->GetBody()->GetUserData();
-        //car->startContact(b->GetBody());
-    } else if (fudA->getType() == FUD_GROUND_AREA && fudB->getType() == FUD_CAR){
-        //std::cout << "Creating joint with " << ((GroundAreaFUD*) fudA)->frictionModifier << '\n';
-        //Car* car = (Car*) b->GetBody()->GetUserData();
-        //car->endContact(a->GetBody());
-    } else {
-        std::cout << "Not contact between car and ga\n";
-        std::cout << fudA->getType() << ' ' << fudB->getType();
-    }
-
-}
-
-void ContactListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse){
-    b2Fixture* a = contact->GetFixtureA();
-    b2Fixture* b = contact->GetFixtureB();
-    FixtureUserData* fudA = (FixtureUserData*) a->GetUserData();
-    FixtureUserData* fudB = (FixtureUserData*) b->GetUserData();
-    //std::cout << "In postsolve\n";
-
-    if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_GROUND_AREA){
-        //std::cout << "Destroying joint with " << ((GroundAreaFUD*) fudB)->frictionModifier << '\n';
-        //Car* car = (Car*) a->GetBody()->GetUserData();
-        //car->endContact(b->GetBody());
-    } else if (fudA->getType() == FUD_GROUND_AREA && fudB->getType() == FUD_CAR){
-        //std::cout << "Destroying joint with " << ((GroundAreaFUD*) fudA)->frictionModifier << '\n';
-        //Car* car = (Car*) b->GetBody()->GetUserData();
-        //car->endContact(a->GetBody());
-    }
-}

@@ -15,8 +15,8 @@ public:
     void carVsGroundArea(b2Fixture* carFixture, b2Fixture* groundAreaFixture, bool began);
     void handleContact(b2Contact* contact, bool began);
 
-    void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
-    void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+    //void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
+    //void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 };
 
 #endif //MICROMACHINES_CONTACTLISTENER_H
