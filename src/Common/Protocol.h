@@ -17,11 +17,7 @@ public:
 	
     explicit Protocol(Socket socket);
 
-<<<<<<< Updated upstream
-    Protocol(Protocol &&other) noexcept;
-=======
     Protocol(Protocol &&other);
->>>>>>> Stashed changes
 
     ~Protocol();
 
