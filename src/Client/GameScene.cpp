@@ -57,7 +57,7 @@ void GameScene::update() {
 
 void GameScene::updateCars(CarList cars) {
 	for (auto& car : cars) {
-		ObjectViewPtr carView = gameObjects.get(car.id);
+		ObjectViewPtr carView = gameObjects.getCar(car.id);
 		carView->setRotation(car.angle);
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
@@ -84,7 +84,7 @@ void GameScene::addObject(GameEventStruct gameEvent) {
 										conv.blockToPixel(gameEvent.x), 
 										conv.blockToPixel(gameEvent.y), 
 										gameEvent.angle);
-	gameObjects.add(ov->getId(), ov);
+	gameObjects.add(gameEvent.objectType, ov->getId(), ov);
 }
 
 void GameScene::removeObject(GameEventStruct gameEvent) {
@@ -126,7 +126,7 @@ void GameScene::loadStage() {
 		y = conv.blockToPixel(obj["y"].get<int>());
 		angle = obj["angle"].get<int>();
 		ObjectViewPtr ov = creator.create(type, x, y, angle);
-		gameObjects.add(ov->getId(), ov);
+		gameObjects.add(type, ov->getId(), ov);
 		if (ov->getId() == myID) {
 			//Center camera in car
 			window.getWindowSize(&xScreen, &yScreen);
@@ -134,9 +134,6 @@ void GameScene::loadStage() {
 			display.cam_y = yScreen/2 - y;
 		}
 	}
-
-	//Mock
-	//display.showMudSplat();
 }
 
 void GameScene::drawBackground() { 
