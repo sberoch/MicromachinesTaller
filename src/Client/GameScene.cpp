@@ -1,13 +1,7 @@
 #include "GameScene.h"
 #include "../Common/json.hpp"
 #include "../Common/Constants.h"
-#include "View/HealthBarFrontView.h"
-#include <SDL2/SDL.h>
 #include <iostream>
-#include <fstream>
-
-//Mock
-#include "View/MudSplatView.h"
 
 using json = nlohmann::json;
 
@@ -30,12 +24,8 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
-	yScreen(0) {
-		window.fill();
-
-		//Mock
-		isBot = false;
-}
+	yScreen(0),
+	isBot(false) {}
 
 bool GameScene::done() {
 	return isDone;
@@ -47,8 +37,7 @@ void GameScene::update() {
 
 	SnapshotEvent* snap;
 	if (recvQueue.pop(snap)) {
-		CarList cars = snap->getCars();
-		updateCars(cars);
+		updateCars(snap->getCars());
 		updateGameEvents(snap->getGameEvents());
 		delete snap;
 	}
@@ -111,29 +100,6 @@ int GameScene::handle() {
 	}
 	//TODO: change this to support a final scene.
 	return SCENE_GAME;
-}
-
-void GameScene::loadStage() {
-	//TODO: this is sent by server
-	int type, x, y, angle;
-	std::ifstream i("test_scene.json");
-	json j; i >> j;
-
-	json objects = j["objects"];
-	for (auto& obj : objects) {
-		type = obj["type"].get<int>();
-		x = conv.blockToPixel(obj["x"].get<int>());
-		y = conv.blockToPixel(obj["y"].get<int>());
-		angle = obj["angle"].get<int>();
-		ObjectViewPtr ov = creator.create(type, x, y, angle);
-		gameObjects.add(type, ov->getId(), ov);
-		if (ov->getId() == myID) {
-			//Center camera in car
-			window.getWindowSize(&xScreen, &yScreen);
-			display.cam_x = xScreen/2 - x;
-			display.cam_y = yScreen/2 - y;
-		}
-	}
 }
 
 void GameScene::drawBackground() { 

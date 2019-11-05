@@ -56,7 +56,6 @@ public:
 	virtual int handle() override;
 	virtual ~GameScene() {}
 private:
-	void loadStage();
 	void drawBackground();
 	void updateCars(CarList cars);
 	void updateGameEvents(GameEventsList gameEvents);
