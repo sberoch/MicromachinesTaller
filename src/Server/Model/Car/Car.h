@@ -16,6 +16,7 @@ private:
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
     float _maxDriveForce;
+    float _maxLateralImpulse;
 
     size_t _id;
     b2Fixture* _fixture;
@@ -94,11 +95,10 @@ public:
     ~Car();
 };
 
+
 class CarMovingState{
 public:
-    //static CarMovingState* makeMovingState(Input prevInput, Input currentInput);
     static CarMovingState* makeMovingState(const InputEnum& input);
-    //virtual CarMovingState* handleInput(Car& car, Input input) = 0;
     virtual CarMovingState* handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarMovingState(){}
@@ -106,9 +106,7 @@ public:
 
 class CarTurningState {
 public:
-    //static CarTurningState* makeTurningState(Input prevInput, Input currentInput);
     static CarTurningState* makeTurningState(const InputEnum& input);
-    //virtual CarTurningState* handleInput(Car& car, Input input) = 0;
     virtual CarTurningState* handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarTurningState(){}

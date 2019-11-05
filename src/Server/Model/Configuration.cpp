@@ -70,7 +70,8 @@ Configuration::Configuration() {
     _oilHalfHeight = oilConfig["halfHeight"].get<float>();
     _oilDensity = oilConfig["density"].get<float>();
     _oilTime = oilConfig["time"].get<float>();
-    _newDamping = oilConfig["damping"].get<float>();
+    _newLinearDamping = oilConfig["linearDamping"].get<float>();
+    _newAngularDamping = oilConfig["angularDamping"].get<float>();
 }
 
 float Configuration::getGravityX(){
@@ -233,6 +234,10 @@ float Configuration::getOilTime(){
     return _oilTime;
 }
 
-float Configuration::getOilDamping(){
-    return _newDamping;
+float Configuration::getOilLinearDamping(){
+    return _newLinearDamping;
+}
+
+float Configuration::getOilAngularDamping(){
+    return _newAngularDamping;
 }

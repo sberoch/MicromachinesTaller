@@ -207,7 +207,7 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new OilFUD(configuration->getOilDamping(), configuration->getOilTime(), _id));
+        _fixture->SetUserData(new OilFUD(configuration->getOilLinearDamping(), configuration->getOilAngularDamping(), configuration->getOilTime(), _id));
     }
 
 public:

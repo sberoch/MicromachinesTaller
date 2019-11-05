@@ -61,7 +61,8 @@ private:
     float _oilHalfWidth;
     float _oilHalfHeight;
     float _oilDensity;
-    float _newDamping;
+    float _newLinearDamping;
+    float _newAngularDamping;
     float _oilTime;
 
 public:
@@ -114,7 +115,8 @@ public:
     float getOilHalfHeight();
     float getOilDensity();
     float getOilTime();
-    float getOilDamping();
+    float getOilLinearDamping();
+    float getOilAngularDamping();
 
 };
 

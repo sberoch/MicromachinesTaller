@@ -71,6 +71,7 @@
     "halfHeight" : 0.5,
     "density" : 1,
     "time" : 10,
-    "damping" : 10
+    "linearDamping" : 0,
+    "angularDamping" : 0
   }
 }

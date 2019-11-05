@@ -66,13 +66,20 @@ public:
 
 class OilFUD : public FixtureUserData {
 public:
-    float damping;
+    float linearDamping;
+    float angularDamping;
     float time;
 
-    OilFUD(float damping, float time, size_t id) : FixtureUserData(FUD_OIL, id), damping(damping), time(time) {}
+    OilFUD(float linearDamping, float angularDamping, float time, size_t id) :
+                 FixtureUserData(FUD_OIL, id), linearDamping(linearDamping),
+                 angularDamping(angularDamping), time(time) {}
 
-    float getDamping(){
-        return damping;
+    float getLinearDamping(){
+        return linearDamping;
+    }
+
+    float getAngularDamping(){
+        return angularDamping;
     }
 
     float getActionTime(){

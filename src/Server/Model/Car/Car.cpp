@@ -23,7 +23,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
                                         _id(id), _previous_x(x_init), _previous_y(y_init), _health(100), _maxForwardSpeed(25),
-                                        _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false),
+                                        _maxBackwardSpeed(-5), _maxDriveForce(50), _maxLateralImpulse(2.5f), _isMoving(false),
                                         _currentTraction(1), _groundArea(), _createJoint(true) {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
@@ -134,7 +134,7 @@ b2Vec2 Car::getForwardVelocity(){
 }
 
 void Car::accelerate(){
-    //std::cout << "Acelerando ";
+    std::cout << "Acelerando ";
     _isMoving = true;
     float desiredSpeed = _maxForwardSpeed;
 
@@ -155,7 +155,7 @@ void Car::accelerate(){
 }
 
 void Car::desaccelerate(){
-    //std::cout << "Descelerando ";
+    std::cout << "Descelerando ";
     _isMoving = true;
     float desiredSpeed = _maxBackwardSpeed;
 
@@ -205,10 +205,10 @@ void Car::turnRight(){
 }
 
 void Car::updateFriction(){
-    float maxLateralImpulse = 2.5f;
     b2Vec2 impulse = _carBody->GetMass() * -getLateralVelocity();
-    if (impulse.Length() > maxLateralImpulse)
-        impulse *= maxLateralImpulse / impulse.Length();
+    //std::cout << "impulse " << impulse.x << " " << impulse.y;
+    if (impulse.Length() > _maxLateralImpulse)
+        impulse *= _maxLateralImpulse / impulse.Length();
     _carBody->ApplyLinearImpulse(impulse, _carBody->GetWorldCenter(), true);
     _carBody->ApplyAngularImpulse(0.9f * _carBody->GetInertia() * -_carBody->GetAngularVelocity(), true);
 
@@ -350,9 +350,15 @@ void Car::handleMud(MudFUD* mudFud){
 }
 
 void Car::handleOil(OilFUD* oilFud){
-    float damping = oilFud->getDamping();
+    float linearDamping = oilFud->getLinearDamping();
+    float angularDamping = oilFud->getAngularDamping();
 
-    _carBody->SetLinearDamping(damping);
+    std::cout << "linearDamp " << linearDamping << "ang" << angularDamping;
+    _carBody->SetLinearDamping(linearDamping);
+    _carBody->SetAngularDamping(angularDamping);
+    _fixture->SetFriction(0);
+
+    _maxLateralImpulse = 0.5f;
 }
 
 void Car::handleRock(RockFUD* rockFud){
@@ -369,6 +375,7 @@ Car::~Car(){
     delete _state;
     delete _turningState;
 }
+
 
 //////////////////////// CAR MOVING STATE ///////////////////////////
 
