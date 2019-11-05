@@ -8,15 +8,29 @@
 #include "../../../Common/Event/CommandEvent.h"
 #include "../../../Common/Constants.h"
 
+enum Status {
+    GRABBED_HEALTH_POWERUP,
+    GRABBED_BOOST_POWERUP,
+    GRABBED_ROCK,
+    GRABBED_OIL,
+    GRABBED_MUD,
+    EXPLODED,
+    CRASHED_INTO_CAR,
+    NOTHING
+};
+
 class CarTurningState;
 class CarMovingState;
 
 class Car{
 private:
+    std::shared_ptr<Configuration> _configuration;
+
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
     float _maxDriveForce;
     float _maxLateralImpulse;
+    float _desiredTorque; //Maniovrability.
 
     size_t _id;
     b2Fixture* _fixture;
@@ -25,6 +39,7 @@ private:
     CarMovingState* _state;
     CarTurningState* _turningState;
     bool _isMoving;
+    Status _status;
 
     //Floor friction
     b2FrictionJoint* _joint;
@@ -51,7 +66,6 @@ public:
 
     void accelerate();
     void desaccelerate();
-    void friction();
     void turnLeft();
     void turnRight();
 
@@ -80,6 +94,7 @@ public:
     b2Vec2 getForwardVelocity();
 
     void resetCar();
+    Status getStatus();
 
     virtual void handleInput(const InputEnum& input);
     virtual void update();

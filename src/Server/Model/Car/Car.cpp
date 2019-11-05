@@ -9,6 +9,7 @@ void Car::_setShapeAndFixture(std::shared_ptr<Configuration> configuration){
     b2FixtureDef boxFixtureDef;
     boxFixtureDef.shape = &boxShape;
     boxFixtureDef.density = 1; //Cuanta densidad?
+    boxFixtureDef.friction = 0.5;
     _fixture = _carBody->CreateFixture(&boxFixtureDef);
     _fixture->SetUserData(new CarFUD(_id));
 }
@@ -22,9 +23,14 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 }
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-                                        _id(id), _previous_x(x_init), _previous_y(y_init), _health(100), _maxForwardSpeed(25),
-                                        _maxBackwardSpeed(-5), _maxDriveForce(50), _maxLateralImpulse(2.5f), _isMoving(false),
-                                        _currentTraction(1), _groundArea(), _createJoint(true) {
+                                        _configuration(configuration),
+                                        _id(id), _previous_x(x_init), _previous_y(y_init),
+                                        _health(configuration->getMaxHealth()),
+                                        _maxForwardSpeed(configuration->getMaxForwardVelocity()),
+                                        _maxBackwardSpeed(configuration->getMaxBackwardsVelocity()),
+                                        _desiredTorque(configuration->getDesiredTorque()),
+                                        _maxDriveForce(50), _maxLateralImpulse(2.5f), _isMoving(false),
+                                        _currentTraction(1), _groundArea(), _createJoint(true), _status(NOTHING) {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
@@ -117,7 +123,7 @@ Car& Car::operator=(Car&& other){
 
 
 void Car::resetCar(){
-    _health = 100;
+    _health = _configuration->getMaxHealth();
     //x should be middle, check if thereś already a car?
     b2Vec2 position = b2Vec2(0, _previous_y);
     _carBody->SetTransform(position, b2_pi/2); //See angle
@@ -175,32 +181,17 @@ void Car::desaccelerate(){
     //std::cout << "x " << x() << " y " << y() << " angle" << angle()<< '\n';
 }
 
-void Car::friction(){
-    float currentSpeed = _carBody->GetLinearVelocity().y;
-
-    //float velocityChange = _currentTraction * speed();
-    //float force = _carBody->GetMass() * velocityChange / (1/30.0);
-    //_carBody->ApplyForce(b2Vec2(0, force), _carBody->GetWorldCenter(), true);
-
-    float velocityChange = -currentSpeed;
-    //float impulse = _currentTraction * _carBody->GetMass() * velocityChange;
-    if (currentSpeed > 0)
-        _carBody->ApplyLinearImpulse(b2Vec2(0, -10 * _currentTraction), _carBody->GetWorldCenter(), true);
-}
-
 void Car::turnLeft(){
     //std::cout << "\nTurn left";
-    float desiredTorque = -50;
     if (_isMoving)
-        _carBody->ApplyTorque( desiredTorque, true );
+        _carBody->ApplyTorque(-_desiredTorque, true );
     //std::cout << " x " << x() << " y " << y() << " angle" << angle();
 }
 
 void Car::turnRight(){
     //std::cout << "\nTurn right";
-    float desiredTorque = 50;
     if (_isMoving)
-        _carBody->ApplyTorque( desiredTorque, true );
+        _carBody->ApplyTorque(_desiredTorque, true );
     //std::cout << " x " << x() << " y " << y() << " angle" << angle();
 }
 
@@ -219,10 +210,16 @@ void Car::updateFriction(){
 }
 
 void Car::updateTraction(){
-    if (_groundArea)
+    if (_groundArea){
+        if (_groundArea->isGrass()){
+            std::cout << "is grass";
+            _carBody->SetLinearDamping(1);
+            _carBody->SetAngularDamping(3.5);
+        }
         _currentTraction = _groundArea->frictionModifier;
-    else
+    } else {
         _currentTraction = 1;
+    }
 }
 
 void Car::addGroundArea(GroundAreaFUD* ga){
@@ -318,6 +315,7 @@ b2Body* Car::body() const {
 
 //TODO que impacten bien y que al llegar a cero explote
 void Car::crash(b2Vec2 impactVel){
+    _status = CRASHED_INTO_CAR;
     std::cout << "\nImpact vel: " << impactVel.x << ' ' << impactVel.y ;
     float vel = sqrt(pow(impactVel.x, 2) + pow(impactVel.y, 2));
     _health -= 2 * vel;
@@ -332,12 +330,14 @@ void Car::crash(b2Vec2 impactVel){
 }
 
 void Car::handleHealthPowerup(){
+    _status = GRABBED_HEALTH_POWERUP;
     std::cout << "\nHealth bhp: " << _health;
     _health += 10;
     std::cout << "\nHealth ahp: " << _health;
 }
 
 void Car::handleBoostPowerup(){
+    _status = GRABBED_BOOST_POWERUP;
     std::cout << "Max speed bbp: " << _maxForwardSpeed << ' ';
     _maxForwardSpeed += 10;
     std::cout << "Max speed abp: " << _maxForwardSpeed << '\n';
@@ -345,11 +345,13 @@ void Car::handleBoostPowerup(){
 }
 
 void Car::handleMud(MudFUD* mudFud){
+    _status = GRABBED_MUD;
     //Mandar msj a vista para imagen de barro
     float actionTime = mudFud->getActionTime();
 }
 
 void Car::handleOil(OilFUD* oilFud){
+    _status = GRABBED_OIL;
     float linearDamping = oilFud->getLinearDamping();
     float angularDamping = oilFud->getAngularDamping();
 
@@ -362,11 +364,16 @@ void Car::handleOil(OilFUD* oilFud){
 }
 
 void Car::handleRock(RockFUD* rockFud){
+    _status = GRABBED_ROCK;
     float velToReduce = rockFud->getVelToReduce();
     float healthToReduce = rockFud->getHealthToReduce();
 
     _health -= healthToReduce;
     _maxForwardSpeed -= velToReduce; //???
+}
+
+Status Car::getStatus(){
+    return _status;
 }
 
 Car::~Car(){
