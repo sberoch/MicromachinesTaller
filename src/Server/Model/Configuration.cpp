@@ -23,6 +23,7 @@ Configuration::Configuration() {
     _maxHealth = carConfig["maxHealth"].get<float>();
     _maxForwardVelocity = carConfig["maxForwardVelocity"].get<float>();
     _maxBackwardsVelocity = carConfig["maxBackwardsVelocity"].get<float>();
+    _desiredTorque = carConfig["desiredTorque"].get<float>();
     _linearDamping = carConfig["linearDamping"].get<float>();
     _angularDamping = carConfig["angularDamping"].get<float>();
     _linearVelocityInit = carConfig["linearVelocityInit"].get<float>();
@@ -100,6 +101,22 @@ float Configuration::getCarWidth(){
 
 float Configuration::getCarHeight(){
     return _carHalfHeight;
+}
+
+float Configuration::getMaxHealth(){
+    return _maxHealth;
+}
+
+float Configuration::getMaxForwardVelocity(){
+    return _maxForwardVelocity;
+}
+
+float Configuration::getMaxBackwardsVelocity(){
+    return _maxBackwardsVelocity;
+}
+
+float Configuration::getDesiredTorque(){
+    return _desiredTorque;
 }
 
 float Configuration::getLinearDamping(){

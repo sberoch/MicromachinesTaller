@@ -19,6 +19,7 @@ private:
     float _maxHealth;
     float _maxForwardVelocity;
     float _maxBackwardsVelocity;
+    float _desiredTorque;
     float _linearDamping;
     float _angularDamping;
     float _linearVelocityInit;
@@ -75,6 +76,10 @@ public:
 
     float getCarWidth();
     float getCarHeight();
+    float getMaxHealth();
+    float getMaxForwardVelocity();
+    float getMaxBackwardsVelocity();
+    float getDesiredTorque();
     float getLinearDamping();
     float getAngularDamping();
     float getLinearVelocityInit();
