@@ -11,6 +11,8 @@
 #include "../../Common/Protocol.h"
 #include "../../Common/Event/Event.h"
 #include "../Player.h"
+#include "EventReceiver.h"
+#include "EventSender.h"
 
 #define QUIT_STRING "QUIT"
 
@@ -18,10 +20,13 @@ class ClientThread: public Thread {
 private:
     std::atomic<bool> keepTalking;
     Protocol protocol;
-    SafeQueue<std::string> nonBlockingQueue;
     RoomController& controller;
     int id;
     Player player;
+    SafeQueue<std::shared_ptr<Event>> receivingNonBlockingQueue;
+    SafeQueue<std::shared_ptr<Event>> sendingBlockingQueue;
+    EventReceiver receiver;
+    EventSender sender;
 
 public:
     //Inicializa la variable atomica booleana y el atendedor de clientes.
@@ -30,8 +35,6 @@ public:
             std::shared_ptr<Car> car);
 
     void run() override;
-
-    std::string popElement();
 
     //Detiene la ejecucion del cliente y pone la variable booleana en falso
     //para que el recolector de clientes muertos pueda reconocerlo como tal.
@@ -42,10 +45,10 @@ public:
 
     ~ClientThread() override= default;
 
-    void sendEvent(std::shared_ptr<Event> event);
-    void pushElement(const std::string& toBePushed);
+    void sendEvent(const std::shared_ptr<Event>& event);
     void handleInput(const InputEnum& input);
     void sendFromPlayer();
+    std::shared_ptr<Event> popFromNonBlockingQueue();
 };
 
 

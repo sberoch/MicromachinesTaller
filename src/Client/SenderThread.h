@@ -2,17 +2,16 @@
 #define SENDER_THREAD_H
 
 #include "../Common/Thread.h"
-#include "../Common/Queue.h"
 #include "../Common/SafeQueue.h"
 #include "../Common/Protocol.h"
-#include <string>
+#include "../Common/Event/Event.h"
 
 class SenderThread : public Thread {
 private:
-	SafeQueue& sendQueue;
+	SafeQueue<Event*>& sendQueue;
 	Protocol& protocol;
 public:
-	SenderThread(SafeQueue& sendQueue, Protocol& protocol);
+	SenderThread(SafeQueue<Event*>& sendQueue, Protocol& protocol);
 	virtual void run() override;
 };
 

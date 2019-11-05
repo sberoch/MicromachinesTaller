@@ -6,8 +6,22 @@
 #define MICROMACHINES_EVENTRECEIVER_H
 
 
-class EventReceiver {
+#include <memory>
+#include "../../Common/Protocol.h"
+#include "../../Common/Event/Event.h"
+#include "../../Common/SafeQueue.h"
+#include "../../Common/Thread.h"
 
+class EventReceiver : public Thread{
+private:
+    Protocol& protocol;
+    SafeQueue<std::shared_ptr<Event>>& receivingNonBlockingQueue;
+    bool& keepTalking;
+
+public:
+    EventReceiver(Protocol& protocol, SafeQueue<std::shared_ptr<Event>>& nonBlockingQueue, bool& keepTalking);
+    void run() override;
+    void joinThread() ;
 };
 
 

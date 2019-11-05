@@ -5,8 +5,8 @@ OilView::OilView(const SdlTexture& tex, const int& angle) :
 	this->texture = tex;
 	Area srcArea(0, 0, 871, 374);
 	clips.push_back(srcArea);
-	horizontalScale = 100;
-	verticalScale = 50;
+	horizontalScale = HOR_PS_OIL;
+	verticalScale = VER_PS_OIL;
 }
 
 void OilView::drawAt(int x, int y) {

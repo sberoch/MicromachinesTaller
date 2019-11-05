@@ -1,11 +1,8 @@
 #include "ServerSnapshot.h"
-#include <sstream>
-#include "ServerSnapshot.h"
 #include "Protocol.h"
 #include "json.hpp"
 
 using json = nlohmann::json;
-
 
 ServerSnapshot::ServerSnapshot(Protocol &protocol) {
     std::string serialized = protocol.receive();
@@ -22,17 +19,17 @@ ServerSnapshot::ServerSnapshot(Protocol &protocol) {
 }
 
 void ServerSnapshot::setCar(float x, float y, int angle, int health, int id) {
-	Car car{};
-	car.x = x;
-	car.y = y;
-	car.angle = angle;
+    CarStruct car{};
+    car.x = x;
+    car.y = y;
+    car.angle = angle;
     car.health = health;
-	car.id = id;
-	carList.push_back(car);
+    car.id = id;
+    carList.push_back(car);
 }
 
-const CarList& ServerSnapshot::getCars() {
-	return carList;
+CarList& ServerSnapshot::getCars() {
+    return carList;
 }
 
 
@@ -53,4 +50,3 @@ void ServerSnapshot::send(Protocol& protocol){
     finalMessage = jVec.dump();
     protocol.send(finalMessage);
 }
-

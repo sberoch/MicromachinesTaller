@@ -14,8 +14,10 @@
 
 class Room: public Thread{
 private:
-    std::vector<std::shared_ptr<ClientThread>> clients;
     std::atomic<bool> running;
+    std::vector<std::shared_ptr<ClientThread>> clients;
+    //TODO: es bloqueante?
+    SafeQueue<std::shared_ptr<Event>> incomingEvents;
     Game game;
 public:
     explicit Room(int amountOfClients);

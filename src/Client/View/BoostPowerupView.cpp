@@ -9,8 +9,8 @@ BoostPowerupView::BoostPowerupView(const SdlTexture& tex) {
 		clips.push_back(area);
 	}
 	frame = 0;
-	horizontalScale = 50;
-	verticalScale = 50;
+	horizontalScale = HOR_PS_BOOST_POWERUP;
+	verticalScale = VER_PS_BOOST_POWERUP;
 }
 
 void BoostPowerupView::drawAt(int x, int y) {

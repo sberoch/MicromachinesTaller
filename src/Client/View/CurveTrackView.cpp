@@ -3,10 +3,10 @@
 CurveTrackView::CurveTrackView(const SdlTexture& tex, const int& angle) :
 	angle(angle) {
 	this->texture = tex;
-	Area srcArea(0, 0, 642, 642);
+	Area srcArea(0, 0, 691, 691);
 	clips.push_back(srcArea);
-	horizontalScale = 250;
-	verticalScale = 250;
+	horizontalScale = HOR_PS_CURVE_TRACK;
+	verticalScale = VER_PS_CURVE_TRACK;
 }
 
 void CurveTrackView::drawAt(int x, int y) {
@@ -16,4 +16,3 @@ void CurveTrackView::drawAt(int x, int y) {
 				  horizontalScale, verticalScale);
 	texture.render(srcArea, destArea, (double) angle, SDL_FLIP_NONE);
 }
-

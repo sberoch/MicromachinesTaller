@@ -11,21 +11,26 @@
 #include "../../Common/Event/CommandEvent.h"
 
 Room::Room(int amountOfPlayers) : running(true),
+        incomingEvents(true),
         game(amountOfPlayers, std::make_shared<Configuration>()){
 }
 
 void Room::run() {
     std::cout << "Running" << std::endl;
-
-    EventCreator creator;
+    
     while (running){
         std::clock_t begin = clock();
         for (auto& client: clients){
-            std::shared_ptr<Event> event(creator.makeEvent(client->popElement()));
-            client->sendFromPlayer();
+            this->incomingEvents.push(client->popFromNonBlockingQueue());
+            std::shared_ptr<Event> event;
+            incomingEvents.pop(event);
+
             client->handleInput((InputEnum) event->j["cmd_id"].get<int>());
             game.step();
-            client->sendFromPlayer();
+
+            for (auto& actualClient : clients){
+                actualClient->sendEvent(event);
+            }
         }
 
         std::clock_t end = clock();

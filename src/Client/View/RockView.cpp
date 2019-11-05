@@ -4,8 +4,8 @@ RockView::RockView(const SdlTexture& tex) {
 	this->texture = tex;
 	Area srcArea(0, 0, 720, 720);
 	clips.push_back(srcArea);
-	horizontalScale = 50;
-	verticalScale = 50;
+	horizontalScale = HOR_PS_ROCK;
+	verticalScale = VER_PS_ROCK;
 }
 
 void RockView::drawAt(int x, int y) {

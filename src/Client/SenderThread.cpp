@@ -1,13 +1,15 @@
 #include "SenderThread.h"
+#include <iostream>
 
-SenderThread::SenderThread(SafeQueue& sendQueue, Protocol& protocol) :
+SenderThread::SenderThread(SafeQueue<Event*>& sendQueue, Protocol& protocol) : 
 	sendQueue(sendQueue),
 	protocol(protocol) {}
 
 void SenderThread::run() {
-	std::string command;
+	Event* event;
 	while(true) {
-		sendQueue.pop(command);
-		protocol.send(command);
-	}
+		sendQueue.pop(event);
+		event->send(protocol);
+		delete event;
+	} //TODO: ver condicion
 }

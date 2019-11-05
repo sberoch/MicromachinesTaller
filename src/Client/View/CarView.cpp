@@ -5,8 +5,8 @@ CarView::CarView(const SdlTexture& tex, const int& angle) :
 	this->texture = tex;
 	Area srcArea(0, 0, 463, 1010);
 	clips.push_back(srcArea);
-	horizontalScale = 50;
-	verticalScale = 100;
+	horizontalScale = HOR_PS_CAR;
+	verticalScale = VER_PS_CAR;
 }
 
 void CarView::drawAt(int x, int y) {

@@ -6,7 +6,7 @@
 #include <string>
 #include "Protocol.h"
 
-struct Car {
+struct CarStruct {
 	float x;
 	float y;
 	int angle;
@@ -14,7 +14,7 @@ struct Car {
 	int id;
 };
 
-typedef std::vector<Car> CarList;
+typedef std::vector<CarStruct> CarList;
 
 //TODO: protocolo/socket por argumento. Se sabe enviar y recibir
 
@@ -28,7 +28,7 @@ public:
 
 	void setCar(float x, float y, int angle, int health, int id);
 
-	const CarList& getCars();
+	CarList& getCars();
 
 	//Envia el estado de todos los autos.
 	void send(Protocol& protocol);

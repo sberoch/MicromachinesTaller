@@ -9,8 +9,8 @@ HealthPowerupView::HealthPowerupView(const SdlTexture& tex) {
 		clips.push_back(area);
 	}
 	frame = 0;
-	horizontalScale = 50;
-	verticalScale = 50;
+	horizontalScale = VER_PS_HEALTH_POWERUP;
+	verticalScale = HOR_PS_HEALTH_POWERUP;
 }
 
 void HealthPowerupView::drawAt(int x, int y) {

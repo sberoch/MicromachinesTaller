@@ -25,6 +25,7 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
 
             } catch (SocketError &e){
                 running = false;
+                roomController.stop();
             }
         }
     } catch(const std::exception &e) {
@@ -34,5 +35,7 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
     }
 }
 
-AcceptingThread::~AcceptingThread()= default;
+AcceptingThread::~AcceptingThread(){
+    roomController.stop();
+}
 

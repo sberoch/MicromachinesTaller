@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <condition_variable>
 
+#include <iostream>
+
 //TODO: hacerla template
 
 template <class T>
@@ -51,6 +53,7 @@ void SafeQueue<T>::pop(T& elem) {
         while(elems.empty() && blocking) {
             cv_empty.wait(lck);
         }
+
         elem = elems.front();
         elems.pop();
     }
