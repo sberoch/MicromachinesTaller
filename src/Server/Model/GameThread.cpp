@@ -36,8 +36,8 @@ void GameThread::run(){
 
         player.sendStart(_world.getSerializedMap()); //TODO: mover donde corresponda
 
-        //Socket skt2 = acceptSocket.accept();
-        //Player player2(std::move(skt2), _world.createCar(1), 1);
+        Socket skt2 = acceptSocket.accept();
+        Player player2(std::move(skt2), _world.createCar(1), 0);
 
         EventCreator eventCreator; 
         while (_gameStarted) {
