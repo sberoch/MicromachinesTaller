@@ -32,12 +32,12 @@ void GameThread::run(){
 
         //Acepto 1 cliente -> Despues va a aceptar hasta que no este llena y no pongan empezar
         Socket skt = acceptSocket.accept();
-        Player player(std::move(skt), _world.createCar(1), 1);
+        Player player(std::move(skt), _world.createCar(1), 0);
 
         player.sendStart(_world.getSerializedMap()); //TODO: mover donde corresponda
 
         Socket skt2 = acceptSocket.accept();
-        Player player2(std::move(skt2), _world.createCar(1), 0);
+        Player player2(std::move(skt2), _world.createCar(1), 1);
 
         EventCreator eventCreator; 
         while (_gameStarted) {

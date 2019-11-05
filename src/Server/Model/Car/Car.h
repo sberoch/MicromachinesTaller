@@ -7,6 +7,11 @@
 #include "../../../Common/Event/CommandEvent.h"
 #include "../../../Common/Constants.h"
 
+enum Status {
+    GRABBED_HEALTH_POWERUP,
+    NOTHING
+};
+
 class CarTurningState;
 class CarMovingState;
 
@@ -23,6 +28,7 @@ private:
     CarMovingState* _state;
     CarTurningState* _turningState;
     bool _isMoving;
+    Status _status;
 
     int _health;
     float _previous_x, _previous_y;
@@ -53,6 +59,8 @@ public:
     void endContact(b2Body* ground);
     void createFrictionJoint();
     void destroyFrictionJoint();
+
+    Status getStatus();
 
     void addGroundArea(GroundAreaFUD* ga);
     void removeGroundArea(GroundAreaFUD* ga);

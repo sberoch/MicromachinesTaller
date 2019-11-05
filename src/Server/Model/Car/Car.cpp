@@ -24,7 +24,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
                                         _id(id), _previous_x(x_init), _previous_y(y_init), _health(100), _maxForwardSpeed(25),
                                         _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false),
-                                        _currentTraction(1), _groundArea() {
+                                        _currentTraction(1), _groundArea(), _status(NOTHING) {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
@@ -282,6 +282,7 @@ void Car::crash(b2Vec2 impactVel){
 }
 
 void Car::handleHealthPowerup(){
+    _status = GRABBED_HEALTH_POWERUP;
     std::cout << "\nHealth bhp: " << _health;
     _health += 10;
     std::cout << "\nHealth ahp: " << _health;
@@ -302,7 +303,8 @@ void Car::handleMud(MudFUD* mudFud){
 void Car::handleOil(OilFUD* oilFud){
     float damping = oilFud->getDamping();
 
-    _carBody->SetLinearDamping(damping);
+    //_carBody->SetLinearDamping(damping);
+    //_carBody->SetMassData()
 }
 
 void Car::handleRock(RockFUD* rockFud){
@@ -311,6 +313,10 @@ void Car::handleRock(RockFUD* rockFud){
 
     _health -= healthToReduce;
     _maxForwardSpeed -= velToReduce; //???
+}
+
+Status Car::getStatus(){
+    return _status;
 }
 
 Car::~Car(){
