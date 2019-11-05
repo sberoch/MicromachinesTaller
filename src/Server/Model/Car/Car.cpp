@@ -275,10 +275,7 @@ void Car::crash(b2Vec2 impactVel){
     float vel = sqrt(pow(impactVel.x, 2) + pow(impactVel.y, 2));
     _health -= 2 * vel;
     std::cout << "\nHealth: " << _health;
-    if (_health > 0){
-        _carBody->ApplyLinearImpulse(-3 * impactVel, _carBody->GetWorldCenter(), true);
-        std::cout << "Car " << _id << " x: " << x() << " y: " << y() << " angle: " << angle() << '\n';
-    } else {
+    if (_health <= 0){
         resetCar();
         std::cout << "Health is 0\n";
     }
