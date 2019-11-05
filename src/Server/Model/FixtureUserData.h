@@ -37,11 +37,8 @@ public:
     bool outOfCourse;
     bool grass;
 
-    GroundAreaFUD(float fm, bool ooc, bool grass, size_t id) : FixtureUserData(FUD_GROUND_AREA, id) {
-        frictionModifier = fm;
-        outOfCourse = ooc;
-        grass = grass;
-    }
+    GroundAreaFUD(float fm, bool ooc, bool grass, size_t id) : FixtureUserData(FUD_GROUND_AREA, id),
+                  frictionModifier(frictionModifier), outOfCourse(ooc), grass(grass) {}
 
     bool isGrass(){
         return grass;
