@@ -80,25 +80,99 @@ json World::getSerializedMap() {
     return j;
 }
 
+HealthPowerup* World::createHealthPowerup(){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json hpowerups = j["health_powerups"];
+    for (auto& hp : hpowerups){
+        type = hp["type"].get<int>();
+        x = hp["x"].get<float>();
+        y = hp["y"].get<float>();
+        angle = hp["angle"].get<float>();
+
+        return new HealthPowerup(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    }
+}
+
+BoostPowerup* World::createBoostPowerup(){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json bpowerups = j["boost_powerups"];
+    x = bpowerups.at(0)["x"].get<float>();
+    y = bpowerups.at(0)["y"].get<float>();
+    angle = bpowerups.at(0)["angle"].get<float>();
+    type = bpowerups.at(0)["type"].get<float>();
+
+    return new BoostPowerup(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+}
+
+Mud* World::createMud(){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json muds = j["muds"];
+    x = muds.at(0)["x"].get<float>();
+    y = muds.at(0)["y"].get<float>();
+    angle = muds.at(0)["angle"].get<float>();
+    type = muds.at(0)["type"].get<float>();
+
+    return new Mud(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+}
+
+Oil* World::createOil(){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json oils = j["oils"];
+    x = oils.at(0)["x"].get<float>();
+    y = oils.at(0)["y"].get<float>();
+    angle = oils.at(0)["angle"].get<float>();
+    type = oils.at(0)["type"].get<float>();
+
+    return new Oil(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+}
+
+Rock* World::createRock(){
+    std::ifstream i("scene.json");
+    json j; i >> j;
+
+    size_t id = 0;
+    float x, y, angle;
+    int type;
+
+    json rocks = j["rocks"];
+    x = rocks.at(0)["x"].get<float>();
+    y = rocks.at(0)["y"].get<float>();
+    angle = rocks.at(0)["angle"].get<float>();
+    type = rocks.at(0)["type"].get<float>();
+
+    return new Rock(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+}
+
+
 void World::step(uint32_t velocityIt, uint32_t positionIt){
     //how strongly to correct velocity
     //how strongly to correct position
     _world->Step( _timeStep, velocityIt, positionIt);
     _world->ClearForces();
-}
-
-void World::BeginContact(b2Contact* contact){
-    handleContact(contact, true);
-}
-
-void World::EndContact(b2Contact* contact){
-    handleContact(contact, false);
-}
-
-void World::handleContact(b2Contact* contact, bool began){
-    void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
-    if ( bodyUserData )
-        static_cast<Car*>( bodyUserData );
 }
 
 b2World* World::getWorld(){
@@ -115,3 +189,4 @@ World::~World(){
 
     delete _world;
 }
+

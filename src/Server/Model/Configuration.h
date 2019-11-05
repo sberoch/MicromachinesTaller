@@ -39,9 +39,30 @@ private:
     float _grassRestitution;
 
     //Modifiers
-    float _rockHalfLen;
-    float _mudHalfLen;
-    float _healthPowerUpHalfLen;
+    float _healthPowerUpHalfWidth;
+    float _healthPowerUpHalfHeight;
+    float _healthPowerUpDensity;
+
+    float _boostPowerUpHalfWidth;
+    float _boostPowerUpHalfHeight;
+    float _boostPowerUpDensity;
+
+    float _rockHalfWidth;
+    float _rockHalfHeight;
+    float _rockDensity;
+    float _velToReduce;
+    float _healthToReduce;
+
+    float _mudHalfWidth;
+    float _mudHalfHeight;
+    float _mudDensity;
+    float _mudTime;
+
+    float _oilHalfWidth;
+    float _oilHalfHeight;
+    float _oilDensity;
+    float _newDamping;
+    float _oilTime;
 
 public:
     Configuration();
@@ -70,10 +91,30 @@ public:
     float getGrassFriction();
     float getGrassRestitution();
 
+    float getHealthPowerUpHalfWidth();
+    float getHealthPowerUpHalfHeight();
+    float getHealthPowerUpDensity();
 
-    float getRockHalfLen();
-    float getMudHalfLen();
-    float getHealthPowerUpHalfLen();
+    float getBoostPowerUpHalfWidth();
+    float getBoostPowerUpHalfHeight();
+    float getBoostPowerUpDensity();
+
+    float getRockHalfWidth();
+    float getRockHalfHeight();
+    float getRockDensity();
+    float getRockVelToReduce();
+    float getRockHealthToReduce();
+
+    float getMudHalfWidth();
+    float getMudHalfHeight();
+    float getMudDensity();
+    float getMudTime();
+
+    float getOilHalfWidth();
+    float getOilHalfHeight();
+    float getOilDensity();
+    float getOilTime();
+    float getOilDamping();
 
 };
 

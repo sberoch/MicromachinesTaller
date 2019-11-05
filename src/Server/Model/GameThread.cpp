@@ -1,10 +1,16 @@
 #include "GameThread.h"
 #include "../../Common/Socket.h"
+<<<<<<< HEAD
 #include "../../Common/Protocol.h"
 #include "../Player.h"
 #include "../../Common/SocketError.h"
 #include <iostream>
 
+=======
+#include "../Player.h"
+#include "../../Common/SocketError.h"
+#include <iostream>
+>>>>>>> e4a9c8a85f41e3e0271ab80f9c6761234be6e79a
 #include "../../Common/Event/EventCreator.h"
 
 using namespace std::chrono;
@@ -12,12 +18,17 @@ using namespace std::chrono;
 GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> configuration) :
                                              _configuration(configuration),
                                              _world(n_of_players, configuration),
-                                             _cars(), _track(), _grass(), _gameToStart(true),
+                                             _track(), _grass(), _gameToStart(true),
                                              _gameStarted(true),
                                              _gameEnded(false){
                                              //_gameLoop(&GameThread::run, this){
     _world.createTrack(_track);
     _world.createGrass(_grass);
+    _hPowerup = _world.createHealthPowerup();
+    _bPowerup = _world.createBoostPowerup();
+    _mud = _world.createMud();
+    _rock = _world.createRock();
+    _oil = _world.createOil();
 }
 
 void GameThread::run(){
@@ -36,7 +47,6 @@ void GameThread::run(){
         //Player player2(std::move(skt2), _world.createCar(1), 1);
 
         EventCreator eventCreator; 
-
         while (_gameStarted) {
             //Get initial time
             std::clock_t begin = clock();
@@ -51,6 +61,7 @@ void GameThread::run(){
             _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
 
             player.send();
+
             //Sleep
             std::clock_t end = clock();
             double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
@@ -70,19 +81,4 @@ void GameThread::join(){
     _gameLoop.join();
 }
 
-std::vector<Car*> GameThread::getCars(){
-    return _cars;
-}
-
-void GameThread::update(Input movInput, Input turnInput){
-    for (size_t i=0; i<_cars.size(); ++i){
-        _cars[i]->handleInput(movInput, turnInput);
-        _cars[i]->update();
-    }
-
-    _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
-}
-
-GameThread::~GameThread() {
-
-}
+GameThread::~GameThread() {}

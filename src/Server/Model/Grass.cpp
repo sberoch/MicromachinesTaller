@@ -14,13 +14,14 @@ void Grass::_setFixtureDef(std::shared_ptr<Configuration> configuration){
     _fixtureDef.shape = &shape;
     _fixtureDef.density = configuration->getGrassDensity();
     _fixtureDef.friction = configuration->getGrassFriction();
+    std::cout << _fixtureDef.friction;
     _fixtureDef.restitution = configuration->getGrassRestitution();
     _fixtureDef.isSensor = true; //TODO SEE SENSOR AND CONTACTLISTENER
 
     _body->CreateFixture(&_fixtureDef);
 
     _fixture = _body->CreateFixture(&_fixtureDef);
-    _fixture->SetUserData(new GroundAreaFUD(0.5f, false, true));
+    _fixture->SetUserData(new GroundAreaFUD(0.1f, false, true, _id));
 }
 
 Grass::Grass(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration) :
@@ -29,6 +30,11 @@ Grass::Grass(b2World* world, size_t id, int type, float x_init, float y_init, fl
 
     _body = world->CreateBody(&_bodyDef);
     _setFixtureDef(configuration);
+<<<<<<< HEAD
+=======
+
+    _body->SetUserData(this);
+>>>>>>> e4a9c8a85f41e3e0271ab80f9c6761234be6e79a
 }
 
 Grass::~Grass(){

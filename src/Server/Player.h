@@ -10,17 +10,16 @@ class Player {
 private:
     Protocol _protocol;
     Car* _car; //TODO move car
-    int _id;
+    size_t _id;
 
 public:
-    Player(Socket socket, Car* car, int id);
+    Player(Socket socket, Car* car, size_t id);
     void handleInput(const InputEnum& input);
     void handleInput(std::string& input);
     void receive(std::string& received);
     void send();
 
     void sendStart(json j); //TODO: mover donde corresponda
-
 };
 
 #endif //MICROMACHINES_PLAYER_H

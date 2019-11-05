@@ -11,8 +11,10 @@
 #include "Track.h"
 #include "FixtureUserData.h"
 #include "Grass.h"
+#include "Modifier.h"
 
 using json = nlohmann::json;
+
 
 class World {
 private:
@@ -26,23 +28,25 @@ private:
     //Floor
     b2BodyDef _track_body_def;
     ContactListener* _contactListener;
-
-    void _tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaFixture, bool began);
-
 public:
     World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
+
+    json getSerializedMap();
 
     void createTrack(std::vector<Track*>& track);
     void createGrass(std::vector<Grass*>& grass);
     Car* createCar(size_t id); //TODO move
 
-    json getSerializedMap(); //TODO: poner donde corresponda
+    //Modifiers
+    HealthPowerup* createHealthPowerup();
+    BoostPowerup* createBoostPowerup();
+    Mud* createMud();
+    Oil* createOil();
+    Rock* createRock();
 
     void step(uint32_t velocityIt, uint32_t positionIt);
 
-    void BeginContact(b2Contact* contact);
-    void EndContact(b2Contact* contact);
-    void handleContact(b2Contact* contact, bool began);
+    b2World* getWorld();
 
     b2World* getWorld();
 
