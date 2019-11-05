@@ -73,6 +73,13 @@ void World::createGrass(std::vector<Grass*>& grass){
     }
 }
 
+json World::getSerializedMap() {
+    std::ifstream i("scene.json");
+    json j; 
+    i >> j;
+    return j;
+}
+
 void World::step(uint32_t velocityIt, uint32_t positionIt){
     //how strongly to correct velocity
     //how strongly to correct position

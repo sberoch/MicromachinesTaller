@@ -10,13 +10,16 @@ class Player {
 private:
     Protocol _protocol;
     Car* _car; //TODO move car
+    int _id;
 
 public:
-    Player(Socket socket, Car* car);
+    Player(Socket socket, Car* car, int id);
     void handleInput(const InputEnum& input);
     void handleInput(std::string& input);
     void receive(std::string& received);
     void send();
+
+    void sendStart(json j); //TODO: mover donde corresponda
 
 };
 

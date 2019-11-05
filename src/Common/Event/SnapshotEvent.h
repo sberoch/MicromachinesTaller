@@ -9,7 +9,8 @@
 
 enum SnapshotGameEventType {
 	ADD = 0,
-	REMOVE = 1
+	REMOVE = 1,
+	ID_ASSIGN = 2
 };
 
 struct GameEventStruct {
@@ -43,6 +44,9 @@ public:
 
 	void setCar(float x, float y, int angle, int health, int id);
 	const CarList& getCars();
+
+	void setMap(json jMap);
+	void setPlayerId(int id);
 
 	void addStraightTrack(float x, float y, int angle, int id);
 	void addCurveTrack(float x, float y, int angle, int id);

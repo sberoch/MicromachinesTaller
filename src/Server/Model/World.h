@@ -4,12 +4,15 @@
 
 #define DEGTORAD 0.0174532925199432957f
 
+#include "../json/json.hpp"
 #include <Box2D/Box2D.h>
 #include "Car/Car.h"
 #include "ContactListener.h"
 #include "Track.h"
 #include "FixtureUserData.h"
 #include "Grass.h"
+
+using json = nlohmann::json;
 
 class World {
 private:
@@ -32,6 +35,8 @@ public:
     void createTrack(std::vector<Track*>& track);
     void createGrass(std::vector<Grass*>& grass);
     Car* createCar(size_t id); //TODO move
+
+    json getSerializedMap(); //TODO: poner donde corresponda
 
     void step(uint32_t velocityIt, uint32_t positionIt);
 

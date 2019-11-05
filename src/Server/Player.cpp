@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "../Common/Event/SnapshotEvent.h"
 
-Player::Player(Socket socket, Car* car) : _protocol(std::move(socket)), _car(car){}
+Player::Player(Socket socket, Car* car, int id) : _protocol(std::move(socket)), _car(car), _id(id){}
 
 void Player::handleInput(const InputEnum& input){
     std::cout << "In handle input: " << input << '\n';
@@ -44,6 +44,13 @@ void Player::send(){
     std::cout << "Sending\n";
     SnapshotEvent snap;
     snap.addExplosion(_car->x(), _car->y());
-    snap.setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), 11);
+    snap.setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), 1); //TODO: id hardcodeado
+    snap.send(_protocol);
+}
+
+void Player::sendStart(json j) {
+    SnapshotEvent snap;
+    snap.setMap(std::move(j));
+    snap.setPlayerId(_id);
     snap.send(_protocol);
 }

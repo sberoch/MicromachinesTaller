@@ -34,9 +34,7 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 		window.fill();
 
 		//Mock
-		myID = 11;
 		isBot = false;
-		loadStage();
 }
 
 bool GameScene::done() {
@@ -49,7 +47,8 @@ void GameScene::update() {
 
 	SnapshotEvent* snap;
 	if (recvQueue.pop(snap)) {
-		updateCars(snap->getCars());
+		CarList cars = snap->getCars();
+		updateCars(cars);
 		updateGameEvents(snap->getGameEvents());
 		delete snap;
 	}
@@ -74,6 +73,7 @@ void GameScene::updateGameEvents(GameEventsList gameEvents) {
 		switch(gameEvent.eventType) {
 			case ADD: addObject(gameEvent); break;
 			case REMOVE: removeObject(gameEvent); break;
+			case ID_ASSIGN: myID = gameEvent.id; break;
 			default: break;
 		}
 	}
@@ -84,7 +84,7 @@ void GameScene::addObject(GameEventStruct gameEvent) {
 										conv.blockToPixel(gameEvent.x), 
 										conv.blockToPixel(gameEvent.y), 
 										gameEvent.angle);
-	gameObjects.add(gameEvent.objectType, ov->getId(), ov);
+	gameObjects.add(gameEvent.objectType, gameEvent.id, ov);
 }
 
 void GameScene::removeObject(GameEventStruct gameEvent) {

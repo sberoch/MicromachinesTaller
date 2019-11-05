@@ -126,6 +126,8 @@ void SnapshotEvent::addBoostPowerup(float x, float y, int id) {
 
 void SnapshotEvent::addExplosion(float x, float y) {
     setGameEvent(ADD, TYPE_EXPLOSION, x, y, 0, 0);
+    //TODO: por no pasar id nuevo por cada explosion se dibuja una sola vez
+    //		por un tema con los mapas en GameObjects.cpp
 }
 
 void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType, 
@@ -138,6 +140,35 @@ void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType,
     gameEvent.angle = angle;
     gameEvent.id = id;
     gameEventsList.push_back(gameEvent);
+}
+
+void SnapshotEvent::setMap(json jMap) {
+	//TODO: esto del id deberia venir de afuera
+	std::cout << "Sending map\n";
+	int id = 0;
+	for (auto& car : jMap["cars"]) {
+        setGameEvent(ADD, 
+        			TYPE_CAR_1, //TODO: TYPE_CAR y manejar el color del lado del cliente con su id
+        			car["x_init"],
+               		car["y_init"],
+               		car["angle"],
+               		id);
+        id++;
+    }
+    id = 0;
+    for (auto& track : jMap["tracks"])  {
+    	setGameEvent(ADD,
+    				track["type"],
+    				track["x"],
+               		track["y"],
+               		track["angle"],
+               		id);
+    	id++;
+    }
+}
+
+void SnapshotEvent::setPlayerId(int id) {
+	setGameEvent(ID_ASSIGN, 0, 0, 0, 0, id);
 }
 
 const GameEventsList& SnapshotEvent::getGameEvents() {
