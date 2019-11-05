@@ -23,6 +23,7 @@ void GameObjects::draw(int cameraX, int cameraY) {
 	}
 }
 
+//TODO: refactor con mapa
 void GameObjects::add(int type, int id, ObjectViewPtr obj) {
 	switch(type) {
 		case TYPE_STRAIGHT_TRACK: case TYPE_CURVE_TRACK: {
@@ -43,6 +44,31 @@ void GameObjects::add(int type, int id, ObjectViewPtr obj) {
 		}
 		case TYPE_EXPLOSION: {
 			miscMap.insert(std::make_pair(id, obj));
+			break;
+		}
+	}
+}
+
+void GameObjects::remove(int type, int id) {
+	switch(type) {
+		case TYPE_STRAIGHT_TRACK: case TYPE_CURVE_TRACK: {
+			tracksMap.erase(id);
+			break;
+		}
+		case TYPE_HEALTH_POWERUP: case TYPE_BOOST_POWERUP: {
+			boostsMap.erase(id);
+			break;
+		}
+		case TYPE_ROCK: case TYPE_OIL: case TYPE_MUD: {
+			tracksMap.erase(id);
+			break;
+		}
+		case TYPE_CAR_1: case TYPE_CAR_2: case TYPE_CAR_3: case TYPE_CAR_4: {
+			carsMap.erase(id);
+			break;
+		}
+		case TYPE_EXPLOSION: {
+			miscMap.erase(id);
 			break;
 		}
 	}

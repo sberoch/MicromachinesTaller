@@ -96,39 +96,17 @@ const CarList& SnapshotEvent::getCars() {
     return carList;
 }
 
-void SnapshotEvent::addStraightTrack(float x, float y, int angle, int id) {    
-    setGameEvent(ADD, TYPE_STRAIGHT_TRACK, x, y, angle, id);
+void SnapshotEvent::addGameItem(int type, float x, float y, int angle, int id) {    
+    setGameEvent(ADD, type, x, y, angle, id);
 }
 
-void SnapshotEvent::addCurveTrack(float x, float y, int angle, int id) {
-    setGameEvent(ADD, TYPE_CURVE_TRACK, x, y, angle, id);
+void SnapshotEvent::removeGameItem(int type, int id) {
+    setGameEvent(REMOVE, type, 0, 0, 0, id);  
 }
 
-void SnapshotEvent::addRock(float x, float y, int id) {
-    setGameEvent(ADD, TYPE_ROCK, x, y, 0, id);
-}
+//TODO: por no pasar id nuevo por cada explosion se dibuja una sola vez
+//		por un tema con los mapas en GameObjects.cpp
 
-void SnapshotEvent::addOil(float x, float y, int angle, int id) {
-    setGameEvent(ADD, TYPE_OIL, x, y, angle, id);
-}
-
-void SnapshotEvent::addMud(float x, float y, int angle, int id) {
-    setGameEvent(ADD, TYPE_MUD, x, y, angle, id);
-}
-
-void SnapshotEvent::addHealthPowerup(float x, float y, int id) {
-    setGameEvent(ADD, TYPE_HEALTH_POWERUP, x, y, 0, id);
-}
-
-void SnapshotEvent::addBoostPowerup(float x, float y, int id) {
-    setGameEvent(ADD, TYPE_BOOST_POWERUP, x, y, 0, id);
-}
-
-void SnapshotEvent::addExplosion(float x, float y) {
-    setGameEvent(ADD, TYPE_EXPLOSION, x, y, 0, 0);
-    //TODO: por no pasar id nuevo por cada explosion se dibuja una sola vez
-    //		por un tema con los mapas en GameObjects.cpp
-}
 
 void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType, 
             int objectType, float x, float y, int angle, int id) {

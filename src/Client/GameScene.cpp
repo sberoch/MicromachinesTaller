@@ -77,7 +77,7 @@ void GameScene::addObject(GameEventStruct gameEvent) {
 }
 
 void GameScene::removeObject(GameEventStruct gameEvent) {
-
+	gameObjects.remove(gameEvent.objectType, gameEvent.id);
 }
 
 void GameScene::draw() {

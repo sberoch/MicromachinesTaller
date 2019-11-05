@@ -48,14 +48,9 @@ public:
 	void setMap(json jMap);
 	void setPlayerId(int id);
 
-	void addStraightTrack(float x, float y, int angle, int id);
-	void addCurveTrack(float x, float y, int angle, int id);
-	void addRock(float x, float y, int id);
-	void addOil(float x, float y, int angle, int id);
-	void addMud(float x, float y, int angle, int id);
-	void addHealthPowerup(float x, float y, int id);
-	void addBoostPowerup(float x, float y, int id);
-	void addExplosion(float x, float y);
+	void addGameItem(int type, float x, float y, int angle, int id);
+	void removeGameItem(int type, int id);
+	
 	const GameEventsList& getGameEvents();
 	
 	virtual ~SnapshotEvent() = default;

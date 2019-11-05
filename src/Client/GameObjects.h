@@ -22,6 +22,7 @@ public:
 
 	void draw(int cameraX, int cameraY);
 	void add(int type, int id, ObjectViewPtr obj);
+	void remove(int type, int id);
 	ObjectViewPtr getCar(int id);
 	ObjectViewPtr getTrack(int id);
 	ObjectViewPtr getBoost(int id);

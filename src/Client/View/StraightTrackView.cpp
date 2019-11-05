@@ -1,4 +1,5 @@
 #include "StraightTrackView.h"
+#include <iostream>
 
 StraightTrackView::StraightTrackView(const SdlTexture& tex, const int& angle) :
 	angle(angle) {
