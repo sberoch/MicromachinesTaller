@@ -30,11 +30,7 @@ Grass::Grass(b2World* world, size_t id, int type, float x_init, float y_init, fl
 
     _body = world->CreateBody(&_bodyDef);
     _setFixtureDef(configuration);
-<<<<<<< HEAD
-=======
-
     _body->SetUserData(this);
->>>>>>> e4a9c8a85f41e3e0271ab80f9c6761234be6e79a
 }
 
 Grass::~Grass(){

@@ -1,16 +1,9 @@
 #include "GameThread.h"
 #include "../../Common/Socket.h"
-<<<<<<< HEAD
 #include "../../Common/Protocol.h"
 #include "../Player.h"
 #include "../../Common/SocketError.h"
 #include <iostream>
-
-=======
-#include "../Player.h"
-#include "../../Common/SocketError.h"
-#include <iostream>
->>>>>>> e4a9c8a85f41e3e0271ab80f9c6761234be6e79a
 #include "../../Common/Event/EventCreator.h"
 
 using namespace std::chrono;

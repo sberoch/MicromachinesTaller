@@ -48,8 +48,6 @@ public:
 
     b2World* getWorld();
 
-    b2World* getWorld();
-
     ~World();
 };
 

@@ -1,5 +1,6 @@
 #include "Player.h"
-#include "../Common/ServerSnapshot.h"
+#include "../Common/Event/SnapshotEvent.h"
+#include <iostream>
 
 Player::Player(Socket socket, Car* car, size_t id) : _protocol(std::move(socket)), _car(car), _id(id){}
 
