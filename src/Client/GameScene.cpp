@@ -63,6 +63,7 @@ void GameScene::updateGameEvents(GameEventsList gameEvents) {
 			case ADD: addObject(gameEvent); break;
 			case REMOVE: removeObject(gameEvent); break;
 			case ID_ASSIGN: myID = gameEvent.id; break;
+			case MUD_SPLAT: display.showMudSplat(); break;
 			default: break;
 		}
 	}

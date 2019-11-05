@@ -57,6 +57,7 @@ public:
 	virtual ~GameScene() {}
 private:
 	void drawBackground();
+
 	void updateCars(CarList cars);
 	void updateGameEvents(GameEventsList gameEvents);
 	void addObject(GameEventStruct gameEvent);

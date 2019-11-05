@@ -51,5 +51,6 @@ void Player::sendStart(json j) {
     SnapshotEvent snap;
     snap.setMap(std::move(j));
     snap.setPlayerId(_id);
+    snap.setMudSplatEvent();
     snap.send(_protocol);
 }

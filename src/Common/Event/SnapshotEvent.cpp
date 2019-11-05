@@ -100,13 +100,22 @@ void SnapshotEvent::addGameItem(int type, float x, float y, int angle, int id) {
     setGameEvent(ADD, type, x, y, angle, id);
 }
 
+//TODO: por no pasar id nuevo por cada explosion se dibuja una sola vez
+//      por un tema con los mapas en GameObjects.cpp
+
+
+
 void SnapshotEvent::removeGameItem(int type, int id) {
     setGameEvent(REMOVE, type, 0, 0, 0, id);  
 }
 
-//TODO: por no pasar id nuevo por cada explosion se dibuja una sola vez
-//		por un tema con los mapas en GameObjects.cpp
+void SnapshotEvent::setPlayerId(int id) {
+    setGameEvent(ID_ASSIGN, 0, 0, 0, 0, id);
+}
 
+void SnapshotEvent::setMudSplatEvent() {
+    setGameEvent(MUD_SPLAT, 0, 0, 0, 0, 0);
+}
 
 void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType, 
             int objectType, float x, float y, int angle, int id) {
@@ -126,7 +135,7 @@ void SnapshotEvent::setMap(json jMap) {
 	int id = 0;
 	for (auto& car : jMap["cars"]) {
         setGameEvent(ADD, 
-        			TYPE_CAR_1, //TODO: TYPE_CAR y manejar el color del lado del cliente con su id
+        			car["color"],
         			car["x_init"],
                		car["y_init"],
                		car["angle"],
@@ -143,10 +152,6 @@ void SnapshotEvent::setMap(json jMap) {
                		id);
     	id++;
     }
-}
-
-void SnapshotEvent::setPlayerId(int id) {
-	setGameEvent(ID_ASSIGN, 0, 0, 0, 0, id);
 }
 
 const GameEventsList& SnapshotEvent::getGameEvents() {

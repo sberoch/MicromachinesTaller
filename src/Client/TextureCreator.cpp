@@ -20,10 +20,10 @@ TextureCreator::TextureCreator(const SdlWindow& window) :
 	curveTrackTex("curve_track.png", window),
 	powerupTex("powerups.png", window),
 	rockTex("rock.png", window),
-	car1Tex("car_1.png", window),
-	car2Tex("car_2.png", window),
-	car3Tex("car_3.png", window),
-	car4Tex("car_4.png", window),
+	carRedTex("car_red.png", window),
+	carBlueTex("car_blue.png", window),
+	carYellowTex("car_yellow.png", window),
+	carGreenTex("car_green.png", window),
 	oilTex("oil.png", window),
 	mudTex("mud.png", window),
 	explosionTex("explosion.png", window),
@@ -39,10 +39,10 @@ ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
 		case TYPE_HEALTH_POWERUP: ov.reset(new HealthPowerupView(powerupTex)); break;
 		case TYPE_BOOST_POWERUP: ov.reset(new BoostPowerupView(powerupTex)); break;
 		case TYPE_ROCK: ov.reset(new RockView(rockTex)); break;
-		case TYPE_CAR_1: ov.reset(new CarView(car1Tex, angle)); break;
-		case TYPE_CAR_2: ov.reset(new CarView(car2Tex, angle)); break;
-		case TYPE_CAR_3: ov.reset(new CarView(car3Tex, angle)); break;
-		case TYPE_CAR_4: ov.reset(new CarView(car4Tex, angle)); break;
+		case TYPE_CAR_RED: ov.reset(new CarView(carRedTex, angle)); break;
+		case TYPE_CAR_BLUE: ov.reset(new CarView(carBlueTex, angle)); break;
+		case TYPE_CAR_YELLOW: ov.reset(new CarView(carYellowTex, angle)); break;
+		case TYPE_CAR_GREEN: ov.reset(new CarView(carGreenTex, angle)); break;
 		case TYPE_OIL: ov.reset(new OilView(oilTex, angle)); break;
 		case TYPE_MUD: ov.reset(new MudView(mudTex, angle)); break;
 		case TYPE_EXPLOSION: ov.reset(new ExplosionView(explosionTex)); break;

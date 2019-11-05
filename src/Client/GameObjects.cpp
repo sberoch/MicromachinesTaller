@@ -38,7 +38,7 @@ void GameObjects::add(int type, int id, ObjectViewPtr obj) {
 			tracksMap.insert(std::make_pair(id, obj));
 			break;
 		}
-		case TYPE_CAR_1: case TYPE_CAR_2: case TYPE_CAR_3: case TYPE_CAR_4: {
+		case TYPE_CAR_RED: case TYPE_CAR_BLUE: case TYPE_CAR_YELLOW: case TYPE_CAR_GREEN: {
 			carsMap.insert(std::make_pair(id, obj));
 			break;
 		}
@@ -63,7 +63,7 @@ void GameObjects::remove(int type, int id) {
 			tracksMap.erase(id);
 			break;
 		}
-		case TYPE_CAR_1: case TYPE_CAR_2: case TYPE_CAR_3: case TYPE_CAR_4: {
+		case TYPE_CAR_RED: case TYPE_CAR_BLUE: case TYPE_CAR_YELLOW: case TYPE_CAR_GREEN: {
 			carsMap.erase(id);
 			break;
 		}
