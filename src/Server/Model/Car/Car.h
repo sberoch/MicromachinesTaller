@@ -24,11 +24,6 @@ private:
     CarTurningState* _turningState;
     bool _isMoving;
 
-    //Floor friction
-    b2FrictionJoint* _joint;
-    b2FrictionJointDef _jointDef;
-    bool _createJoint;
-
     int _health;
     float _previous_x, _previous_y;
 
