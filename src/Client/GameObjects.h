@@ -28,6 +28,11 @@ public:
 	ObjectViewPtr getBoost(int id);
 	ObjectViewPtr getInteractable(int id);
 	ObjectViewPtr getMisc(int id);
+
+	std::map<int, ObjectViewPtr>& getAllTracks();
+	std::map<int, ObjectViewPtr>& getAllCars();
+	std::map<int, ObjectViewPtr>& getAllBoosts();
+	std::map<int, ObjectViewPtr>& getAllInteractables();
 };
 
 #endif // GAME_OBJECTS_H

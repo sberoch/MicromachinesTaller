@@ -25,7 +25,7 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
 	yScreen(0),
-	isBot(false) {}
+	isBot(true) {}
 
 bool GameScene::done() {
 	return isDone;
@@ -62,7 +62,7 @@ void GameScene::updateGameEvents(GameEventsList gameEvents) {
 		switch(gameEvent.eventType) {
 			case ADD: addObject(gameEvent); break;
 			case REMOVE: removeObject(gameEvent); break;
-			case ID_ASSIGN: myID = gameEvent.id; break;
+			case ID_ASSIGN: myID = gameEvent.id; bot.setPlayerId(gameEvent.id); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
 			default: break;
 		}

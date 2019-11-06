@@ -108,3 +108,20 @@ ObjectViewPtr GameObjects::getMisc(int id) {
 		throw std::runtime_error("GameObjects: object not found");
 	return ret;
 }
+
+std::map<int, ObjectViewPtr>& GameObjects::getAllTracks() {
+	return tracksMap;
+}
+
+std::map<int, ObjectViewPtr>& GameObjects::getAllCars() {
+	return carsMap;
+}
+
+std::map<int, ObjectViewPtr>& GameObjects::getAllBoosts() {
+	return boostsMap;
+}
+
+std::map<int, ObjectViewPtr>& GameObjects::getAllInteractables() {
+	return interactablesMap;
+}
+

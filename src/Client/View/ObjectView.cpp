@@ -18,3 +18,11 @@ void ObjectView::resize(int newSize) {
 void ObjectView::setRotation(int angulo) {
 	throw std::runtime_error("Setting rotation to wrong object type");
 }
+
+int ObjectView::getX() {
+	return initialX;
+}
+
+int ObjectView::getY() {
+	return initialY;
+}

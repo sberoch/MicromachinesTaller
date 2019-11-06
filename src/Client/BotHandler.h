@@ -8,8 +8,10 @@ class BotHandler {
 private:
 	GameObjects& gameObjects;
 	LuaInterpreter lua;
+	int playerId;
 public:
 	BotHandler(GameObjects& gameObjects);
+	void setPlayerId(int id);
 	void handle();
 };
 
