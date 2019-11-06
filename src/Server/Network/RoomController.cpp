@@ -6,6 +6,7 @@
 #include "RoomController.h"
 #include "Room.h"
 
+//TODO: PROTEGER
 RoomController::RoomController(std::atomic_bool &running) :
             queue(false), acceptSocketRunning(running) {
     addRoom();
@@ -27,13 +28,14 @@ void RoomController::addRoom() {
 
 void RoomController::addClientToRoom(int roomId, int clientId) {
     std::cout << "Client added to room " << roomId << std::endl;
-    rooms[roomId]->addClient(this->clientsWithNoRoom[clientId]);
+    rooms[roomId]->addClient(clientId, this->clientsWithNoRoom[clientId]);
     this->clientsWithNoRoom.erase(clientId);
 }
 
 void RoomController::addClient(int clientId, Protocol protocol) {
     std::shared_ptr<Car> car(createCar(clientId));
-    std::shared_ptr<ClientThread> client(new ClientThread(std::move(protocol), *this, clientId, car));
+    std::shared_ptr<ClientThread> client(new ClientThread(std::move(protocol), *this, clientId, car,
+                                                          acceptSocketRunning));
     clientsWithNoRoom.insert({clientId, client});
     client->start();
 

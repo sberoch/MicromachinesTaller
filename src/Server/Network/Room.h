@@ -15,8 +15,8 @@
 class Room: public Thread{
 private:
     std::atomic<bool> running;
-    std::vector<std::shared_ptr<ClientThread>> clients;
-    //TODO: es bloqueante?
+    std::unordered_map<int ,std::shared_ptr<ClientThread>> clients;
+    //TODO: es bloqueante: NO.
     SafeQueue<std::shared_ptr<Event>> incomingEvents;
     Game game;
 public:
@@ -24,7 +24,7 @@ public:
 
     void run() override;
 
-    void addClient(const std::shared_ptr<ClientThread>& newClient);
+    void addClient(int clientId, const std::shared_ptr<ClientThread>& newClient);
 
     void stop();
 

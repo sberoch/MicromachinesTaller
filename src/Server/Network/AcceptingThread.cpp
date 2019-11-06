@@ -9,7 +9,7 @@
 #include "../../Common/SocketError.h"
 
 AcceptingThread::AcceptingThread(Socket &acceptSocket):
-        acceptSocket(acceptSocket), roomController(running), running(true){}
+        acceptSocket(acceptSocket), running(true), roomController(running){}
 
 
  void AcceptingThread::run() {
@@ -22,7 +22,6 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
                 int clientId = clientCounter.addOneAndReturn();
 
                 roomController.addClient(clientId, std::move(newProtocol));
-
             } catch (SocketError &e){
                 running = false;
                 roomController.stop();

@@ -21,8 +21,8 @@
 class AcceptingThread: public Thread {
 private:
     Socket &acceptSocket;
-    RoomController roomController;
     std::atomic_bool running;
+    RoomController roomController;
     SafeCounter clientCounter;
 
 public:

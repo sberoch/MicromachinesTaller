@@ -6,6 +6,7 @@
 #define MICROMACHINES_EVENTSENDER_H
 
 
+#include <atomic>
 #include "../../Common/Thread.h"
 #include "../../Common/SafeQueue.h"
 #include "../../Common/Event/Event.h"
@@ -14,11 +15,11 @@ class EventSender : public Thread {
 private:
     SafeQueue<std::shared_ptr<Event>>& sendingBlockingQueue;
     Protocol& protocol;
-    bool& keepTalking;
+    std::atomic_bool& acceptSocketRunning;
 
 public:
     EventSender(Protocol& protocol, SafeQueue<std::shared_ptr<Event>>& sendingBlockingQueue,
-                bool& keepTalking);
+                std::atomic_bool& acceptSocketRunning);
     void run() override;
     void joinThread();
 };

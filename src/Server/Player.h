@@ -9,16 +9,15 @@
 
 class Player {
 private:
-    Protocol& _protocol;
     std::shared_ptr<Car> _car; //TODO move car
 
 public:
-    Player(Protocol& protocol, std::shared_ptr<Car> car);
+    Player(std::shared_ptr<Car> car);
     Player(Socket socket, std::shared_ptr<Car> car);
     void handleInput(const InputEnum& input);
     void handleInput(std::string& input);
-    void receive(std::string& received);
-    void send();
+    void receive(std::string& received, Protocol& protocol);
+    void send(Protocol& protocol);
 
 };
 

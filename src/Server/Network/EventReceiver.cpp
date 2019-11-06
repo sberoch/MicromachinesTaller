@@ -6,30 +6,37 @@
 #include "../../Common/Event/EventCreator.h"
 
 EventReceiver::EventReceiver(Protocol &protocol,
-                             SafeQueue<std::shared_ptr<Event>> &nonBlockingQueue,
-                             bool &keepTalking):
+                             SafeQueue<std::shared_ptr<Event>> *nonBlockingQueue,
+                             std::atomic_bool &acceptSocketRunning):
         protocol(protocol),
         receivingNonBlockingQueue(nonBlockingQueue),
-        keepTalking(keepTalking){}
+        acceptSocketRunning(acceptSocketRunning){}
 
 void EventReceiver::run() {
     EventCreator creator;
-    while(keepTalking) {
+    while(acceptSocketRunning) {
         try {
-            std::shared_ptr<Event> event(creator.makeEvent(this->protocol.receive()));
-            receivingNonBlockingQueue.push(event);
+            std::cout << "Receiving" << std::endl;
+            std::string recvEvent = protocol.receive();
+            std::cout << "Received: " << recvEvent << std::endl;
+            std::shared_ptr<Event> event(creator.makeEvent(recvEvent));
+            receivingNonBlockingQueue->push(event);
         }
         catch(const std::exception& e) {
             //Habria que avisar de alguna forma la desconexion.
-            keepTalking = false;
-            printf("Socket cerrado.");
+            acceptSocketRunning = false;
+            printf("Socket cerrado: %s \n.", e.what());
         } catch(...) {
-            keepTalking = false;
-            printf("Unknown error from thclient");
+            acceptSocketRunning = false;
+            printf("Unknown error from thclient \n");
         }
     }
 }
 
 void EventReceiver::joinThread() {
     this->join();
+}
+
+void EventReceiver::setQueue(SafeQueue<std::shared_ptr<Event>>* receivingNonBlockingQueue) {
+    this->receivingNonBlockingQueue = receivingNonBlockingQueue;
 }

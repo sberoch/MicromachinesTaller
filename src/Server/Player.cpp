@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "../Common/ServerSnapshot.h"
 
-Player::Player(Protocol& protocol, std::shared_ptr<Car> car) : _protocol(protocol), _car(std::move(car)) {}
+Player::Player(std::shared_ptr<Car> car) :_car(std::move(car)) {}
 
 //Player::Player(Socket socket, std::shared_ptr<Car> car) : _protocol(std::move(socket)), _car(std::move(car)){}
 
@@ -39,13 +39,13 @@ void Player::handleInput(const InputEnum& input){
     _car->update();
 }
 
-void Player::receive(std::string& received){
-    received = _protocol.receive();
+void Player::receive(std::string& received, Protocol& protocol){
+    received = protocol.receive();
 }
 
-void Player::send(){
+void Player::send(Protocol& protocol){
     std::cout << "Sending\n";
     ServerSnapshot snap;
     snap.setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), 11);
-    snap.send(_protocol);
+    snap.send(protocol);
 }

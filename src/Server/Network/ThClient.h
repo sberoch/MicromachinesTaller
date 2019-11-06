@@ -7,6 +7,7 @@
 
 
 #include <atomic>
+#include <iostream>
 #include "RoomController.h"
 #include "../../Common/Protocol.h"
 #include "../../Common/Event/Event.h"
@@ -23,7 +24,7 @@ private:
     RoomController& controller;
     int id;
     Player player;
-    SafeQueue<std::shared_ptr<Event>> receivingNonBlockingQueue;
+    SafeQueue<std::shared_ptr<Event>>* receivingNonBlockingQueue;
     SafeQueue<std::shared_ptr<Event>> sendingBlockingQueue;
     EventReceiver receiver;
     EventSender sender;
@@ -32,7 +33,7 @@ public:
     //Inicializa la variable atomica booleana y el atendedor de clientes.
     //Para este ultimo mueve el socket de la comunicacion.
     ClientThread(Protocol protocol, RoomController& controller, int clientId,
-            std::shared_ptr<Car> car);
+            std::shared_ptr<Car> car, std::atomic_bool& acceptSocketRunning);
 
     void run() override;
 
@@ -42,13 +43,16 @@ public:
 
     //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
     bool isDead();
-
-    ~ClientThread() override= default;
+    ~ClientThread() override{
+        std::cout << "no debería estar acá" << std::endl;
+    };
 
     void sendEvent(const std::shared_ptr<Event>& event);
     void handleInput(const InputEnum& input);
     void sendFromPlayer();
     std::shared_ptr<Event> popFromNonBlockingQueue();
+
+    void assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue);
 };
 
 

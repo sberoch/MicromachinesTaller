@@ -24,6 +24,7 @@ public:
 
 	void push(const T& elem);
 	void pop(T& elem);
+	bool get(T& elem);
 	bool empty();
 	uint32_t size();
 
@@ -54,6 +55,11 @@ void SafeQueue<T>::pop(T& elem) {
             cv_empty.wait(lck);
         }
 
+        if (elems.empty() && !blocking) {
+            elem = NULL;
+            return;
+        }
+
         elem = elems.front();
         elems.pop();
     }
@@ -72,6 +78,11 @@ uint32_t SafeQueue<T>::size() {
     return elems.size();
 }
 
+template<class T>
+bool SafeQueue<T>::get(T &elem) {
+    this->pop(elem);
+    return !(elem == NULL);
+}
 
 
 #endif // BLOCKING_QUEUE_H

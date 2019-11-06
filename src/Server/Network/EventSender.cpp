@@ -6,24 +6,25 @@
 
 EventSender::EventSender(Protocol &protocol,
          SafeQueue<std::shared_ptr<Event>> &sendingBlockingQueue,
-         bool &keepTalking):
+         std::atomic_bool& acceptSocketRunning):
         protocol(protocol),
         sendingBlockingQueue(sendingBlockingQueue),
-        keepTalking(keepTalking){}
+        acceptSocketRunning(acceptSocketRunning){}
 
 void EventSender::run() {
+    std::cout << "Sending" << std::endl;
     std::shared_ptr<Event> toBeSent;
     try {
-        while (keepTalking) {
+        while (acceptSocketRunning) {
             sendingBlockingQueue.pop(toBeSent);
             toBeSent->send(protocol);
         }
     } catch(const std::exception& e) {
         //TODO:Habria que avisar de alguna forma la desconexion.
-        keepTalking = false;
+        acceptSocketRunning = false;
         printf("Socket cerrado.");
     } catch(...) {
-        keepTalking = false;
+        acceptSocketRunning = false;
         printf("Unknown error from thclient");
     }
 }
