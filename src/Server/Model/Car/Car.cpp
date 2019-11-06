@@ -296,7 +296,7 @@ void Car::handleBoostPowerup(){
 }
 
 void Car::handleMud(MudFUD* mudFud){
-    //Mandar msj a vista para imagen de barro
+    _status = GRABBED_MUD;
     float actionTime = mudFud->getActionTime();
 }
 

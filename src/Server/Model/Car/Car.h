@@ -9,6 +9,7 @@
 
 enum Status {
     GRABBED_HEALTH_POWERUP,
+    GRABBED_MUD,
     NOTHING
 };
 
