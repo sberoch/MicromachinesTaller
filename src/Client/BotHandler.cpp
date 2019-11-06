@@ -12,12 +12,12 @@ void BotHandler::setPlayerId(int id) {
 }
 
 void BotHandler::handle() {
-	if (insideTrack()) {
+	if (insideTracks()) {
 		std::cout << "Inside!\n"; 
 	}
 }
 
-bool BotHandler::insideTrack() {
+bool BotHandler::insideTracks() {
 	ObjectViewPtr myCar = gameObjects.getCar(playerId);
 	std::cout << "My Car: " << myCar->getX() << ", " << myCar->getY() << std::endl;
 

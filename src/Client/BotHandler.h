@@ -16,7 +16,7 @@ public:
 	void handle();
 
 private:
-	bool insideTrack();
+	bool insideTracks();
 };
 
 #endif // BOT_HANDLER_H

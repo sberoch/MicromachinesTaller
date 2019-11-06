@@ -22,6 +22,7 @@ public:
 	virtual void move(int x, int y);
 	virtual void setRotation(int angle);
 	virtual void resize(int newSize);
+	virtual int getAngle();
 	void setInitialPos(int x, int y);
 	int getX();
 	int getY();

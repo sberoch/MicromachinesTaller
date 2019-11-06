@@ -19,6 +19,11 @@ void ObjectView::setRotation(int angulo) {
 	throw std::runtime_error("Setting rotation to wrong object type");
 }
 
+int ObjectView::getAngle() {
+	throw std::runtime_error("Trying to get angle of wrong object type");
+	return 0;
+}
+
 int ObjectView::getX() {
 	return initialX;
 }
