@@ -16,6 +16,9 @@ public:
 	LuaInterpreter();
 	void open(const char* filename);
 	~LuaInterpreter();
+
+	bool insideTrack(int carX, int carY, int trackX, int trackY);
+
 };
 
 #endif // LUA_INTERPRETER_H

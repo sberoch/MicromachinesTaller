@@ -12,11 +12,21 @@ void BotHandler::setPlayerId(int id) {
 }
 
 void BotHandler::handle() {
+	if (insideTrack()) {
+		std::cout << "Inside!\n"; 
+	}
+}
+
+bool BotHandler::insideTrack() {
 	ObjectViewPtr myCar = gameObjects.getCar(playerId);
 	std::cout << "My Car: " << myCar->getX() << ", " << myCar->getY() << std::endl;
 
 	std::map<int, ObjectViewPtr>& tracks = gameObjects.getAllTracks();
 	for (auto& it : tracks) {
 		std::cout << "Track: " << it.second->getX() << ", " << it.second->getY() << std::endl;
+		if (lua.insideTrack(myCar->getX(), myCar->getY(), it.second->getX(), it.second->getY())) {
+			return true;
+		}
 	}
+	return false;
 }

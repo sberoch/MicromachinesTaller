@@ -9,10 +9,14 @@ private:
 	GameObjects& gameObjects;
 	LuaInterpreter lua;
 	int playerId;
+
 public:
 	BotHandler(GameObjects& gameObjects);
 	void setPlayerId(int id);
 	void handle();
+
+private:
+	bool insideTrack();
 };
 
 #endif // BOT_HANDLER_H
