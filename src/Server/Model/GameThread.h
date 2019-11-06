@@ -9,13 +9,6 @@
 class GameThread {
 private:
     World _world;
-    std::vector<Track*> _track;
-    std::vector<Grass*> _grass;
-    HealthPowerup* _hPowerup;
-    BoostPowerup* _bPowerup;
-    Mud* _mud;
-    Rock* _rock;
-    Oil* _oil;
     std::shared_ptr<Configuration> _configuration;
 
     bool _gameToStart, _gameStarted, _gameEnded;

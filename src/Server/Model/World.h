@@ -24,6 +24,13 @@ private:
 
     int _n_of_cars;
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
+    std::vector<Track*> _track;
+    std::vector<Grass*> _grass;
+    HealthPowerup* _hPowerup;
+    BoostPowerup* _bPowerup;
+    Mud* _mud;
+    Rock* _rock;
+    Oil* _oil;
 
     //Floor
     b2BodyDef _track_body_def;

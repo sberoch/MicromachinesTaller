@@ -6,12 +6,20 @@
 using json = nlohmann::json;
 
 World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
-            _timeStep(1/25.0), _n_of_cars(n_of_cars), _configuration(configuration){
+            _timeStep(1/25.0), _n_of_cars(n_of_cars), _configuration(configuration), _track(), _grass() {
     b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
     _world = new b2World(gravity);
 
     _contactListener = new ContactListener(_world);
     _world->SetContactListener(_contactListener);
+
+    createTrack(_track);
+    createGrass(_grass);
+    _hPowerup = createHealthPowerup();
+    _bPowerup = createBoostPowerup();
+    _mud = createMud();
+    _rock = createRock();
+    _oil = createOil();
 }
 
 void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
