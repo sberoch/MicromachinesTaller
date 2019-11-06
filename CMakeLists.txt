@@ -3,6 +3,19 @@ project(Micromachines)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -DDEBUG -fno-inline -std=c++11 -pthread")
 
+find_package(Lua REQUIRED)
+
+message("Variables:\n")
+message("LUA_FOUND: ${LUA_FOUND}")
+message("LUA_LIBRARIES: ${LUA_INCLUDE_DIR}")
+message("LUA_INCLUDE_DIR: ${LUA_INCLUDE_DIR}")
+message("LUA_VERSION_STRING: ${LUA_VERSION_STRING}")
+message("LUA_VERSION_MAJOR: ${LUA_VERSION_MAJOR}")
+message("LUA_VERSION_MINOR: ${LUA_VERSION_MINOR}")
+message("LUA_VERSION_PATCH: ${LUA_VERSION_PATCH}")
+
+include_directories(${LUA_INCLUDE_DIR})
+
 message("[INFO] Agregando '${CMAKE_SOURCE_DIR}/src/3rd-party' como directorio de includes")
 include_directories(${CMAKE_SOURCE_DIR}/src/3rd-party)
 
@@ -20,11 +33,12 @@ message("[INFO] Cargando fuentes del cliente")
 file(GLOB_RECURSE CLIENT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Client/*.cpp" "src/Client/*.h")
 
 add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES})
-target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer)
+target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer lua5.3)
 
 add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES} src/Server/Model/GameThread.cpp src/Server/Model/Configuration.cpp src/Server/Model/Configuration.h src/Server/Player.cpp src/Server/Player.h src/Server/Model/Grass.cpp src/Server/Model/Grass.h src/Server/Model/Modifier.cpp src/Server/Model/Modifier.h)
 target_link_libraries(mm_server Box2D)
 
+install(FILES assets/bot_functions.lua DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/scene.json DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/configuration.json DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_red.png DESTINATION ${CMAKE_BINARY_DIR})

@@ -25,7 +25,7 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
 	yScreen(0),
-	isBot(false) {}
+	isBot(true) {}
 
 bool GameScene::done() {
 	return isDone;

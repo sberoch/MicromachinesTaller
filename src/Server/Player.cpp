@@ -23,7 +23,6 @@ void Player::send(){
 void Player::sendStart(json j) {
     SnapshotEvent snap;
     snap.setMap(std::move(j));
-    snap.removeGameItem(100, 0);
     snap.setPlayerId(_id);
     snap.send(_protocol);
 }
