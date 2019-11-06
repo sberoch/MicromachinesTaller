@@ -1,6 +1,8 @@
 #include "ObjectView.h"
 #include <iostream>
 
+ObjectView::ObjectView(const SdlTexture& texture) : texture(texture) {}
+
 void ObjectView::setInitialPos(int x, int y) {
 	this->initialX = x; this->initialY = y;
 }

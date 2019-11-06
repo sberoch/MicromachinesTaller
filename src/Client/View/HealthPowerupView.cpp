@@ -2,8 +2,7 @@
 
 #define CANT_CLIPS 8
 
-HealthPowerupView::HealthPowerupView(const SdlTexture& tex) {
-	this->texture = tex;
+HealthPowerupView::HealthPowerupView(const SdlTexture& tex) : ObjectView(tex){
 	for (int i = 0; i < CANT_CLIPS; ++i) {
 		Area area(i*102, 0, 102, 95);
 		clips.push_back(area);

@@ -18,10 +18,10 @@ private:
 	SdlTexture curveTrackTex;
 	SdlTexture powerupTex;
 	SdlTexture rockTex;
-	SdlTexture car1Tex;
-	SdlTexture car2Tex;
-	SdlTexture car3Tex;
-	SdlTexture car4Tex;
+	SdlTexture carRedTex;
+	SdlTexture carBlueTex;
+	SdlTexture carYellowTex;
+	SdlTexture carGreenTex;
 	SdlTexture oilTex;
 	SdlTexture mudTex;
 	SdlTexture explosionTex;

@@ -14,9 +14,11 @@
 #include <map>
 #include <string>
 #include "../Common/Converter.h"
-#include "../Common/ServerSnapshot.h"
+#include "../Common/Event/SnapshotEvent.h"
+#include "../Common/Event/Event.h"
+#include "../Common/SafeQueue.h"
 #include "../Common/Queue.h"
-#include "../Common/BlockingQueue.h"
+
 
 class GameScene : public BaseScene {
 private:
@@ -24,8 +26,8 @@ private:
 	Audio audio;
 	bool isDone;
 
-	Queue<ServerSnapshot*>& recvQueue;
-	BlockingQueue& sendQueue;
+	Queue<SnapshotEvent*>& recvQueue; 
+	SafeQueue<Event*>& sendQueue;
 
 	SdlTexture backgroundTex;
 	BackgroundView background;
@@ -46,18 +48,20 @@ private:
 	bool isBot;
 
 public:
-	GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
-		BlockingQueue& sendQueue);
+	GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
+					SafeQueue<Event*>& sendQueue);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
 	virtual int handle() override;
 	virtual ~GameScene() {}
 private:
-	void loadStage();
 	void drawBackground();
+
 	void updateCars(CarList cars);
-	void updateGameEvents();
+	void updateGameEvents(GameEventsList gameEvents);
+	void addObject(GameEventStruct gameEvent);
+	void removeObject(GameEventStruct gameEvent);
 };
 
 #endif // GAME_SCENE_H

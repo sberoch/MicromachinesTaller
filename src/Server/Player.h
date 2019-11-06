@@ -4,20 +4,22 @@
 #include "Model/Car/Car.h"
 #include "../Common/Socket.h"
 #include "../Common/Protocol.h"
-#include "../Common/InputEnum.h"
+#include "../Common/Event/CommandEvent.h"
 
 class Player {
 private:
     Protocol _protocol;
     Car* _car; //TODO move car
+    size_t _id;
 
 public:
-    Player(Socket socket, Car* car);
+    Player(Socket socket, Car* car, size_t id);
     void handleInput(const InputEnum& input);
     void handleInput(std::string& input);
     void receive(std::string& received);
     void send();
 
+    void sendStart(json j); //TODO: mover donde corresponda
 };
 
 #endif //MICROMACHINES_PLAYER_H

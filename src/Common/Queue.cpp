@@ -1,14 +1,14 @@
 #include "Queue.h"
-#include "ServerSnapshot.h"
+#include "Event/SnapshotEvent.h"
 #include <string>
 
 template<class T>
-void Queue<T>::put(T elem) {
+void Queue<T>::push(T elem) {
 	elems.push(elem);
 }
 
 template<class T>
-bool Queue<T>::get(T& elem) {
+bool Queue<T>::pop(T& elem) {
 	if (elems.empty()) {
 		return false; 
 	} else {
@@ -18,5 +18,5 @@ bool Queue<T>::get(T& elem) {
 	}
 }
 
-template class Queue<ServerSnapshot*>;
+template class Queue<SnapshotEvent*>;
 template class Queue<std::string>;

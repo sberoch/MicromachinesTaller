@@ -1,11 +1,10 @@
-#ifndef MICROMACHINES_TRACK_H
-#define MICROMACHINES_TRACK_H
+#ifndef MICROMACHINES_GRASS_H
+#define MICROMACHINES_GRASS_H
 
-#include <string>
 #include <Box2D/Box2D.h>
 #include "Configuration.h"
 
-class Track {
+class Grass {
 private:
     int _type;
     size_t _id;
@@ -19,8 +18,8 @@ private:
     void _setFixtureDef(std::shared_ptr<Configuration> configuration);
 
 public:
-    Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
-    ~Track();
+    Grass(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
+    ~Grass();
 };
 
-#endif //MICROMACHINES_TRACK_H
+#endif //MICROMACHINES_GRASS_H

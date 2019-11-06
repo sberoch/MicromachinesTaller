@@ -1,11 +1,13 @@
 {
   "cars": [
     {
+      "color" : 105,
       "x_init" : 15,
       "y_init" : 7,
       "angle" : 180
     },
     {
+      "color" : 108,
       "x_init" : 14,
       "y_init" : 15,
       "angle" : 225
@@ -34,13 +36,13 @@
       "type": 101,
       "x": 15,
       "y": 5,
-      "angle": 90
+      "angle": 0
     },
     {
       "type": 101,
       "x": 15,
       "y": 15,
-      "angle": 270
+      "angle": 180
     }
   ],
   "rocks": [

@@ -31,6 +31,46 @@ Configuration::Configuration() {
     json trackConfig = j["track_configuration"];
     _trackHalfWidth = trackConfig["halfWidth"].get<float>();
     _trackHalfHeight = trackConfig["halfHeight"].get<float>();
+    _trackDensity = trackConfig["density"].get<float>();
+    _trackFriction = trackConfig["friction"].get<float>();
+    _trackRestitution = trackConfig["restitution"].get<float>();
+
+    json grassConfig = j["grass_configuration"];
+    _grassHalfWidth = grassConfig["halfWidth"].get<float>();
+    _grassHalfHeight = grassConfig["halfHeight"].get<float>();
+    _grassDensity = grassConfig["density"].get<float>();
+    _grassFriction = grassConfig["friction"].get<float>();
+    _grassRestitution = grassConfig["restitution"].get<float>();
+
+    json healthPUConfig = j["healthPowerupConfiguration"];
+    _healthPowerUpHalfWidth = healthPUConfig["halfWidth"].get<float>();
+    _healthPowerUpHalfHeight = healthPUConfig["halfHeight"].get<float>();
+    _healthPowerUpDensity = healthPUConfig["density"].get<float>();
+
+    json boostPUConfig = j["boostPowerupConfiguration"];
+    _boostPowerUpHalfWidth = boostPUConfig["halfWidth"].get<float>();
+    _boostPowerUpHalfHeight = boostPUConfig["halfHeight"].get<float>();
+    _boostPowerUpDensity = boostPUConfig["density"].get<float>();
+
+    json mudConfig = j["mudConfiguration"];
+    _mudHalfWidth = mudConfig["halfWidth"].get<float>();
+    _mudHalfHeight = mudConfig["halfHeight"].get<float>();
+    _mudDensity = mudConfig["density"].get<float>();
+    _mudTime = mudConfig["time"].get<float>();
+
+    json rockConfig = j["rockConfiguration"];
+    _rockHalfWidth = rockConfig["halfWidth"].get<float>();
+    _rockHalfHeight = rockConfig["halfHeight"].get<float>();
+    _rockDensity = rockConfig["density"].get<float>();
+    _velToReduce = rockConfig["velToReduce"].get<float>();
+    _healthToReduce = rockConfig["healthToReduce"].get<float>();
+
+    json oilConfig = j["oilConfiguration"];
+    _oilHalfWidth = oilConfig["halfWidth"].get<float>();
+    _oilHalfHeight = oilConfig["halfHeight"].get<float>();
+    _oilDensity = oilConfig["density"].get<float>();
+    _oilTime = oilConfig["time"].get<float>();
+    _newDamping = oilConfig["damping"].get<float>();
 }
 
 float Configuration::getGravityX(){
@@ -97,14 +137,102 @@ float Configuration::getTrackRestitution(){
     return _trackRestitution;
 }
 
-float Configuration::getRockHalfLen(){
-    return _rockHalfLen;
+float Configuration::getGrassWidth(){
+    return _grassHalfWidth;
 }
 
-float Configuration::getMudHalfLen(){
-    return _mudHalfLen;
+float Configuration::getGrassHeight(){
+    return _grassHalfHeight;
 }
 
-float Configuration::getHealthPowerUpHalfLen(){
-    return _healthPowerUpHalfLen;
+float Configuration::getGrassDensity(){
+    return _grassDensity;
+}
+
+float Configuration::getGrassFriction(){
+    return _grassFriction;
+}
+
+float Configuration::getGrassRestitution(){
+    return _grassRestitution;
+}
+
+float Configuration::getHealthPowerUpHalfWidth(){
+    return _healthPowerUpHalfWidth;
+}
+
+float Configuration::getHealthPowerUpHalfHeight(){
+    return _healthPowerUpHalfHeight;
+}
+
+float Configuration::getHealthPowerUpDensity(){
+    return _healthPowerUpDensity;
+}
+
+float Configuration::getBoostPowerUpHalfWidth(){
+    return _boostPowerUpHalfWidth;
+}
+
+float Configuration::getBoostPowerUpHalfHeight(){
+    return _boostPowerUpHalfHeight;
+}
+
+float Configuration::getBoostPowerUpDensity(){
+    return _boostPowerUpDensity;
+}
+
+float Configuration::getRockHalfWidth(){
+    return _rockHalfWidth;
+}
+
+float Configuration::getRockHalfHeight(){
+    return _rockHalfHeight;
+}
+
+float Configuration::getRockDensity(){
+    return _rockDensity;
+}
+
+float Configuration::getRockVelToReduce(){
+    return _velToReduce;
+}
+
+float Configuration::getRockHealthToReduce(){
+    return _healthToReduce;
+}
+
+float Configuration::getMudHalfWidth(){
+    return _mudHalfWidth;
+}
+
+float Configuration::getMudHalfHeight(){
+    return _mudHalfHeight;
+}
+
+float Configuration::getMudDensity(){
+    return _mudDensity;
+}
+
+float Configuration::getMudTime(){
+    return _mudTime;
+}
+
+float Configuration::getOilHalfWidth(){
+    return _oilHalfWidth;
+}
+
+float Configuration::getOilHalfHeight(){
+    return _oilHalfHeight;
+}
+
+float Configuration::getOilDensity(){
+    return _oilDensity;
+}
+
+float Configuration::getOilTime(){
+    return _oilTime;
+}
+
+float Configuration::getOilDamping(){
+    return _newDamping;
 }

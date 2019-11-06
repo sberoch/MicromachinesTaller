@@ -1,5 +1,6 @@
 #include "SceneSelector.h"
 #include "../Common/Constants.h"
+#include "../Common/SocketError.h"
 #include "GameScene.h"
 #include "MenuScene.h"
 #include "LobbyScene.h"
@@ -14,7 +15,7 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 		const std::string& host, const std::string& port) : 
 	window(xScreen, yScreen),
 	protocol(host, port),
-	sendQueue(MAX_COMMANDS_ENQUEUED),
+	sendQueue(true),
 	receiver(recvQueue, protocol),
 	sender(sendQueue, protocol),
 	currentScene(SCENE_MENU) {
@@ -29,22 +30,26 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 void SceneSelector::run() {
 	BaseScene* scene;
 	bool done = false;
-	while(!done) {
-		std::clock_t begin = clock();
+	try {
+		while(!done) {
+			std::clock_t begin = clock();
 
-	    scene = scenes.at(currentScene);
-	    scene->update();
-	    scene->draw();
-	    currentScene = scene->handle();
-	    if (scene->done()) {
-	    	done = true;
-	    	protocol.forceShutDown(); //No estoy seguro de que vaya aca
+		    scene = scenes.at(currentScene);
+		    scene->update();
+		    scene->draw();
+		    currentScene = scene->handle();
+		    if (scene->done()) {
+		    	done = true;
+		    	protocol.forceShutDown(); //No estoy seguro de que vaya aca
+		    }
+
+		    //Check exec time and sleep
+		    std::clock_t end = clock();
+		    double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
+		    if (execTime < 25) this->sleep(25 - execTime);
 	    }
-
-	    //Check exec time and sleep
-	    std::clock_t end = clock();
-	    double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
-	    if (execTime < 25) this->sleep(25 - execTime);
+	} catch (SocketError& se) {
+		done = true;
 	}
 }
 
@@ -53,6 +58,8 @@ void SceneSelector::sleep(int milliseconds) {
 }
 
 SceneSelector::~SceneSelector() {
+	receiver.kill();
+
 	receiver.join();
 	sender.join();
 

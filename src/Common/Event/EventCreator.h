@@ -10,9 +10,9 @@
 
 class EventCreator {
 public:
-    static std::shared_ptr<Event> makeEvent(int type);
-
-    virtual void send() = 0;
+	//TODO: no se con cual de los dos conviene quedarse
+    std::shared_ptr<Event> makeEvent(Protocol& protocol);
+    std::shared_ptr<Event> makeEvent(const std::string& recvdEvent);
 };
 
 

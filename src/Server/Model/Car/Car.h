@@ -2,34 +2,37 @@
 #define MICROMACHINES_CAR_H
 
 #include "../../../3rd-party/Box2D/Box2D.h"
-
-#include "../Input.h"
 #include "../Configuration.h"
+#include "../FixtureUserData.h"
+#include "../../../Common/Event/CommandEvent.h"
+#include "../../../Common/Constants.h"
 
 class CarTurningState;
 class CarMovingState;
 
-#define DEGTORAD 0.0174532925199432957f
-#define RADTODEG 57.295779513082320876f
-
-class Car {
+class Car{
 private:
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
     float _maxDriveForce;
 
     size_t _id;
+    b2Fixture* _fixture;
     b2BodyDef _carBodyDef;
     b2Body* _carBody;
     CarMovingState* _state;
     CarTurningState* _turningState;
     bool _isMoving;
 
+    //Floor friction
+    b2FrictionJoint* _joint;
+    b2FrictionJointDef _jointDef;
+    bool _createJoint;
+
     int _health;
     float _previous_x, _previous_y;
 
-    bool _onTrack;
-    bool _onGrass;
+    GroundAreaFUD* _groundArea;
     float _currentTraction;
 
     void _setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
@@ -51,17 +54,32 @@ public:
     void turnRight();
 
     //Contact with floor
-    void startContact();
-    void endContact();
+    void startContact(b2Body* ground);
+    void endContact(b2Body* ground);
+    void createFrictionJoint();
+    void destroyFrictionJoint();
+
+    void addGroundArea(GroundAreaFUD* ga);
+    void removeGroundArea(GroundAreaFUD* ga);
     void updateTraction();
     void updateFriction();
+
+    //Crashing
+    void crash(b2Vec2 impactVel);
+
+    //Modifiers
+    void handleHealthPowerup();
+    void handleBoostPowerup();
+    void handleMud(MudFUD* mudFud);
+    void handleOil(OilFUD* oilFud);
+    void handleRock(RockFUD* rockFud);
 
     b2Vec2 getLateralVelocity();
     b2Vec2 getForwardVelocity();
 
     void resetCar();
 
-    virtual void handleInput(Input movInput, Input turnInput);
+    virtual void handleInput(const InputEnum& input);
     virtual void update();
 
     const float x();
@@ -77,16 +95,20 @@ public:
 
 class CarMovingState{
 public:
-    static CarMovingState* makeMovingState(Input prevInput, Input currentInput);
-    virtual CarMovingState* handleInput(Car& car, Input input) = 0;
+    //static CarMovingState* makeMovingState(Input prevInput, Input currentInput);
+    static CarMovingState* makeMovingState(const InputEnum& input);
+    //virtual CarMovingState* handleInput(Car& car, Input input) = 0;
+    virtual CarMovingState* handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarMovingState(){}
 };
 
 class CarTurningState {
 public:
-    static CarTurningState* makeTurningState(Input prevInput, Input currentInput);
-    virtual CarTurningState* handleInput(Car& car, Input input) = 0;
+    //static CarTurningState* makeTurningState(Input prevInput, Input currentInput);
+    static CarTurningState* makeTurningState(const InputEnum& input);
+    //virtual CarTurningState* handleInput(Car& car, Input input) = 0;
+    virtual CarTurningState* handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarTurningState(){}
 };

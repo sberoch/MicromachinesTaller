@@ -1,18 +1,12 @@
 #include "GameScene.h"
 #include "../Common/json.hpp"
 #include "../Common/Constants.h"
-#include "View/HealthBarFrontView.h"
-#include <SDL2/SDL.h>
 #include <iostream>
-#include <fstream>
-
-//Mock
-#include "View/MudSplatView.h"
 
 using json = nlohmann::json;
 
-GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
-					BlockingQueue& sendQueue) : 
+GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
+					SafeQueue<Event*>& sendQueue) : 
 	window(window),
 	isDone(false),
 	recvQueue(recvQueue),
@@ -30,14 +24,8 @@ GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue,
 
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
-	yScreen(0) {
-		window.fill();
-
-		//Mock
-		myID = 11;
-		isBot = false;
-		loadStage();
-}
+	yScreen(0),
+	isBot(false) {}
 
 bool GameScene::done() {
 	return isDone;
@@ -47,17 +35,17 @@ void GameScene::update() {
 	audio.playMusic();
 	window.getWindowSize(&xScreen, &yScreen);
 
-	ServerSnapshot* snap;
-	if (recvQueue.get(snap)) {
+	SnapshotEvent* snap;
+	if (recvQueue.pop(snap)) {
 		updateCars(snap->getCars());
-		updateGameEvents();
+		updateGameEvents(snap->getGameEvents());
 		delete snap;
 	}
 }
 
 void GameScene::updateCars(CarList cars) {
 	for (auto& car : cars) {
-		ObjectViewPtr carView = gameObjects.get(car.id);
+		ObjectViewPtr carView = gameObjects.getCar(car.id);
 		carView->setRotation(car.angle);
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
@@ -69,8 +57,28 @@ void GameScene::updateCars(CarList cars) {
 	}	
 }
 
-void GameScene::updateGameEvents() {
+void GameScene::updateGameEvents(GameEventsList gameEvents) {
+	for (auto& gameEvent : gameEvents) {
+		switch(gameEvent.eventType) {
+			case ADD: addObject(gameEvent); break;
+			case REMOVE: removeObject(gameEvent); break;
+			case ID_ASSIGN: myID = gameEvent.id; break;
+			case MUD_SPLAT: display.showMudSplat(); break;
+			default: break;
+		}
+	}
+}
 
+void GameScene::addObject(GameEventStruct gameEvent) {
+	ObjectViewPtr ov = creator.create(gameEvent.objectType, 
+										conv.blockToPixel(gameEvent.x), 
+										conv.blockToPixel(gameEvent.y), 
+										gameEvent.angle);
+	gameObjects.add(gameEvent.objectType, gameEvent.id, ov);
+}
+
+void GameScene::removeObject(GameEventStruct gameEvent) {
+	gameObjects.remove(gameEvent.objectType, gameEvent.id);
 }
 
 void GameScene::draw() {
@@ -93,33 +101,6 @@ int GameScene::handle() {
 	}
 	//TODO: change this to support a final scene.
 	return SCENE_GAME;
-}
-
-void GameScene::loadStage() {
-	//TODO: this is sent by server
-	int type, x, y, angle;
-	std::ifstream i("test_scene.json");
-	json j; i >> j;
-
-	json objects = j["objects"];
-	for (auto& obj : objects) {
-		type = obj["type"].get<int>();
-		x = conv.blockToPixel(obj["x"].get<int>());
-		y = conv.blockToPixel(obj["y"].get<int>());
-		angle = obj["angle"].get<int>();
-		ObjectViewPtr ov = creator.create(type, x, y, angle);
-		//TODO: chequear esto
-		gameObjects.add(type, std::make_pair(ov->getId(), ov));
-		if (ov->getId() == myID) {
-			//Center camera in car
-			window.getWindowSize(&xScreen, &yScreen);
-			display.cam_x = xScreen/2 - x;
-			display.cam_y = yScreen/2 - y;
-		}
-	}
-
-	//Mock
-	display.showMudSplat();
 }
 
 void GameScene::drawBackground() { 

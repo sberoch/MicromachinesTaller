@@ -7,6 +7,7 @@
 
 
 #include "Event.h"
+#include "../Common/json.hpp"
 
 enum InputEnum {
     ACCELERATE = 0,
@@ -19,11 +20,12 @@ enum InputEnum {
     STOP_TURNING_LEFT = 7
 };
 
-class CommandEvent: public Event{
+class CommandEvent: public Event {
 public:
-    void send(Protocol &protocol, int id) override;
-
-    ~CommandEvent() override;
+    CommandEvent(InputEnum cmd_id);
+    CommandEvent(json j);
+    virtual void send(Protocol &protocol) override;
+    virtual ~CommandEvent() = default;
 };
 
 
