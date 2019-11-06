@@ -10,9 +10,6 @@ typedef std::shared_ptr<ObjectView> ObjectViewPtr;
 
 class TextureCreator {
 private:
-	//Assigned to each view to later reference them.
-	int idCounter;
-
 	//Textures
 	SdlTexture straightTrackTex;
 	SdlTexture curveTrackTex;

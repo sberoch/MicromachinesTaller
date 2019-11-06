@@ -3,19 +3,14 @@
 
 ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& recvQueue, Protocol& protocol) :
 	recvQueue(recvQueue),
-	protocol(protocol),
-	_done(false) {}
+	protocol(protocol) {}
 
 void ReceiverThread::run() {
 	SnapshotEvent* snap;
-	while(!_done) {
+	while(true) {
 		snap = new SnapshotEvent(protocol);
 		recvQueue.push(snap);
 	} //TODO: ver condicion
-}
-
-void ReceiverThread::kill() {
-	_done = true;
 }
 
 ReceiverThread::~ReceiverThread() {

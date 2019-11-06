@@ -12,7 +12,6 @@ private:
 	bool _done;
 public:
 	ReceiverThread(Queue<SnapshotEvent*>& recvQueue, Protocol& protocol);
-	void kill();
 	virtual void run() override;
 	~ReceiverThread();
 };

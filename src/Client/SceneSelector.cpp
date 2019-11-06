@@ -58,8 +58,6 @@ void SceneSelector::sleep(int milliseconds) {
 }
 
 SceneSelector::~SceneSelector() {
-	receiver.kill();
-
 	receiver.join();
 	sender.join();
 

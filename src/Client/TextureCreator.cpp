@@ -27,9 +27,7 @@ TextureCreator::TextureCreator(const SdlWindow& window) :
 	oilTex("oil.png", window),
 	mudTex("mud.png", window),
 	explosionTex("explosion.png", window),
-	mudSplatTex("mud_splat.png", window) {
-		idCounter = 0;
-}
+	mudSplatTex("mud_splat.png", window) {}
 
 ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
 	ObjectViewPtr ov;
@@ -49,8 +47,6 @@ ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
 		case TYPE_MUD_SPLAT: ov.reset(new MudSplatView(mudSplatTex)); break;
 		default: throw std::runtime_error("Texture Creator: Wrong view_id");
 	}
-	++idCounter;
 	ov->setInitialPos(x, y);
-	ov->setId(idCounter);
 	return ov;
 }
