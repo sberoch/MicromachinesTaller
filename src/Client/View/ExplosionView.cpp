@@ -1,8 +1,7 @@
 #include "ExplosionView.h"
 #include <iostream>
 
-ExplosionView::ExplosionView(const SdlTexture& tex) {
-	this->texture = tex;
+ExplosionView::ExplosionView(const SdlTexture& tex) : ObjectView(tex) {
 	for (int i = 0; i < 5; ++i) {
 		Area area(i*90, 0, 90, 90);
 		clips.push_back(area);

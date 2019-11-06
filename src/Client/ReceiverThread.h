@@ -9,9 +9,12 @@ class ReceiverThread : public Thread {
 private:
 	Queue<SnapshotEvent*>& recvQueue;
 	Protocol& protocol;
+	bool _done;
 public:
 	ReceiverThread(Queue<SnapshotEvent*>& recvQueue, Protocol& protocol);
+	void kill();
 	virtual void run() override;
+	~ReceiverThread();
 };
 
 #endif // RECEIVER_THREAD_H
