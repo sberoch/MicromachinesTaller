@@ -14,7 +14,7 @@
 
 Protocol::Protocol(Socket socket): socket(std::move(socket)) {}
 
-Protocol::Protocol(Protocol&& other): socket(std::move(other.socket)) {}
+Protocol::Protocol(Protocol&& other) noexcept: socket(std::move(other.socket)) {}
 
 Protocol::Protocol(const std::string& portName, const std::string& hostNumber){
     this->socket.connectToServer(portName, hostNumber);

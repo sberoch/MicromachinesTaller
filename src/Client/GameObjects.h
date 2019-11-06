@@ -5,25 +5,29 @@
 #include "GameObjects.h"
 #include <map>
 
-//TODO: separar mapas segun tipos de objetos (pista, autos, interactuables)
-//		y se va a hacer get() con tipo e id
+//TODO: ver si con estas distinciones alcanza o si 
+//		necesito un mapa para cada tipo o multimapa
 
 class GameObjects {
 private:
 	TextureCreator& creator;
-	std::map<int, ObjectViewPtr> objectsMap;
+	std::map<int, ObjectViewPtr> tracksMap;
+	std::map<int, ObjectViewPtr> carsMap;
+	std::map<int, ObjectViewPtr> boostsMap;
+	std::map<int, ObjectViewPtr> interactablesMap;
+	std::map<int, ObjectViewPtr> miscMap;
 
 public:
 	GameObjects(TextureCreator& creator);
-	//TODO: parameters?
-	void addInteractiveObject();
-	void removeInteractiveObject();
 
-	//TODO: no se si queda esto
 	void draw(int cameraX, int cameraY);
-	void add(std::pair<int, ObjectViewPtr> obj);
-	ObjectViewPtr get(int id);
-	
+	void add(int type, int id, ObjectViewPtr obj);
+	void remove(int type, int id);
+	ObjectViewPtr getCar(int id);
+	ObjectViewPtr getTrack(int id);
+	ObjectViewPtr getBoost(int id);
+	ObjectViewPtr getInteractable(int id);
+	ObjectViewPtr getMisc(int id);
 };
 
 #endif // GAME_OBJECTS_H

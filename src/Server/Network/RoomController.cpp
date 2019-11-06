@@ -12,10 +12,6 @@ RoomController::RoomController(std::atomic_bool &running) :
     addRoom();
 }
 
-std::shared_ptr<Car> createCar(int id){
-    std::shared_ptr<Room> room(new Room(0));
-    return room->createCar(id);
-}
 
 void RoomController::addRoom() {
     //HARDCODEADO
@@ -33,8 +29,7 @@ void RoomController::addClientToRoom(int roomId, int clientId) {
 }
 
 void RoomController::addClient(int clientId, Protocol protocol) {
-    std::shared_ptr<Car> car(createCar(clientId));
-    std::shared_ptr<ClientThread> client(new ClientThread(std::move(protocol), *this, clientId, car,
+    std::shared_ptr<ClientThread> client(new ClientThread(std::move(protocol), *this, clientId,
                                                           acceptSocketRunning));
     clientsWithNoRoom.insert({clientId, client});
     client->start();

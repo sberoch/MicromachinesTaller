@@ -33,7 +33,7 @@ public:
     //Inicializa la variable atomica booleana y el atendedor de clientes.
     //Para este ultimo mueve el socket de la comunicacion.
     ClientThread(Protocol protocol, RoomController& controller, int clientId,
-            std::shared_ptr<Car> car, std::atomic_bool& acceptSocketRunning);
+                    std::atomic_bool& acceptSocketRunning);
 
     void run() override;
 
@@ -51,8 +51,11 @@ public:
     void handleInput(const InputEnum& input);
     void sendFromPlayer();
     std::shared_ptr<Event> popFromNonBlockingQueue();
+    void sendStart(json j);
 
     void assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue);
+
+    void assignCar(const std::shared_ptr<Car>& car);
 };
 
 

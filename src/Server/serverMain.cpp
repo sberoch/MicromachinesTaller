@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "Model/Configuration.h"
-#include "Model/Game.h"
+#include "Model/GameThread.h"
 #include "Network/Server.h"
 #include <thread>
 

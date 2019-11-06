@@ -14,11 +14,8 @@ Audio::Audio() {
 
 	Mix_AllocateChannels(16);
 
-	backgroundMusic = Mix_LoadMUS("./background.mp3");
-	if(backgroundMusic == NULL) {
-	    printf("asdfasdfasdf");
-	    printf("%s\n", Mix_GetError());
-	}
+	backgroundMusic = Mix_LoadMUS("background.mp3");
+	if(backgroundMusic == NULL) printf("%s\n", Mix_GetError());
 	Mix_VolumeMusic(MIX_MAX_VOLUME/5);
 
 	carEngine = Mix_LoadWAV("car_engine.wav");

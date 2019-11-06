@@ -4,7 +4,6 @@
 
 #include "CommandEvent.h"
 #include "EventCreator.h"
-#include "EmptyEvent.h"
 #include <memory>
 #include <iostream>
 
@@ -35,9 +34,7 @@ std::shared_ptr<Event> EventCreator::makeEvent(const std::string& recvdEvent){
     Type type = (Type) j["type"].get<int>();
     if (type == COMMAND)
         return std::shared_ptr<Event>(new CommandEvent(j));
-    else if (recvdEvent.empty()){
-        return std::shared_ptr<Event>(new EmptyEvent);
-    } else
+    else 
         throw std::runtime_error("Wrong event type");
     /*else if (type == EVENT_SNAPSHOT)
         return std::shared_ptr<Event>(new CommandEvent);

@@ -22,10 +22,10 @@ enum InputEnum {
 
 class CommandEvent: public Event {
 public:
-    explicit CommandEvent(InputEnum cmd_id);
-    explicit CommandEvent(json j);
-    void send(Protocol &protocol) override;
-    ~CommandEvent() override = default;
+    CommandEvent(InputEnum cmd_id);
+    CommandEvent(json j);
+    virtual void send(Protocol &protocol) override;
+    virtual ~CommandEvent() = default;
 };
 
 

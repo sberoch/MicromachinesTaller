@@ -12,7 +12,7 @@ EventSender::EventSender(Protocol &protocol,
         acceptSocketRunning(acceptSocketRunning){}
 
 void EventSender::run() {
-    std::cout << "Sending" << std::endl;
+    //std::cout << "Sending" << std::endl;
     std::shared_ptr<Event> toBeSent;
     try {
         while (acceptSocketRunning) {

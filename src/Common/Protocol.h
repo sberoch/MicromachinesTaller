@@ -17,7 +17,7 @@ public:
 	
     explicit Protocol(Socket socket);
 
-    Protocol(Protocol &&other);
+    Protocol(Protocol &&other) noexcept;
 
     ~Protocol();
 

@@ -3,7 +3,6 @@
 #include <utility>
 #include "../../Common/Socket.h"
 #include "AcceptingThread.h"
-#include "../../Common/ServerSnapshot.h"
 #include "Server.h"
 
 //#define Q_MINUSCULA 'q'

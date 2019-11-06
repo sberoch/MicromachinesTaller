@@ -10,7 +10,7 @@
 #include <memory>
 #include "ThClient.h"
 #include "../../Common/Thread.h"
-#include "../Model/Game.h"
+#include "../Model/GameThread.h"
 
 class Room: public Thread{
 private:
@@ -18,7 +18,7 @@ private:
     std::unordered_map<int ,std::shared_ptr<ClientThread>> clients;
     //TODO: es bloqueante: NO.
     SafeQueue<std::shared_ptr<Event>> incomingEvents;
-    Game game;
+    GameThread game;
 public:
     explicit Room(int amountOfClients);
 

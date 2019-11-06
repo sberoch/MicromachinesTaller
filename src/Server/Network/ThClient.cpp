@@ -11,13 +11,13 @@
 
 
 ClientThread::ClientThread(Protocol protocol, RoomController& controller, int clientId,
-        std::shared_ptr<Car> car, std::atomic_bool& acceptSocketRunning):
+        std::atomic_bool& acceptSocketRunning):
             keepTalking(true),
             protocol(std::move(protocol)),
             controller(controller),
             id(clientId),
-            player(std::move(car)),
-            receivingNonBlockingQueue(NULL),
+            player(nullptr, clientId),
+            receivingNonBlockingQueue(nullptr),
             sendingBlockingQueue(true),
             sender(std::ref(this->protocol), sendingBlockingQueue,
                    acceptSocketRunning),
@@ -65,19 +65,22 @@ void ClientThread::handleInput(const InputEnum &input) {
     this->player.handleInput(input);
 }
 
+void ClientThread::assignCar(const std::shared_ptr<Car>& car){
+    this->player.assignCar(car);
+}
 
 void ClientThread::sendFromPlayer() {
-    this->player.send(this->protocol);
+    std::shared_ptr<Event> event (this->player.makeSnapshot());
+    this->sendingBlockingQueue.push(event);
 }
 
-std::shared_ptr<Event> ClientThread::popFromNonBlockingQueue() {
-    std::shared_ptr<Event> event;
-    this->receivingNonBlockingQueue->pop(event);
-    return event;
-}
 
 void ClientThread::assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue) {
     this->receivingNonBlockingQueue = receiveingQueue;
     receiver.setQueue(receiveingQueue);
+}
+
+void ClientThread::sendStart(json j) {
+    this->player.sendStart(j, this->protocol);
 }
 
