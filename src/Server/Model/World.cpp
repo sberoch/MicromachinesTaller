@@ -15,11 +15,11 @@ World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
 
     createTrack(_track);
     createGrass(_grass);
-    _hPowerup = createHealthPowerup();
-    _bPowerup = createBoostPowerup();
-    _mud = createMud();
-    _rock = createRock();
-    _oil = createOil();
+    _activeModifiers.push_back(createHealthPowerup());
+    _activeModifiers.push_back(createBoostPowerup());
+    _activeModifiers.push_back(createMud());
+    _activeModifiers.push_back(createRock());
+    _activeModifiers.push_back(createOil());
 }
 
 void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
@@ -103,7 +103,7 @@ HealthPowerup* World::createHealthPowerup(){
         y = hp["y"].get<float>();
         angle = hp["angle"].get<float>();
 
-        return new HealthPowerup(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+        Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
     }
 }
 
@@ -121,7 +121,7 @@ BoostPowerup* World::createBoostPowerup(){
     angle = bpowerups.at(0)["angle"].get<float>();
     type = bpowerups.at(0)["type"].get<float>();
 
-    return new BoostPowerup(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 Mud* World::createMud(){
@@ -138,7 +138,7 @@ Mud* World::createMud(){
     angle = muds.at(0)["angle"].get<float>();
     type = muds.at(0)["type"].get<float>();
 
-    return new Mud(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 Oil* World::createOil(){
@@ -155,7 +155,7 @@ Oil* World::createOil(){
     angle = oils.at(0)["angle"].get<float>();
     type = oils.at(0)["type"].get<float>();
 
-    return new Oil(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 Rock* World::createRock(){
@@ -172,7 +172,7 @@ Rock* World::createRock(){
     angle = rocks.at(0)["angle"].get<float>();
     type = rocks.at(0)["type"].get<float>();
 
-    return new Rock(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 

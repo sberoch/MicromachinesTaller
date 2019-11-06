@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Configuration.h"
 #include "FixtureUserData.h"
+#include "../../Common/Constants.h"
 
 class Modifier {
 protected:
@@ -43,6 +44,9 @@ public:
     }
 
 public:
+    static Modifier* makeModifier(b2World* world, const size_t& type, const size_t& id, const float& x_init,
+                                  const float& y_init, const float& angle, std::shared_ptr<Configuration> configuration);
+
     virtual ~Modifier(){}
 };
 
