@@ -34,6 +34,8 @@ private:
     //Floor
     b2BodyDef _track_body_def;
     ContactListener* _contactListener;
+
+    void _removeGrabbedModifiers();
 public:
     World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
 

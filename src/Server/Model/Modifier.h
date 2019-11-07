@@ -47,7 +47,7 @@ public:
     static Modifier* makeModifier(b2World* world, const size_t& type, const size_t& id, const float& x_init,
                                   const float& y_init, const float& angle, std::shared_ptr<Configuration> configuration);
 
-    virtual ~Modifier(){}
+    virtual ~Modifier() = default;
 };
 
 class HealthPowerup : public Modifier{
@@ -74,6 +74,7 @@ public:
     }
 
     ~HealthPowerup(){
+        std::cout << "DESTROYING HPU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
         _body->GetWorld()->DestroyBody(_body);
     }
 };

@@ -61,60 +61,102 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
     } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_HEALTH_POWERUP){
         std::cout << "Health powerup\n";
         Car* car = (Car*) a->GetBody()->GetUserData();
+        HealthPowerup* hpu = (HealthPowerup*) b->GetBody()->GetUserData();
+        hpu->markToDelete();
+        if (hpu->toDelete())
+            std::cout << "TO DELETE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+
+        contact->SetEnabled(false);
 
         if (began)
             car->handleHealthPowerup();
     } else if (fudA->getType() == FUD_HEALTH_POWERUP && fudB->getType() == FUD_CAR){
         std::cout << "Health powerup\n";
         Car* car = (Car*) b->GetBody()->GetUserData();
+        HealthPowerup* hpu = (HealthPowerup*) a->GetBody()->GetUserData();
+        hpu->markToDelete();
+
+        contact->SetEnabled(false);
 
         if(began)
             car->handleHealthPowerup();
     } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_BOOST_POWERUP){
         std::cout << "Boost powerup\n";
         Car* car = (Car*) a->GetBody()->GetUserData();
+        BoostPowerup* bpu = (BoostPowerup*) b->GetBody()->GetUserData();
+        bpu->markToDelete();
+
+        contact->SetEnabled(false);
 
         if (began)
             car->handleBoostPowerup();
     } else if (fudA->getType() == FUD_BOOST_POWERUP && fudB->getType() == FUD_CAR){
         std::cout << "Boost powerup\n";
         Car* car = (Car*) b->GetBody()->GetUserData();
+        BoostPowerup* bpu = (BoostPowerup*) a->GetBody()->GetUserData();
+        bpu->markToDelete();
+
+        contact->SetEnabled(false);
 
         if (began)
             car->handleBoostPowerup();
     } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_MUD){
         std::cout << "Mud\n";
         Car* car = (Car*) a->GetBody()->GetUserData();
+        Mud* mud = (Mud*) b->GetBody()->GetUserData();
+        mud->markToDelete();
+
+        contact->SetEnabled(false);
 
         if (began)
             car->handleMud((MudFUD*) fudB);
     } else if (fudA->getType() == FUD_MUD && fudB->getType() == FUD_CAR){
         std::cout << "Mud\n";
         Car* car = (Car*) b->GetBody()->GetUserData();
+        Mud* mud = (Mud*) a->GetBody()->GetUserData();
+        mud->markToDelete();
+
+        contact->SetEnabled(false);
 
         if (began)
             car->handleMud((MudFUD*) fudA);
     } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_OIL){
         std::cout << "Oil\n";
         Car* car = (Car*) a->GetBody()->GetUserData();
+        Oil* oil = (Oil*) b->GetBody()->GetUserData();
+        oil->markToDelete();
+
+        contact->SetEnabled(false);
 
         if (began)
             car->handleOil((OilFUD*) fudB);
     } else if (fudA->getType() == FUD_OIL && fudB->getType() == FUD_CAR){
         std::cout << "Oil\n";
         Car* car = (Car*) b->GetBody()->GetUserData();
+        Oil* oil = (Oil*) a->GetBody()->GetUserData();
+        oil->markToDelete();
+
+        contact->SetEnabled(false);
 
         if (began)
             car->handleOil((OilFUD*) fudA);
     } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_ROCK){
         std::cout << "Rock\n";
         Car* car = (Car*) a->GetBody()->GetUserData();
+        Rock* rock = (Rock*) b->GetBody()->GetUserData();
+        rock->markToDelete();
+
+        contact->SetEnabled(false);
 
         if (began)
             car->handleRock((RockFUD*) fudB);
     } else if (fudA->getType() == FUD_ROCK && fudB->getType() == FUD_CAR){
         std::cout << "Rock\n";
         Car* car = (Car*) b->GetBody()->GetUserData();
+        Rock* rock = (Rock*) a->GetBody()->GetUserData();
+        rock->markToDelete();
+
+        contact->SetEnabled(false);
 
         if (began)
             car->handleRock((RockFUD*) fudA);
@@ -123,18 +165,14 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
     if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_GROUND_AREA){
         std::cout << "Is ground area with " << ((GroundAreaFUD*) fudB)->frictionModifier << '\n';
         carVsGroundArea(a, b, began);
-        /*if (began){
-            Car* car = (Car*) a->GetBody()->GetUserData();
-            car->startContact(b->GetBody());
-        }*/
     } else if (fudA->getType() == FUD_GROUND_AREA && fudB->getType() == FUD_CAR){
         std::cout << "Is ground area with " << ((GroundAreaFUD*) fudA)->frictionModifier << '\n';
         carVsGroundArea(b, a, began);
-        /*if (began) {
-            Car* car = (Car*) b->GetBody()->GetUserData();
-            car->startContact(a->GetBody());
-        }*/
     }
+
+}
+
+void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold){
 
 }
 

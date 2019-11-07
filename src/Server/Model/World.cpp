@@ -99,19 +99,18 @@ HealthPowerup* World::createHealthPowerup(){
     std::ifstream i("scene.json");
     json j; i >> j;
 
-    size_t id = 0;
+    size_t id = 10;
     float x, y, angle;
     int type;
 
     json hpowerups = j["health_powerups"];
-    for (auto& hp : hpowerups){
-        type = hp["type"].get<int>();
-        x = hp["x"].get<float>();
-        y = hp["y"].get<float>();
-        angle = hp["angle"].get<float>();
 
-        Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
-    }
+    type = hpowerups.at(0)["type"].get<int>();
+    x = hpowerups.at(0)["x"].get<float>();
+    y = hpowerups.at(0)["y"].get<float>();
+    angle = hpowerups.at(0)["angle"].get<float>();
+
+    return (HealthPowerup*) Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 BoostPowerup* World::createBoostPowerup(){
@@ -128,7 +127,7 @@ BoostPowerup* World::createBoostPowerup(){
     angle = bpowerups.at(0)["angle"].get<float>();
     type = bpowerups.at(0)["type"].get<float>();
 
-    Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    return (BoostPowerup*) Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 Mud* World::createMud(){
@@ -145,7 +144,7 @@ Mud* World::createMud(){
     angle = muds.at(0)["angle"].get<float>();
     type = muds.at(0)["type"].get<float>();
 
-    Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    return (Mud*) Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 Oil* World::createOil(){
@@ -162,7 +161,7 @@ Oil* World::createOil(){
     angle = oils.at(0)["angle"].get<float>();
     type = oils.at(0)["type"].get<float>();
 
-    Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    return (Oil*) Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 Rock* World::createRock(){
@@ -179,7 +178,7 @@ Rock* World::createRock(){
     angle = rocks.at(0)["angle"].get<float>();
     type = rocks.at(0)["type"].get<float>();
 
-    Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    return (Rock*) Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle){
@@ -198,12 +197,26 @@ void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, f
     std::cout << "\nCreating a " << type;
 }
 
+void World::_removeGrabbedModifiers(){
+    std::vector<Modifier*> aux;
+    for (size_t i=0; i<_activeModifiers.size(); ++i){
+        Modifier* modifier = _activeModifiers[i];
+        if (modifier->toDelete()) {
+            std::cout << "deleting " << i << "modifier\n";
+            delete modifier;
+        } else
+            aux.push_back(modifier);
+    }
+    _activeModifiers.swap(aux);
+}
 
 void World::step(uint32_t velocityIt, uint32_t positionIt){
     //how strongly to correct velocity
     //how strongly to correct position
     _world->Step( _timeStep, velocityIt, positionIt);
     _world->ClearForces();
+
+    _removeGrabbedModifiers();
 }
 
 b2World* World::getWorld(){

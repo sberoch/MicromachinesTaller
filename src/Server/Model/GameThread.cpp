@@ -39,6 +39,14 @@ void GameThread::run(){
             //Get initial time
             std::clock_t begin = clock();
 
+            if (i % 50 == 0){
+                size_t type, id;
+                float x, y, angle;
+                _world.createRandomModifier(type, id, x, y, angle);
+                std::cout << "Creating modifier in " << x << " " << y;
+                player.createModifier(type, id, x, y, angle);
+            }
+
             std::string cmd;
             player.receive(cmd);
             
@@ -51,13 +59,6 @@ void GameThread::run(){
             player.send();
 
             ++i;
-            if (i % 50 == 0){
-                size_t type, id;
-                float x, y, angle;
-                _world.createRandomModifier(type, id, x, y, angle);
-                std::cout << "Creating modifier in " << x << " " << y;
-                player.createModifier(type, id, x, y, angle);
-            }
 
             //Sleep
             std::clock_t end = clock();
