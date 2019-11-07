@@ -26,11 +26,9 @@ private:
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
     std::vector<Track*> _track;
     std::vector<Grass*> _grass;
-    HealthPowerup* _hPowerup;
-    BoostPowerup* _bPowerup;
-    Mud* _mud;
-    Rock* _rock;
-    Oil* _oil;
+
+    //A vector of active modifiers to delete
+    std::vector<Modifier*> _activeModifiers;
 
     //Floor
     b2BodyDef _track_body_def;
@@ -50,6 +48,8 @@ public:
     Mud* createMud();
     Oil* createOil();
     Rock* createRock();
+
+    void createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle);
 
     void step(uint32_t velocityIt, uint32_t positionIt);
 

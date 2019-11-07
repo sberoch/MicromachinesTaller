@@ -16,7 +16,7 @@ public:
     Player(Socket socket, Car* car, size_t id);
     void handleInput(const InputEnum& input);
 
-
+    void createModifier(const size_t& type, const size_t& id, const float& x, const float& y, const float& angle);
 
     void receive(std::string& received);
     void send();
