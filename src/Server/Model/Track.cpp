@@ -29,6 +29,22 @@ Track::Track(b2World* world, size_t id, int type, float x_init, float y_init, fl
     _setFixtureDef(configuration);
 }
 
+const float Track::x(){
+    return _body->GetPosition().x;
+}
+
+const float Track::y(){
+    return _body->GetPosition().y;
+}
+
+const float Track::angle(){
+    return _body->GetAngle();
+}
+
+const int Track::type(){
+    return _type;
+}
+
 Track::~Track(){
     _body->GetWorld()->DestroyBody(_body);
 }

@@ -20,6 +20,12 @@ private:
 
 public:
     Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
+
+    const float x();
+    const float y();
+    const float angle();
+    const int type();
+
     ~Track();
 };
 
