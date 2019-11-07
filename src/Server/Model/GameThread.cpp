@@ -51,7 +51,7 @@ void GameThread::run(){
             player.send();
 
             ++i;
-            if (i % 10 == 0){
+            if (i % 50 == 0){
                 size_t type, id;
                 float x, y, angle;
                 _world.createRandomModifier(type, id, x, y, angle);
