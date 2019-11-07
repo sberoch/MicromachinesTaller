@@ -1,8 +1,7 @@
 #include "MudView.h"
 
 MudView::MudView(const SdlTexture& tex, const int& angle) :
-	angle(angle) {
-	this->texture = tex;
+	ObjectView(tex), angle(angle) {
 	Area srcArea(0, 0, 871, 374);
 	clips.push_back(srcArea);
 	horizontalScale = HOR_PS_MUD;

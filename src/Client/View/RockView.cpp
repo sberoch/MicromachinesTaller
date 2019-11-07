@@ -1,7 +1,6 @@
 #include "RockView.h"
 
-RockView::RockView(const SdlTexture& tex) {
-	this->texture = tex;
+RockView::RockView(const SdlTexture& tex) : ObjectView(tex) {
 	Area srcArea(0, 0, 720, 720);
 	clips.push_back(srcArea);
 	horizontalScale = HOR_PS_ROCK;

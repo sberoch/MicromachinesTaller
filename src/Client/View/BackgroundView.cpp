@@ -1,7 +1,6 @@
 #include "BackgroundView.h"
 
-BackgroundView::BackgroundView(const SdlTexture& tex) {
-	this->texture = tex;
+BackgroundView::BackgroundView(const SdlTexture& tex) : ObjectView(tex) {
 	Area srcArea(0, 0, 2048, 1152);
 	clips.push_back(srcArea);
 	horizontalScale = 0;

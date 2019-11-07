@@ -2,8 +2,7 @@
 #include <iostream>
 
 StraightTrackView::StraightTrackView(const SdlTexture& tex, const int& angle) :
-	angle(angle) {
-	this->texture = tex;
+	ObjectView(tex), angle(angle) {
 	Area srcArea(0, 0, 640, 688);
 	clips.push_back(srcArea);
 	horizontalScale = HOR_PS_STRAIGHT_TRACK;

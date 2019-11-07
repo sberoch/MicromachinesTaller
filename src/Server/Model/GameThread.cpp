@@ -26,7 +26,7 @@ void GameThread::run(){
 
         //Acepto 1 cliente -> Despues va a aceptar hasta que no este llena y no pongan empezar
         Socket skt = acceptSocket.accept();
-        Player player(std::move(skt), _world.createCar(1), 0);
+        Player player(std::move(skt), _world.createCar(1), 1);
 
         player.sendStart(_world.getSerializedMap()); //TODO: mover donde corresponda
 
@@ -34,7 +34,7 @@ void GameThread::run(){
         Player player2(std::move(skt2), _world.createCar(1), 1);
 
         int i = 0;
-        EventCreator eventCreator; 
+        EventCreator eventCreator;
         while (_gameStarted) {
             //Get initial time
             std::clock_t begin = clock();
