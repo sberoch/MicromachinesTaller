@@ -69,8 +69,8 @@ void ClientThread::assignCar(const std::shared_ptr<Car>& car){
     this->player.assignCar(car);
 }
 
-void ClientThread::sendFromPlayer() {
-    std::shared_ptr<Event> event (this->player.makeSnapshot());
+void ClientThread::sendSnapshot() {
+    std::shared_ptr<Event> event(this->player.makeSnapshot());
     this->sendingBlockingQueue.push(event);
 }
 
@@ -81,6 +81,7 @@ void ClientThread::assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveing
 }
 
 void ClientThread::sendStart(json j) {
-    this->player.sendStart(j, this->protocol);
+    std::shared_ptr<Event> event(this->player.sendStart(std::move(j)));
+    this->sendingBlockingQueue.push(event);
 }
 

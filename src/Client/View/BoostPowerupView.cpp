@@ -2,8 +2,7 @@
 
 #define CANT_CLIPS 10
 
-BoostPowerupView::BoostPowerupView(const SdlTexture& tex) {
-	this->texture = tex;
+BoostPowerupView::BoostPowerupView(const SdlTexture& tex) : ObjectView(tex) {
 	for (int i = 0; i < CANT_CLIPS; ++i) {
 		Area area(i*102, 100, 102, 95);
 		clips.push_back(area);

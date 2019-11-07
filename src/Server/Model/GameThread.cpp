@@ -9,13 +9,12 @@
 
 using namespace std::chrono;
 
-GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> configuration) :
+GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration) :
                                              _configuration(configuration),
                                              _world(n_of_players, configuration),
                                              _track(), _grass(), _gameToStart(true),
                                              _gameStarted(true),
                                              _gameEnded(false){
-                                             //_gameLoop(&GameThread::run, this){
     _world.createTrack(_track);
     _world.createGrass(_grass);
     _hPowerup = _world.createHealthPowerup();
@@ -28,44 +27,41 @@ GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> confi
 void GameThread::run(std::atomic_bool& running, 
         SafeQueue<std::shared_ptr<Event>>& incomingEvents,
         std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
+    std::shared_ptr<Event> event;
     while (running) {
         try {
             std::clock_t begin = clock();
 
-            std::shared_ptr<Event> event;
-
             if (!clients.empty()) {
                 while (incomingEvents.get(event)) {
-                    //clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
-                    clients.at(0)->handleInput(
-                            (InputEnum) event->j["cmd_id"].get<int>());
+//                    clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+                    clients[0]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
                 }
             }
 
             step();
+
             for (auto &actualClient : clients) {
-                //actualClient->sen(event);
-                actualClient.second->sendFromPlayer();
+                actualClient.second->sendSnapshot();
             }
+
 
             std::clock_t end = clock();
             double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
-            double frames = 25;
+            double frames = 35;
             if (execTime < frames) {
                 int to_sleep = (frames - execTime);
                 std::this_thread::sleep_for(
                         std::chrono::milliseconds(to_sleep));
             }
         } catch (SocketError &se) {
+            running = false;
             std::cerr << se.what();
         } catch (...) {
+            running = false;
             std::cerr << "Game Thread: UnknownException.\n";
         }
     }
-}
-
-void GameThread::join(){
-    _gameLoop.join();
 }
 
 void GameThread::step(){

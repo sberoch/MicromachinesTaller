@@ -49,7 +49,7 @@ public:
 
     void sendEvent(const std::shared_ptr<Event>& event);
     void handleInput(const InputEnum& input);
-    void sendFromPlayer();
+    void sendSnapshot();
     std::shared_ptr<Event> popFromNonBlockingQueue();
     void sendStart(json j);
 

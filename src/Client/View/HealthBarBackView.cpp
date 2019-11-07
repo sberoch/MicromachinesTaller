@@ -1,7 +1,6 @@
 #include "HealthBarBackView.h"
 
-HealthBarBackView::HealthBarBackView(const SdlTexture& tex) {
-	this->texture = tex;
+HealthBarBackView::HealthBarBackView(const SdlTexture& tex) : ObjectView(tex) {
 	Area srcArea(0, 0, 2233, 368);
 	clips.push_back(srcArea);
 	horizontalScale = 300;

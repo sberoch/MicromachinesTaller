@@ -92,6 +92,7 @@ void SnapshotEvent::setCar(float x, float y, int angle, int health, int id) {
     carList.push_back(car);
 }
 
+
 const CarList& SnapshotEvent::getCars() {
     return carList;
 }
@@ -129,7 +130,7 @@ void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType,
     gameEventsList.push_back(gameEvent);
 }
 
-void SnapshotEvent::setMap(json jMap) {
+void SnapshotEvent::setMap(const json& jMap) {
 	//TODO: esto del id deberia venir de afuera
 	std::cout << "Sending map\n";
 	int id = 0;

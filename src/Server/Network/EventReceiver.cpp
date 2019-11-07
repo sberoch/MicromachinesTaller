@@ -19,8 +19,10 @@ void EventReceiver::run() {
             std::cout << "Receiving" << std::endl;
             std::string recvEvent = protocol.receive();
             std::cout << "Received: " << recvEvent << std::endl;
-            std::shared_ptr<Event> event(creator.makeEvent(recvEvent));
-            receivingNonBlockingQueue->push(event);
+            if (!recvEvent.empty()){
+                std::shared_ptr<Event> event(creator.makeEvent(recvEvent));
+                receivingNonBlockingQueue->push(event);
+            }
         }
         catch(const std::exception& e) {
             //Habria que avisar de alguna forma la desconexion.

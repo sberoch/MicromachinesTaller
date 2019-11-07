@@ -1,8 +1,9 @@
 #include "Player.h"
 #include "../Common/Event/SnapshotEvent.h"
 #include <iostream>
+#include <utility>
 
-Player::Player(std::shared_ptr<Car> car, size_t id) :_car(car), _id(id){}
+Player::Player(std::shared_ptr<Car> car, size_t id) :_car(std::move(car)), _id(id){}
 
 void Player::handleInput(const InputEnum& input){
     _car->handleInput(input);
@@ -13,19 +14,19 @@ void Player::receive(std::string& received, Protocol& protocol){
     received = protocol.receive();
 }
 
-SnapshotEvent* Player::makeSnapshot(){
+std::shared_ptr<SnapshotEvent> Player::makeSnapshot(){
     std::cout << "Sending\n";
-    SnapshotEvent* snap = new SnapshotEvent();
-    snap->setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), 0); //TODO: id hardcodeado
-    return snap;
+    std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent());
+    snapshot->setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), _id); //TODO: id hardcodeado
+    return snapshot;
 }
 
-void Player::sendStart(json j, Protocol& protocol) {
-    SnapshotEvent snap;
-    snap.setMap(std::move(j));
-    snap.setPlayerId(_id);
-    snap.setMudSplatEvent();
-    snap.send(protocol);
+std::shared_ptr<SnapshotEvent> Player::sendStart(json j) {
+    std::shared_ptr<SnapshotEvent> snap(new SnapshotEvent);
+    snap->setMap(j);
+    snap->removeGameItem(100, 0);
+    snap->setPlayerId(_id);
+    return snap;
 }
 
 void Player::assignCar(std::shared_ptr<Car> newCar) {

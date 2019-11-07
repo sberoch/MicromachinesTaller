@@ -17,9 +17,9 @@ public:
     void handleInput(const InputEnum& input);
     void handleInput(std::string& input);
     void receive(std::string& received, Protocol& protocol);
-    SnapshotEvent* makeSnapshot();
+    std::shared_ptr<SnapshotEvent> makeSnapshot();
 
-    void sendStart(json j, Protocol& protocol);
+    std::shared_ptr<SnapshotEvent> sendStart(json j);
 
     void assignCar(std::shared_ptr<Car> newCar);
 };
