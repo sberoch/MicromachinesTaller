@@ -1,5 +1,6 @@
 #include "LuaInterpreter.h"
 #include "../Common/Constants.h"
+#include "../Common/Event/CommandEvent.h"
 #include <iostream>
 #include <stdio.h>
 
@@ -14,20 +15,41 @@ void LuaInterpreter::open(const char* filename) {
 	lua_getglobal(L, "setupInitialValues");
 	lua_pushnumber(L, HOR_PS_STRAIGHT_TRACK/2);
 	lua_pushnumber(L, VER_PS_STRAIGHT_TRACK/2);
-	lua_call(L, 2, 0);
+	lua_pushnumber(L, ACCELERATE);
+	lua_call(L, 3, 0);
 }
 
-bool LuaInterpreter::insideTrack(int carX, int carY, int trackX, int trackY) {
-	lua_getglobal(L, "checkInsideTrack");
+void LuaInterpreter::addToTrackTable(ObjectViewPtr track) {
+	lua_getglobal(L, "addToTrackTable");
+	lua_pushnumber(L, track->getX());
+	lua_pushnumber(L, track->getY());
+	lua_pushnumber(L, track->getAngle());
+	lua_call(L, 3, 0);
+}
+
+void LuaInterpreter::printTrackTable() {
+	lua_getglobal(L, "printTrackTable");
+	lua_call(L, 0, 0);
+}
+
+int LuaInterpreter::getNextMovement(int carX, int carY) {
+	lua_getglobal(L, "getNextMovement");
 	lua_pushnumber(L, carX);
 	lua_pushnumber(L, carY);
-	lua_pushnumber(L, trackX);
-	lua_pushnumber(L, trackY);
-	lua_call(L, 4, 1);
+	lua_call(L, 2, 1);
 	int res = lua_tonumber(L, 1);
 	lua_pop(L, 1);
-	return (res == 0);
-	
+	return res;
+}
+
+bool LuaInterpreter::insideTracks(int carX, int carY) {
+	lua_getglobal(L, "checkInsideTracks");
+	lua_pushnumber(L, carX);
+	lua_pushnumber(L, carY);
+	lua_call(L, 2, 1);
+	bool res = lua_toboolean(L, 1);
+	lua_pop(L, 1);
+	return res;
 }
 
 LuaInterpreter::~LuaInterpreter() {

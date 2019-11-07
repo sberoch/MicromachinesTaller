@@ -8,6 +8,7 @@
   #include "lualib.h"
   #include "lauxlib.h"
 #endif
+#include "TextureCreator.h"
 
 class LuaInterpreter {
 private:
@@ -17,7 +18,10 @@ public:
 	void open(const char* filename);
 	~LuaInterpreter();
 
-	bool insideTrack(int carX, int carY, int trackX, int trackY);
+	bool insideTracks(int carX, int carY);
+	int getNextMovement(int carX, int carY);
+	void addToTrackTable(ObjectViewPtr track);
+	void printTrackTable();
 
 };
 

@@ -20,7 +20,7 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	creator(window),
 
 	gameObjects(creator),
-	bot(gameObjects),
+	bot(gameObjects, audio, sendQueue),
 
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),

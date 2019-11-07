@@ -15,3 +15,7 @@ void CurveTrackView::drawAt(int x, int y) {
 				  horizontalScale, verticalScale);
 	texture.render(srcArea, destArea, (double) angle, SDL_FLIP_NONE);
 }
+
+int CurveTrackView::getAngle() {
+	return angle;
+}
