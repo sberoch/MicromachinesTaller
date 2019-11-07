@@ -289,6 +289,7 @@ void Car::handleHealthPowerup(){
 }
 
 void Car::handleBoostPowerup(){
+    _status = GRABBED_HEALTH_POWERUP;
     std::cout << "Max speed bbp: " << _maxForwardSpeed << ' ';
     _maxForwardSpeed += 10;
     std::cout << "Max speed abp: " << _maxForwardSpeed << '\n';
@@ -301,6 +302,7 @@ void Car::handleMud(MudFUD* mudFud){
 }
 
 void Car::handleOil(OilFUD* oilFud){
+    _status = GRABBED_OIL;
     float damping = oilFud->getDamping();
 
     //_carBody->SetLinearDamping(damping);
@@ -308,6 +310,7 @@ void Car::handleOil(OilFUD* oilFud){
 }
 
 void Car::handleRock(RockFUD* rockFud){
+    _status = GRABBED_ROCK;
     float velToReduce = rockFud->getVelToReduce();
     float healthToReduce = rockFud->getHealthToReduce();
 
