@@ -2,6 +2,9 @@
 #include "TextureCreator.h"
 #include "../Common/Event/CommandEvent.h"
 #include <iostream>
+#include <ctime>
+#include <thread>
+#include <chrono>
 
 BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio, SafeQueue<Event*>& sendQueue) :
 	gameObjects(gameObjects), audio(audio), sendQueue(sendQueue), playerId(-1) {
@@ -19,20 +22,22 @@ void BotHandler::setPlayerId(int id) {
 	lua.printTrackTable();
 }
 
-//TODO: todo esto es medio mock, tengo que llamar una sola vez por ciclo a lua desde c++
 void BotHandler::handle() {
+	std::clock_t begin = clock();
+
+	InputEnum prevMov = STOP_TURNING_LEFT;
 	ObjectViewPtr myCar = gameObjects.getCar(playerId);
-	if (insideTracks()) {
-		//TODO: estoy suponiendo que el car esta siempre en el angulo correcto
-		InputEnum mov = (InputEnum) lua.getNextMovement(myCar->getX(), myCar->getY());
+	InputEnum mov = (InputEnum) lua.getNextMovement(myCar->getX(), myCar->getY(), myCar->getAngle());
+	if (mov != prevMov) {
 		sendQueue.push(new CommandEvent(mov));
-	} else {
-		audio.playEffect(SFX_CAR_ENGINE);
-		sendQueue.push(new CommandEvent(ACCELERATE));
+		prevMov = mov;
 	}
+
+	std::clock_t end = clock();
+	double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
+	if (execTime < 100) this->sleep(100 - execTime);
 }
 
-bool BotHandler::insideTracks() {
-	ObjectViewPtr myCar = gameObjects.getCar(playerId);
-	return lua.insideTracks(myCar->getX(), myCar->getY());
+void BotHandler::sleep(int millisec) {
+	std::this_thread::sleep_for(std::chrono::milliseconds(millisec));
 }

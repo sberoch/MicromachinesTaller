@@ -18,8 +18,7 @@ public:
 	void open(const char* filename);
 	~LuaInterpreter();
 
-	bool insideTracks(int carX, int carY);
-	int getNextMovement(int carX, int carY);
+	int getNextMovement(int carX, int carY, int carAngle);
 	void addToTrackTable(ObjectViewPtr track);
 	void printTrackTable();
 

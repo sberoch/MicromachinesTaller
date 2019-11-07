@@ -21,7 +21,7 @@ public:
 	void handle();
 
 private:
-	bool insideTracks();
+	void sleep(int millisec);
 };
 
 #endif // BOT_HANDLER_H
