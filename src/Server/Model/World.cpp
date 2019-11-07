@@ -7,7 +7,7 @@ using json = nlohmann::json;
 
 World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
              _timeStep(1/25.0), _n_of_cars(n_of_cars), _configuration(configuration),
-              _track(), _grass(), _activeModifiers(), _modifierType() {
+              _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0) {
     b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
     _world = new b2World(gravity);
 
@@ -16,11 +16,6 @@ World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
 
     createTrack(_track);
     createGrass(_grass);
-    _activeModifiers.push_back(createHealthPowerup());
-    _activeModifiers.push_back(createBoostPowerup());
-    _activeModifiers.push_back(createMud());
-    _activeModifiers.push_back(createRock());
-    _activeModifiers.push_back(createOil());
 
     _modifierType.push_back(TYPE_HEALTH_POWERUP);
     _modifierType.push_back(TYPE_BOOST_POWERUP);
@@ -191,7 +186,8 @@ void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, f
     int modifierType = std::rand() % _modifierType.size();
     type = _modifierType[modifierType];
 
-    id = _activeModifiers.size();
+    id = _maxId;
+    _maxId++;
 
     _activeModifiers.push_back(Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration));
     std::cout << "\nCreating a " << type;

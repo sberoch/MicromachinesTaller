@@ -24,7 +24,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
                                         _id(id), _previous_x(x_init), _previous_y(y_init), _health(100), _maxForwardSpeed(25),
                                         _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false),
-                                        _currentTraction(1), _groundArea(), _status(NOTHING) {
+                                        _currentTraction(1), _groundArea(), _deletable() {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
@@ -36,6 +36,9 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std
     _turningState = CarTurningState::makeTurningState(STOP_TURNING_RIGHT);
 
     _carBody->SetUserData(this);
+
+    _deletable.status = NOTHING;
+    _deletable.id = 0;
 }
 
 Car::Car(Car&& other){
@@ -281,36 +284,41 @@ void Car::crash(b2Vec2 impactVel){
     }
 }
 
-void Car::handleHealthPowerup(){
-    _status = GRABBED_HEALTH_POWERUP;
+void Car::handleHealthPowerup(size_t id){
+    _deletable.status = GRABBED_HEALTH_POWERUP;
+    _deletable.id = id;
     std::cout << "\nHealth bhp: " << _health;
     _health += 10;
     std::cout << "\nHealth ahp: " << _health;
 }
 
-void Car::handleBoostPowerup(){
-    _status = GRABBED_HEALTH_POWERUP;
+void Car::handleBoostPowerup(size_t id){
+    _deletable.status = GRABBED_BOOST_POWERUP;
+    _deletable.id = id;
     std::cout << "Max speed bbp: " << _maxForwardSpeed << ' ';
     _maxForwardSpeed += 10;
     std::cout << "Max speed abp: " << _maxForwardSpeed << '\n';
     //Ver como ponerlo por un rato nada mas
 }
 
-void Car::handleMud(MudFUD* mudFud){
-    _status = GRABBED_MUD;
+void Car::handleMud(MudFUD* mudFud, size_t id){
+    _deletable.status = GRABBED_MUD;
+    _deletable.id = id;
     float actionTime = mudFud->getActionTime();
 }
 
-void Car::handleOil(OilFUD* oilFud){
-    _status = GRABBED_OIL;
+void Car::handleOil(OilFUD* oilFud, size_t id){
+    _deletable.status = GRABBED_OIL;
+    _deletable.id = id;
     float damping = oilFud->getDamping();
 
     //_carBody->SetLinearDamping(damping);
     //_carBody->SetMassData()
 }
 
-void Car::handleRock(RockFUD* rockFud){
-    _status = GRABBED_ROCK;
+void Car::handleRock(RockFUD* rockFud, size_t id){
+    _deletable.status = GRABBED_ROCK;
+    _deletable.id = id;
     float velToReduce = rockFud->getVelToReduce();
     float healthToReduce = rockFud->getHealthToReduce();
 
@@ -318,8 +326,12 @@ void Car::handleRock(RockFUD* rockFud){
     _maxForwardSpeed -= velToReduce; //???
 }
 
-Status Car::getStatus(){
-    return _status;
+Deletable Car::getStatus(){
+    return _deletable;
+}
+
+void Car::resetStatus(){
+    _deletable.status = NOTHING;
 }
 
 Car::~Car(){

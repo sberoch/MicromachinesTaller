@@ -30,6 +30,7 @@ private:
     //A vector of active modifiers to delete
     std::vector<Modifier*> _activeModifiers;
     std::vector<int> _modifierType;
+    size_t _maxId;
 
     //Floor
     b2BodyDef _track_body_def;

@@ -16,6 +16,11 @@ enum Status {
     NOTHING
 };
 
+struct Deletable {
+    Status status;
+    size_t id;
+};
+
 class CarTurningState;
 class CarMovingState;
 
@@ -32,7 +37,7 @@ private:
     CarMovingState* _state;
     CarTurningState* _turningState;
     bool _isMoving;
-    Status _status;
+    Deletable _deletable;
 
     int _health;
     float _previous_x, _previous_y;
@@ -64,7 +69,8 @@ public:
     void createFrictionJoint();
     void destroyFrictionJoint();
 
-    Status getStatus();
+    Deletable getStatus();
+    void resetStatus();
 
     void addGroundArea(GroundAreaFUD* ga);
     void removeGroundArea(GroundAreaFUD* ga);
@@ -75,11 +81,11 @@ public:
     void crash(b2Vec2 impactVel);
 
     //Modifiers
-    void handleHealthPowerup();
-    void handleBoostPowerup();
-    void handleMud(MudFUD* mudFud);
-    void handleOil(OilFUD* oilFud);
-    void handleRock(RockFUD* rockFud);
+    void handleHealthPowerup(size_t id);
+    void handleBoostPowerup(size_t id);
+    void handleMud(MudFUD* mudFud, size_t id);
+    void handleOil(OilFUD* oilFud, size_t id);
+    void handleRock(RockFUD* rockFud, size_t id);
 
     b2Vec2 getLateralVelocity();
     b2Vec2 getForwardVelocity();
