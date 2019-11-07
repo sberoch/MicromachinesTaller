@@ -4,18 +4,19 @@
 #include "../Player.h"
 #include "../../Common/SocketError.h"
 #include <iostream>
+#include <utility>
 #include "../../Common/Event/EventCreator.h"
 
 using namespace std::chrono;
 
 GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> configuration) :
-                                             _configuration(configuration),
-                                             _world(n_of_players, configuration),
+                                              _configuration(configuration),
+                                              _world(n_of_players, configuration),
                                               _gameToStart(true),
-                                             _gameStarted(true),
-                                             _gameEnded(false){
-                                             //_gameLoop(&GameThread::run, this){
-                                             }
+                                              _gameStarted(true),
+                                              _gameEnded(false){
+                                              //_gameLoop(&GameThread::run, this){
+                                              }
 
 void GameThread::run(){
     try {
@@ -32,6 +33,7 @@ void GameThread::run(){
         Socket skt2 = acceptSocket.accept();
         Player player2(std::move(skt2), _world.createCar(1), 1);
 
+        int i = 0;
         EventCreator eventCreator; 
         while (_gameStarted) {
             //Get initial time
@@ -48,6 +50,15 @@ void GameThread::run(){
 
             player.send();
 
+            ++i;
+            if (i % 10 == 0){
+                size_t type, id;
+                float x, y, angle;
+                _world.createRandomModifier(type, id, x, y, angle);
+                std::cout << "Creating modifier in " << x << " " << y;
+                player.createModifier(type, id, x, y, angle);
+            }
+
             //Sleep
             std::clock_t end = clock();
             double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
@@ -55,6 +66,7 @@ void GameThread::run(){
                 int to_sleep = (25 - execTime);
                 std::this_thread::sleep_for(std::chrono::milliseconds(to_sleep));
             }
+
         }
     } catch(SocketError& se){
         std::cerr << se.what();

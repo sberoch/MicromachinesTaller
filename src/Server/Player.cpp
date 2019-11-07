@@ -2,7 +2,8 @@
 #include "../Common/Event/SnapshotEvent.h"
 #include <iostream>
 
-Player::Player(Socket socket, Car* car, size_t id) : _protocol(std::move(socket)), _car(car), _id(id){}
+Player::Player(Socket socket, Car* car, size_t id) : _protocol(std::move(socket)), _car(car),
+                                                     _id(id), _modifierToAdd(false) {}
 
 void Player::handleInput(const InputEnum& input){
     _car->handleInput(input);
@@ -14,9 +15,12 @@ void Player::receive(std::string& received){
 }
 
 void Player::createModifier(const size_t& type, const size_t& id, const float& x, const float& y, const float& angle){
-    SnapshotEvent snap;
-    snap.addGameItem(type, x, y, angle, id);
-    snap.send(_protocol);
+    _modifierToAdd = true;
+    _modifierDTO.id = id;
+    _modifierDTO.type = type;
+    _modifierDTO.x = x;
+    _modifierDTO.y = y;
+    _modifierDTO.angle = angle;
 }
 
 void Player::send(){
@@ -43,6 +47,11 @@ void Player::send(){
             break;
     }
 
+    if (_modifierToAdd){
+        snap.addGameItem(_modifierDTO.type, _modifierDTO.x, _modifierDTO.y, _modifierDTO.angle, _modifierDTO.id);
+        _modifierToAdd = false;
+    }
+
     snap.setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), _id); //TODO: id hardcodeado
     snap.send(_protocol);
 }
@@ -55,6 +64,6 @@ void Player::sendStart(json j) {
     snap.addGameItem(TYPE_BOOST_POWERUP, 14, 10, 0, 4);
     snap.addGameItem(TYPE_ROCK, 14, 8, 0, 5);
     snap.addGameItem(TYPE_OIL, 9, 14, 90, 6);
-    snap.addGameItem(TYPE_MUD, 21, 6, 0, 5);
+    snap.addGameItem(TYPE_MUD, 21, 6, 0, 7);
     snap.send(_protocol);
 }

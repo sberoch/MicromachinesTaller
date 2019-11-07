@@ -6,11 +6,21 @@
 #include "../Common/Protocol.h"
 #include "../Common/Event/CommandEvent.h"
 
+struct ModifierDTO{
+    size_t id;
+    size_t type;
+    float x;
+    float y;
+    float angle;
+};
+
 class Player {
 private:
     Protocol _protocol;
     Car* _car; //TODO move car
     size_t _id;
+    ModifierDTO _modifierDTO;
+    bool _modifierToAdd;
 
 public:
     Player(Socket socket, Car* car, size_t id);
