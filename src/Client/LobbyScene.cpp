@@ -1,11 +1,19 @@
 #include "LobbyScene.h"
+#include "../Common/Event/EnterRoomEvent.h"
+#include "../Common/Event/CreateRoomEvent.h"
+#include "../Common/Event/PlayAsUserEvent.h"
+#include "../Common/Event/PlayAsBotEvent.h"
+#include "../Common/Event/PlayEvent.h"
 
-LobbyScene::LobbyScene(SdlWindow& window) :
+LobbyScene::LobbyScene(SdlWindow& window, SafeQueue<Event*>& sendQueue) :
 	window(window),
+	sendQueue(sendQueue),
 	backgroundLobbyTex("lobby.png", window),
 	backgroundLobby(backgroundLobbyTex),
 	_done(false),
-	fullscreen(true) {}
+	fullscreen(true) {
+		myId = 0;
+	}
 
 bool LobbyScene::done() {
 	return _done;
@@ -33,9 +41,26 @@ int LobbyScene::handle() {
 		} else if (e.type == SDL_MOUSEBUTTONDOWN) {
 			int x, y;
 			SDL_GetMouseState(&x, &y);
-			if (insidePlayUserButton(x, y)) {
+			if (insidePlayButton(x, y)) {
+				sendQueue.push(new PlayEvent(myId));
 				audio.playEffect(SFX_BUTTON);
 				nextScene = SCENE_GAME;
+			}
+			else if (insideUserButton(x, y)) {
+				sendQueue.push(new PlayAsUserEvent(myId));
+				audio.playEffect(SFX_BUTTON);
+			}
+			else if (insideBotButton(x, y)) {
+				sendQueue.push(new PlayAsBotEvent(myId));
+				audio.playEffect(SFX_BUTTON);
+			}
+			else if (insideCreateRoomButton(x, y)) {
+				sendQueue.push(new CreateRoomEvent());
+				audio.playEffect(SFX_BUTTON);
+			}
+			else if (insideJoinRoomButton(x, y)) {
+				sendQueue.push(new EnterRoomEvent(myId));
+				audio.playEffect(SFX_BUTTON);
 			}
 
 		} else if (e.type == SDL_KEYDOWN) {
@@ -55,7 +80,28 @@ int LobbyScene::handle() {
 	return nextScene;
 }
 
-bool LobbyScene::insidePlayUserButton(int x, int y) {
+bool LobbyScene::insidePlayButton(int x, int y) {
+	Area playBtn(0.4*xScreen, 0.8*yScreen, 0.2*xScreen, 0.15*yScreen);
+	return playBtn.isInside(x, y);
+}
+
+bool LobbyScene::insideUserButton(int x, int y) {
 	Area playBtn(0.7*xScreen, 0.75*yScreen, 0.3*xScreen, 0.1*yScreen);
 	return playBtn.isInside(x, y);
 }
+
+bool LobbyScene::insideBotButton(int x, int y) {
+	Area playBtn(0.7*xScreen, 0.87*yScreen, 0.3*xScreen, 0.1*yScreen);
+	return playBtn.isInside(x, y);
+}
+
+bool LobbyScene::insideCreateRoomButton(int x, int y) {
+	Area playBtn(0, 0.75*yScreen, 0.3*xScreen, 0.1*yScreen);
+	return playBtn.isInside(x, y);
+}
+
+bool LobbyScene::insideJoinRoomButton(int x, int y) {
+	Area playBtn(0, 0.87*yScreen, 0.3*xScreen, 0.1*yScreen);
+	return playBtn.isInside(x, y);
+}
+

@@ -20,7 +20,7 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 	sender(sendQueue, protocol),
 	currentScene(SCENE_MENU) {
 		scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window, sendQueue)));
-		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window)));
+		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, sendQueue)));
 		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, recvQueue, sendQueue)));
 		
 		receiver.start();

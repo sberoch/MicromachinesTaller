@@ -16,14 +16,6 @@
 #define TYPE_MUD_SPLAT 114
 #define TYPE_GRASS 120
 
-//Event types.
-#define EVENT_COMMAND 1
-#define EVENT_SNAPSHOT 2
-#define EVENT_ENTER_LOBBY 3
-#define EVENT_PLAY_AS_USER 4
-#define EVENT_PLAY_AS_BOT 5
-#define EVENT_ENTER_ROOM 6
-
 //Scenes
 #define SCENE_MENU 200
 #define SCENE_LOBBY 201

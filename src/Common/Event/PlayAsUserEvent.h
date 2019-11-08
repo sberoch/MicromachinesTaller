@@ -10,7 +10,7 @@
 
 class PlayAsUserEvent: public Event{
 public:
-	//TODO: falta constructor con argumentos
+	PlayAsUserEvent(int id);
     virtual void send(Protocol &protocol) override;
     virtual ~PlayAsUserEvent() = default;
 };
