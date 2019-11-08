@@ -9,19 +9,17 @@
 #include <thread>
 #include <chrono>
 
-#define MAX_COMMANDS_ENQUEUED 100
-
 SceneSelector::SceneSelector(int xScreen, int yScreen,
 		const std::string& host, const std::string& port) : 
 	window(xScreen, yScreen),
 	protocol(host, port),
 	sendQueue(true),
-	receiver(recvQueue, protocol),
+	receiver(gameRecvQueue, lobbyRecvQueue, protocol),
 	sender(sendQueue, protocol),
 	currentScene(SCENE_MENU) {
 		scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window, sendQueue)));
-		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, sendQueue)));
-		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, recvQueue, sendQueue)));
+		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, lobbyRecvQueue, sendQueue)));
+		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, gameRecvQueue, sendQueue)));
 		
 		receiver.start();
 		sender.start();

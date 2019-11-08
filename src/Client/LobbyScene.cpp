@@ -5,8 +5,10 @@
 #include "../Common/Event/PlayAsBotEvent.h"
 #include "../Common/Event/PlayEvent.h"
 
-LobbyScene::LobbyScene(SdlWindow& window, SafeQueue<Event*>& sendQueue) :
+LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
+						 SafeQueue<Event*>& sendQueue) :
 	window(window),
+	lobbyRecvQueue(lobbyRecvQueue),
 	sendQueue(sendQueue),
 	backgroundLobbyTex("lobby.png", window),
 	backgroundLobby(backgroundLobbyTex),

@@ -5,7 +5,9 @@
 #include "SdlWindow.h"
 #include "SdlTexture.h"
 #include "../Common/SafeQueue.h"
+#include "../Common/Queue.h"
 #include "../Common/Event/Event.h"
+#include "../Common/Event/LobbySnapshot.h"
 #include "Audio.h"
 #include "View/BackgroundView.h"
 
@@ -13,6 +15,7 @@ class LobbyScene : public BaseScene {
 private:
 	SdlWindow& window;
 	SafeQueue<Event*>& sendQueue;
+	Queue<LobbySnapshot*>& lobbyRecvQueue;
 	SdlTexture backgroundLobbyTex;
 	BackgroundView backgroundLobby;
 	Audio audio;
@@ -24,7 +27,8 @@ private:
 	int xScreen, yScreen;
 	int myId;
 public:
-	LobbyScene(SdlWindow& window, SafeQueue<Event*>& sendQueue);
+	LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue, 
+				SafeQueue<Event*>& sendQueue);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
