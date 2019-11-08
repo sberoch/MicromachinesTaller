@@ -24,7 +24,6 @@ void LobbyListener::run() {
         try {
             if (!clients.empty()) {
                 while (incomingEvents->get(event)) {
-                    //clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
                     controller.handleInput(event->j);
                 }
 
@@ -35,6 +34,9 @@ void LobbyListener::run() {
         } catch (SocketError &se) {
             running = false;
             std::cout << "Lobby listener: " << se.what() << std::endl;
+        } catch (std::runtime_error &e){
+            running = false;
+            std::cout << "Lobby listener: " << e.what() << std::endl;
         } catch (...) {
             running = false;
             std::cerr << "Lobby listener: UnknownException.\n";

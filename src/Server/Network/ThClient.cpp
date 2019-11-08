@@ -14,7 +14,6 @@ ClientThread::ClientThread(Protocol protocol, RoomController& controller, int cl
         std::atomic_bool& acceptSocketRunning):
             keepTalking(true),
             protocol(std::move(protocol)),
-            controller(controller),
             id(clientId),
             player(nullptr, clientId),
             receivingNonBlockingQueue(nullptr),
@@ -29,7 +28,6 @@ void ClientThread::run() {
     std::cout << "Client started" << std::endl;
     try {
         try {
-            controller.addClientToRoom(0, this->id);
             this->sender.start();
             this->receiver.start();
         } catch (SocketError &e) {

@@ -8,7 +8,9 @@
 #include "../../Common/Event/EventCreator.h"
 #include "../../Common/Event/CommandEvent.h"
 
-Room::Room(int amountOfPlayers) : running(true),
+Room::Room(int roomId, int amountOfPlayers) : roomId(roomId),
+        maxAmountOfPlayers(amountOfPlayers),
+        running(true),
         incomingEvents(false),
         game(amountOfPlayers, std::make_shared<Configuration>()){
 }
@@ -20,10 +22,15 @@ void Room::run() {
 }
 
 void Room::addClient(int clientId, const std::shared_ptr<ClientThread>& newClient) {
-    newClient->assignRoomQueue(&incomingEvents);
-    newClient->sendStart(game.getSerializedMap());
-    newClient->assignCar(std::shared_ptr<Car>(this->game.createCar(clientId)));
-    this->clients.insert({clientId, newClient});
+    if (clients.size() < maxAmountOfPlayers){
+        newClient->assignRoomQueue(&incomingEvents);
+        newClient->sendStart(game.getSerializedMap());
+        newClient->assignCar(std::shared_ptr<Car>(this->game.createCar(clientId)));
+        this->clients.insert({clientId, newClient});
+    } else {
+        throw std::runtime_error("Se intento meter un cliente a una sala llena");
+    }
+
 }
 
 
