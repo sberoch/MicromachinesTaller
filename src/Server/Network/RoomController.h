@@ -1,17 +1,16 @@
-//
-// Created by alvaro on 30/10/19.
-//
-
 #ifndef MICROMACHINES_ROOMCONTROLLER_H
 #define MICROMACHINES_ROOMCONTROLLER_H
 
 #include <list>
 #include <unordered_map>
 #include <atomic>
+#include "LobbyListener.h"
 #include "../../Common/Thread.h"
 #include "../../Common/SafeQueue.h"
 #include "SafeCounter.h"
 #include "../../Common/Protocol.h"
+#include "../../Common/Event/CommandEvent.h"
+
 
 class ClientThread;
 class Room;
@@ -23,6 +22,9 @@ private:
     SafeQueue<std::string> queue;
     SafeCounter roomCounter;
     std::atomic_bool& acceptSocketRunning;
+    std::mutex m;
+    LobbyListener listener;
+
 public:
     explicit RoomController(std::atomic_bool& running);
 
@@ -34,7 +36,11 @@ public:
 
    void stop();
 
-    ~RoomController();
+   void handleInput(json j);
+
+   ~RoomController();
+
+    void collectDeadClients();
 };
 
 

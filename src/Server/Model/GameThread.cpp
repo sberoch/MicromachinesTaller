@@ -24,7 +24,7 @@ GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>
     _oil = _world.createOil();
 }
 
-void GameThread::run(std::atomic_bool& running, 
+void GameThread::run(std::atomic_bool& running,
         SafeQueue<std::shared_ptr<Event>>& incomingEvents,
         std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
     std::shared_ptr<Event> event;
@@ -35,16 +35,16 @@ void GameThread::run(std::atomic_bool& running,
             if (!clients.empty()) {
                 while (incomingEvents.get(event)) {
 //                    clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
-                    clients[0]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+                    clients[0]->handleInput(
+                            (InputEnum) event->j["cmd_id"].get<int>());
+                }
+
+                step();
+
+                for (auto &actualClient : clients) {
+                    actualClient.second->sendSnapshot();
                 }
             }
-
-            step();
-
-            for (auto &actualClient : clients) {
-                actualClient.second->sendSnapshot();
-            }
-
 
             std::clock_t end = clock();
             double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);

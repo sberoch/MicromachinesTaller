@@ -14,13 +14,14 @@
 
 class Room: public Thread{
 private:
+    int roomId;
+    int maxAmountOfPlayers;
     std::atomic<bool> running;
     std::unordered_map<int ,std::shared_ptr<ClientThread>> clients;
-    //TODO: es bloqueante: NO.
     SafeQueue<std::shared_ptr<Event>> incomingEvents;
     GameThread game;
 public:
-    explicit Room(int amountOfClients);
+    explicit Room(int roomId, int amountOfClients);
 
     void run() override;
 

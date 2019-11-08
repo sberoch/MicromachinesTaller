@@ -17,7 +17,7 @@ public:
 
     bool anyCreated();
 
-    int addOneAndReturn();
+    int returnAndAddOne();
 
     ~SafeCounter();
 };

@@ -21,7 +21,6 @@ class ClientThread: public Thread {
 private:
     std::atomic<bool> keepTalking;
     Protocol protocol;
-    RoomController& controller;
     int id;
     Player player;
     SafeQueue<std::shared_ptr<Event>>* receivingNonBlockingQueue;
