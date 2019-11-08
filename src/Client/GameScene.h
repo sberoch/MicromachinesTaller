@@ -43,9 +43,9 @@ private:
 	int cameraX, cameraY;
 	int xScreen, yScreen;
 
-	//Mock
 	int myID;
 	bool isBot;
+	bool isGameOver;
 
 public:
 	GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 

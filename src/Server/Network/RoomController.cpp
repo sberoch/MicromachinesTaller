@@ -105,7 +105,7 @@ void RoomController::handleInput(json j) {
         case COMMAND:
             std::cout << "Command con id: " << client_id << std::endl;
             break;
-        case SNAPSHOT:
+        case GAME_SNAPSHOT:
             std::cout << "Snapshot con id: " << client_id << std::endl;
             break;
     }

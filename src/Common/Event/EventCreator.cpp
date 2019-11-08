@@ -25,7 +25,7 @@ std::shared_ptr<Event> EventCreator::makeEvent(const std::string& recvdEvent){
     switch (type) {
         case COMMAND:
             return std::shared_ptr<Event>(new CommandEvent(j));
-        case SNAPSHOT:
+        case GAME_SNAPSHOT:
             return std::shared_ptr<Event>(new SnapshotEvent);
         case ENTER_LOBBY:
             return std::shared_ptr<Event>(new EnterLobbyEvent);
