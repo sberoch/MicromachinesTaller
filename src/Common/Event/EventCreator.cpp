@@ -11,6 +11,7 @@
 #include "EnterRoomEvent.h"
 #include "PlayEvent.h"
 #include "CreateRoomEvent.h"
+#include "LobbySnapshot.h"
 #include <memory>
 #include <iostream>
 

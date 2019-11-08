@@ -10,6 +10,7 @@
 #include "SafeCounter.h"
 #include "../../Common/Protocol.h"
 #include "../../Common/Event/CommandEvent.h"
+#include "../../Common/Event/LobbySnapshot.h"
 
 
 class ClientThread;
@@ -25,10 +26,14 @@ private:
     std::mutex m;
     LobbyListener listener;
 
+    int getRoomIdOfClient(int clientId);
+    void collectDeadClients();
+    std::shared_ptr<ClientThread> moveClientToNewRoom(int newRoomId, int clientId);
+
 public:
     explicit RoomController(std::atomic_bool& running);
 
-   void addRoom();
+   int addRoom();
 
    void addClient(int clientId, Protocol protocol);
 
@@ -38,9 +43,9 @@ public:
 
    void handleInput(json j);
 
-   ~RoomController();
+    void sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot);
 
-    void collectDeadClients();
+   ~RoomController();
 };
 
 

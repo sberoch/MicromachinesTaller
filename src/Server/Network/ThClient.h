@@ -55,6 +55,8 @@ public:
     void assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue);
 
     void assignCar(const std::shared_ptr<Car>& car);
+
+    void sendLobbySnapshot(const std::shared_ptr<LobbySnapshot>& snapshot);
 };
 
 

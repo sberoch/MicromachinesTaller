@@ -17,7 +17,7 @@ class ClientThread;
 class LobbyListener : public Thread{
 private:
     std::unordered_map<int, std::shared_ptr<ClientThread>>& clients;
-    SafeQueue<std::shared_ptr<Event>>* incomingEvents;
+    SafeQueue<std::shared_ptr<Event>> incomingEvents;
     std::atomic_bool& running;
     RoomController& controller;
 

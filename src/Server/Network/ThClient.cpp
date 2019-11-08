@@ -83,3 +83,8 @@ void ClientThread::sendStart(json j) {
     this->sendingBlockingQueue.push(event);
 }
 
+void ClientThread::sendLobbySnapshot(const std::shared_ptr<LobbySnapshot>& snapshot){
+    std::shared_ptr<Event> event(snapshot);
+    this->sendingBlockingQueue.push(event);
+}
+

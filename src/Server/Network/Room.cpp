@@ -21,6 +21,10 @@ void Room::run() {
     game.run(running, incomingEvents, clients);
 }
 
+bool Room::hasClient(int clientId){
+    return this->clients.count(clientId);
+}
+
 void Room::addClient(int clientId, const std::shared_ptr<ClientThread>& newClient) {
     if (clients.size() < maxAmountOfPlayers){
         newClient->assignRoomQueue(&incomingEvents);
@@ -49,6 +53,12 @@ Room::~Room() {
 std::shared_ptr<Car> Room::createCar(int id) {
     std::shared_ptr<Car> car(game.createCar(id));
     return car;
+}
+
+std::shared_ptr<ClientThread> Room::eraseClientAndReturn(int clientId) {
+    std::shared_ptr<ClientThread> client = this->clients.at(clientId);
+    this->clients.erase(clientId);
+    return client;
 }
 
 

@@ -12,10 +12,9 @@
 LobbyListener::LobbyListener(
         std::unordered_map<int, std::shared_ptr<ClientThread>> &clients,
         std::atomic_bool &running, RoomController& controller): clients(clients),
+                                    incomingEvents(false),
                                     running(running),
-                                    controller(controller){
-    this->incomingEvents = new SafeQueue<std::shared_ptr<Event>>(false);
-}
+                                    controller(controller){}
 
 void LobbyListener::run() {
     std::shared_ptr<Event> event;
@@ -23,7 +22,7 @@ void LobbyListener::run() {
     while (running) {
         try {
             if (!clients.empty()) {
-                while (incomingEvents->get(event)) {
+                while (incomingEvents.get(event)) {
                     controller.handleInput(event->j);
                 }
 
@@ -33,10 +32,13 @@ void LobbyListener::run() {
             }
         } catch (SocketError &se) {
             running = false;
-            std::cout << "Lobby listener: " << se.what() << std::endl;
+            std::cout << "Lobby listener (SE): " << se.what() << std::endl;
+        } catch (std::exception &e){
+            running = false;
+            std::cout << "Lobby listener (E): " << e.what() << std::endl;
         } catch (std::runtime_error &e){
             running = false;
-            std::cout << "Lobby listener: " << e.what() << std::endl;
+            std::cout << "Lobby listener (RE): " << e.what() << std::endl;
         } catch (...) {
             running = false;
             std::cerr << "Lobby listener: UnknownException.\n";
@@ -49,9 +51,8 @@ void LobbyListener::createRoom(){
 }
 
 LobbyListener::~LobbyListener() {
-    delete(this->incomingEvents);
 }
 
 SafeQueue<std::shared_ptr<Event>>* LobbyListener::getReceivingQueue() {
-    return this->incomingEvents;
+    return &this->incomingEvents;
 }

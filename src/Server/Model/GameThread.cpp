@@ -13,7 +13,7 @@ GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>
                                              _configuration(configuration),
                                              _world(n_of_players, configuration),
                                              _track(), _grass(), _gameToStart(true),
-                                             _gameStarted(true),
+                                             _gameStarted(false),
                                              _gameEnded(false){
     _world.createTrack(_track);
     _world.createGrass(_grass);
@@ -29,37 +29,39 @@ void GameThread::run(std::atomic_bool& running,
         std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
     std::shared_ptr<Event> event;
     while (running) {
-        try {
-            std::clock_t begin = clock();
+        while (_gameStarted) {
+            try {
+                std::clock_t begin = clock();
 
-            if (!clients.empty()) {
-                while (incomingEvents.get(event)) {
+                if (!clients.empty()) {
+                    while (incomingEvents.get(event)) {
 //                    clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
-                    clients[0]->handleInput(
-                            (InputEnum) event->j["cmd_id"].get<int>());
+                        clients[0]->handleInput(
+                                (InputEnum) event->j["cmd_id"].get<int>());
+                    }
+
+                    step();
+
+                    for (auto &actualClient : clients) {
+                        actualClient.second->sendSnapshot();
+                    }
                 }
 
-                step();
-
-                for (auto &actualClient : clients) {
-                    actualClient.second->sendSnapshot();
+                std::clock_t end = clock();
+                double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
+                double frames = 35;
+                if (execTime < frames) {
+                    int to_sleep = (frames - execTime);
+                    std::this_thread::sleep_for(
+                            std::chrono::milliseconds(to_sleep));
                 }
+            } catch (SocketError &se) {
+                running = false;
+                std::cerr << se.what();
+            } catch (...) {
+                running = false;
+                std::cerr << "Game Thread: UnknownException.\n";
             }
-
-            std::clock_t end = clock();
-            double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
-            double frames = 35;
-            if (execTime < frames) {
-                int to_sleep = (frames - execTime);
-                std::this_thread::sleep_for(
-                        std::chrono::milliseconds(to_sleep));
-            }
-        } catch (SocketError &se) {
-            running = false;
-            std::cerr << se.what();
-        } catch (...) {
-            running = false;
-            std::cerr << "Game Thread: UnknownException.\n";
         }
     }
 }

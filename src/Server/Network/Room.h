@@ -32,6 +32,9 @@ public:
     std::shared_ptr<Car> createCar(int id);
 
     ~Room() override;
+
+    bool hasClient(int clientId);
+    std::shared_ptr<ClientThread> eraseClientAndReturn(int clientId);
 };
 
 
