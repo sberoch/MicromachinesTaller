@@ -26,6 +26,10 @@ private:
 	SdlTexture mudTex;
 	SdlTexture explosionTex;
 	SdlTexture mudSplatTex;
+	SdlTexture room1Tex;
+	SdlTexture room2Tex;
+	SdlTexture room3Tex;
+	SdlTexture room4Tex;
 public:
 	TextureCreator(const SdlWindow& window);
 	ObjectViewPtr create(int type, int x, int y, int angle);

@@ -14,6 +14,7 @@
 #include "View/HealthBarFrontView.h"
 #include "View/ExplosionView.h"
 #include "View/MudSplatView.h"
+#include "View/RoomView.h"
 
 TextureCreator::TextureCreator(const SdlWindow& window) :
 	straightTrackTex("straight_track.png", window),
@@ -27,7 +28,11 @@ TextureCreator::TextureCreator(const SdlWindow& window) :
 	oilTex("oil.png", window),
 	mudTex("mud.png", window),
 	explosionTex("explosion.png", window),
-	mudSplatTex("mud_splat.png", window) {
+	mudSplatTex("mud_splat.png", window),
+	room1Tex("room1.png", window),
+	room2Tex("room2.png", window),
+	room3Tex("room3.png", window), 
+	room4Tex("room4.png", window) {
 		idCounter = 0;
 }
 
@@ -47,6 +52,10 @@ ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
 		case TYPE_MUD: ov.reset(new MudView(mudTex, angle)); break;
 		case TYPE_EXPLOSION: ov.reset(new ExplosionView(explosionTex)); break;
 		case TYPE_MUD_SPLAT: ov.reset(new MudSplatView(mudSplatTex)); break;
+		case TYPE_ROOM_1: ov.reset(new RoomView(room1Tex)); break;
+		case TYPE_ROOM_2: ov.reset(new RoomView(room2Tex)); break;
+		case TYPE_ROOM_3: ov.reset(new RoomView(room3Tex)); break;
+		case TYPE_ROOM_4: ov.reset(new RoomView(room4Tex)); break;
 		default: throw std::runtime_error("Texture Creator: Wrong view_id");
 	}
 	++idCounter;

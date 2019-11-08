@@ -14,6 +14,10 @@
 #define TYPE_HEALTH_BAR_FRONT 112
 #define TYPE_EXPLOSION 113
 #define TYPE_MUD_SPLAT 114
+#define TYPE_ROOM_1 115
+#define TYPE_ROOM_2 116
+#define TYPE_ROOM_3 117
+#define TYPE_ROOM_4 118
 #define TYPE_GRASS 120
 
 //Scenes

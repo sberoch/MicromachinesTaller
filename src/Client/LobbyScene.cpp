@@ -5,6 +5,9 @@
 #include "../Common/Event/PlayAsBotEvent.h"
 #include "../Common/Event/PlayEvent.h"
 
+//TODO: current room
+//TODO: Segun selected room dibujar players
+
 LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
 						 SafeQueue<Event*>& sendQueue) :
 	window(window),
@@ -12,9 +15,20 @@ LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
 	sendQueue(sendQueue),
 	backgroundLobbyTex("lobby.png", window),
 	backgroundLobby(backgroundLobbyTex),
+	creator(window),
 	_done(false),
-	fullscreen(true) {
+	fullscreen(true),
+	nextScene(SCENE_LOBBY) {
 		myId = 0;
+		roomViews.push_back(creator.create(TYPE_ROOM_1, 0, 0, 0));
+		roomViews.push_back(creator.create(TYPE_ROOM_2, 0, 0, 0));
+		roomViews.push_back(creator.create(TYPE_ROOM_3, 0, 0, 0));
+		roomViews.push_back(creator.create(TYPE_ROOM_4, 0, 0, 0));
+
+		playerViews.push_back(creator.create(TYPE_CAR_RED, 0, 0, 270));
+		playerViews.push_back(creator.create(TYPE_CAR_BLUE, 0, 0, 270));
+		playerViews.push_back(creator.create(TYPE_CAR_YELLOW, 0, 0, 270));
+		playerViews.push_back(creator.create(TYPE_CAR_GREEN, 0, 0, 270));
 	}
 
 bool LobbyScene::done() {
@@ -24,18 +38,47 @@ bool LobbyScene::done() {
 void LobbyScene::update() {
 	window.getWindowSize(&xScreen, &yScreen);
 	backgroundLobby.setDims(xScreen, yScreen);
-	//TODO: recibir de sv salas y jugadores
+	
+	LobbySnapshot* snap;
+	if (lobbyRecvQueue.pop(snap)) {
+		updateRooms(snap->getRooms());
+	}
+}
+
+void LobbyScene::updateRooms(RoomsMap roomsMap) {
+	this->roomsMap = roomsMap;
+
+	//Check if any game started and if i'm in it.
+	for (auto& room : roomsMap) {
+		if (room.second.gameStarted) {
+			for (auto& player : room.second.players) {
+				if (player == myId) {
+					nextScene = SCENE_GAME;
+				}
+			}
+		}
+	}
 }
 
 void LobbyScene::draw() {
 	window.fill();
 	backgroundLobby.drawAt(xScreen/2, yScreen/2);
-	//TODO: jugadores y salas
+	drawRooms();
 	window.render();
 }
 
+void LobbyScene::drawRooms() {
+	for (int i = 0; i < 2/*roomsMap.size()*/; ++i) {
+		roomViews.at(i)->drawAt(0.26*xScreen, (0.22 + 0.1*i)*yScreen);
+	}
+
+	//TODO: hacerlo segun sala seleccionada
+	for (int i = 0; i < 3/*roomsMap.at(selectedRoom).players.size()*/; ++i) {
+		playerViews.at(i)->drawAt(0.76*xScreen, (0.22 + 0.1*i)*yScreen);
+	}
+}
+
 int LobbyScene::handle() {
-	nextScene = SCENE_LOBBY;
 	while (SDL_PollEvent(&e) && !_done) {
 		if (e.type == SDL_QUIT) {
 			_done = true;
@@ -46,7 +89,6 @@ int LobbyScene::handle() {
 			if (insidePlayButton(x, y)) {
 				sendQueue.push(new PlayEvent(myId));
 				audio.playEffect(SFX_BUTTON);
-				nextScene = SCENE_GAME;
 			}
 			else if (insideUserButton(x, y)) {
 				sendQueue.push(new PlayAsUserEvent(myId));
@@ -78,7 +120,6 @@ int LobbyScene::handle() {
 			}
 		}
 	}
-	
 	return nextScene;
 }
 
