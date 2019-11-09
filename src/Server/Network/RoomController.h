@@ -28,7 +28,7 @@ private:
 
     int getRoomIdOfClient(int clientId);
     void collectDeadClients();
-    std::shared_ptr<ClientThread> moveClientToNewRoom(int newRoomId, int clientId);
+    void moveClientToNewRoom(int newRoomId, int clientId);
 
 public:
     explicit RoomController(std::atomic_bool& running);

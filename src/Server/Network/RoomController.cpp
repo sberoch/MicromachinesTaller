@@ -47,9 +47,10 @@ int RoomController::getRoomIdOfClient(int clientId) {
     return -1;
 }
 
-std::shared_ptr<ClientThread> RoomController::moveClientToNewRoom(int newRoomId, int clientId){
+void RoomController::moveClientToNewRoom(int newRoomId, int clientId){
     int oldRoomId = getRoomIdOfClient(clientId);
-    rooms.at(newRoomId)->addClient(clientId, rooms.at(oldRoomId)->eraseClientAndReturn(clientId));
+    auto client = rooms.at(oldRoomId)->eraseClientAndReturn(clientId);
+    rooms.at(newRoomId)->addClientAlreadyCreated(clientId, client);
 }
 
 

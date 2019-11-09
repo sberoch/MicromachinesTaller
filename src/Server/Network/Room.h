@@ -37,6 +37,9 @@ public:
     std::shared_ptr<ClientThread> eraseClientAndReturn(int clientId);
 
     void sendSnapshotToClients(std::shared_ptr<LobbySnapshot> &snapshot);
+
+    void addClientAlreadyCreated(int clientId,
+                            std::shared_ptr<ClientThread> newClient);
 };
 
 
