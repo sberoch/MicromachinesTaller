@@ -22,7 +22,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 }
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-                                        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(100), _maxForwardSpeed(25),
+                                        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(1), _maxForwardSpeed(25),
                                         _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false), _exploded(false),
                                         _currentTraction(1), _groundArea(), _deletable() {
     _setBodyDef(x_init, y_init, angle, configuration);
@@ -114,12 +114,22 @@ Car& Car::operator=(Car&& other){
     return *this;
 }
 
+void Car::setTrack(Track* track){
+    _currentTrack = track;
+    if (!_currentTrack)
+        std::cout << "currTrack is null\n";
+}
 
 void Car::resetCar(){
     _health = 100;
-    //x should be middle, check if thereś already a car?
-    b2Vec2 position = b2Vec2(_previous_x, _previous_y);
-    _carBody->SetTransform(position, _previousAngle);
+    if (_currentTrack){
+        std::cout << "\nExploded, putting in center of track\n";
+        b2Vec2 position = b2Vec2(_currentTrack->x(), _currentTrack->y());
+        _carBody->SetTransform(position, _currentTrack->angle());
+    } else {
+        b2Vec2 position = b2Vec2(_previous_x, _previous_y);
+        _carBody->SetTransform(position, _previousAngle);
+    }
 }
 
 b2Vec2 Car::getLateralVelocity(){

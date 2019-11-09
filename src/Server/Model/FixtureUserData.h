@@ -34,13 +34,10 @@ public:
 class GroundAreaFUD : public FixtureUserData {
 public:
     float frictionModifier;
-    bool outOfCourse;
     bool grass;
 
-    GroundAreaFUD(float fm, bool ooc, bool grass, size_t id) : FixtureUserData(FUD_GROUND_AREA, id) {
+    GroundAreaFUD(float fm, bool grass, size_t id) : FixtureUserData(FUD_GROUND_AREA, id), grass(grass){
         frictionModifier = fm;
-        outOfCourse = ooc;
-        grass = grass;
     }
 
     bool isGrass(){

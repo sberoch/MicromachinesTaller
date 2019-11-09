@@ -3,6 +3,7 @@
 #include "ContactListener.h"
 #include "FixtureUserData.h"
 #include "Modifier.h"
+#include "Track.h"
 
 ContactListener::ContactListener(b2World *world) : _world(world) {}
 
@@ -21,8 +22,10 @@ void ContactListener::carVsGroundArea(b2Fixture* carFixture, b2Fixture* groundAr
     if (!car)
         std::cout << "NOT CAR\n";
     GroundAreaFUD* gaFud = (GroundAreaFUD*)groundAreaFixture->GetUserData();
-    if (began)
+    if (began){
+
         car->addGroundArea(gaFud);
+    }
     else
         car->removeGroundArea(gaFud);
 }
@@ -166,15 +169,62 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
 
     if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_GROUND_AREA){
         std::cout << "Is ground area with " << ((GroundAreaFUD*) fudB)->frictionModifier << '\n';
+
+        if (!((GroundAreaFUD*) fudB)->isGrass()){
+            std::cout << "Set track \n";
+            Car* car = (Car*) a->GetBody()->GetUserData();
+            auto* track = (Track*) b->GetBody()->GetUserData();
+            car->setTrack(track);
+            contact->ResetFriction();
+        } else {
+            std::cout << "Is grass\n";
+        }
         carVsGroundArea(a, b, began);
     } else if (fudA->getType() == FUD_GROUND_AREA && fudB->getType() == FUD_CAR){
         std::cout << "Is ground area with " << ((GroundAreaFUD*) fudA)->frictionModifier << '\n';
+
+        if (!((GroundAreaFUD*) fudA)->isGrass()){
+            std::cout << "Set track \n";
+            Car* car = (Car*) b->GetBody()->GetUserData();
+            auto* track = (Track*) a->GetBody()->GetUserData();
+            car->setTrack(track);
+            contact->ResetFriction();
+        }
+        else {
+            std::cout << "Is grass\n";
+        }
         carVsGroundArea(b, a, began);
     }
 
 }
 
 void ContactListener::PreSolve(b2Contact* contact, const b2Manifold* oldManifold){
+    b2Fixture* a = contact->GetFixtureA();
+    b2Fixture* b = contact->GetFixtureB();
+    auto* fudA = (FixtureUserData*) a->GetUserData();
+    auto* fudB = (FixtureUserData*) b->GetUserData();
 
+    if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_GROUND_AREA){
+        if (!((GroundAreaFUD*) fudB)->isGrass()){
+            std::cout << "Set track \n";
+            Car* car = (Car*) a->GetBody()->GetUserData();
+            auto* track = (Track*) b->GetBody()->GetUserData();
+            car->setTrack(track);
+            contact->ResetFriction();
+        } else {
+            std::cout << "Is grass\n";
+        }
+    } else if (fudA->getType() == FUD_GROUND_AREA && fudB->getType() == FUD_CAR){
+        if (!((GroundAreaFUD*) fudA)->isGrass()){
+            std::cout << "Set track \n";
+            Car* car = (Car*) b->GetBody()->GetUserData();
+            auto* track = (Track*) a->GetBody()->GetUserData();
+            car->setTrack(track);
+            contact->ResetFriction();
+        }
+        else {
+            std::cout << "Is grass\n";
+        }
+    }
 }
 

@@ -6,6 +6,7 @@
 #include "../FixtureUserData.h"
 #include "../../../Common/Event/CommandEvent.h"
 #include "../../../Common/Constants.h"
+#include "../Track.h"
 
 enum Status {
     GRABBED_HEALTH_POWERUP,
@@ -46,6 +47,7 @@ private:
 
     GroundAreaFUD* _groundArea;
     float _currentTraction;
+    Track* _currentTrack;
 
     void _setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
     void _setShapeAndFixture(std::shared_ptr<Configuration> configuration);
@@ -66,10 +68,7 @@ public:
     void turnRight();
 
     //Contact with floor
-    void startContact(b2Body* ground);
-    void endContact(b2Body* ground);
-    void createFrictionJoint();
-    void destroyFrictionJoint();
+    void setTrack(Track* track);
 
     Deletable getStatus();
     void resetStatus();
