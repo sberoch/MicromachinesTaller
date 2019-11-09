@@ -35,6 +35,8 @@ public:
 
     bool hasClient(int clientId);
     std::shared_ptr<ClientThread> eraseClientAndReturn(int clientId);
+
+    void sendSnapshotToClients(const std::shared_ptr<LobbySnapshot> &snapshot);
 };
 
 

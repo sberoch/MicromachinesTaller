@@ -107,6 +107,10 @@ void RoomController::sendToClientsWithoutRoom(const std::shared_ptr<LobbySnapsho
     }
 }
 
+void RoomController::sendToClientsFromRoom(int roomId, const std::shared_ptr<LobbySnapshot>& snapshot){
+    rooms.at(roomId)->sendSnapshotToClients(snapshot);
+}
+
 
 void RoomController::handleInput(json j, const std::shared_ptr<LobbySnapshot>& snapshot) {
     Type input = (Type) j["type"].get<int>();
@@ -126,16 +130,15 @@ void RoomController::handleInput(json j, const std::shared_ptr<LobbySnapshot>& s
             break;
         case ENTER_ROOM:
             client_id = j["client_id"].get<int>();
-            //TODO: HARCODEADO
-            roomId = 0;
+            roomId = j["selected_room"].get<int>();
             std::cout << "Enter to room " << roomId << " from client id: " << client_id << std::endl;
             this->addClientToRoom(roomId, client_id);
             snapshot->joinRoom(client_id, roomId);
-            sendToClientsWithoutRoom(snapshot);
+            sendToClientsFromRoom(roomId, snapshot);
             break;
         case CREATE_ROOM:
-            std::cout << "Create room desde id: " << client_id << std::endl;
             roomId = addRoom();
+            std::cout << "Create room with id: " << roomId << std::endl;
             snapshot->createRoom(roomId);
             sendToClientsWithoutRoom(snapshot);
             break;

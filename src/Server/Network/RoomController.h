@@ -46,6 +46,9 @@ public:
     void sendToClientsWithoutRoom(const std::shared_ptr<LobbySnapshot>& snapshot);
 
    ~RoomController();
+
+    void sendToClientsFromRoom(int roomId,
+                               const std::shared_ptr<LobbySnapshot> &snapshot);
 };
 
 

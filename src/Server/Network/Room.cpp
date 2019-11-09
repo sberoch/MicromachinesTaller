@@ -59,6 +59,12 @@ std::shared_ptr<ClientThread> Room::eraseClientAndReturn(int clientId) {
     return client;
 }
 
+void Room::sendSnapshotToClients(const std::shared_ptr<LobbySnapshot>& snapshot){
+    for (auto& client: clients){
+        client.second->sendLobbySnapshot(snapshot);
+    }
+}
+
 
 
 
