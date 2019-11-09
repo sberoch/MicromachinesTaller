@@ -50,28 +50,37 @@ end
 
 --main function, returns the next movement to be done by the bot
 function getNextMovement(carX, carY, carAngle)
+	print(string.format("\n__step__"))
 	local diff = 0
 	local velocity = 0
 	local tr = tracks
-	--print(string.format("\n__step__"))
 	while tr do
 		if not checkInsideTrack(carX, carY, tr.x, tr.y) then
 			tr = tr.next
 		else
-			--get next track
+			--get next 2 tracks
 			tr = tr.next
 			if not tr then
 				tr = first
 			end
 			current = tr
-			--print(string.format("Im in x: %s, y: %s", carX, carY))
-			--print(string.format("Should go to x: %s, y: %s", tr.x, tr.y))
+			local second = tr.next
+			if not second then
+				second = first
+			end
 
-			--check angle diff and return action
-			diff = getDifferenceAngle(carX, carY, carAngle, tr.x, tr.y)
+			--get average between next 2 tracks
+			avgX, avgY = getAvgPoint(tr.x, tr.y, second.x, second.y)
+
+
+			--check angle diff with average point and return action
+			diff = getDifferenceAngle(carX, carY, carAngle, avgX, avgY)
+			print(string.format("angleDiff: %s", diff))
 			velocity = getVelocity(carX, carY)
 			if shouldBrake(velocity, diff) then
 				return _n_desaccelerate
+			elseif velocity == 0 then
+				return _n_accelerate
 			else
 				return getMoveFromAngleDiff(diff)
 			end
@@ -129,7 +138,7 @@ function getDifferenceAngle(carX, carY, carAngle, trackX, trackY)
 	if carAngle >= 360 then
 		carAngle = carAngle - 360
 	end
-	--print(string.format("Car angle: %s", carAngle))
+	print(string.format("Car angle: %s", carAngle))
 
 	--get angle from points
 	local deg = math.deg
@@ -138,12 +147,14 @@ function getDifferenceAngle(carX, carY, carAngle, trackX, trackY)
 	if res >= 180 then
 		res = res - 360
 	end
-	--print(string.format("Angle between dots: %s", res))
+	print(string.format("Angle between dots: %s", res))
 
 	--get diff
 	local diff = res - carAngle
 	if (diff >= 180) then
 		diff = diff - 360
+	elseif (diff <= -180) then
+		diff = diff + 360
 	end
 	--print(string.format("Angle diff: %s", diff))
 	return diff
@@ -161,7 +172,6 @@ function getVelocity(carX, carY)
 		vel = math.sqrt(math.pow(carY - _prev_y, 2) + math.pow(carX - _prev_x, 2))
 		_prev_x = carX
 		_prev_y = carY
-		print(vel)
 		return vel
 	end
 end
@@ -169,4 +179,12 @@ end
 
 function shouldBrake(velocity, angleDiff)
 	return ((velocity > _MAX_VEL_ON_TURNS) and ((angleDiff > 20) or (angleDiff < -20)))
+end
+
+--Average with ponderance on first point.
+--Used to get the next point the car should aim to.
+function getAvgPoint(x1, y1, x2, y2)
+	local avgX = (3*x1 + x2)/4
+	local avgY = (3*y1 + y2)/4
+	return avgX, avgY
 end
