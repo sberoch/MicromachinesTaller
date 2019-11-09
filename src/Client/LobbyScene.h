@@ -30,6 +30,7 @@ private:
 
 	bool _done;
 	bool fullscreen;
+	int selectedRoom;
 	int nextScene;
 	int xScreen, yScreen;
 	int myId;
@@ -48,6 +49,7 @@ private:
 	bool insideBotButton(int x, int y);
 	bool insideCreateRoomButton(int x, int y);
 	bool insideJoinRoomButton(int x, int y);
+	void checkInsideAnyRoom(int x, int y);
 };
 
 #endif // LOBBY_SCENE_H

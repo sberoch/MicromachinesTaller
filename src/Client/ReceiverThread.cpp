@@ -8,16 +8,16 @@ ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 	lobbyRecvQueue(lobbyRecvQueue),
 	protocol(protocol),
 	_done(false),
-	_isLobbyMode(false) {}
+	_isGameMode(false) {}
 
 void ReceiverThread::run() {
 	SnapshotEvent* gameSnap;
 	LobbySnapshot* lobbySnap;
-	while(!_done && _isLobbyMode) {
+	while(!_done && !_isGameMode) {
 		lobbySnap = new LobbySnapshot(protocol);
 		lobbyRecvQueue.push(lobbySnap);
 	}
-	while(!_done && !_isLobbyMode) {
+	while(!_done && _isGameMode) {
 		gameSnap = new SnapshotEvent(protocol);
 		gameRecvQueue.push(gameSnap);
 	}
@@ -28,7 +28,7 @@ void ReceiverThread::kill() {
 }
 
 void ReceiverThread::setGameMode() {
-	_isLobbyMode = true;
+	_isGameMode = true;
 }
 
 ReceiverThread::~ReceiverThread() {

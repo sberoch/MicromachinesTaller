@@ -21,7 +21,6 @@ public:
 	LobbySnapshot() = default;
 	LobbySnapshot(Protocol &protocol);
 	virtual void send(Protocol &protocol) override;
-	void sendId(int id);
 
 	void createRoom(int room_id);
 	void joinRoom(int player_id, int room_id);

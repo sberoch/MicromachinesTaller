@@ -10,7 +10,7 @@
 
 class EnterRoomEvent: public Event{
 public:
-	EnterRoomEvent(int id);
+	EnterRoomEvent(int id, int selectedRoom);
     virtual void send(Protocol &protocol) override;
     virtual ~EnterRoomEvent() = default;
 };

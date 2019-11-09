@@ -59,10 +59,6 @@ void LobbySnapshot::send(Protocol &protocol) {
     protocol.send(finalMessage);
 }
 
-void LobbySnapshot::sendId(int id) {
-    //TODO: esto
-}
-
 void LobbySnapshot::createRoom(int room_id) {
     std::vector<int> players; //Null vector
     addRoom(room_id, false, std::move(players));

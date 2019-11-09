@@ -18,6 +18,7 @@ LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
 	creator(window),
 	_done(false),
 	fullscreen(true),
+	selectedRoom(-1),
 	nextScene(SCENE_LOBBY) {
 		myId = 0;
 		roomViews.push_back(creator.create(TYPE_ROOM_1, 0, 0, 0));
@@ -43,9 +44,11 @@ void LobbyScene::update() {
 	if (lobbyRecvQueue.pop(snap)) {
 		updateRooms(snap->getRooms());
 	}
+	
 }
 
 void LobbyScene::updateRooms(RoomsMap roomsMap) {
+
 	this->roomsMap = roomsMap;
 
 	//Check if any game started and if i'm in it.
@@ -68,13 +71,15 @@ void LobbyScene::draw() {
 }
 
 void LobbyScene::drawRooms() {
-	for (int i = 0; i < 2/*roomsMap.size()*/; ++i) {
+	for (int i = 0; i < roomsMap.size(); ++i) {
 		roomViews.at(i)->drawAt(0.26*xScreen, (0.22 + 0.1*i)*yScreen);
 	}
 
 	//TODO: hacerlo segun sala seleccionada
-	for (int i = 0; i < 3/*roomsMap.at(selectedRoom).players.size()*/; ++i) {
-		playerViews.at(i)->drawAt(0.76*xScreen, (0.22 + 0.1*i)*yScreen);
+	if (selectedRoom != -1) {
+		for (int i = 0; i < roomsMap.at(selectedRoom).players.size(); ++i) {
+			playerViews.at(i)->drawAt(0.76*xScreen, (0.22 + 0.1*i)*yScreen);
+		}
 	}
 }
 
@@ -103,8 +108,10 @@ int LobbyScene::handle() {
 				audio.playEffect(SFX_BUTTON);
 			}
 			else if (insideJoinRoomButton(x, y)) {
-				sendQueue.push(new EnterRoomEvent(myId));
+				sendQueue.push(new EnterRoomEvent(myId, selectedRoom));
 				audio.playEffect(SFX_BUTTON);
+			} else {
+				checkInsideAnyRoom(x, y);
 			}
 
 		} else if (e.type == SDL_KEYDOWN) {
@@ -124,27 +131,36 @@ int LobbyScene::handle() {
 }
 
 bool LobbyScene::insidePlayButton(int x, int y) {
-	Area playBtn(0.4*xScreen, 0.8*yScreen, 0.2*xScreen, 0.15*yScreen);
-	return playBtn.isInside(x, y);
+	Area btn(0.4*xScreen, 0.8*yScreen, 0.2*xScreen, 0.15*yScreen);
+	return btn.isInside(x, y);
 }
 
 bool LobbyScene::insideUserButton(int x, int y) {
-	Area playBtn(0.7*xScreen, 0.75*yScreen, 0.3*xScreen, 0.1*yScreen);
-	return playBtn.isInside(x, y);
+	Area btn(0.7*xScreen, 0.75*yScreen, 0.3*xScreen, 0.1*yScreen);
+	return btn.isInside(x, y);
 }
 
 bool LobbyScene::insideBotButton(int x, int y) {
-	Area playBtn(0.7*xScreen, 0.87*yScreen, 0.3*xScreen, 0.1*yScreen);
-	return playBtn.isInside(x, y);
+	Area btn(0.7*xScreen, 0.87*yScreen, 0.3*xScreen, 0.1*yScreen);
+	return btn.isInside(x, y);
 }
 
 bool LobbyScene::insideCreateRoomButton(int x, int y) {
-	Area playBtn(0, 0.75*yScreen, 0.3*xScreen, 0.1*yScreen);
-	return playBtn.isInside(x, y);
+	Area btn(0, 0.75*yScreen, 0.3*xScreen, 0.1*yScreen);
+	return btn.isInside(x, y);
 }
 
 bool LobbyScene::insideJoinRoomButton(int x, int y) {
-	Area playBtn(0, 0.87*yScreen, 0.3*xScreen, 0.1*yScreen);
-	return playBtn.isInside(x, y);
+	Area btn(0, 0.87*yScreen, 0.3*xScreen, 0.1*yScreen);
+	return btn.isInside(x, y);
 }
 
+void LobbyScene::checkInsideAnyRoom(int x, int y) {
+	for (int i = 0; i < roomsMap.size(); ++i) {
+		Area btn(0.26*xScreen, (0.22 + 0.1*i)*yScreen, 0.3*xScreen, 0.1*yScreen);
+		if (btn.isInside(x, y)) {
+			audio.playEffect(SFX_BUTTON);
+			selectedRoom = i;
+		}
+	}
+}

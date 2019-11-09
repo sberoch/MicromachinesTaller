@@ -36,9 +36,6 @@ void LobbyListener::run() {
         } catch (std::exception &e){
             running = false;
             std::cout << "Lobby listener (E): " << e.what() << std::endl;
-        } catch (std::runtime_error &e){
-            running = false;
-            std::cout << "Lobby listener (RE): " << e.what() << std::endl;
         } catch (...) {
             running = false;
             std::cerr << "Lobby listener: UnknownException.\n";

@@ -12,7 +12,7 @@ private:
 	Queue<LobbySnapshot*>& lobbyRecvQueue;
 	Protocol& protocol;
 	bool _done;
-	bool _isLobbyMode;
+	bool _isGameMode;
 public:
 	ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 				   Queue<LobbySnapshot*>& lobbyRecvQueue, 
