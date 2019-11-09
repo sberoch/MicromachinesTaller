@@ -128,6 +128,7 @@ void RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
     switch (input) {
         case ENTER_LOBBY:
             std::cout << "Enter lobby con id: " << client_id << std::endl;
+            sendToClientsWithoutRoom(snapshot);
             break;
         case PLAY_AS_USER:
             client_id = j["client_id"].get<int>();
