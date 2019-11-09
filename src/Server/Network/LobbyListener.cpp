@@ -19,16 +19,15 @@ LobbyListener::LobbyListener(
 void LobbyListener::run() {
     std::shared_ptr<Event> event;
     std::cout << "Lobby listener started" << std::endl;
+    std::shared_ptr<LobbySnapshot> snapshot(new LobbySnapshot);
     while (running) {
         try {
             if (!clients.empty()) {
                 while (incomingEvents.get(event)) {
-                    controller.handleInput(event->j);
+                    controller.handleInput(event->j, snapshot);
                 }
 
-//                for (auto &actualClient : clients) {
-//                    actualClient.second->sendSnapshot();
-//                }
+                //newClient->sendStart(game.getSerializedMap())
             }
         } catch (SocketError &se) {
             running = false;
@@ -47,8 +46,7 @@ void LobbyListener::createRoom(){
     this->controller.addRoom();
 }
 
-LobbyListener::~LobbyListener() {
-}
+LobbyListener::~LobbyListener() = default;
 
 SafeQueue<std::shared_ptr<Event>>* LobbyListener::getReceivingQueue() {
     return &this->incomingEvents;

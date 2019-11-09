@@ -101,18 +101,17 @@ void RoomController::stop() {
     rooms.clear();
 }
 
-void RoomController::sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot){
+void RoomController::sendToClientsWithoutRoom(const std::shared_ptr<LobbySnapshot>& snapshot){
     for (auto& actualClientWithoutRoom: clientsWithNoRoom){
         actualClientWithoutRoom.second->sendLobbySnapshot(snapshot);
     }
 }
 
 
-void RoomController::handleInput(json j) {
+void RoomController::handleInput(json j, const std::shared_ptr<LobbySnapshot>& snapshot) {
     Type input = (Type) j["type"].get<int>();
     int client_id = -1;
     int roomId;
-    std::shared_ptr<LobbySnapshot> snapshot(new LobbySnapshot);
     switch (input) {
         case ENTER_LOBBY:
             std::cout << "Enter lobby con id: " << client_id << std::endl;
@@ -132,15 +131,19 @@ void RoomController::handleInput(json j) {
             std::cout << "Enter to room " << roomId << " from client id: " << client_id << std::endl;
             this->addClientToRoom(roomId, client_id);
             snapshot->joinRoom(client_id, roomId);
+            sendToClientsWithoutRoom(snapshot);
             break;
         case CREATE_ROOM:
             std::cout << "Create room desde id: " << client_id << std::endl;
             roomId = addRoom();
             snapshot->createRoom(roomId);
-            this->sendToClientsWithoutRoom(snapshot);
+            sendToClientsWithoutRoom(snapshot);
             break;
         case PLAY:
             std::cout << "Enter room con id: " << client_id << std::endl;
+            roomId = 0;
+            snapshot->startGame(roomId);
+            sendToClientsWithoutRoom(snapshot);
             break;
         case COMMAND:
             std::cout << "Command con id: " << client_id << std::endl;

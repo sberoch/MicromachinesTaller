@@ -41,6 +41,8 @@ LobbySnapshot::LobbySnapshot(Protocol& protocol) {
     }
 }
 
+
+
 void LobbySnapshot::send(Protocol &protocol) {
 	std::string finalMessage;
     for (auto& room : roomsMap) {

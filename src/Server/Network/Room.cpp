@@ -17,7 +17,6 @@ Room::Room(int roomId, int amountOfPlayers) : roomId(roomId),
 
 void Room::run() {
     std::cout << "Running" << std::endl;
-    
     game.run(running, incomingEvents, clients);
 }
 
@@ -28,7 +27,6 @@ bool Room::hasClient(int clientId){
 void Room::addClient(int clientId, const std::shared_ptr<ClientThread>& newClient) {
     if (clients.size() < maxAmountOfPlayers){
         newClient->assignRoomQueue(&incomingEvents);
-        newClient->sendStart(game.getSerializedMap());
         newClient->assignCar(std::shared_ptr<Car>(this->game.createCar(clientId)));
         this->clients.insert({clientId, newClient});
     } else {

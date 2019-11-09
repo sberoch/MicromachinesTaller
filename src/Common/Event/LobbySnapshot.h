@@ -19,7 +19,8 @@ private:
 	RoomsMap roomsMap;
 public:
 	LobbySnapshot() = default;
-	LobbySnapshot(Protocol &protocol);
+
+    LobbySnapshot(Protocol &protocol);
 	virtual void send(Protocol &protocol) override;
 
 	void createRoom(int room_id);
