@@ -10,7 +10,7 @@ _n_desaccelerate = 0
 _prev_x = 0
 _prev_y = 0
 _isFirstMove = true
-_MAX_VEL_ON_TURNS = 15
+_MAX_VEL_ON_TURNS = 20
 
 tracks = nil
 firstAssigned = false
@@ -77,6 +77,10 @@ function getNextMovement(carX, carY, carAngle)
 
 	--Not inside, go back to first (//TODO: go back to current)
 	--//TODO: desacc outside of track
+	velocity = getVelocity(carX, carY)
+	if velocity == 0 then
+		return _n_accelerate
+	end
 	print(string.format("Should go to first at x: %s, y: %s", first.x, first.y))
 	diff = getDifferenceAngle(carX, carY, carAngle, first.x, first.y)
 	return getMoveFromAngleDiff(diff)

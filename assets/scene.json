@@ -2,7 +2,7 @@
   "cars": [
     {
       "color" : 105,
-      "x_init" : 15,
+      "x_init" : -10,
       "y_init" : 20,
       "angle" : 180
     },
