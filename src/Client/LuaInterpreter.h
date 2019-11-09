@@ -21,6 +21,7 @@ public:
 	int getNextMovement(int carX, int carY, int carAngle);
 	void addToTrackTable(ObjectViewPtr track);
 	void printTrackTable();
+	void setupInitialValues();
 
 };
 

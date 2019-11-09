@@ -21,7 +21,7 @@ first = nil
 function addToTrackTable(trackX, trackY, trackAngle)
 	tracks = {next = tracks, x = trackX, y = trackY, angle = trackAngle}
 	if not firstAssigned then
-		first = tracks --TODO: chequear esto
+		first = tracks --TODO: chequear esto si first no es first
 	end
 end
 
@@ -33,6 +33,7 @@ function printTrackTable()
 		print(string.format("x: %s, y: %s angle: %s", tr.x, tr.y, tr.angle))
 		tr = tr.next
 	end
+	print(string.format("First at x: %s, y: %s", first.x, first.y))
 end
 
 --Set constants
@@ -43,6 +44,7 @@ function setupInitialValues(halfHorSizeTr, halfVertSizeTr, n_acc, n_tr, n_tl, n_
 	_n_turn_right = n_tr
 	_n_turn_left = n_tl
 	_n_desaccelerate = n_desacc
+	current = first
 end
 
 
@@ -51,7 +53,7 @@ function getNextMovement(carX, carY, carAngle)
 	local diff = 0
 	local velocity = 0
 	local tr = tracks
-	print(string.format("\n__step__"))
+	--print(string.format("\n__step__"))
 	while tr do
 		if not checkInsideTrack(carX, carY, tr.x, tr.y) then
 			tr = tr.next
@@ -61,8 +63,9 @@ function getNextMovement(carX, carY, carAngle)
 			if not tr then
 				tr = first
 			end
-			print(string.format("Im in x: %s, y: %s", carX, carY))
-			print(string.format("Should go to x: %s, y: %s", tr.x, tr.y))
+			current = tr
+			--print(string.format("Im in x: %s, y: %s", carX, carY))
+			--print(string.format("Should go to x: %s, y: %s", tr.x, tr.y))
 
 			--check angle diff and return action
 			diff = getDifferenceAngle(carX, carY, carAngle, tr.x, tr.y)
@@ -75,27 +78,28 @@ function getNextMovement(carX, carY, carAngle)
 		end
 	end
 
-	--Not inside, go back to first (//TODO: go back to current)
+	--Not inside, go back to current track
 	--//TODO: desacc outside of track
 	velocity = getVelocity(carX, carY)
 	if velocity == 0 then
 		return _n_accelerate
 	end
-	print(string.format("Should go to first at x: %s, y: %s", first.x, first.y))
-	diff = getDifferenceAngle(carX, carY, carAngle, first.x, first.y)
+
+	print(string.format("Should go back to current at x: %s, y: %s", current.x, current.y))
+	diff = getDifferenceAngle(carX, carY, carAngle, current.x, current.y)
 	return getMoveFromAngleDiff(diff)
 end
 
 
 function getMoveFromAngleDiff(angleDiff)
 	if (angleDiff < -10) then
-		print(string.format("L"))
+		--print(string.format("L"))
 		return _n_turn_left
 	elseif (angleDiff > 10) then
-		print(string.format("R"))
+		--print(string.format("R"))
 		return _n_turn_right
 	else
-		print(string.format("A"))
+		--print(string.format("A"))
 		return _n_accelerate
 	end
 end
@@ -125,7 +129,7 @@ function getDifferenceAngle(carX, carY, carAngle, trackX, trackY)
 	if carAngle >= 360 then
 		carAngle = carAngle - 360
 	end
-	print(string.format("Car angle: %s", carAngle))
+	--print(string.format("Car angle: %s", carAngle))
 
 	--get angle from points
 	local deg = math.deg
@@ -134,14 +138,14 @@ function getDifferenceAngle(carX, carY, carAngle, trackX, trackY)
 	if res >= 180 then
 		res = res - 360
 	end
-	print(string.format("Angle between dots: %s", res))
+	--print(string.format("Angle between dots: %s", res))
 
 	--get diff
 	local diff = res - carAngle
 	if (diff >= 180) then
 		diff = diff - 360
 	end
-	print(string.format("Angle diff: %s", diff))
+	--print(string.format("Angle diff: %s", diff))
 	return diff
 end
 
@@ -155,7 +159,6 @@ function getVelocity(carX, carY)
 		return 0
 	else
 		vel = math.sqrt(math.pow(carY - _prev_y, 2) + math.pow(carX - _prev_x, 2))
-		print(vel)
 		_prev_x = carX
 		_prev_y = carY
 		return vel

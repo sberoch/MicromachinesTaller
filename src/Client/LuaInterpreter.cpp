@@ -10,7 +10,9 @@ LuaInterpreter::LuaInterpreter() : L(luaL_newstate()) {
 void LuaInterpreter::open(const char* filename) {
 	int result = luaL_dofile(L, filename);
 	if (result != 0) throw std::runtime_error("LuaInterpreter: can't open file");
+}
 
+void LuaInterpreter::setupInitialValues() {
 	lua_getglobal(L, "setupInitialValues");
 	lua_pushnumber(L, HOR_PS_STRAIGHT_TRACK/2);
 	lua_pushnumber(L, VER_PS_STRAIGHT_TRACK/2);

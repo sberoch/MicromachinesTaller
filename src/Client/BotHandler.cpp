@@ -20,6 +20,7 @@ void BotHandler::setPlayerId(int id) {
         lua.addToTrackTable(it->second);
     }
 	lua.printTrackTable();
+	lua.setupInitialValues();
 }
 
 void BotHandler::handle() {
