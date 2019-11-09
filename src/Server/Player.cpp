@@ -16,11 +16,11 @@ void Player::receive(std::string& received){
 
 void Player::createModifier(const size_t& type, const size_t& id, const float& x, const float& y, const float& angle){
     _modifierToAdd = true;
-    _modifierDTO.id = id;
-    _modifierDTO.type = type;
-    _modifierDTO.x = x;
-    _modifierDTO.y = y;
-    _modifierDTO.angle = angle;
+    _modifierDTO->id = id;
+    _modifierDTO->type = type;
+    _modifierDTO->x = x;
+    _modifierDTO->y = y;
+    _modifierDTO->angle = angle;
 }
 
 void Player::send(){
@@ -37,6 +37,7 @@ void Player::send(){
             break;
         case GRABBED_MUD :
             snap.setMudSplatEvent();
+            snap.removeGameItem(TYPE_MUD, modifier.id);
             break;
         case GRABBED_ROCK :
             snap.removeGameItem(TYPE_ROCK, modifier.id);
@@ -48,7 +49,7 @@ void Player::send(){
     _car->resetStatus();
 
     if (_modifierToAdd){
-        snap.addGameItem(_modifierDTO.type, _modifierDTO.x, _modifierDTO.y, _modifierDTO.angle, _modifierDTO.id);
+        snap.addGameItem(_modifierDTO->type, _modifierDTO->x, _modifierDTO->y, _modifierDTO->angle, _modifierDTO->id);
         _modifierToAdd = false;
     }
 

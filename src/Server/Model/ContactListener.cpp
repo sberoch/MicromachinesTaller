@@ -154,12 +154,14 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
         std::cout << "Rock\n";
         Car* car = (Car*) b->GetBody()->GetUserData();
         Rock* rock = (Rock*) a->GetBody()->GetUserData();
-        rock->markToDelete();
 
         contact->SetEnabled(false);
 
-        if (began)
+        if (began){
+            rock->markToDelete();
             car->handleRock((RockFUD*) fudA, rock->getId());
+        }
+
     }
 
     if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_GROUND_AREA){

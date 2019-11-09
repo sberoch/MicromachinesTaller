@@ -19,7 +19,7 @@ private:
     Protocol _protocol;
     Car* _car; //TODO move car
     size_t _id;
-    ModifierDTO _modifierDTO;
+    ModifierDTO* _modifierDTO;
     bool _modifierToAdd;
 
 public:

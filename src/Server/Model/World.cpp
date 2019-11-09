@@ -22,6 +22,7 @@ World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
     _modifierType.push_back(TYPE_ROCK);
     _modifierType.push_back(TYPE_OIL);
     _modifierType.push_back(TYPE_MUD);
+    std::cout << "\nmodifier type size " << _modifierType.size();
 }
 
 void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
@@ -190,7 +191,7 @@ void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, f
     _maxId++;
 
     _activeModifiers.push_back(Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration));
-    std::cout << "\nCreating a " << type;
+    std::cout << "\nCreating a " << type << "with id " << id << '\n';
 }
 
 void World::_removeGrabbedModifiers(){
