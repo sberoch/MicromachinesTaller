@@ -105,8 +105,10 @@ int LobbyScene::handle() {
 				audio.playEffect(SFX_BUTTON);
 			}
 			else if (insideJoinRoomButton(x, y)) {
-				sendQueue.push(new EnterRoomEvent(myId, selectedRoom));
-				audio.playEffect(SFX_BUTTON);
+				if (roomsMap.size() > 0 && selectedRoom != -1) {
+					audio.playEffect(SFX_BUTTON);
+					sendQueue.push(new EnterRoomEvent(myId, selectedRoom));
+				}
 			} else {
 				checkInsideAnyRoom(x, y);
 			}
