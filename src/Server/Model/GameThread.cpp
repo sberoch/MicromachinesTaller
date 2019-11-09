@@ -31,18 +31,13 @@ void GameThread::run(std::atomic_bool& running,
 
     while (!_gameStarted && running){}
 
-    for (auto& client: clients){
-
-    }
-
     while (running) {
         try {
             std::clock_t begin = clock();
 
             if (!clients.empty()) {
                 while (incomingEvents.get(event)) {
-//                   clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
-                        clients[0]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+                   clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
                 }
 
                 step();
@@ -82,4 +77,8 @@ json GameThread::getSerializedMap() {
 
 std::shared_ptr<Car> GameThread::createCar(int id){
     return std::shared_ptr<Car>(_world.createCar(id));
+}
+
+void GameThread::startGame() {
+    _gameStarted = true;
 }

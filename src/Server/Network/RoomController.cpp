@@ -123,7 +123,8 @@ void RoomController::sendToClientsFromRoom(int roomId, std::shared_ptr<LobbySnap
 }
 
 
-void RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot) {
+bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot) {
+    bool gameStarted = false;
     Type input = (Type) j["type"].get<int>();
     int client_id = -1;
     int roomId;
@@ -159,8 +160,10 @@ void RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
         case PLAY:
             std::cout << "Enter room con id: " << client_id << std::endl;
             roomId = j["selected_room"].get<int>();
+            rooms.at(roomId)->startGame();
             snapshot->startGame(roomId);
             sendToClientsWithoutRoom(snapshot);
+            gameStarted = true;
             break;
         case COMMAND:
             std::cout << "Command con id: " << client_id << std::endl;
@@ -171,4 +174,6 @@ void RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
         case LOBBY_SNAPSHOT:
             break;
     }
+
+    return gameStarted;
 }

@@ -17,13 +17,14 @@ LobbyListener::LobbyListener(
                                     controller(controller){}
 
 void LobbyListener::run() {
+    bool gameStarted = false;
     std::shared_ptr<Event> event;
     std::cout << "Lobby listener started" << std::endl;
     std::shared_ptr<LobbySnapshot> snapshot(new LobbySnapshot);
-    while (running) {
+    while (!gameStarted && running) {
         try {
-            while (incomingEvents.get(event)) {
-                controller.handleInput(event->j, snapshot);
+            while (!gameStarted && incomingEvents.get(event)) {
+                gameStarted = controller.handleInput(event->j, snapshot);
             }
         } catch (SocketError &se) {
             running = false;
