@@ -101,9 +101,10 @@ int LobbyScene::handle() {
 				audio.playEffect(SFX_BUTTON);
 			}
 			else if (insideCreateRoomButton(x, y)) {
-				sendQueue.push(new CreateRoomEvent());
-				audio.playEffect(SFX_BUTTON);
-			}
+				if (roomsMap.size() < 4) {
+					sendQueue.push(new CreateRoomEvent());
+					audio.playEffect(SFX_BUTTON);
+				}
 			else if (insideJoinRoomButton(x, y)) {
 				if (roomsMap.size() > 0 && selectedRoom != -1) {
 					audio.playEffect(SFX_BUTTON);
