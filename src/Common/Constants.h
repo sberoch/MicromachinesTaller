@@ -18,6 +18,7 @@
 #define TYPE_ROOM_2 116
 #define TYPE_ROOM_3 117
 #define TYPE_ROOM_4 118
+#define TYPE_START_LINE 119
 #define TYPE_GRASS 120
 
 //Scenes

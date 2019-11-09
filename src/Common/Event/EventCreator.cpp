@@ -15,7 +15,6 @@
 #include <memory>
 #include <iostream>
 
-
 //TODO:Faltan crear los eventos.
 std::shared_ptr<Event> EventCreator::makeEvent(const std::string& recvdEvent){
     auto j = json::parse(recvdEvent);

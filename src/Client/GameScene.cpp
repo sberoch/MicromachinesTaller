@@ -20,13 +20,14 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	creator(window),
 
 	gameObjects(creator),
-	bot(gameObjects),
-
+	bot(gameObjects, audio, sendQueue),
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
 	yScreen(0),
+	nextScene(SCENE_GAME),
 	isBot(false),
 	isGameOver(false) {}
+
 
 bool GameScene::done() {
 	return isDone;
@@ -63,9 +64,9 @@ void GameScene::updateGameEvents(GameEventsList gameEvents) {
 		switch(gameEvent.eventType) {
 			case ADD: addObject(gameEvent); break;
 			case REMOVE: removeObject(gameEvent); break;
-			case ID_ASSIGN: myID = gameEvent.id; break;
+			case ID_ASSIGN: myID = gameEvent.id; bot.setPlayerId(gameEvent.id); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
-			case GAME_OVER: isGameOver = true; break;
+			case GAME_OVER: nextScene = SCENE_END; break;
 			default: break;
 		}
 	}
@@ -101,10 +102,7 @@ int GameScene::handle() {
 			isDone = true;
 		}
 	}
-	if (!isGameOver)
-		return SCENE_GAME;
-	else
-		return SCENE_END;
+	return nextScene;
 }
 
 void GameScene::drawBackground() { 

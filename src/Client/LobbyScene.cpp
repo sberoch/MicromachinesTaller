@@ -5,9 +5,6 @@
 #include "../Common/Event/PlayAsBotEvent.h"
 #include "../Common/Event/PlayEvent.h"
 
-//TODO: current room
-//TODO: Segun selected room dibujar players
-
 LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
 						 SafeQueue<Event*>& sendQueue) :
 	window(window),
@@ -75,7 +72,6 @@ void LobbyScene::drawRooms() {
 		roomViews.at(i)->drawAt(0.26*xScreen, (0.22 + 0.1*i)*yScreen);
 	}
 
-	//TODO: hacerlo segun sala seleccionada
 	if (selectedRoom != -1) {
 		for (int i = 0; i < roomsMap.at(selectedRoom).players.size(); ++i) {
 			playerViews.at(i)->drawAt(0.76*xScreen, (0.22 + 0.1*i)*yScreen);

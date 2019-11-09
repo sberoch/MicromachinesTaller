@@ -24,3 +24,7 @@ void CarView::move(int x, int y) {
 void CarView::setRotation(int angle) {
 	this->angle = angle;
 }
+
+int CarView::getAngle() {
+	return angle;
+}

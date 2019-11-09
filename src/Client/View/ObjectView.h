@@ -19,13 +19,13 @@ protected:
 public:
 	ObjectView(const SdlTexture& tex);
 	virtual void drawAt(int x, int y) = 0;
-	virtual void setState(int state);
 	virtual void move(int x, int y);
 	virtual void setRotation(int angle);
 	virtual void resize(int newSize);
+	virtual int getAngle();
 	void setInitialPos(int x, int y);
-	void setId(int id);
-	int getId();
+	int getX();
+	int getY();
 	virtual ~ObjectView() {}
 };
 

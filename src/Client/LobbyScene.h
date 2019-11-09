@@ -13,6 +13,7 @@
 #include "View/BackgroundView.h"
 #include <vector>
 
+
 class LobbyScene : public BaseScene {
 private:
 	SdlWindow& window;

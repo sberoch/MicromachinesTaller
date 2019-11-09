@@ -20,7 +20,6 @@ private:
     std::shared_ptr<Configuration> _configuration;
 
     bool _gameToStart, _gameStarted, _gameEnded;
-
 public:
     GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration);
     void run(std::atomic_bool& running, SafeQueue<std::shared_ptr<Event>>& incomingEvents,
@@ -30,7 +29,6 @@ public:
     json getSerializedMap();
     std::shared_ptr<Car> createCar(int id);
     void step();
-
 };
 
 #endif //MICROMACHINES_GAMETHREAD_H

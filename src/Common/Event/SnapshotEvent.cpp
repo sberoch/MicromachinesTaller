@@ -92,7 +92,6 @@ void SnapshotEvent::setCar(float x, float y, int angle, int health, int id) {
     carList.push_back(car);
 }
 
-
 const CarList& SnapshotEvent::getCars() {
     return carList;
 }
@@ -153,6 +152,15 @@ void SnapshotEvent::setMap(const json& jMap) {
                		id);
     	id++;
     }
+    
+    json jStart = jMap["startLine"];
+    std::cout << jStart.dump(4) << std::endl;
+    setGameEvent(ADD, 
+                jStart["type"],
+                jStart["x"],
+                jStart["y"],
+                jStart["angle"],
+                0);
 }
 
 const GameEventsList& SnapshotEvent::getGameEvents() {

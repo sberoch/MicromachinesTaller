@@ -9,8 +9,6 @@
 
 #include <iostream>
 
-//TODO: hacerla template
-
 template <class T>
 class SafeQueue {
 private:
@@ -48,7 +46,6 @@ void SafeQueue<T>::push(const T& elem) {
 
 template <class T>
 void SafeQueue<T>::pop(T& elem) {
-
     std::unique_lock<std::mutex> lck(mtx);
     //Mientras este vacia y la cola sea bloqueante, espero.
     while(elems.empty() && blocking) {
@@ -61,7 +58,6 @@ void SafeQueue<T>::pop(T& elem) {
     }
     elem = elems.front();
     elems.pop();
-
 }
 
 template <class T>
@@ -81,6 +77,5 @@ bool SafeQueue<T>::get(T &elem) {
     this->pop(elem);
     return !(elem == NULL);
 }
-
 
 #endif // BLOCKING_QUEUE_H

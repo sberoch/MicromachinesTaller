@@ -46,8 +46,9 @@ public:
 
 	void setCar(float x, float y, int angle, int health, int id);
 	const CarList& getCars();
-
+	
     void setMap(const json& jMap);
+
 
 	void addGameItem(int type, float x, float y, int angle, int id);
 	void removeGameItem(int type, int id);

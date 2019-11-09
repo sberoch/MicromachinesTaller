@@ -11,6 +11,7 @@ public:
  	virtual void drawAt(int x, int y) override;
  	virtual void move(int x, int y) override;
  	virtual void setRotation(int angle) override;
+ 	virtual int getAngle() override;
  	virtual ~CarView() {}
 };
 

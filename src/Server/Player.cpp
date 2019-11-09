@@ -5,6 +5,7 @@
 
 Player::Player(std::shared_ptr<Car> car, size_t id) :_car(std::move(car)), _id(id){}
 
+
 void Player::handleInput(const InputEnum& input){
     _car->handleInput(input);
     _car->update();

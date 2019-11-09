@@ -4,6 +4,7 @@
 #include "GameScene.h"
 #include "MenuScene.h"
 #include "LobbyScene.h"
+#include "EndScene.h"
 #include <iostream>
 #include <ctime>
 #include <thread>
@@ -20,6 +21,7 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 		scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window, sendQueue)));
 		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, lobbyRecvQueue, sendQueue)));
 		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, gameRecvQueue, sendQueue)));
+		scenes.insert(std::make_pair(SCENE_END, new EndScene(window)));
 		
 		receiver.start();
 		sender.start();
@@ -39,6 +41,10 @@ void SceneSelector::run() {
 		    if (scene->done()) {
 		    	done = true;
 		    	protocol.forceShutDown(); //No estoy seguro de que vaya aca
+		    }
+
+		    if (currentScene == SCENE_GAME) {
+		    	receiver.setGameMode();
 		    }
 
 		    //Check exec time and sleep
