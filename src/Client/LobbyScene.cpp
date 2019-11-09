@@ -91,7 +91,7 @@ int LobbyScene::handle() {
 			SDL_GetMouseState(&x, &y);
 			if (insidePlayButton(x, y)) {
 				if (roomsMap.size() > 0 && selectedRoom != -1 && hasJoinedARoom) {
-					sendQueue.push(new PlayEvent(myId, selectedRoom));
+					sendQueue.push(new PlayEvent(myId));
 					audio.playEffect(SFX_BUTTON);
 				}
 			}
