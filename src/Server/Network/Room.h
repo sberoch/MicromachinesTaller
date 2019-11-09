@@ -27,6 +27,8 @@ public:
 
     void addClient(int clientId, std::shared_ptr<ClientThread> newClient);
 
+    void startGame();
+
     void stop();
 
     std::shared_ptr<Car> createCar(int id);

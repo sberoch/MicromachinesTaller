@@ -29,6 +29,8 @@ public:
     json getSerializedMap();
     std::shared_ptr<Car> createCar(int id);
     void step();
+
+    void startGame();
 };
 
 #endif //MICROMACHINES_GAMETHREAD_H

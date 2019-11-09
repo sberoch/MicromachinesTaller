@@ -41,7 +41,8 @@ public:
 
    void stop();
 
-   void handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot);
+   //Devuelve si se dio el comando play o no.
+   bool handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot);
 
     void sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot);
 
