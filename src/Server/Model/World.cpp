@@ -22,7 +22,6 @@ World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
     _modifierType.push_back(TYPE_ROCK);
     _modifierType.push_back(TYPE_OIL);
     _modifierType.push_back(TYPE_MUD);
-    std::cout << "\nmodifier type size " << _modifierType.size();
 }
 
 void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
@@ -180,8 +179,15 @@ Rock* World::createRock(){
 void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle){
     int rand = std::rand() % _track.size();
     Track* randomTrack = _track[rand];
-    x = randomTrack->x();
-    y = randomTrack->y();
+
+    float xhi = randomTrack->x() - 2.5f;
+    float xlo = randomTrack->x() + 2.5f;
+
+    float yhi = randomTrack->y() - 2.5f;
+    float ylo = randomTrack->y() + 2.5f;
+
+    x = xlo + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(xhi-xlo)));
+    y = ylo + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(yhi-ylo)));
     angle = randomTrack->angle();
 
     int modifierType = std::rand() % _modifierType.size();
