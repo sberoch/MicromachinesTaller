@@ -29,6 +29,10 @@ void Player::send(){
     switch (modifier.status) {
         case NOTHING :
             break;
+        case EXPLODED:
+            std::cout << "Exploded ";
+            //snap.addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), );
+            break;
         case GRABBED_HEALTH_POWERUP :
             snap.removeGameItem(TYPE_HEALTH_POWERUP, modifier.id);
             break;

@@ -13,6 +13,7 @@ enum Status {
     GRABBED_MUD,
     GRABBED_ROCK,
     GRABBED_OIL,
+    EXPLODED,
     NOTHING
 };
 
@@ -37,10 +38,11 @@ private:
     CarMovingState* _state;
     CarTurningState* _turningState;
     bool _isMoving;
+    bool _exploded;
     Deletable _deletable;
 
     int _health;
-    float _previous_x, _previous_y;
+    float _previous_x, _previous_y, _previousAngle;
 
     GroundAreaFUD* _groundArea;
     float _currentTraction;

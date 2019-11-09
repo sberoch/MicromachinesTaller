@@ -22,8 +22,8 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 }
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-                                        _id(id), _previous_x(x_init), _previous_y(y_init), _health(100), _maxForwardSpeed(25),
-                                        _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false),
+                                        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(10), _maxForwardSpeed(25),
+                                        _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false), _exploded(false),
                                         _currentTraction(1), _groundArea(), _deletable() {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
@@ -118,8 +118,8 @@ Car& Car::operator=(Car&& other){
 void Car::resetCar(){
     _health = 100;
     //x should be middle, check if thereś already a car?
-    b2Vec2 position = b2Vec2(0, _previous_y);
-    _carBody->SetTransform(position, b2_pi/2); //See angle
+    b2Vec2 position = b2Vec2(_previous_x, _previous_y);
+    _carBody->SetTransform(position, _previousAngle);
 }
 
 b2Vec2 Car::getLateralVelocity(){
@@ -240,6 +240,9 @@ void Car::update(){
     updateFriction();
     updateTraction();
 
+    if (_exploded)
+        resetCar();
+
     _previous_x = _carBody->GetPosition().x;
     _previous_y = _carBody->GetPosition().y;
 }
@@ -279,7 +282,8 @@ void Car::crash(b2Vec2 impactVel){
     _health -= 2 * vel;
     std::cout << "\nHealth: " << _health;
     if (_health <= 0){
-        resetCar();
+        _exploded = true;
+        _deletable.status = EXPLODED; // TODO use different name
         std::cout << "Health is 0\n";
     }
 }
