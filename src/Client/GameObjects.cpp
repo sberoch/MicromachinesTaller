@@ -9,6 +9,9 @@ void GameObjects::draw(int cameraX, int cameraY) {
 	for (auto& it : tracksMap) {
 		it.second->drawAt(cameraX, cameraY);
 	}
+	for (auto& it : decorationsMap) {
+		it.second->drawAt(cameraX, cameraY);
+	}
 	for (auto& it : interactablesMap) {
 		it.second->drawAt(cameraX, cameraY);
 	}
@@ -35,7 +38,7 @@ void GameObjects::add(int type, int id, ObjectViewPtr obj) {
 			break;
 		}
 		case TYPE_ROCK: case TYPE_OIL: case TYPE_MUD: {
-			tracksMap.insert(std::make_pair(id, obj));
+			interactablesMap.insert(std::make_pair(id, obj));
 			break;
 		}
 		case TYPE_CAR_RED: case TYPE_CAR_BLUE: case TYPE_CAR_YELLOW: case TYPE_CAR_GREEN: {
@@ -44,6 +47,10 @@ void GameObjects::add(int type, int id, ObjectViewPtr obj) {
 		}
 		case TYPE_EXPLOSION: {
 			miscMap.insert(std::make_pair(id, obj));
+			break;
+		}
+		case TYPE_START_LINE: {
+			decorationsMap.insert(std::make_pair(id, obj));
 			break;
 		}
 	}
@@ -69,6 +76,10 @@ void GameObjects::remove(int type, int id) {
 		}
 		case TYPE_EXPLOSION: {
 			miscMap.erase(id);
+			break;
+		}
+		case TYPE_START_LINE: {
+			decorationsMap.erase(id);
 			break;
 		}
 	}

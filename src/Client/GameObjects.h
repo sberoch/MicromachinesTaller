@@ -5,13 +5,11 @@
 #include "GameObjects.h"
 #include <map>
 
-//TODO: ver si con estas distinciones alcanza o si 
-//		necesito un mapa para cada tipo o multimapa
-
 class GameObjects {
 private:
 	TextureCreator& creator;
 	std::map<int, ObjectViewPtr> tracksMap;
+	std::map<int, ObjectViewPtr> decorationsMap;
 	std::map<int, ObjectViewPtr> carsMap;
 	std::map<int, ObjectViewPtr> boostsMap;
 	std::map<int, ObjectViewPtr> interactablesMap;

@@ -63,6 +63,12 @@
       "angle": 270
     }
   ],
+  "startLine": {
+      "type": 119,
+      "x": 15,
+      "y": 15,
+      "angle": 0
+  },
   "rocks": [
     {
       "type": 104,

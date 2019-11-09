@@ -152,6 +152,14 @@ void SnapshotEvent::setMap(const json& jMap) {
                		id);
     	id++;
     }
+    json jStart = jMap["startLine"];
+    std::cout << jStart.dump(4) << std::endl;
+    setGameEvent(ADD, 
+                jStart["type"],
+                jStart["x"],
+                jStart["y"],
+                jStart["angle"],
+                0);
 }
 
 const GameEventsList& SnapshotEvent::getGameEvents() {

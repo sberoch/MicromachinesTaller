@@ -26,7 +26,7 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	xScreen(0),
 	yScreen(0),
 	nextScene(SCENE_GAME),
-	isBot(true) {}
+	isBot(false) {}
 
 bool GameScene::done() {
 	return isDone;
@@ -101,8 +101,7 @@ int GameScene::handle() {
 			isDone = true;
 		}
 	}
-	//TODO: change this to support a final scene.
-	return SCENE_GAME;
+	return nextScene;
 }
 
 void GameScene::drawBackground() { 
