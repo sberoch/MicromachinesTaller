@@ -16,7 +16,8 @@ LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
 	_done(false),
 	fullscreen(true),
 	selectedRoom(-1),
-	nextScene(SCENE_LOBBY) {
+	nextScene(SCENE_LOBBY),
+	hasJoinedARoom(false) {
 		myId = -1;
 		roomViews.push_back(creator.create(TYPE_ROOM_1, 0, 0, 0));
 		roomViews.push_back(creator.create(TYPE_ROOM_2, 0, 0, 0));
@@ -89,8 +90,10 @@ int LobbyScene::handle() {
 			int x, y;
 			SDL_GetMouseState(&x, &y);
 			if (insidePlayButton(x, y)) {
-				sendQueue.push(new PlayEvent(myId));
-				audio.playEffect(SFX_BUTTON);
+				if (roomsMap.size() > 0 && selectedRoom != -1 && hasJoinedARoom) {
+					sendQueue.push(new PlayEvent(myId));
+					audio.playEffect(SFX_BUTTON);
+				}
 			}
 			else if (insideUserButton(x, y)) {
 				sendQueue.push(new PlayAsUserEvent(myId));
@@ -105,8 +108,10 @@ int LobbyScene::handle() {
 					sendQueue.push(new CreateRoomEvent());
 					audio.playEffect(SFX_BUTTON);
 				}
+			}
 			else if (insideJoinRoomButton(x, y)) {
 				if (roomsMap.size() > 0 && selectedRoom != -1) {
+					hasJoinedARoom = true;
 					audio.playEffect(SFX_BUTTON);
 					sendQueue.push(new EnterRoomEvent(myId, selectedRoom));
 				}

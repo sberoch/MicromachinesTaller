@@ -35,6 +35,7 @@ private:
 	int nextScene;
 	int xScreen, yScreen;
 	int myId;
+	bool hasJoinedARoom;
 public:
 	LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue, 
 				SafeQueue<Event*>& sendQueue);
