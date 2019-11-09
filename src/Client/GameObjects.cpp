@@ -35,7 +35,7 @@ void GameObjects::add(int type, int id, ObjectViewPtr obj) {
 			break;
 		}
 		case TYPE_ROCK: case TYPE_OIL: case TYPE_MUD: {
-			tracksMap.insert(std::make_pair(id, obj));
+			interactablesMap.insert(std::make_pair(id, obj));
 			break;
 		}
 		case TYPE_CAR_RED: case TYPE_CAR_BLUE: case TYPE_CAR_YELLOW: case TYPE_CAR_GREEN: {
@@ -60,7 +60,7 @@ void GameObjects::remove(int type, int id) {
 			break;
 		}
 		case TYPE_ROCK: case TYPE_OIL: case TYPE_MUD: {
-			tracksMap.erase(id);
+			interactablesMap.erase(id);
 			break;
 		}
 		case TYPE_CAR_RED: case TYPE_CAR_BLUE: case TYPE_CAR_YELLOW: case TYPE_CAR_GREEN: {
