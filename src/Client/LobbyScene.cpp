@@ -17,7 +17,7 @@ LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
 	fullscreen(true),
 	selectedRoom(-1),
 	nextScene(SCENE_LOBBY) {
-		myId = 0;
+		myId = -1;
 		roomViews.push_back(creator.create(TYPE_ROOM_1, 0, 0, 0));
 		roomViews.push_back(creator.create(TYPE_ROOM_2, 0, 0, 0));
 		roomViews.push_back(creator.create(TYPE_ROOM_3, 0, 0, 0));
@@ -40,6 +40,7 @@ void LobbyScene::update() {
 	LobbySnapshot* snap;
 	if (lobbyRecvQueue.pop(snap)) {
 		updateRooms(snap->getRooms());
+		myId = snap->getMyId();
 	}
 	
 }

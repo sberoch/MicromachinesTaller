@@ -30,6 +30,7 @@ public:
 	void startGame(int room_id);
 
 	const RoomsMap& getRooms();
+	int getMyId();
 
 	virtual ~LobbySnapshot() = default;
     void setPlayerId(int id);

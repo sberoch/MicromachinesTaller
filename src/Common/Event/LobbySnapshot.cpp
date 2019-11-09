@@ -39,13 +39,16 @@ LobbySnapshot::LobbySnapshot(Protocol& protocol) {
         }
         addRoom(room["id"], room["gameStarted"], std::move(players));
     }
+    this->actualClientId = j["player_id"];
 }
 
 void LobbySnapshot::setPlayerId(int id){
     this->actualClientId = id;
 }
 
-
+int LobbySnapshot::getMyId() {
+    return this->actualClientId;
+}
 
 void LobbySnapshot::send(Protocol &protocol) {
 	std::string finalMessage;
@@ -61,6 +64,7 @@ void LobbySnapshot::send(Protocol &protocol) {
         }
         j["rooms"].push_back(jRoom);
     }
+    j["player_id"] = this->actualClientId;
     finalMessage = j.dump(4);
 	std::cout << finalMessage << std::endl;
     protocol.send(finalMessage);
