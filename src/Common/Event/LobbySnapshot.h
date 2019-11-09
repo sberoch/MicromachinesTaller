@@ -23,6 +23,7 @@ public:
 	LobbySnapshot() = default;
 
     LobbySnapshot(Protocol &protocol);
+    LobbySnapshot(LobbySnapshot& other);
 	virtual void send(Protocol &protocol) override;
 
 	void createRoom(int room_id);
@@ -38,7 +39,7 @@ public:
 private:
 	void addRoom(int id, bool gameStarted, std::list<int> players);
 
-    void removePlayerFromAnotherRoom(int player_id);
+    void removeIdFromOldRoom(int player_id);
 };
 
 #endif // LOBBY_SNAPSHOT_H

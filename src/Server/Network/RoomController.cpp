@@ -58,7 +58,6 @@ void RoomController::addClientToRoom(int roomId, int clientId) {
     std::lock_guard<std::mutex> lock(this->m);
     std::cout << "Client added to room " << roomId << std::endl;
 
-
     if (clientsWithNoRoom.count(clientId)) {
         rooms.at(roomId)->addClient(clientId, this->clientsWithNoRoom[clientId]);
         this->clientsWithNoRoom.erase(clientId);
@@ -103,12 +102,14 @@ void RoomController::stop() {
 }
 
 void RoomController::sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot){
+    std::lock_guard<std::mutex> lock(this->m);
     for (auto& actualClientWithoutRoom: clientsWithNoRoom){
         actualClientWithoutRoom.second->sendLobbySnapshot(snapshot);
     }
 }
 
 void RoomController::sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot){
+    std::lock_guard<std::mutex> lock(this->m);
     int counter = 0;
     for (auto& actualRoom: rooms){
         counter++;

@@ -1,5 +1,6 @@
 #include "LobbySnapshot.h"
 #include <iostream>
+#include <algorithm>
 
 /*
 -------Example LobbySnapshot json-----
@@ -42,6 +43,11 @@ LobbySnapshot::LobbySnapshot(Protocol& protocol) {
     this->actualClientId = j["player_id"];
 }
 
+LobbySnapshot::LobbySnapshot(LobbySnapshot &other) {
+    this->roomsMap = other.roomsMap;
+}
+
+
 void LobbySnapshot::setPlayerId(int id){
     this->actualClientId = id;
 }
@@ -75,19 +81,19 @@ void LobbySnapshot::createRoom(int room_id) {
     addRoom(room_id, false, std::move(players));
 }
 
-void LobbySnapshot::removePlayerFromAnotherRoom(int player_id){
-    for (auto& room: roomsMap){
-        auto actualPlayers = room.second.players;
-        actualPlayers.remove(player_id);
+
+void LobbySnapshot::removeIdFromOldRoom(int player_id){
+    for (auto& actualRoom: roomsMap){
+        actualRoom.second.players.remove(player_id);
     }
 }
 
 void LobbySnapshot::joinRoom(int player_id, int room_id) {
     if (roomsMap.count(room_id)){
+        removeIdFromOldRoom(player_id);
         roomsMap.at(room_id).players.push_back(player_id);
     }
 }
-
 void LobbySnapshot::startGame(int room_id) {
     roomsMap.at(room_id).gameStarted = true;
 }
@@ -103,3 +109,4 @@ void LobbySnapshot::addRoom(int id, bool gameStarted, std::list<int> players) {
 const RoomsMap& LobbySnapshot::getRooms() {
     return roomsMap;
 }
+

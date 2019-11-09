@@ -82,9 +82,13 @@ void ClientThread::sendStart(json j) {
     this->sendingBlockingQueue.push(event);
 }
 
+
+
 void ClientThread::sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot){
-    snapshot->setPlayerId(this->id);
-    std::shared_ptr<Event> event(snapshot);
+    std::cout << "Enviando desde cliente: " << id << std::endl;
+    std::shared_ptr<LobbySnapshot> newSnap(new LobbySnapshot(*snapshot.get()));
+    newSnap->setPlayerId(this->id);
+    std::shared_ptr<Event> event(newSnap);
     this->sendingBlockingQueue.push(event);
 }
 
