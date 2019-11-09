@@ -42,14 +42,14 @@ public:
 
     //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
     bool isDead();
+
     ~ClientThread() override{
-        std::cout << "no debería estar acá" << std::endl;
+        std::cout << "Destruyendo client thread con id: " << id << std::endl;
     };
 
     void sendEvent(const std::shared_ptr<Event>& event);
     void handleInput(const InputEnum& input);
     void sendSnapshot();
-    std::shared_ptr<Event> popFromNonBlockingQueue();
     void sendStart(json j);
 
     void assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue);

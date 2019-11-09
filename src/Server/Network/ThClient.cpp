@@ -33,7 +33,6 @@ void ClientThread::run() {
         } catch (SocketError &e) {
             keepTalking = false;
         }
-            keepTalking = false;
     } catch(const std::exception &e) {
         printf("ERROR from thClient: %s \n", e.what());
     } catch(...) {

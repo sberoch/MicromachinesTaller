@@ -51,7 +51,7 @@ public:
                                const std::shared_ptr<LobbySnapshot> &snapshot);
 
     void
-    sendToClientsFromOtherRooms(const std::shared_ptr<LobbySnapshot> &snapshot);
+    sendToAllClientsWithRoom(const std::shared_ptr<LobbySnapshot> &snapshot);
 };
 
 
