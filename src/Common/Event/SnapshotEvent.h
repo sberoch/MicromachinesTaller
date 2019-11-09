@@ -11,7 +11,8 @@ enum SnapshotGameEventType {
 	ADD = 0,
 	REMOVE = 1,
 	ID_ASSIGN = 2,
-	MUD_SPLAT = 3
+	MUD_SPLAT = 3,
+	GAME_OVER = 4
 };
 
 struct GameEventStruct {

@@ -4,12 +4,11 @@
 #include "GameScene.h"
 #include "MenuScene.h"
 #include "LobbyScene.h"
+#include "EndScene.h"
 #include <iostream>
 #include <ctime>
 #include <thread>
 #include <chrono>
-
-#define MAX_COMMANDS_ENQUEUED 100
 
 SceneSelector::SceneSelector(int xScreen, int yScreen,
 		const std::string& host, const std::string& port) : 
@@ -22,6 +21,7 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 		scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window)));
 		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window)));
 		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, recvQueue, sendQueue)));
+		scenes.insert(std::make_pair(SCENE_END, new EndScene(window)));
 		
 		receiver.start();
 		sender.start();

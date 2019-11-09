@@ -10,7 +10,7 @@ _n_desaccelerate = 0
 _prev_x = 0
 _prev_y = 0
 _isFirstMove = true
-_MAX_VEL_ON_TURNS = 20
+_MAX_VEL_ON_TURNS = 25
 
 tracks = nil
 firstAssigned = false
@@ -161,6 +161,7 @@ function getVelocity(carX, carY)
 		vel = math.sqrt(math.pow(carY - _prev_y, 2) + math.pow(carX - _prev_x, 2))
 		_prev_x = carX
 		_prev_y = carY
+		print(vel)
 		return vel
 	end
 end

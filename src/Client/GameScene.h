@@ -42,6 +42,7 @@ private:
 	Converter conv;
 	int cameraX, cameraY;
 	int xScreen, yScreen;
+	int nextScene;
 
 	//Mock
 	int myID;

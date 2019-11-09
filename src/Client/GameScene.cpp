@@ -25,6 +25,7 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
 	yScreen(0),
+	nextScene(SCENE_GAME),
 	isBot(true) {}
 
 bool GameScene::done() {
@@ -64,6 +65,7 @@ void GameScene::updateGameEvents(GameEventsList gameEvents) {
 			case REMOVE: removeObject(gameEvent); break;
 			case ID_ASSIGN: myID = gameEvent.id; bot.setPlayerId(gameEvent.id); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
+			case GAME_OVER: nextScene = SCENE_END; break;
 			default: break;
 		}
 	}

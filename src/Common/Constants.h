@@ -28,6 +28,7 @@
 #define SCENE_MENU 200
 #define SCENE_LOBBY 201
 #define SCENE_GAME 202
+#define SCENE_END 203
 
 //Audio
 #define SFX_CAR_ENGINE 300
