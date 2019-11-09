@@ -41,6 +41,10 @@ LobbySnapshot::LobbySnapshot(Protocol& protocol) {
     }
 }
 
+void LobbySnapshot::setPlayerId(int id){
+    this->actualClientId = id;
+}
+
 
 
 void LobbySnapshot::send(Protocol &protocol) {

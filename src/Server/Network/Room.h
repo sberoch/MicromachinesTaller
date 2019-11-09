@@ -25,7 +25,7 @@ public:
 
     void run() override;
 
-    void addClient(int clientId, const std::shared_ptr<ClientThread>& newClient);
+    void addClient(int clientId, std::shared_ptr<ClientThread> newClient);
 
     void stop();
 
@@ -36,7 +36,7 @@ public:
     bool hasClient(int clientId);
     std::shared_ptr<ClientThread> eraseClientAndReturn(int clientId);
 
-    void sendSnapshotToClients(const std::shared_ptr<LobbySnapshot> &snapshot);
+    void sendSnapshotToClients(std::shared_ptr<LobbySnapshot> &snapshot);
 };
 
 

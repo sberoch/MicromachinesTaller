@@ -56,7 +56,7 @@ public:
 
     void assignCar(const std::shared_ptr<Car>& car);
 
-    void sendLobbySnapshot(const std::shared_ptr<LobbySnapshot>& snapshot);
+    void sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot);
 };
 
 

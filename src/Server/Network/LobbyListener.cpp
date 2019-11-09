@@ -22,10 +22,8 @@ void LobbyListener::run() {
     std::shared_ptr<LobbySnapshot> snapshot(new LobbySnapshot);
     while (running) {
         try {
-            if (!clients.empty()) {
-                while (incomingEvents.get(event)) {
-                    controller.handleInput(event->j, snapshot);
-                }
+            while (incomingEvents.get(event)) {
+                controller.handleInput(event->j, snapshot);
             }
         } catch (SocketError &se) {
             running = false;

@@ -101,13 +101,13 @@ void RoomController::stop() {
     rooms.clear();
 }
 
-void RoomController::sendToClientsWithoutRoom(const std::shared_ptr<LobbySnapshot>& snapshot){
+void RoomController::sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot){
     for (auto& actualClientWithoutRoom: clientsWithNoRoom){
         actualClientWithoutRoom.second->sendLobbySnapshot(snapshot);
     }
 }
 
-void RoomController::sendToAllClientsWithRoom(const std::shared_ptr<LobbySnapshot>& snapshot){
+void RoomController::sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot){
     int counter = 0;
     for (auto& actualRoom: rooms){
         counter++;
@@ -116,12 +116,12 @@ void RoomController::sendToAllClientsWithRoom(const std::shared_ptr<LobbySnapsho
     }
 }
 
-void RoomController::sendToClientsFromRoom(int roomId, const std::shared_ptr<LobbySnapshot>& snapshot){
+void RoomController::sendToClientsFromRoom(int roomId, std::shared_ptr<LobbySnapshot> snapshot){
     rooms.at(roomId)->sendSnapshotToClients(snapshot);
 }
 
 
-void RoomController::handleInput(json j, const std::shared_ptr<LobbySnapshot>& snapshot) {
+void RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot) {
     Type input = (Type) j["type"].get<int>();
     int client_id = -1;
     int roomId;

@@ -18,6 +18,7 @@ typedef std::map<int, RoomStruct> RoomsMap;
 class LobbySnapshot : public Event {
 private:
 	RoomsMap roomsMap;
+	int actualClientId;
 public:
 	LobbySnapshot() = default;
 
@@ -31,6 +32,7 @@ public:
 	const RoomsMap& getRooms();
 
 	virtual ~LobbySnapshot() = default;
+    void setPlayerId(int id);
 
 private:
 	void addRoom(int id, bool gameStarted, std::list<int> players);

@@ -41,17 +41,16 @@ public:
 
    void stop();
 
-   void handleInput(json j, const std::shared_ptr<LobbySnapshot>& snapshot);
+   void handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot);
 
-    void sendToClientsWithoutRoom(const std::shared_ptr<LobbySnapshot>& snapshot);
+    void sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot);
 
    ~RoomController();
 
-    void sendToClientsFromRoom(int roomId,
-                               const std::shared_ptr<LobbySnapshot> &snapshot);
+    void sendToClientsFromRoom(int roomId, std::shared_ptr<LobbySnapshot> snapshot);
 
     void
-    sendToAllClientsWithRoom(const std::shared_ptr<LobbySnapshot> &snapshot);
+    sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot);
 };
 
 
