@@ -91,7 +91,7 @@ int LobbyScene::handle() {
 			SDL_GetMouseState(&x, &y);
 			if (insidePlayButton(x, y)) {
 				if (roomsMap.size() > 0 && selectedRoom != -1 && hasJoinedARoom) {
-					sendQueue.push(new PlayEvent(myId));
+					sendQueue.push(new PlayEvent(myId, selectedRoom));
 					audio.playEffect(SFX_BUTTON);
 				}
 			}
@@ -162,7 +162,7 @@ bool LobbyScene::insideJoinRoomButton(int x, int y) {
 
 void LobbyScene::checkInsideAnyRoom(int x, int y) {
 	for (int i = 0; i < roomsMap.size(); ++i) {
-		Area btn(0.26*xScreen, (0.22 + 0.1*i)*yScreen, 0.3*xScreen, 0.1*yScreen);
+		Area btn(0.26*xScreen, (0.17 + 0.1*i)*yScreen, 0.3*xScreen, 0.1*yScreen);
 		if (btn.isInside(x, y)) {
 			audio.playEffect(SFX_BUTTON);
 			selectedRoom = i;
