@@ -31,7 +31,7 @@ void Player::send(){
             break;
         case EXPLODED:
             std::cout << "Exploded ";
-            //snap.addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), );
+            snap.addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), 0);
             break;
         case GRABBED_HEALTH_POWERUP :
             snap.removeGameItem(TYPE_HEALTH_POWERUP, modifier.id);
