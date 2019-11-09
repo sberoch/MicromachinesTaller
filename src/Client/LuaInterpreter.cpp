@@ -17,7 +17,8 @@ void LuaInterpreter::open(const char* filename) {
 	lua_pushnumber(L, ACCELERATE);
 	lua_pushnumber(L, TURN_RIGHT);
 	lua_pushnumber(L, TURN_LEFT);
-	lua_call(L, 5, 0);
+	lua_pushnumber(L, DESACCELERATE);
+	lua_call(L,  6, 0);
 }
 
 void LuaInterpreter::addToTrackTable(ObjectViewPtr track) {
