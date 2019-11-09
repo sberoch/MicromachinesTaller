@@ -107,6 +107,12 @@ void RoomController::sendToClientsWithoutRoom(const std::shared_ptr<LobbySnapsho
     }
 }
 
+void RoomController::sendToClientsFromOtherRooms(const std::shared_ptr<LobbySnapshot>& snapshot){
+    for (auto& actualRoom: rooms){
+        actualRoom.second->sendSnapshotToClients(snapshot);
+    }
+}
+
 void RoomController::sendToClientsFromRoom(int roomId, const std::shared_ptr<LobbySnapshot>& snapshot){
     rooms.at(roomId)->sendSnapshotToClients(snapshot);
 }
@@ -135,16 +141,20 @@ void RoomController::handleInput(json j, const std::shared_ptr<LobbySnapshot>& s
             this->addClientToRoom(roomId, client_id);
             snapshot->joinRoom(client_id, roomId);
             sendToClientsFromRoom(roomId, snapshot);
+            sendToClientsFromOtherRooms(snapshot);
+            sendToClientsWithoutRoom(snapshot);
             break;
         case CREATE_ROOM:
             roomId = addRoom();
             std::cout << "Create room with id: " << roomId << std::endl;
             snapshot->createRoom(roomId);
+            sendToClientsFromRoom(roomId, snapshot);
+            sendToClientsFromOtherRooms(snapshot);
             sendToClientsWithoutRoom(snapshot);
             break;
         case PLAY:
             std::cout << "Enter room con id: " << client_id << std::endl;
-            roomId = 0;
+            roomId = j["selected_room"].get<int>();
             snapshot->startGame(roomId);
             sendToClientsWithoutRoom(snapshot);
             break;

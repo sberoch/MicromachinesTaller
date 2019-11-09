@@ -33,7 +33,7 @@ LobbySnapshot::LobbySnapshot(Protocol& protocol) {
     this->j = json::parse(serialized);
 
     for (auto& room : j["rooms"]) {
-        std::vector<int> players;
+        std::list<int> players;
         for (auto& player : room["players"]) {
             players.push_back(player["id"]);
         }
@@ -45,6 +45,7 @@ LobbySnapshot::LobbySnapshot(Protocol& protocol) {
 
 void LobbySnapshot::send(Protocol &protocol) {
 	std::string finalMessage;
+	j.clear();
     for (auto& room : roomsMap) {
         json jRoom;
         jRoom["id"] = room.first;
@@ -62,19 +63,28 @@ void LobbySnapshot::send(Protocol &protocol) {
 }
 
 void LobbySnapshot::createRoom(int room_id) {
-    std::vector<int> players; //Null vector
+    std::list<int> players; //Null vector
     addRoom(room_id, false, std::move(players));
 }
 
+void LobbySnapshot::removePlayerFromAnotherRoom(int player_id){
+    for (auto& room: roomsMap){
+        auto actualPlayers = room.second.players;
+        actualPlayers.remove(player_id);
+    }
+}
+
 void LobbySnapshot::joinRoom(int player_id, int room_id) {
-    roomsMap.at(room_id).players.push_back(player_id);
+    if (roomsMap.count(room_id)){
+        roomsMap.at(room_id).players.push_back(player_id);
+    }
 }
 
 void LobbySnapshot::startGame(int room_id) {
     roomsMap.at(room_id).gameStarted = true;
 }
 
-void LobbySnapshot::addRoom(int id, bool gameStarted, std::vector<int> players) {
+void LobbySnapshot::addRoom(int id, bool gameStarted, std::list<int> players) {
     RoomStruct roomStruct {};
     roomStruct.id = id;
     roomStruct.gameStarted = gameStarted;

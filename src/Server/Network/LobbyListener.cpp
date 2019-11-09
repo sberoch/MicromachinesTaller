@@ -26,8 +26,6 @@ void LobbyListener::run() {
                 while (incomingEvents.get(event)) {
                     controller.handleInput(event->j, snapshot);
                 }
-
-                //newClient->sendStart(game.getSerializedMap())
             }
         } catch (SocketError &se) {
             running = false;

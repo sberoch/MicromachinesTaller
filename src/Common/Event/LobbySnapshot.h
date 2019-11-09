@@ -5,11 +5,12 @@
 #include "../Protocol.h"
 #include <string>
 #include <map>
+#include <list>
 
 struct RoomStruct {
 	int id;
 	bool gameStarted;
-	std::vector<int> players;
+	std::list<int> players;
 };
 
 typedef std::map<int, RoomStruct> RoomsMap;
@@ -32,7 +33,9 @@ public:
 	virtual ~LobbySnapshot() = default;
 
 private:
-	void addRoom(int id, bool gameStarted, std::vector<int> players);
+	void addRoom(int id, bool gameStarted, std::list<int> players);
+
+    void removePlayerFromAnotherRoom(int player_id);
 };
 
 #endif // LOBBY_SNAPSHOT_H
