@@ -17,9 +17,10 @@ private:
 	bool _done;
 	bool fullscreen;
 	bool up_pressed, left_pressed, down_pressed, right_pressed;
+	int& clientId;
 public:
 	InputHandler(SdlWindow& window, Audio& audio,
-		SafeQueue<Event*>& sendQueue);
+		SafeQueue<Event*>& sendQueue, int& clientId);
 	bool done();
 	void handle();
 };

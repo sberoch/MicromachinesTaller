@@ -14,20 +14,18 @@
 #define TYPE_HEALTH_BAR_FRONT 112
 #define TYPE_EXPLOSION 113
 #define TYPE_MUD_SPLAT 114
+#define TYPE_ROOM_1 115
+#define TYPE_ROOM_2 116
+#define TYPE_ROOM_3 117
+#define TYPE_ROOM_4 118
+#define TYPE_START_LINE 119
 #define TYPE_GRASS 120
-
-//Event types.
-#define EVENT_COMMAND 1
-#define EVENT_SNAPSHOT 2
-#define EVENT_ENTER_LOBBY 3
-#define EVENT_PLAY_AS_USER 4
-#define EVENT_PLAY_AS_BOT 5
-#define EVENT_ENTER_ROOM 6
 
 //Scenes
 #define SCENE_MENU 200
 #define SCENE_LOBBY 201
 #define SCENE_GAME 202
+#define SCENE_END 203
 
 //Audio
 #define SFX_CAR_ENGINE 300

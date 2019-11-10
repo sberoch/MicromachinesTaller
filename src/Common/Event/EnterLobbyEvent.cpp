@@ -4,6 +4,10 @@
 
 #include "EnterLobbyEvent.h"
 
+EnterLobbyEvent::EnterLobbyEvent() {
+	j["type"] = ENTER_LOBBY;
+}
+
 void EnterLobbyEvent::send(Protocol &protocol) {
     std::string toSend = j.dump();
     protocol.send(toSend);

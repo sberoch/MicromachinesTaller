@@ -54,7 +54,7 @@ SnapshotEvent::SnapshotEvent(Protocol &protocol) {
 void SnapshotEvent::send(Protocol& protocol) {
     std::string finalMessage;
 
-    for (auto& car: carList){
+    for (auto& car: carStructList){
         json jCar;
         jCar["x"] = car.x;
         jCar["y"] = car.y;
@@ -82,35 +82,57 @@ void SnapshotEvent::send(Protocol& protocol) {
     protocol.send(finalMessage);
 }
 
-void SnapshotEvent::setCar(float x, float y, int angle, int health, int id) {
-    CarStruct car{};
-    car.x = x;
-    car.y = y;
-    car.angle = angle;
-    car.health = health;
-    car.id = id;
-    carList.push_back(car);
+bool SnapshotEvent::isThereACar(int id){
+    for (auto& actualCar: carStructList){
+        if (actualCar.id == id){
+            return true;
+        }
+    }
+    return false;
 }
 
-const CarList& SnapshotEvent::getCars() {
-    return carList;
+CarStruct SnapshotEvent::findCar(int id){
+    for (auto& actualCar: carStructList){
+        if (actualCar.id == id){
+            return actualCar;
+        }
+    }
+}
+
+void SnapshotEvent::setCar(float x, float y, int angle, int health, int id) {
+    bool found = this->isThereACar(id);
+    if (found){
+        CarStruct actualCar = findCar(id);
+        actualCar.x = x;
+        actualCar.y = y;
+        actualCar.angle = angle;
+        actualCar.health = health;
+        actualCar.id = id;
+    } else {
+        CarStruct car{};
+        car.x = x;
+        car.y = y;
+        car.angle = angle;
+        car.health = health;
+        car.id = id;
+        carStructList.push_back(car);
+    }
+}
+
+const CarStructList& SnapshotEvent::getCars() {
+    return carStructList;
 }
 
 void SnapshotEvent::addGameItem(int type, float x, float y, int angle, int id) {    
     setGameEvent(ADD, type, x, y, angle, id);
 }
 
-//TODO: por no pasar id nuevo por cada explosion se dibuja una sola vez
-//      por un tema con los mapas en GameObjects.cpp
-
-
-
 void SnapshotEvent::removeGameItem(int type, int id) {
     setGameEvent(REMOVE, type, 0, 0, 0, id);  
 }
 
-void SnapshotEvent::setPlayerId(int id) {
-    setGameEvent(ID_ASSIGN, 0, 0, 0, 0, id);
+void SnapshotEvent::signalMapReady() {
+    setGameEvent(MAP_LOAD_FINISHED, 0, 0, 0, 0, 0);
 }
 
 void SnapshotEvent::setMudSplatEvent() {
@@ -152,8 +174,22 @@ void SnapshotEvent::setMap(const json& jMap) {
                		id);
     	id++;
     }
+    
+    json jStart = jMap["startLine"];
+    setGameEvent(ADD, 
+                jStart["type"],
+                jStart["x"],
+                jStart["y"],
+                jStart["angle"],
+                0);
 }
 
 const GameEventsList& SnapshotEvent::getGameEvents() {
     return gameEventsList;
 }
+
+SnapshotEvent::SnapshotEvent(SnapshotEvent &other) {
+    this->carStructList = other.carStructList;
+    this->gameEventsList = other.gameEventsList;
+}
+

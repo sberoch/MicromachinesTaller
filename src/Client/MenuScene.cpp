@@ -1,9 +1,11 @@
 #include "MenuScene.h"
 #include "../Common/Constants.h"
+#include "../Common/Event/EnterLobbyEvent.h"
 #include <iostream>
 
-MenuScene::MenuScene(SdlWindow& window) : 
+MenuScene::MenuScene(SdlWindow& window, SafeQueue<Event*>& sendQueue) : 
 	window(window),
+	sendQueue(sendQueue),
 	backgroundMenuTex("menu_background.png", window),
 	backgroundMenu(backgroundMenuTex),
 	_done(false),
@@ -39,6 +41,7 @@ int MenuScene::handle() {
 				
 			} else if (insidePlayButton(x, y)) {
 				audio.playEffect(SFX_BUTTON);
+				sendQueue.push(new EnterLobbyEvent());
 				nextScene = SCENE_LOBBY;
 			}
 

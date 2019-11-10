@@ -25,9 +25,12 @@ private:
 	SdlWindow& window;
 	Audio audio;
 	bool isDone;
+	
 
 	Queue<SnapshotEvent*>& recvQueue; 
 	SafeQueue<Event*>& sendQueue;
+
+	int& myId;
 
 	SdlTexture backgroundTex;
 	BackgroundView background;
@@ -42,14 +45,15 @@ private:
 	Converter conv;
 	int cameraX, cameraY;
 	int xScreen, yScreen;
-
-	//Mock
-	int myID;
-	bool isBot;
+	int nextScene;
+	
+	bool& isBot;
+	bool isGameOver;
+	bool isMapReady;
 
 public:
 	GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
-					SafeQueue<Event*>& sendQueue);
+					SafeQueue<Event*>& sendQueue, int& myId, bool& isBot);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
@@ -58,7 +62,7 @@ public:
 private:
 	void drawBackground();
 
-	void updateCars(CarList cars);
+	void updateCars(CarStructList cars);
 	void updateGameEvents(GameEventsList gameEvents);
 	void addObject(GameEventStruct gameEvent);
 	void removeObject(GameEventStruct gameEvent);

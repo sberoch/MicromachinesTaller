@@ -5,16 +5,17 @@
 #include "../../Common/SocketError.h"
 #include <iostream>
 #include "../../Common/Event/EventCreator.h"
+#include "../Network/ThClient.h"
 
 using namespace std::chrono;
 
-GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> configuration) :
+GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration) :
                                              _configuration(configuration),
                                              _world(n_of_players, configuration),
                                              _track(), _grass(), _gameToStart(true),
-                                             _gameStarted(true),
-                                             _gameEnded(false){
-                                             //_gameLoop(&GameThread::run, this){
+                                             _gameStarted(false),
+                                             _gameEnded(false),
+                                             roomRunning(true){
     _world.createTrack(_track);
     _world.createGrass(_grass);
     _hPowerup = _world.createHealthPowerup();
@@ -24,54 +25,74 @@ GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> confi
     _oil = _world.createOil();
 }
 
-void GameThread::run(){
-    try {
-        //Creo socket aceptador
-        const char *portNumber = "8888";
-        Socket acceptSocket = Socket::createAcceptingSocket(portNumber);
+void GameThread::run(std::atomic_bool& serverRunning,
+        SafeQueue<std::shared_ptr<Event>>& incomingEvents,
+        std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
+    std::shared_ptr<Event> event;
 
-        //Acepto 1 cliente -> Despues va a aceptar hasta que no este llena y no pongan empezar
-        Socket skt = acceptSocket.accept();
-        Player player(std::move(skt), _world.createCar(0), 0);
+    while (!_gameStarted && serverRunning){}
 
-        player.sendStart(_world.getSerializedMap()); //TODO: mover donde corresponda
+    for (auto& client: clients){
+        client.second->assignRoomQueue(&incomingEvents);
+        client.second->sendStart(getSerializedMap());
+    }
 
-        //Socket skt2 = acceptSocket.accept();
-        //Player player2(std::move(skt2), _world.createCar(1), 1);
-
-        EventCreator eventCreator; 
-        while (_gameStarted) {
-            //Get initial time
+    while (roomRunning && serverRunning) {
+        try {
+            std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent);
             std::clock_t begin = clock();
 
-            std::string cmd;
-            player.receive(cmd);
-            
-            std::shared_ptr<Event> event = eventCreator.makeEvent(cmd);
-            player.handleInput((InputEnum) event->j["cmd_id"].get<int>());
+            if (!clients.empty()) {
+                while (incomingEvents.get(event)) {
+                   clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+                }
 
-            //Step del world
-            _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
+                step();
 
-            player.send();
+                for (auto &actualClient : clients) {
+                    actualClient.second->modifySnapshotFromClient(snapshot);
+                }
 
-            //Sleep
+                for (auto &actualClient : clients) {
+                    actualClient.second->sendSnapshot(snapshot);
+                }
+            }
+
             std::clock_t end = clock();
             double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
-            if (execTime < 25) {
-                int to_sleep = (25 - execTime);
-                std::this_thread::sleep_for(std::chrono::milliseconds(to_sleep));
+            double frames = 30;
+            if (execTime < frames) {
+                int to_sleep = (frames - execTime);
+                std::this_thread::sleep_for(
+                        std::chrono::milliseconds(to_sleep));
             }
+        } catch (SocketError &se) {
+            roomRunning = false;
+            std::cerr << se.what();
+        } catch (std::exception &e){
+            roomRunning = false;
+            std::cout << "Excepcion desde game thread: " << std::endl;
+        } catch (...) {
+            serverRunning = false;
+            std::cerr << "Game Thread: UnknownException.\n";
         }
-    } catch(SocketError& se){
-        std::cerr << se.what();
-    } catch(...) {
-        std::cerr << "Game Thread: UnknownException.\n";
     }
 }
 
-void GameThread::join(){
-    _gameLoop.join();
+void GameThread::step(){
+    _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
 }
 
 GameThread::~GameThread() {}
+
+json GameThread::getSerializedMap() {
+    return _world.getSerializedMap();
+}
+
+std::shared_ptr<Car> GameThread::createCar(int id){
+    return std::shared_ptr<Car>(_world.createCar(id));
+}
+
+void GameThread::startGame() {
+    _gameStarted = true;
+}

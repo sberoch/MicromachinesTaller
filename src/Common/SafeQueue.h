@@ -9,13 +9,11 @@
 
 #include <iostream>
 
-//TODO: hacerla template
-
 template <class T>
 class SafeQueue {
 private:
 	std::mutex mtx;
-	std::condition_variable cv_empty, cv_full;
+	std::condition_variable cv_empty;
 	std::queue<T> elems;
 	bool blocking;
 
@@ -24,6 +22,7 @@ public:
 
 	void push(const T& elem);
 	void pop(T& elem);
+	bool get(T& elem);
 	bool empty();
 	uint32_t size();
 
@@ -47,16 +46,18 @@ void SafeQueue<T>::push(const T& elem) {
 
 template <class T>
 void SafeQueue<T>::pop(T& elem) {
-    {
-        std::unique_lock<std::mutex> lck(mtx);
-        //Mientras este vacia y la cola sea bloqueante, espero.
-        while(elems.empty() && blocking) {
-            cv_empty.wait(lck);
-        }
-        elem = elems.front();
-        elems.pop();
+    std::unique_lock<std::mutex> lck(mtx);
+    //Mientras este vacia y la cola sea bloqueante, espero.
+    while(elems.empty() && blocking) {
+        cv_empty.wait(lck);
     }
-    cv_full.notify_one();
+    
+    if (elems.empty() && !blocking) {
+        elem = NULL;
+        return;
+    }
+    elem = elems.front();
+    elems.pop();
 }
 
 template <class T>
@@ -71,6 +72,10 @@ uint32_t SafeQueue<T>::size() {
     return elems.size();
 }
 
-
+template<class T>
+bool SafeQueue<T>::get(T &elem) {
+    this->pop(elem);
+    return !(elem == NULL);
+}
 
 #endif // BLOCKING_QUEUE_H
