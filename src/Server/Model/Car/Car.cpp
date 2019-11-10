@@ -269,6 +269,7 @@ void Car::update(){
     if (_tracksCounted > 0.8 * _maxtracksToLap * _maxLaps) {
         std::cout << "\nWINNER!!!!!!!!!!!!!!!!!!!!!!!\n";
         _winner;
+        _status.status = WINNED;
     }
 }
 

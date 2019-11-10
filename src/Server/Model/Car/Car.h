@@ -15,6 +15,7 @@ enum Status {
     GRABBED_ROCK,
     GRABBED_OIL,
     EXPLODED,
+    WINNED,
     NOTHING
 };
 

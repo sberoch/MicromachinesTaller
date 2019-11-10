@@ -69,6 +69,9 @@ void Player::send(){
         case GRABBED_OIL :
             snap.removeGameItem(TYPE_OIL, modifier.id);
             break;
+        case WINNED :
+            //Terminar juego y lanzar podio
+            break;
     }
     _car->resetStatus();
 
