@@ -72,10 +72,6 @@ void Room::sendSnapshotToClients(std::shared_ptr<LobbySnapshot>& snapshot){
 }
 
 void Room::startGame() {
-    for (auto& client: clients){
-        client.second->assignRoomQueue(&this->incomingEvents);
-        client.second->sendStart(game.getSerializedMap());
-    }
     game.startGame();
 }
 

@@ -161,9 +161,10 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
             client_id = j["client_id"].get<int>();
             std::cout << "Enter room con id: " << client_id << std::endl;
             roomId = getRoomIdOfClient(client_id);
-            rooms.at(roomId)->startGame();
             snapshot->startGame(roomId);
             sendToClientsWithoutRoom(snapshot);
+            sendToAllClientsWithRoom(snapshot);
+            rooms.at(roomId)->startGame();
             gameStarted = true;
             break;
         case COMMAND:

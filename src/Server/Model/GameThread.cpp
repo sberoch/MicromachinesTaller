@@ -31,6 +31,11 @@ void GameThread::run(std::atomic_bool& running,
 
     while (!_gameStarted && running){}
 
+    for (auto& client: clients){
+        client.second->assignRoomQueue(&incomingEvents);
+        client.second->sendStart(getSerializedMap());
+    }
+
     while (running) {
         try {
             std::clock_t begin = clock();
