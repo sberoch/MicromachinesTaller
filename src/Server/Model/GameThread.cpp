@@ -14,7 +14,8 @@ GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>
                                              _world(n_of_players, configuration),
                                              _track(), _grass(), _gameToStart(true),
                                              _gameStarted(false),
-                                             _gameEnded(false){
+                                             _gameEnded(false),
+                                             roomRunning(true){
     _world.createTrack(_track);
     _world.createGrass(_grass);
     _hPowerup = _world.createHealthPowerup();
@@ -24,20 +25,21 @@ GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>
     _oil = _world.createOil();
 }
 
-void GameThread::run(std::atomic_bool& running,
+void GameThread::run(std::atomic_bool& serverRunning,
         SafeQueue<std::shared_ptr<Event>>& incomingEvents,
         std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
     std::shared_ptr<Event> event;
 
-    while (!_gameStarted && running){}
+    while (!_gameStarted && serverRunning){}
 
     for (auto& client: clients){
         client.second->assignRoomQueue(&incomingEvents);
         client.second->sendStart(getSerializedMap());
     }
 
-    while (running) {
+    while (roomRunning && serverRunning) {
         try {
+            std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent);
             std::clock_t begin = clock();
 
             if (!clients.empty()) {
@@ -48,23 +50,30 @@ void GameThread::run(std::atomic_bool& running,
                 step();
 
                 for (auto &actualClient : clients) {
-                    actualClient.second->sendSnapshot();
+                    actualClient.second->modifySnapshotFromClient(snapshot);
+                }
+
+                for (auto &actualClient : clients) {
+                    actualClient.second->sendSnapshot(snapshot);
                 }
             }
 
             std::clock_t end = clock();
             double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
-            double frames = 35;
+            double frames = 30;
             if (execTime < frames) {
                 int to_sleep = (frames - execTime);
                 std::this_thread::sleep_for(
                         std::chrono::milliseconds(to_sleep));
             }
         } catch (SocketError &se) {
-            running = false;
+            roomRunning = false;
             std::cerr << se.what();
+        } catch (std::exception &e){
+            roomRunning = false;
+            std::cout << "Excepcion desde game thread: " << std::endl;
         } catch (...) {
-            running = false;
+            serverRunning = false;
             std::cerr << "Game Thread: UnknownException.\n";
         }
     }

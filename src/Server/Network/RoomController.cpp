@@ -122,7 +122,6 @@ void RoomController::sendToClientsFromRoom(int roomId, std::shared_ptr<LobbySnap
     rooms.at(roomId)->sendSnapshotToClients(snapshot);
 }
 
-
 bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot) {
     bool gameStarted = false;
     Type input = (Type) j["type"].get<int>();

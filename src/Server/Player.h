@@ -17,7 +17,7 @@ public:
     void handleInput(const InputEnum& input);
     void handleInput(std::string& input);
     void receive(std::string& received, Protocol& protocol);
-    std::shared_ptr<SnapshotEvent> makeSnapshot();
+    void modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot);
 
     std::shared_ptr<SnapshotEvent> sendStart(json j);
 

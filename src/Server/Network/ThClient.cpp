@@ -66,8 +66,13 @@ void ClientThread::assignCar(const std::shared_ptr<Car>& car){
     this->player.assignCar(car);
 }
 
-void ClientThread::sendSnapshot() {
-    std::shared_ptr<Event> event(this->player.makeSnapshot());
+void ClientThread::modifySnapshotFromClient(const std::shared_ptr<SnapshotEvent>& snapshot){
+    player.modifySnapshot(snapshot);
+}
+
+void ClientThread::sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot) {
+    std::cout << "Sending\n";
+    std::shared_ptr<Event> event(snapshot);
     this->sendingBlockingQueue.push(event);
 }
 

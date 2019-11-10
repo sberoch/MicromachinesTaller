@@ -32,20 +32,20 @@ struct CarStruct {
 	int id;
 };
 
-typedef std::vector<CarStruct> CarList;
+typedef std::map<int, CarStruct> CarStructsMap;
 typedef std::vector<GameEventStruct> GameEventsList;
 
 class SnapshotEvent: public Event {
 private:
-	CarList carList;
+	CarStructsMap carStructsMap;
 	GameEventsList gameEventsList;
 public:
 	SnapshotEvent() = default;
-	SnapshotEvent(Protocol &protocol);
+	explicit SnapshotEvent(Protocol &protocol);
     void send(Protocol &protocol) override;
 
 	void setCar(float x, float y, int angle, int health, int id);
-	const CarList& getCars();
+	const CarStructsMap& getCars();
 	
     void setMap(const json& jMap);
 
@@ -56,7 +56,7 @@ public:
 	void setMudSplatEvent();
 	
 	const GameEventsList& getGameEvents();
-	
+
 	virtual ~SnapshotEvent() = default;
 
 private:

@@ -53,14 +53,15 @@ SnapshotEvent::SnapshotEvent(Protocol &protocol) {
 
 void SnapshotEvent::send(Protocol& protocol) {
     std::string finalMessage;
+    j.clear();
 
-    for (auto& car: carList){
+    for (auto& car: carStructsMap){
         json jCar;
-        jCar["x"] = car.x;
-        jCar["y"] = car.y;
-        jCar["angle"] = car.angle;
-        jCar["health"] = car.health;
-        jCar["id"] = car.id;
+        jCar["x"] = car.second.x;
+        jCar["y"] = car.second.y;
+        jCar["angle"] = car.second.angle;
+        jCar["health"] = car.second.health;
+        jCar["id"] = car.second.id;
 
         j["cars"].push_back(jCar);
     }
@@ -83,17 +84,26 @@ void SnapshotEvent::send(Protocol& protocol) {
 }
 
 void SnapshotEvent::setCar(float x, float y, int angle, int health, int id) {
-    CarStruct car{};
-    car.x = x;
-    car.y = y;
-    car.angle = angle;
-    car.health = health;
-    car.id = id;
-    carList.push_back(car);
+    if (carStructsMap.count(id)){
+        auto actualCar = carStructsMap.at(id);
+        actualCar.x = x;
+        actualCar.y = y;
+        actualCar.angle = angle;
+        actualCar.health = health;
+        actualCar.id = id;
+    } else {
+        CarStruct car{};
+        car.x = x;
+        car.y = y;
+        car.angle = angle;
+        car.health = health;
+        car.id = id;
+        carStructsMap.insert({car.id, car});
+    }
 }
 
-const CarList& SnapshotEvent::getCars() {
-    return carList;
+const CarStructsMap& SnapshotEvent::getCars() {
+    return carStructsMap;
 }
 
 void SnapshotEvent::addGameItem(int type, float x, float y, int angle, int id) {    
@@ -166,3 +176,4 @@ void SnapshotEvent::setMap(const json& jMap) {
 const GameEventsList& SnapshotEvent::getGameEvents() {
     return gameEventsList;
 }
+

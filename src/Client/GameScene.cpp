@@ -46,7 +46,7 @@ void GameScene::update() {
 	}
 }
 
-void GameScene::updateCars(CarList cars) {
+void GameScene::updateCars(CarStructsMap cars) {
 	for (auto& car : cars) {
 		ObjectViewPtr carView = gameObjects.getCar(car.id);
 		carView->setRotation(car.angle);
