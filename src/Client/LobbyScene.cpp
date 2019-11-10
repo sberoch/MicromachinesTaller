@@ -52,7 +52,6 @@ void LobbyScene::updateRooms(RoomsMap roomsMap) {
 
 	//Check if any game started and if i'm in it.
 	for (auto& room : roomsMap) {
-		std::cout << "Jugar!!!\n";
 		if (room.second.gameStarted) {
 			for (auto& player : room.second.players) {
 				if (player == myId) {

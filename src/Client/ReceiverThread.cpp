@@ -16,6 +16,12 @@ void ReceiverThread::run() {
 	while(!_done && !_isGameMode) {
 		lobbySnap = new LobbySnapshot(protocol);
 		lobbyRecvQueue.push(lobbySnap);
+
+		int id = lobbySnap->getMyId();
+		if (lobbySnap->gameStarted(id)) {
+			_isGameMode = false;
+		}
+		
 	}
 	while(!_done && _isGameMode) {
 		gameSnap = new SnapshotEvent(protocol);

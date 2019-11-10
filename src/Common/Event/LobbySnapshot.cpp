@@ -110,3 +110,15 @@ const RoomsMap& LobbySnapshot::getRooms() {
     return roomsMap;
 }
 
+bool LobbySnapshot:: gameStarted(int player_id) {
+    for (auto& room : roomsMap) {
+        if (room.second.gameStarted) {
+            for (auto& player : room.second.players) {
+                if (player == player_id) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}

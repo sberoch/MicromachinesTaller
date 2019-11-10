@@ -18,8 +18,9 @@ enum Type {
     PLAY_AS_BOT = 4,
     ENTER_ROOM = 5,
     CREATE_ROOM = 6,
-    PLAY = 7, 
-    LOBBY_SNAPSHOT = 8
+    PLAY = 7,
+    LOBBY_SNAPSHOT = 8,
+    READY_TO_PLAY = 9
 };
 
 class Event {
