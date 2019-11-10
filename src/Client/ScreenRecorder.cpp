@@ -1,5 +1,6 @@
 #include "ScreenRecorder.h"
 #include <stdexcept>
+#include <iostream>
 
 ScreenRecorder::ScreenRecorder(int wScreen, int hScreen) :
     wScreen(std::to_string(wScreen)),
@@ -12,24 +13,21 @@ void ScreenRecorder::start() {
     std::string remove_command = std::string("rm -f ") + "\"" + outfile + "\"";
 
     if (std::system(remove_command.c_str()) != 0) {
-        throw std::runtime_error("Error al borrar el archivo antiguo");
+        throw std::runtime_error("ScreenRecorder: couldn't delete old outfile.");
     }
 
     process = ::popen(ffmpeg_command.c_str(), "w");
     if (!process) {
-        throw std::runtime_error("Error al llamar a ffmpeg");
+        throw std::runtime_error("ScreenRecorder: couldn't open ffmpeg");
     }
 }
 
 std::string ScreenRecorder::getCommand() {
-    std::string offset_x = std::to_string(0);
-    std::string offset_y = std::to_string(0);
-
     std::string command = "ffmpeg -loglevel quiet";
     std::string video_size = " -video_size " + wScreen + "x" + hScreen;
     std::string framerate_c = " -framerate " + framerate;
     std::string device = " -f x11grab";
-    std::string offset = " -i :0.0+" + offset_x + "," + offset_y;
+    std::string offset = " -i :0.0+0,0";
 
     return command + video_size + framerate_c + device + offset + " \"" + outfile + "\"";
 }
