@@ -42,37 +42,41 @@ void Player::createModifier(const size_t& type, const size_t& id, const float& x
     _modifierDTO->angle = angle;
 }
 
-void Player::send(){
+void Player::send() {
     SnapshotEvent snap;
-    State modifier = _car->getStatus();
-    switch (modifier.status) {
-        case NOTHING :
-            break;
-        case EXPLODED:
-            std::cout << "Exploded ";
-            snap.addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), 0);
-            break;
-        case GRABBED_HEALTH_POWERUP :
-            snap.removeGameItem(TYPE_HEALTH_POWERUP, modifier.id);
-            break;
-        case GRABBED_BOOST_POWERUP :
-            _addEffect(TYPE_BOOST_POWERUP, modifier.timeOfAction);
-            snap.removeGameItem(TYPE_BOOST_POWERUP, modifier.id);
-            break;
-        case GRABBED_MUD :
-            snap.setMudSplatEvent();
-            snap.removeGameItem(TYPE_MUD, modifier.id);
-            break;
-        case GRABBED_ROCK :
-            snap.removeGameItem(TYPE_ROCK, modifier.id);
-            break;
-        case GRABBED_OIL :
-            snap.removeGameItem(TYPE_OIL, modifier.id);
-            break;
-        case WINNED :
-            //Terminar juego y lanzar podio
-            break;
+    std::vector<Status *> status = _car->getStatus();
+
+    for (size_t i=0; i<status.size(); ++i){
+        switch (status[i]->status) {
+            case NOTHING :
+                break;
+            case EXPLODED:
+                std::cout << "Exploded ";
+                snap.addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), 0);
+                break;
+            case GRABBED_HEALTH_POWERUP :
+                snap.removeGameItem(TYPE_HEALTH_POWERUP, status[i]->id);
+                break;
+            case GRABBED_BOOST_POWERUP :
+                _addEffect(TYPE_BOOST_POWERUP, status[i]->timeOfAction);
+                snap.removeGameItem(TYPE_BOOST_POWERUP, status[i]->id);
+                break;
+            case GRABBED_MUD :
+                snap.setMudSplatEvent();
+                snap.removeGameItem(TYPE_MUD, status[i]->id);
+                break;
+            case GRABBED_ROCK :
+                snap.removeGameItem(TYPE_ROCK, status[i]->id);
+                break;
+            case GRABBED_OIL :
+                snap.removeGameItem(TYPE_OIL, status[i]->id);
+                break;
+            case WINNED :
+                //Terminar juego y lanzar podio
+                break;
+        }
     }
+
     _car->resetStatus();
 
     if (_modifierToAdd){

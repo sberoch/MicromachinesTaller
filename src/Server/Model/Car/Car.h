@@ -8,19 +8,20 @@
 #include "../../../Common/Constants.h"
 #include "../Track.h"
 
-enum Status {
+enum StatusType {
     GRABBED_HEALTH_POWERUP,
     GRABBED_BOOST_POWERUP,
     GRABBED_MUD,
     GRABBED_ROCK,
     GRABBED_OIL,
+    ON_GRASS,
     EXPLODED,
     WINNED,
     NOTHING
 };
 
-struct State {
-    Status status;
+struct Status {
+    StatusType status;
     int timeOfAction;
     size_t id;
 };
@@ -43,7 +44,8 @@ private:
     CarTurningState* _turningState;
     bool _isMoving;
     bool _exploded;
-    State _status;
+    //Status _status;
+    std::vector<Status*> _status;
 
     size_t _maxLaps;
     size_t _maxtracksToLap;
@@ -77,7 +79,7 @@ public:
     //Contact with floor
     void setTrack(Track* track);
 
-    State getStatus();
+    std::vector<Status*> getStatus();
     void resetStatus();
 
     void addGroundArea(GroundAreaFUD* ga);

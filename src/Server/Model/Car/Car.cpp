@@ -39,11 +39,6 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std
     _turningState = CarTurningState::makeTurningState(STOP_TURNING_RIGHT);
 
     _carBody->SetUserData(this);
-
-    _status.status = NOTHING;
-    _status.id = 0;
-
-    std::cout << "\nMasa " << _carBody->GetMass();
 }
 
 Car::Car(Car&& other){
@@ -230,6 +225,8 @@ void Car::updateTraction(){
 
 void Car::addGroundArea(GroundAreaFUD* ga){
     _groundArea = ga;
+    if (ga->grass)
+
     std::cout << "Added gd with " << _groundArea->frictionModifier ;
 }
 
@@ -269,7 +266,9 @@ void Car::update(){
     if (_tracksCounted > 0.8 * _maxtracksToLap * _maxLaps) {
         std::cout << "\nWINNER!!!!!!!!!!!!!!!!!!!!!!!\n";
         _winner;
-        _status.status = WINNED;
+        Status* status = new Status;
+        status->status = WINNED;
+        _status.push_back(status);
     }
 }
 
@@ -309,14 +308,18 @@ void Car::crash(b2Vec2 impactVel){
     std::cout << "\nHealth: " << _health;
     if (_health <= 0){
         _exploded = true;
-        _status.status = EXPLODED;
+        Status* status = new Status;
+        status->status = EXPLODED;
+        _status.push_back(status);
         std::cout << "Health is 0\n";
     }
 }
 
 void Car::handleHealthPowerup(size_t id){
-    _status.status = GRABBED_HEALTH_POWERUP;
-    _status.id = id;
+    Status* status = new Status;
+    status->status = GRABBED_HEALTH_POWERUP;
+    status->id = id;
+    _status.push_back(status);
     std::cout << "\nHealth bhp: " << _health;
     if ((_health + 10) < 100)
         _health += 10;
@@ -324,9 +327,11 @@ void Car::handleHealthPowerup(size_t id){
 }
 
 void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
-    _status.status = GRABBED_BOOST_POWERUP;
-    _status.timeOfAction = bpuFud->getActionTime();
-    _status.id = id;
+    Status* status = new Status;
+    status->status = GRABBED_BOOST_POWERUP;
+    status->timeOfAction = bpuFud->getActionTime();
+    status->id = id;
+    _status.push_back(status);
     std::cout << "Max speed bbp: " << _maxForwardSpeed << ' ';
     _maxForwardSpeed += bpuFud->getSpeedToIncrease();
     std::cout << "Max speed abp: " << _maxForwardSpeed << '\n';
@@ -334,21 +339,27 @@ void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
 }
 
 void Car::handleMud(MudFUD* mudFud, size_t id){
-    _status.status = GRABBED_MUD;
-    _status.id = id;
+    Status* status = new Status;
+    status->status = GRABBED_MUD;
+    status->id = id;
+    _status.push_back(status);
 }
 
 void Car::handleOil(OilFUD* oilFud, size_t id){
-    _status.status = GRABBED_OIL;
-    _status.id = id;
+    Status* status = new Status;
+    status->status = GRABBED_OIL;
+    status->id = id;
+    _status.push_back(status);
     float damping = oilFud->getDamping();
 
     //_carBody->SetLinearDamping(damping);
 }
 
 void Car::handleRock(RockFUD* rockFud, size_t id){
-    _status.status = GRABBED_ROCK;
-    _status.id = id;
+    Status* status = new Status;
+    status->status = GRABBED_ROCK;
+    status->id = id;
+    _status.push_back(status);
     float velToReduce = rockFud->getVelToReduce();
     int healthToReduce = rockFud->getHealthToReduce();
 
@@ -366,12 +377,15 @@ void Car::stopEffect(const int& effectType){
     }
 }
 
-State Car::getStatus(){
+std::vector<Status*> Car::getStatus(){
     return _status;
 }
 
 void Car::resetStatus(){
-    _status.status = NOTHING;
+    for (size_t i=0; i<_status.size(); ++i){
+        delete _status[i];
+    }
+    _status.clear(); //No se si es necesario
 }
 
 Car::~Car(){
