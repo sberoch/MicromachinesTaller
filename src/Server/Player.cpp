@@ -15,17 +15,13 @@ void Player::receive(std::string& received, Protocol& protocol){
     received = protocol.receive();
 }
 
-std::shared_ptr<SnapshotEvent> Player::makeSnapshot(){
-    std::cout << "Sending\n";
-    std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent());
-    snapshot->setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), _id); //TODO: id hardcodeado
-    return snapshot;
+void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
+    snapshot->setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), _id);
 }
 
 std::shared_ptr<SnapshotEvent> Player::sendStart(json j) {
     std::shared_ptr<SnapshotEvent> snap(new SnapshotEvent);
     snap->setMap(j);
-    snap->removeGameItem(100, 0);
     snap->setPlayerId(_id);
     return snap;
 }

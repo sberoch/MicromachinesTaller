@@ -49,7 +49,7 @@ public:
 
     void sendEvent(const std::shared_ptr<Event>& event);
     void handleInput(const InputEnum& input);
-    void sendSnapshot();
+    void sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot);
     void sendStart(json j);
 
     void assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue);
@@ -57,6 +57,9 @@ public:
     void assignCar(const std::shared_ptr<Car>& car);
 
     void sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot);
+
+    void
+    modifySnapshotFromClient(const std::shared_ptr<SnapshotEvent> &snapshot);
 };
 
 
