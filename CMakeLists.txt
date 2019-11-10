@@ -8,7 +8,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/3rd-party)
 
 message("[INFO] Agregando Box2D como libreria")
 file(GLOB_RECURSE BOX2D_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/3rd-party/Box2D/*.cpp" "src/3rd-party/Box2D/*.h")
-add_library(Box2D STATIC ${BOX2D_SOURCES})
+add_library(Box2D STATIC ${BOX2D_SOURCES} src/Server/mods/speedPlugin.h)
 
 message("[INFO] Cargando fuentes del servidor")
 file(GLOB_RECURSE SERVER_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Server/*.cpp" "src/Server/*.h")
