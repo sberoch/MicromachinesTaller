@@ -28,7 +28,7 @@ void Player::receive(std::string& received){
 
 void Player::_addEffect(const int& effectType, const int& timeOfAction){
     Effect* effect = new Effect;
-    effect->type = TYPE_BOOST_POWERUP;
+    effect->type = effectType;
     effect->timeOfAction = timeOfAction;
     _effects.push_back(effect);
 }
@@ -70,6 +70,9 @@ void Player::send() {
                 break;
             case GRABBED_OIL :
                 snap.removeGameItem(TYPE_OIL, status[i]->id);
+                break;
+            case ON_GRASS:
+                _addEffect(TYPE_GRASS, status[i]->timeOfAction);
                 break;
             case WINNED :
                 //Terminar juego y lanzar podio

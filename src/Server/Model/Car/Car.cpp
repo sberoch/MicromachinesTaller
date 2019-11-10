@@ -225,8 +225,11 @@ void Car::updateTraction(){
 
 void Car::addGroundArea(GroundAreaFUD* ga){
     _groundArea = ga;
-    if (ga->grass)
-
+    if (ga->grass){
+        Status* status = new Status;
+        status->status = ON_GRASS;
+        _status.push_back(status);
+    }
     std::cout << "Added gd with " << _groundArea->frictionModifier ;
 }
 
@@ -373,6 +376,11 @@ void Car::stopEffect(const int& effectType){
             _maxForwardSpeed += 10;
             break;
         case TYPE_OIL :
+            break;
+        case TYPE_GRASS :
+            //TODO see how to do this
+            //If it is still in grass after n steps reduce vel in half
+            //See distance with track
             break;
     }
 }
