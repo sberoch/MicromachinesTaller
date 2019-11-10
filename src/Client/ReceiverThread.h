@@ -17,7 +17,6 @@ public:
 	ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 				   Queue<LobbySnapshot*>& lobbyRecvQueue, 
 				   Protocol& protocol);
-	void kill();
 	virtual void run() override;
 	void setGameMode();
 	~ReceiverThread();

@@ -1,5 +1,4 @@
 #include "SceneSelector.h"
-#include "LuaInterpreter.h"
 #include <iostream>
 #include <string>
 

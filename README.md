@@ -17,6 +17,9 @@ Ejemplo uso:
 Lua:
 sudo apt install lua5.3 liblua5.3-dev
 
+FFMPEG:
+sudo apt install ffmpeg
+
 ## Compilacion
 * mkdir build  
 * cd build  
