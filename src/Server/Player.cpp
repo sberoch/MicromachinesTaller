@@ -25,7 +25,6 @@ std::shared_ptr<SnapshotEvent> Player::makeSnapshot(){
 std::shared_ptr<SnapshotEvent> Player::sendStart(json j) {
     std::shared_ptr<SnapshotEvent> snap(new SnapshotEvent);
     snap->setMap(j);
-    snap->removeGameItem(100, 0);
     snap->setPlayerId(_id);
     return snap;
 }
