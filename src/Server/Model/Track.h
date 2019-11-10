@@ -26,6 +26,8 @@ public:
     const float angle();
     const int type();
 
+    bool equals(Track* other);
+
     ~Track();
 };
 

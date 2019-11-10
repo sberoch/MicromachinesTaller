@@ -92,7 +92,7 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
         contact->SetEnabled(false);
 
         if (began)
-            car->handleBoostPowerup(bpu->getId());
+            car->handleBoostPowerup((BoostPowerupFUD*) fudB, bpu->getId());
     } else if (fudA->getType() == FUD_BOOST_POWERUP && fudB->getType() == FUD_CAR){
         std::cout << "Boost powerup\n";
         Car* car = (Car*) b->GetBody()->GetUserData();
@@ -102,7 +102,7 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
         contact->SetEnabled(false);
 
         if (began)
-            car->handleBoostPowerup(bpu->getId());
+            car->handleBoostPowerup((BoostPowerupFUD*) fudA, bpu->getId());
     } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_MUD){
         std::cout << "Mud\n";
         Car* car = (Car*) a->GetBody()->GetUserData();

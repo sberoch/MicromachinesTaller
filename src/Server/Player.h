@@ -6,12 +6,17 @@
 #include "../Common/Protocol.h"
 #include "../Common/Event/CommandEvent.h"
 
-struct ModifierDTO{
+struct ModifierDTO {
     size_t id;
     size_t type;
     float x;
     float y;
     float angle;
+};
+
+struct Effect {
+    int type;
+    int timeOfAction;
 };
 
 class Player {
@@ -21,6 +26,10 @@ private:
     size_t _id;
     ModifierDTO* _modifierDTO;
     bool _modifierToAdd;
+
+    std::vector<Effect*> _effects;
+
+    void _addEffect(const int& effectType, const int& timeOfAction);
 
 public:
     Player(Socket socket, Car* car, size_t id);

@@ -89,7 +89,7 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new BoostPowerupFUD(10, _id));
+        _fixture->SetUserData(new BoostPowerupFUD(10, 10, _id));
     }
 
 public:

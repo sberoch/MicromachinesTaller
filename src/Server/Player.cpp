@@ -8,10 +8,29 @@ Player::Player(Socket socket, Car* car, size_t id) : _protocol(std::move(socket)
 void Player::handleInput(const InputEnum& input){
     _car->handleInput(input);
     _car->update();
+
+    std::vector<Effect*> aux;
+    for (int i=0; i<_effects.size(); ++i){
+        _effects[i]->timeOfAction --;
+        if (_effects[i]->timeOfAction == 0){
+            _car->stopEffect(_effects[i]->type);
+            delete _effects[i];
+        } else {
+            aux.push_back(_effects[i]);
+        }
+    }
+    _effects.swap(aux);
 }
 
 void Player::receive(std::string& received){
     received = _protocol.receive();
+}
+
+void Player::_addEffect(const int& effectType, const int& timeOfAction){
+    Effect* effect = new Effect;
+    effect->type = TYPE_BOOST_POWERUP;
+    effect->timeOfAction = timeOfAction;
+    _effects.push_back(effect);
 }
 
 void Player::createModifier(const size_t& type, const size_t& id, const float& x, const float& y, const float& angle){
@@ -25,7 +44,7 @@ void Player::createModifier(const size_t& type, const size_t& id, const float& x
 
 void Player::send(){
     SnapshotEvent snap;
-    Deletable modifier = _car->getStatus();
+    State modifier = _car->getStatus();
     switch (modifier.status) {
         case NOTHING :
             break;
@@ -37,6 +56,7 @@ void Player::send(){
             snap.removeGameItem(TYPE_HEALTH_POWERUP, modifier.id);
             break;
         case GRABBED_BOOST_POWERUP :
+            _addEffect(TYPE_BOOST_POWERUP, modifier.timeOfAction);
             snap.removeGameItem(TYPE_BOOST_POWERUP, modifier.id);
             break;
         case GRABBED_MUD :

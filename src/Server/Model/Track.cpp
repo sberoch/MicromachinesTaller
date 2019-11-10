@@ -47,6 +47,13 @@ const int Track::type(){
     return _type;
 }
 
+bool Track::equals(Track* other){
+    if (other->x() == x() && other->y() == y() && other->angle() == angle()){
+        return true;
+    }
+    return false;
+}
+
 Track::~Track(){
     _body->GetWorld()->DestroyBody(_body);
 }
