@@ -14,7 +14,6 @@ void Grass::_setFixtureDef(std::shared_ptr<Configuration> configuration){
     _fixtureDef.shape = &shape;
     _fixtureDef.density = configuration->getGrassDensity();
     _fixtureDef.friction = configuration->getGrassFriction();
-    std::cout << _fixtureDef.friction;
     _fixtureDef.restitution = configuration->getGrassRestitution();
     _fixtureDef.isSensor = true; //TODO SEE SENSOR AND CONTACTLISTENER
 
