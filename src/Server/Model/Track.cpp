@@ -48,10 +48,7 @@ const int Track::type(){
 }
 
 bool Track::equals(Track* other){
-    if (other->x() == x() && other->y() == y() && other->angle() == angle()){
-        return true;
-    }
-    return false;
+    return other->x() == x() && other->y() == y() && other->angle() == angle();
 }
 
 Track::~Track(){

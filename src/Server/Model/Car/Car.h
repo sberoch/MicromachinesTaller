@@ -61,7 +61,6 @@ private:
     void _setShapeAndFixture(std::shared_ptr<Configuration> configuration);
 
 public:
-    //Car(b2Body* carBody);
     Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
 
     Car(const Car &other) = delete;
@@ -71,7 +70,6 @@ public:
 
     void accelerate();
     void desaccelerate();
-    void friction();
     void turnLeft();
     void turnRight();
 
@@ -119,9 +117,7 @@ public:
 
 class CarMovingState{
 public:
-    //static CarMovingState* makeMovingState(Input prevInput, Input currentInput);
     static CarMovingState* makeMovingState(const InputEnum& input);
-    //virtual CarMovingState* handleInput(Car& car, Input input) = 0;
     virtual CarMovingState* handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarMovingState(){}
@@ -129,9 +125,7 @@ public:
 
 class CarTurningState {
 public:
-    //static CarTurningState* makeTurningState(Input prevInput, Input currentInput);
     static CarTurningState* makeTurningState(const InputEnum& input);
-    //virtual CarTurningState* handleInput(Car& car, Input input) = 0;
     virtual CarTurningState* handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarTurningState(){}

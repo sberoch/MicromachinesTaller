@@ -1,6 +1,4 @@
 #include "GameThread.h"
-#include "../../Common/Socket.h"
-#include "../../Common/Protocol.h"
 #include "../Player.h"
 #include "../../Common/SocketError.h"
 #include <iostream>
@@ -14,9 +12,7 @@ GameThread::GameThread(size_t n_of_players, std::shared_ptr<Configuration> confi
                                               _world(n_of_players, configuration),
                                               _gameToStart(true),
                                               _gameStarted(true),
-                                              _gameEnded(false){
-                                              //_gameLoop(&GameThread::run, this){
-                                              }
+                                              _gameEnded(false) {}
 
 void GameThread::run(){
     try {

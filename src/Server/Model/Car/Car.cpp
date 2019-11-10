@@ -308,7 +308,7 @@ void Car::crash(b2Vec2 impactVel){
     std::cout << "\nHealth: " << _health;
     if (_health <= 0){
         _exploded = true;
-        _status.status = EXPLODED; // TODO use different name
+        _status.status = EXPLODED;
         std::cout << "Health is 0\n";
     }
 }
