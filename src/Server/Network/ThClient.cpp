@@ -71,9 +71,10 @@ void ClientThread::modifySnapshotFromClient(const std::shared_ptr<SnapshotEvent>
 }
 
 void ClientThread::sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot) {
-    std::cout << "Sending\n";
-    std::shared_ptr<Event> event(snapshot);
+    std::shared_ptr<SnapshotEvent> newSnap(new SnapshotEvent(*snapshot.get()));
+    std::shared_ptr<Event> event(newSnap);
     this->sendingBlockingQueue.push(event);
+    std::cout << "Sent\n";
 }
 
 

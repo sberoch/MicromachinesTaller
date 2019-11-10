@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <map>
+#include <list>
 #include <string>
 #include "../Protocol.h"
 #include "Event.h"
@@ -32,20 +33,21 @@ struct CarStruct {
 	int id;
 };
 
-typedef std::map<int, CarStruct> CarStructsMap;
+typedef std::list<CarStruct> CarStructList;
 typedef std::vector<GameEventStruct> GameEventsList;
 
 class SnapshotEvent: public Event {
 private:
-	CarStructsMap carStructsMap;
+	CarStructList carStructList;
 	GameEventsList gameEventsList;
 public:
 	SnapshotEvent() = default;
+	SnapshotEvent(SnapshotEvent& other);
 	explicit SnapshotEvent(Protocol &protocol);
     void send(Protocol &protocol) override;
 
 	void setCar(float x, float y, int angle, int health, int id);
-	const CarStructsMap& getCars();
+	const CarStructList& getCars();
 	
     void setMap(const json& jMap);
 
@@ -62,6 +64,10 @@ public:
 private:
 	void setGameEvent(SnapshotGameEventType eventType, 
 			int objectType, float x, float y, int angle, int id);
+
+    CarStruct findCar(int id);
+
+    bool isThereACar(int id);
 };
 
 #endif // SERVER_SNAPSHOT_H

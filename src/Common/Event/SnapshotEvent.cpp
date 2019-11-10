@@ -53,15 +53,14 @@ SnapshotEvent::SnapshotEvent(Protocol &protocol) {
 
 void SnapshotEvent::send(Protocol& protocol) {
     std::string finalMessage;
-    j.clear();
 
-    for (auto& car: carStructsMap){
+    for (auto& car: carStructList){
         json jCar;
-        jCar["x"] = car.second.x;
-        jCar["y"] = car.second.y;
-        jCar["angle"] = car.second.angle;
-        jCar["health"] = car.second.health;
-        jCar["id"] = car.second.id;
+        jCar["x"] = car.x;
+        jCar["y"] = car.y;
+        jCar["angle"] = car.angle;
+        jCar["health"] = car.health;
+        jCar["id"] = car.id;
 
         j["cars"].push_back(jCar);
     }
@@ -83,9 +82,27 @@ void SnapshotEvent::send(Protocol& protocol) {
     protocol.send(finalMessage);
 }
 
+bool SnapshotEvent::isThereACar(int id){
+    for (auto& actualCar: carStructList){
+        if (actualCar.id == id){
+            return true;
+        }
+    }
+    return false;
+}
+
+CarStruct SnapshotEvent::findCar(int id){
+    for (auto& actualCar: carStructList){
+        if (actualCar.id == id){
+            return actualCar;
+        }
+    }
+}
+
 void SnapshotEvent::setCar(float x, float y, int angle, int health, int id) {
-    if (carStructsMap.count(id)){
-        auto actualCar = carStructsMap.at(id);
+    bool found = this->isThereACar(id);
+    if (found){
+        CarStruct actualCar = findCar(id);
         actualCar.x = x;
         actualCar.y = y;
         actualCar.angle = angle;
@@ -98,12 +115,12 @@ void SnapshotEvent::setCar(float x, float y, int angle, int health, int id) {
         car.angle = angle;
         car.health = health;
         car.id = id;
-        carStructsMap.insert({car.id, car});
+        carStructList.push_back(car);
     }
 }
 
-const CarStructsMap& SnapshotEvent::getCars() {
-    return carStructsMap;
+const CarStructList& SnapshotEvent::getCars() {
+    return carStructList;
 }
 
 void SnapshotEvent::addGameItem(int type, float x, float y, int angle, int id) {    
@@ -175,5 +192,10 @@ void SnapshotEvent::setMap(const json& jMap) {
 
 const GameEventsList& SnapshotEvent::getGameEvents() {
     return gameEventsList;
+}
+
+SnapshotEvent::SnapshotEvent(SnapshotEvent &other) {
+    this->carStructList = other.carStructList;
+    this->gameEventsList = other.gameEventsList;
 }
 

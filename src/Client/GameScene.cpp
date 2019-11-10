@@ -46,16 +46,16 @@ void GameScene::update() {
 	}
 }
 
-void GameScene::updateCars(CarStructsMap cars) {
+void GameScene::updateCars(CarStructList cars) {
 	for (auto& car : cars) {
-		ObjectViewPtr carView = gameObjects.getCar(car.second.id);
-		carView->setRotation(car.second.angle);
-		carView->move(conv.blockToPixel(car.second.x),
-					  conv.blockToPixel(car.second.y));
-		if (car.second.id == myId) {
-			display.update(xScreen/2 - conv.blockToPixel(car.second.x),
-						   yScreen/2 - conv.blockToPixel(car.second.y),
-						   car.second.health);
+		ObjectViewPtr carView = gameObjects.getCar(car.id);
+		carView->setRotation(car.angle);
+		carView->move(conv.blockToPixel(car.x),
+					  conv.blockToPixel(car.y));
+		if (car.id == myId) {
+			display.update(xScreen/2 - conv.blockToPixel(car.x),
+						   yScreen/2 - conv.blockToPixel(car.y),
+						   car.health);
 		}
 	}	
 }
