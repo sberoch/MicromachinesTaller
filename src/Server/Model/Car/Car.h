@@ -18,8 +18,9 @@ enum Status {
     NOTHING
 };
 
-struct Deletable {
+struct State {
     Status status;
+    int timeOfAction;
     size_t id;
 };
 
@@ -31,6 +32,7 @@ private:
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
     float _maxDriveForce;
+    float _desiredTorque;
 
     size_t _id;
     b2Fixture* _fixture;
@@ -40,7 +42,11 @@ private:
     CarTurningState* _turningState;
     bool _isMoving;
     bool _exploded;
-    Deletable _deletable;
+    State _status;
+
+    size_t _maxLaps;
+    size_t _maxtracksToLap;
+    size_t _tracksCounted;
 
     int _health;
     float _previous_x, _previous_y, _previousAngle;
@@ -48,6 +54,8 @@ private:
     GroundAreaFUD* _groundArea;
     float _currentTraction;
     Track* _currentTrack;
+
+    bool _winner;
 
     void _setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
     void _setShapeAndFixture(std::shared_ptr<Configuration> configuration);
@@ -70,7 +78,7 @@ public:
     //Contact with floor
     void setTrack(Track* track);
 
-    Deletable getStatus();
+    State getStatus();
     void resetStatus();
 
     void addGroundArea(GroundAreaFUD* ga);
@@ -83,10 +91,12 @@ public:
 
     //Modifiers
     void handleHealthPowerup(size_t id);
-    void handleBoostPowerup(size_t id);
+    void handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id);
     void handleMud(MudFUD* mudFud, size_t id);
     void handleOil(OilFUD* oilFud, size_t id);
     void handleRock(RockFUD* rockFud, size_t id);
+
+    void stopEffect(const int& effectType);
 
     b2Vec2 getLateralVelocity();
     b2Vec2 getForwardVelocity();

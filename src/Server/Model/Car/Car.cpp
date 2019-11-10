@@ -22,9 +22,12 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 }
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-                                        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(1), _maxForwardSpeed(25),
-                                        _maxBackwardSpeed(-5), _maxDriveForce(50), _isMoving(false), _exploded(false),
-                                        _currentTraction(1), _groundArea(), _deletable() {
+        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(100),
+        _maxForwardSpeed(25),
+        _maxBackwardSpeed(-5), _maxDriveForce(50), _desiredTorque(50),
+        _isMoving(false), _exploded(false),
+        _currentTraction(1), _groundArea(), _status(),
+        _maxLaps(3), _maxtracksToLap(20), _tracksCounted(0), _winner(false) {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
@@ -37,8 +40,8 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std
 
     _carBody->SetUserData(this);
 
-    _deletable.status = NOTHING;
-    _deletable.id = 0;
+    _status.status = NOTHING;
+    _status.id = 0;
 
     std::cout << "\nMasa " << _carBody->GetMass();
 }
@@ -117,9 +120,11 @@ Car& Car::operator=(Car&& other){
 }
 
 void Car::setTrack(Track* track){
+    if (_currentTrack && !track->equals(_currentTrack)){
+        std::cout << "\nTracks counted " << _tracksCounted << '\n';
+        _tracksCounted ++;
+    }
     _currentTrack = track;
-    if (!_currentTrack)
-        std::cout << "currTrack is null\n";
 }
 
 void Car::resetCar(){
@@ -188,7 +193,7 @@ void Car::desaccelerate(){
 
 void Car::turnLeft(){
     //std::cout << "\nTurn left";
-    float desiredTorque = -50;
+    float desiredTorque = -_desiredTorque;
     if (_isMoving)
         _carBody->ApplyTorque( desiredTorque, true );
     //std::cout << " x " << x() << " y " << y() << " angle" << angle();
@@ -196,7 +201,7 @@ void Car::turnLeft(){
 
 void Car::turnRight(){
     //std::cout << "\nTurn right";
-    float desiredTorque = 50;
+    float desiredTorque = _desiredTorque;
     if (_isMoving)
         _carBody->ApplyTorque( desiredTorque, true );
     //std::cout << " x " << x() << " y " << y() << " angle" << angle();
@@ -260,6 +265,11 @@ void Car::update(){
 
     _previous_x = _carBody->GetPosition().x;
     _previous_y = _carBody->GetPosition().y;
+
+    if (_tracksCounted > 0.8 * _maxtracksToLap * _maxLaps) {
+        std::cout << "\nWINNER!!!!!!!!!!!!!!!!!!!!!!!\n";
+        _winner;
+    }
 }
 
 const float Car::x(){
@@ -298,45 +308,46 @@ void Car::crash(b2Vec2 impactVel){
     std::cout << "\nHealth: " << _health;
     if (_health <= 0){
         _exploded = true;
-        _deletable.status = EXPLODED; // TODO use different name
+        _status.status = EXPLODED; // TODO use different name
         std::cout << "Health is 0\n";
     }
 }
 
 void Car::handleHealthPowerup(size_t id){
-    _deletable.status = GRABBED_HEALTH_POWERUP;
-    _deletable.id = id;
+    _status.status = GRABBED_HEALTH_POWERUP;
+    _status.id = id;
     std::cout << "\nHealth bhp: " << _health;
-    if (_health + 10 < 100)
+    if ((_health + 10) < 100)
         _health += 10;
     std::cout << "\nHealth ahp: " << _health;
 }
 
-void Car::handleBoostPowerup(size_t id){
-    _deletable.status = GRABBED_BOOST_POWERUP;
-    _deletable.id = id;
+void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
+    _status.status = GRABBED_BOOST_POWERUP;
+    _status.timeOfAction = bpuFud->getActionTime();
+    _status.id = id;
     std::cout << "Max speed bbp: " << _maxForwardSpeed << ' ';
-    _maxForwardSpeed += 10;
+    _maxForwardSpeed += bpuFud->getSpeedToIncrease();
     std::cout << "Max speed abp: " << _maxForwardSpeed << '\n';
     //Ver como ponerlo por un rato nada mas
 }
 
 void Car::handleMud(MudFUD* mudFud, size_t id){
-    _deletable.status = GRABBED_MUD;
-    _deletable.id = id;
+    _status.status = GRABBED_MUD;
+    _status.id = id;
 }
 
 void Car::handleOil(OilFUD* oilFud, size_t id){
-    _deletable.status = GRABBED_OIL;
-    _deletable.id = id;
+    _status.status = GRABBED_OIL;
+    _status.id = id;
     float damping = oilFud->getDamping();
 
     //_carBody->SetLinearDamping(damping);
 }
 
 void Car::handleRock(RockFUD* rockFud, size_t id){
-    _deletable.status = GRABBED_ROCK;
-    _deletable.id = id;
+    _status.status = GRABBED_ROCK;
+    _status.id = id;
     float velToReduce = rockFud->getVelToReduce();
     int healthToReduce = rockFud->getHealthToReduce();
 
@@ -344,12 +355,22 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
     _maxForwardSpeed -= velToReduce; //???
 }
 
-Deletable Car::getStatus(){
-    return _deletable;
+void Car::stopEffect(const int& effectType){
+    switch (effectType) {
+        case TYPE_BOOST_POWERUP :
+            _maxForwardSpeed += 10;
+            break;
+        case TYPE_OIL :
+            break;
+    }
+}
+
+State Car::getStatus(){
+    return _status;
 }
 
 void Car::resetStatus(){
-    _deletable.status = NOTHING;
+    _status.status = NOTHING;
 }
 
 Car::~Car(){
