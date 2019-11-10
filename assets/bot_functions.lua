@@ -1,5 +1,3 @@
-print("I'm a bot!")
-
 _halfHorSizeTr = 0
 _halfVertSizeTr = 0
 _n_accelerate = 0
@@ -10,7 +8,7 @@ _n_desaccelerate = 0
 _prev_x = 0
 _prev_y = 0
 _isFirstMove = true
-_MAX_VEL_ON_TURNS =  10
+_MAX_VEL_ON_TURNS =  20
 
 tracks = nil
 firstAssigned = false
@@ -23,17 +21,6 @@ function addToTrackTable(trackX, trackY, trackAngle)
 	if not firstAssigned then
 		first = tracks --TODO: chequear esto si first no es first
 	end
-end
-
-
---Para ver que se inicie bien track table
-function printTrackTable()
-	local tr = tracks
-	while tr do
-		print(string.format("x: %s, y: %s angle: %s", tr.x, tr.y, tr.angle))
-		tr = tr.next
-	end
-	print(string.format("First at x: %s, y: %s", first.x, first.y))
 end
 
 --Set constants

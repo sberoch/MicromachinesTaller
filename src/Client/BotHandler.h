@@ -13,11 +13,11 @@ private:
 	LuaInterpreter lua;
 	Audio& audio;
 	SafeQueue<Event*>& sendQueue;
-	int playerId;
+	int& playerId;
 
 public:
-	BotHandler(GameObjects& gameObjects, Audio& audio, SafeQueue<Event*>& sendQueue);
-	void setPlayerId(int id);
+	BotHandler(GameObjects& gameObjects, Audio& audio, SafeQueue<Event*>& sendQueue, int& playerId);
+	void loadMap();
 	void handle();
 
 private:

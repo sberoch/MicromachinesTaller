@@ -21,7 +21,7 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	creator(window),
 
 	gameObjects(creator),
-	bot(gameObjects, audio, sendQueue),
+	bot(gameObjects, audio, sendQueue, myId),
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
 	yScreen(0),
@@ -65,7 +65,7 @@ void GameScene::updateGameEvents(GameEventsList gameEvents) {
  		switch(gameEvent.eventType) {
 			case ADD: addObject(gameEvent); break;
 			case REMOVE: removeObject(gameEvent); break;
-			case ID_ASSIGN: isMapReady = true; bot.setPlayerId(gameEvent.id); break;
+			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
 			case GAME_OVER: nextScene = SCENE_END; break;
 			default: break;

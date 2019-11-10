@@ -32,11 +32,6 @@ void LuaInterpreter::addToTrackTable(ObjectViewPtr track) {
 	lua_call(L, 3, 0);
 }
 
-void LuaInterpreter::printTrackTable() {
-	lua_getglobal(L, "printTrackTable");
-	lua_call(L, 0, 0);
-}
-
 int LuaInterpreter::getNextMovement(int carX, int carY, int carAngle) {
 	lua_getglobal(L, "getNextMovement");
 	lua_pushnumber(L, carX);

@@ -6,20 +6,16 @@
 #include <thread>
 #include <chrono>
 
-BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio, SafeQueue<Event*>& sendQueue) :
-	gameObjects(gameObjects), audio(audio), sendQueue(sendQueue), playerId(-1) {
+BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio, SafeQueue<Event*>& sendQueue, int& playerId) :
+	gameObjects(gameObjects), audio(audio), sendQueue(sendQueue), playerId(playerId) {
 		lua.open("bot_functions.lua");
 }
 
-void BotHandler::setPlayerId(int id) {
-	playerId = id;
-
-	//TODO: va aca?
+void BotHandler::loadMap() {
 	std::map<int, ObjectViewPtr>& tracks = gameObjects.getAllTracks();
 	for (auto it = tracks.rbegin(); it != tracks.rend(); ++it) {
         lua.addToTrackTable(it->second);
     }
-	lua.printTrackTable();
 	lua.setupInitialValues();
 }
 
@@ -29,13 +25,15 @@ void BotHandler::handle() {
 	InputEnum prevMov = STOP_TURNING_LEFT;
 	ObjectViewPtr myCar = gameObjects.getCar(playerId);
 	InputEnum mov = (InputEnum) lua.getNextMovement(myCar->getX(), myCar->getY(), myCar->getAngle());
-
+	if (prevMov != mov) {
+		prevMov = mov;
 		sendQueue.push(new CommandEvent(mov, playerId));
+	}
 
 
 	std::clock_t end = clock();
 	double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
-	if (execTime < 10) this->sleep(10 - execTime);
+	if (execTime < 100) this->sleep(100 - execTime);
 }
 
 void BotHandler::sleep(int millisec) {

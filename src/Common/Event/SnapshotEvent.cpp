@@ -127,17 +127,12 @@ void SnapshotEvent::addGameItem(int type, float x, float y, int angle, int id) {
     setGameEvent(ADD, type, x, y, angle, id);
 }
 
-//TODO: por no pasar id nuevo por cada explosion se dibuja una sola vez
-//      por un tema con los mapas en GameObjects.cpp
-
-
-
 void SnapshotEvent::removeGameItem(int type, int id) {
     setGameEvent(REMOVE, type, 0, 0, 0, id);  
 }
 
-void SnapshotEvent::setPlayerId(int id) {
-    setGameEvent(ID_ASSIGN, 0, 0, 0, 0, id);
+void SnapshotEvent::signalMapReady() {
+    setGameEvent(MAP_LOAD_FINISHED, 0, 0, 0, 0, 0);
 }
 
 void SnapshotEvent::setMudSplatEvent() {
@@ -181,7 +176,6 @@ void SnapshotEvent::setMap(const json& jMap) {
     }
     
     json jStart = jMap["startLine"];
-    std::cout << jStart.dump(4) << std::endl;
     setGameEvent(ADD, 
                 jStart["type"],
                 jStart["x"],

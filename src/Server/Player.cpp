@@ -22,7 +22,7 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
 std::shared_ptr<SnapshotEvent> Player::sendStart(json j) {
     std::shared_ptr<SnapshotEvent> snap(new SnapshotEvent);
     snap->setMap(j);
-    snap->setPlayerId(_id);
+    snap->signalMapReady();
     return snap;
 }
 
