@@ -9,6 +9,7 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 					SafeQueue<Event*>& sendQueue) : 
 	window(window),
 	isDone(false),
+	myID(-1),
 	recvQueue(recvQueue),
 	sendQueue(sendQueue),
 
@@ -16,7 +17,7 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	background(backgroundTex),
 	display(window),
 	
-	handler(window, audio, sendQueue),
+	handler(window, audio, sendQueue, myID),
 	creator(window),
 
 	gameObjects(creator),

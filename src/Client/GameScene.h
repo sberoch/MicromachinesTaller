@@ -25,6 +25,7 @@ private:
 	SdlWindow& window;
 	Audio audio;
 	bool isDone;
+	int myID;
 
 	Queue<SnapshotEvent*>& recvQueue; 
 	SafeQueue<Event*>& sendQueue;
@@ -44,7 +45,6 @@ private:
 	int xScreen, yScreen;
 	int nextScene;
 
-	int myID;
 	bool isBot;
 	bool isGameOver;
 

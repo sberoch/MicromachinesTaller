@@ -52,6 +52,7 @@ void LobbyScene::updateRooms(RoomsMap roomsMap) {
 
 	//Check if any game started and if i'm in it.
 	for (auto& room : roomsMap) {
+		std::cout << "Jugar!!!\n";
 		if (room.second.gameStarted) {
 			for (auto& player : room.second.players) {
 				if (player == myId) {
@@ -93,6 +94,7 @@ int LobbyScene::handle() {
 				if (roomsMap.size() > 0 && selectedRoom != -1 && hasJoinedARoom) {
 					sendQueue.push(new PlayEvent(myId));
 					audio.playEffect(SFX_BUTTON);
+					nextScene = SCENE_GAME;
 				}
 			}
 			else if (insideUserButton(x, y)) {
