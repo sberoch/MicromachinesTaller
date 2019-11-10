@@ -6,18 +6,18 @@
 using json = nlohmann::json;
 
 GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
-					SafeQueue<Event*>& sendQueue) : 
+					SafeQueue<Event*>& sendQueue, int& myId, bool& isBot) : 
 	window(window),
 	isDone(false),
-	myID(-1),
 	recvQueue(recvQueue),
 	sendQueue(sendQueue),
+	myId(myId),
 
 	backgroundTex("background.png", window),
 	background(backgroundTex),
 	display(window),
 	
-	handler(window, audio, sendQueue, myID),
+	handler(window, audio, sendQueue, myId),
 	creator(window),
 
 	gameObjects(creator),
@@ -26,9 +26,9 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	xScreen(0),
 	yScreen(0),
 	nextScene(SCENE_GAME),
-	isBot(false),
-	isGameOver(false) {}
-
+	isBot(isBot),
+	isGameOver(false),
+	isMapReady(false) {}
 
 bool GameScene::done() {
 	return isDone;
@@ -52,7 +52,7 @@ void GameScene::updateCars(CarList cars) {
 		carView->setRotation(car.angle);
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
-		if (car.id == myID) {
+		if (car.id == myId) {
 			display.update(xScreen/2 - conv.blockToPixel(car.x),
 						   yScreen/2 - conv.blockToPixel(car.y),
 						   car.health);
@@ -62,10 +62,10 @@ void GameScene::updateCars(CarList cars) {
 
 void GameScene::updateGameEvents(GameEventsList gameEvents) {
 	for (auto& gameEvent : gameEvents) {
-		switch(gameEvent.eventType) {
+ 		switch(gameEvent.eventType) {
 			case ADD: addObject(gameEvent); break;
 			case REMOVE: removeObject(gameEvent); break;
-			case ID_ASSIGN: myID = gameEvent.id; bot.setPlayerId(gameEvent.id); break;
+			case ID_ASSIGN: isMapReady = true; bot.setPlayerId(gameEvent.id); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
 			case GAME_OVER: nextScene = SCENE_END; break;
 			default: break;
@@ -94,13 +94,15 @@ void GameScene::draw() {
 }
 
 int GameScene::handle() {
-	if (isBot) {
-		bot.handle();
+	if (isMapReady) {
+		if (isBot) {
+			bot.handle();
 
-	} else {
-		handler.handle();
-		if (handler.done()) {
-			isDone = true;
+		} else {
+			handler.handle();
+			if (handler.done()) {
+				isDone = true;
+			}
 		}
 	}
 	return nextScene;

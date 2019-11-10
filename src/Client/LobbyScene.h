@@ -34,11 +34,12 @@ private:
 	int selectedRoom;
 	int nextScene;
 	int xScreen, yScreen;
-	int myId;
+	int& myId;
 	bool hasJoinedARoom;
+	bool& isBot;
 public:
 	LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue, 
-				SafeQueue<Event*>& sendQueue);
+				SafeQueue<Event*>& sendQueue, int& myId, bool& isBot);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;

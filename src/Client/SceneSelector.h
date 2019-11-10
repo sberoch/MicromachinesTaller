@@ -28,7 +28,8 @@ private:
 	SenderThread sender;
 	
 	int currentScene;
-
+	int myId;
+	bool isBot;
 
 public:
 	SceneSelector(int xScreen, int yScreen,

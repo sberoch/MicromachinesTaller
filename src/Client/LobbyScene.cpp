@@ -6,7 +6,7 @@
 #include "../Common/Event/PlayEvent.h"
 
 LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
-						 SafeQueue<Event*>& sendQueue) :
+						 SafeQueue<Event*>& sendQueue, int& myId, bool& isBot) :
 	window(window),
 	lobbyRecvQueue(lobbyRecvQueue),
 	sendQueue(sendQueue),
@@ -17,8 +17,9 @@ LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
 	fullscreen(true),
 	selectedRoom(-1),
 	nextScene(SCENE_LOBBY),
-	hasJoinedARoom(false) {
-		myId = -1;
+	hasJoinedARoom(false),
+	myId(myId),
+	isBot(isBot) {
 		roomViews.push_back(creator.create(TYPE_ROOM_1, 0, 0, 0));
 		roomViews.push_back(creator.create(TYPE_ROOM_2, 0, 0, 0));
 		roomViews.push_back(creator.create(TYPE_ROOM_3, 0, 0, 0));
@@ -97,11 +98,11 @@ int LobbyScene::handle() {
 				}
 			}
 			else if (insideUserButton(x, y)) {
-				sendQueue.push(new PlayAsUserEvent(myId));
+				isBot = false;
 				audio.playEffect(SFX_BUTTON);
 			}
 			else if (insideBotButton(x, y)) {
-				sendQueue.push(new PlayAsBotEvent(myId));
+				isBot = true;
 				audio.playEffect(SFX_BUTTON);
 			}
 			else if (insideCreateRoomButton(x, y)) {

@@ -29,14 +29,15 @@ void BotHandler::handle() {
 	InputEnum prevMov = STOP_TURNING_LEFT;
 	ObjectViewPtr myCar = gameObjects.getCar(playerId);
 	InputEnum mov = (InputEnum) lua.getNextMovement(myCar->getX(), myCar->getY(), myCar->getAngle());
+	std::cout << mov << std::endl;
 	if (mov != prevMov) {
-		sendQueue.push(new CommandEvent(mov));
+		sendQueue.push(new CommandEvent(mov, playerId));
 		prevMov = mov;
 	}
 
 	std::clock_t end = clock();
 	double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
-	if (execTime < 100) this->sleep(100 - execTime);
+	if (execTime < 10) this->sleep(10 - execTime);
 }
 
 void BotHandler::sleep(int millisec) {

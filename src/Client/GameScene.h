@@ -25,10 +25,12 @@ private:
 	SdlWindow& window;
 	Audio audio;
 	bool isDone;
-	int myID;
+	
 
 	Queue<SnapshotEvent*>& recvQueue; 
 	SafeQueue<Event*>& sendQueue;
+
+	int& myId;
 
 	SdlTexture backgroundTex;
 	BackgroundView background;
@@ -44,13 +46,14 @@ private:
 	int cameraX, cameraY;
 	int xScreen, yScreen;
 	int nextScene;
-
-	bool isBot;
+	
+	bool& isBot;
 	bool isGameOver;
+	bool isMapReady;
 
 public:
 	GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
-					SafeQueue<Event*>& sendQueue);
+					SafeQueue<Event*>& sendQueue, int& myId, bool& isBot);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;

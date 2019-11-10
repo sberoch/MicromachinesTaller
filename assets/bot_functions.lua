@@ -10,7 +10,7 @@ _n_desaccelerate = 0
 _prev_x = 0
 _prev_y = 0
 _isFirstMove = true
-_MAX_VEL_ON_TURNS = 25
+_MAX_VEL_ON_TURNS =  10
 
 tracks = nil
 firstAssigned = false
