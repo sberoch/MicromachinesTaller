@@ -6,8 +6,6 @@
 #include "EventCreator.h"
 #include "SnapshotEvent.h"
 #include "EnterLobbyEvent.h"
-#include "PlayAsUserEvent.h"
-#include "PlayAsBotEvent.h"
 #include "EnterRoomEvent.h"
 #include "PlayEvent.h"
 #include "CreateRoomEvent.h"
@@ -30,13 +28,6 @@ std::shared_ptr<Event> EventCreator::makeEvent(const std::string& recvdEvent){
             return std::shared_ptr<Event>(new SnapshotEvent);
         case ENTER_LOBBY:
             return std::shared_ptr<Event>(new EnterLobbyEvent);
-        case PLAY_AS_USER: 
-            id = j["client_id"].get<int>();
-            return std::shared_ptr<Event>(new PlayAsUserEvent(id));
-        
-        case PLAY_AS_BOT: 
-            id = j["client_id"].get<int>();
-            return std::shared_ptr<Event>(new PlayAsBotEvent(id));
             
         case ENTER_ROOM: 
             id = j["client_id"].get<int>();

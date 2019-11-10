@@ -133,14 +133,6 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
             std::cout << "Enter lobby con id: " << client_id << std::endl;
             sendToClientsWithoutRoom(snapshot);
             break;
-        case PLAY_AS_USER:
-            client_id = j["client_id"].get<int>();
-            std::cout << "Play as user con id: " << client_id << std::endl;
-            break;
-        case PLAY_AS_BOT:
-            client_id = j["client_id"].get<int>();
-            std::cout << "Play as bot con id: " << client_id << std::endl;
-            break;
         case ENTER_ROOM:
             client_id = j["client_id"].get<int>();
             roomId = j["selected_room"].get<int>();

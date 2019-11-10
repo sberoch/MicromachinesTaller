@@ -14,13 +14,10 @@ enum Type {
     COMMAND = 0,
     GAME_SNAPSHOT = 1,
     ENTER_LOBBY = 2,
-    PLAY_AS_USER = 3,
-    PLAY_AS_BOT = 4,
-    ENTER_ROOM = 5,
-    CREATE_ROOM = 6,
-    PLAY = 7,
-    LOBBY_SNAPSHOT = 8,
-    READY_TO_PLAY = 9
+    ENTER_ROOM = 3,
+    CREATE_ROOM = 4,
+    PLAY = 5,
+    LOBBY_SNAPSHOT = 6,
 };
 
 class Event {

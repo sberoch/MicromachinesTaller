@@ -1,8 +1,6 @@
 #include "LobbyScene.h"
 #include "../Common/Event/EnterRoomEvent.h"
 #include "../Common/Event/CreateRoomEvent.h"
-#include "../Common/Event/PlayAsUserEvent.h"
-#include "../Common/Event/PlayAsBotEvent.h"
 #include "../Common/Event/PlayEvent.h"
 
 LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
