@@ -66,6 +66,11 @@ void ClientThread::assignCar(const std::shared_ptr<Car>& car){
     this->player.assignCar(car);
 }
 
+void ClientThread::createModifier(const size_t& type, const size_t& id, const float& x,
+        const float& y, const float& angle){
+    player.createModifier(type, id, x, y, angle);
+}
+
 void ClientThread::modifySnapshotFromClient(const std::shared_ptr<SnapshotEvent>& snapshot){
     player.modifySnapshot(snapshot);
 }

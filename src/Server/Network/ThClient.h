@@ -60,6 +60,9 @@ public:
 
     void
     modifySnapshotFromClient(const std::shared_ptr<SnapshotEvent> &snapshot);
+
+    void createModifier(const size_t& type, const size_t& id, const float& x,
+            const float& y, const float& angle);
 };
 
 

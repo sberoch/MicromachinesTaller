@@ -30,8 +30,21 @@ void GameThread::run(std::atomic_bool& serverRunning,
         std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
     std::shared_ptr<Event> event;
 
+    int i = 0;
     while (roomRunning && serverRunning) {
         try {
+            if (i % 100 == 0){
+                size_t type, id;
+                float x, y, angle;
+                _world.createRandomModifier(type, id, x, y, angle);
+                std::cout << "Creating modifier in " << x << " " << y;
+
+                for (auto &actualClient : clients) {
+                    actualClient.second->createModifier(type, id, x, y, angle);
+                }
+
+            }
+
             std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent);
             std::clock_t begin = clock();
 
@@ -50,6 +63,8 @@ void GameThread::run(std::atomic_bool& serverRunning,
                     actualClient.second->sendSnapshot(snapshot);
                 }
             }
+
+            i++;
 
             std::clock_t end = clock();
             double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
