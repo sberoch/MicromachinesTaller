@@ -21,6 +21,8 @@ private:
     void _setBodyDef(float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
     void _setFixtureDef(std::shared_ptr<Configuration> configuration);
 
+    bool _isBetweenLimits(const float& pos, const char& xOrY);
+
 public:
     Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
 
@@ -29,6 +31,8 @@ public:
 
     bool isStart();
     bool isFinish();
+
+    float getDistance(const float& x, const float& y);
 
     const float x();
     const float y();
