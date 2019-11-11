@@ -61,6 +61,9 @@ void World::createTrack(std::vector<Track*>& track){
         Track* _track = new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration);
         track.push_back(_track);
     }
+
+    track[0]->setAsStart();
+    track[track.size()-1]->setAsFinish();
 }
 
 void World::createGrass(std::vector<Grass*>& grass){

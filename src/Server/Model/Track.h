@@ -10,6 +10,9 @@ private:
     int _type;
     size_t _id;
 
+    bool _start;
+    bool _finish;
+
     b2BodyDef _bodyDef;
     b2FixtureDef _fixtureDef;
     b2Fixture* _fixture;
@@ -20,6 +23,12 @@ private:
 
 public:
     Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
+
+    void setAsStart();
+    void setAsFinish();
+
+    bool isStart();
+    bool isFinish();
 
     const float x();
     const float y();
