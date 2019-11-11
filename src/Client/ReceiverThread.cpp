@@ -13,22 +13,19 @@ ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 void ReceiverThread::run() {
 	SnapshotEvent* gameSnap;
 	LobbySnapshot* lobbySnap;
-	try {
-		while(!_done && !_isGameMode) {
-			lobbySnap = new LobbySnapshot(protocol);
-			lobbyRecvQueue.push(lobbySnap);
 
-			int id = lobbySnap->getMyId();
-			if (lobbySnap->gameStarted(id)) {
-				_isGameMode = true;
-			}
-		}
-		while(!_done && _isGameMode) {
-			gameSnap = new SnapshotEvent(protocol);
-			gameRecvQueue.push(gameSnap);
-		}
-	} catch (...) {
+	while(!_done && !_isGameMode) {
+		lobbySnap = new LobbySnapshot(protocol);
+		lobbyRecvQueue.push(lobbySnap);
 
+		int id = lobbySnap->getMyId();
+		if (lobbySnap->gameStarted(id)) {
+			_isGameMode = true;
+		}
+	}
+	while(!_done && _isGameMode) {
+		gameSnap = new SnapshotEvent(protocol);
+		gameRecvQueue.push(gameSnap);
 	}
 }
 

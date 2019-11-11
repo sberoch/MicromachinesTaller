@@ -7,13 +7,9 @@ SenderThread::SenderThread(SafeQueue<Event*>& sendQueue, Protocol& protocol) :
 
 void SenderThread::run() {
 	Event* event;
-	try {
-		while(true) {
-			sendQueue.pop(event);
-			event->send(protocol);
-			delete event;
-		}
-	} catch (...) {
-		std::cout << "snder\n";
+	while(true) {
+		sendQueue.pop(event);
+		event->send(protocol);
+		delete event;
 	}
 }
