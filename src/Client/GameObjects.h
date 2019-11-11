@@ -5,15 +5,17 @@
 #include "GameObjects.h"
 #include <map>
 
+typedef std::map<int, ObjectViewPtr> ObjectMap;
+
 class GameObjects {
 private:
 	TextureCreator& creator;
-	std::map<int, ObjectViewPtr> tracksMap;
-	std::map<int, ObjectViewPtr> decorationsMap;
-	std::map<int, ObjectViewPtr> carsMap;
-	std::map<int, ObjectViewPtr> boostsMap;
-	std::map<int, ObjectViewPtr> interactablesMap;
-	std::map<int, ObjectViewPtr> miscMap;
+	ObjectMap tracksMap;
+	ObjectMap decorationsMap;
+	ObjectMap carsMap;
+	ObjectMap boostsMap;
+	ObjectMap interactablesMap;
+	ObjectMap miscMap;
 
 public:
 	GameObjects(TextureCreator& creator);
@@ -27,10 +29,10 @@ public:
 	ObjectViewPtr getInteractable(int id);
 	ObjectViewPtr getMisc(int id);
 
-	std::map<int, ObjectViewPtr>& getAllTracks();
-	std::map<int, ObjectViewPtr>& getAllCars();
-	std::map<int, ObjectViewPtr>& getAllBoosts();
-	std::map<int, ObjectViewPtr>& getAllInteractables();
+	ObjectMap& getAllTracks();
+	ObjectMap& getAllCars();
+	ObjectMap& getAllBoosts();
+	ObjectMap& getAllInteractables();
 };
 
 #endif // GAME_OBJECTS_H

@@ -68,8 +68,6 @@ void GameScene::updateGameEvents(GameEventsList gameEvents) {
 			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
 			case GAME_OVER: nextScene = SCENE_END; break;
-			//TODO: esto es asi?
-			case ID_ASSIGN: myId = gameEvent.id; break;
 			default: break;
 		}
 	}

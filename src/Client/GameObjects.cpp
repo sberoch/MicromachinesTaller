@@ -26,7 +26,6 @@ void GameObjects::draw(int cameraX, int cameraY) {
 	}
 }
 
-//TODO: refactor con mapa
 void GameObjects::add(int type, int id, ObjectViewPtr obj) {
 	switch(type) {
 		case TYPE_STRAIGHT_TRACK: case TYPE_CURVE_TRACK: {
@@ -120,19 +119,19 @@ ObjectViewPtr GameObjects::getMisc(int id) {
 	return ret;
 }
 
-std::map<int, ObjectViewPtr>& GameObjects::getAllTracks() {
+ObjectMap& GameObjects::getAllTracks() {
 	return tracksMap;
 }
 
-std::map<int, ObjectViewPtr>& GameObjects::getAllCars() {
+ObjectMap& GameObjects::getAllCars() {
 	return carsMap;
 }
 
-std::map<int, ObjectViewPtr>& GameObjects::getAllBoosts() {
+ObjectMap& GameObjects::getAllBoosts() {
 	return boostsMap;
 }
 
-std::map<int, ObjectViewPtr>& GameObjects::getAllInteractables() {
+ObjectMap& GameObjects::getAllInteractables() {
 	return interactablesMap;
 }
 
