@@ -1,21 +1,23 @@
 #include "Modifier.h"
 
-void Modifier::_setBodyDef(float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration){
-    _bodyDef.type = b2_staticBody;
-    _bodyDef.position.Set(x_init, y_init);
-    _bodyDef.angle = angle_init;
+Modifier* Modifier::makeModifier(b2World* world, const size_t& type, const size_t& id, const float& x_init,
+                                 const float& y_init, const float& angle, std::shared_ptr<Configuration> configuration){
+    switch (type) {
+        case TYPE_HEALTH_POWERUP :
+            return new HealthPowerup(world, type, id, x_init, y_init, angle, configuration);
+            break;
+        case TYPE_BOOST_POWERUP :
+            return new BoostPowerup(world, type, id, x_init, y_init, angle, configuration);
+            break;
+        case TYPE_ROCK :
+            return new Rock(world, type, id, x_init, y_init, angle, configuration);
+            break;
+        case TYPE_MUD :
+            return new Mud(world, type, id, x_init, y_init, angle, configuration);
+            break;
+        case TYPE_OIL :
+            return new Oil(world, type, id, x_init, y_init, angle, configuration);
+            break;
+    }
+
 }
-
-void Modifier::_setFixtureDef(std::shared_ptr<Configuration> configuration){
-    b2PolygonShape shape;
-    shape.SetAsBox(configuration->getTrackWidth(), configuration->getTrackHeight());
-    _fixtureDef.shape = &shape;
-    _fixtureDef.density = configuration->getTrackDensity();
-    _fixtureDef.friction = configuration->getTrackFriction();
-    _fixtureDef.restitution = configuration->getTrackRestitution();
-    _fixtureDef.isSensor = true; //TODO SEE SENSOR AND CONTACTLISTENER
-
-  //  _fixture = _body->CreateFixture(&_fixtureDef);
-//    _fixture->SetUserData();
-}
-

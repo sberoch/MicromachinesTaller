@@ -5,37 +5,53 @@
 #include <iostream>
 #include "Configuration.h"
 #include "FixtureUserData.h"
+#include "../../Common/Constants.h"
 
 class Modifier {
-private:
-    size_t _type, _id;
-    b2BodyDef _bodyDef;
-    b2Body _body;
-    b2FixtureDef _fixtureDef;
-    b2Fixture _fixture;
-
-    void _setBodyDef(float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
-    void _setFixtureDef(std::shared_ptr<Configuration> configuration);
-
-public:
-    Modifier(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
-    ~Modifier();
-};
-
-class HealthPowerup {
-private:
+protected:
     size_t _type, _id;
     b2BodyDef _bodyDef;
     b2Body* _body;
     b2FixtureDef _fixtureDef;
     b2Fixture* _fixture;
+    bool _toDelete;
 
-    void _setBodyDef(float x_init, float y_init, float angle_init){
+    Modifier(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration)
+             : _type(type), _id(id), _toDelete(false) {
+        _setBodyDef(x_init, y_init, angle);
+        _body = world->CreateBody(&_bodyDef);
+    }
+
+public:
+    virtual void _setBodyDef(float x_init, float y_init, float angle_init){
         _bodyDef.type = b2_staticBody;
         _bodyDef.position.Set(x_init, y_init);
         _bodyDef.angle = angle_init;
     }
 
+    virtual void _setFixtureDef(std::shared_ptr<Configuration> configuration) = 0;
+
+    virtual bool toDelete(){
+        return _toDelete;
+    }
+
+    virtual void markToDelete(){
+        _toDelete = true;
+    }
+
+    virtual size_t getId(){
+        return _id;
+    }
+
+public:
+    static Modifier* makeModifier(b2World* world, const size_t& type, const size_t& id, const float& x_init,
+                                  const float& y_init, const float& angle, std::shared_ptr<Configuration> configuration);
+
+    virtual ~Modifier() = default;
+};
+
+class HealthPowerup : public Modifier{
+private:
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
         shape.SetAsBox(configuration->getHealthPowerUpHalfWidth(), configuration->getHealthPowerUpHalfHeight());
@@ -51,34 +67,20 @@ private:
 
 public:
     HealthPowerup(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-                 _id(id), _type(type) {
-        _setBodyDef(x_init, y_init, angle);
-
-        _body = world->CreateBody(&_bodyDef);
+                 Modifier(world, type, id, x_init, y_init, angle, configuration) {
         _setFixtureDef(configuration);
 
         _body->SetUserData(this);
     }
 
     ~HealthPowerup(){
+        std::cout << "DESTROYING HPU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
         _body->GetWorld()->DestroyBody(_body);
     }
 };
 
-class BoostPowerup{
+class BoostPowerup : public Modifier{
 private:
-    size_t _type, _id;
-    b2BodyDef _bodyDef;
-    b2Body* _body;
-    b2FixtureDef _fixtureDef;
-    b2Fixture* _fixture;
-
-    void _setBodyDef(float x_init, float y_init, float angle_init){
-        _bodyDef.type = b2_staticBody;
-        _bodyDef.position.Set(x_init, y_init);
-        _bodyDef.angle = angle_init;
-    }
-
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
         shape.SetAsBox(configuration->getHealthPowerUpHalfWidth(), configuration->getHealthPowerUpHalfHeight());
@@ -87,15 +89,14 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new BoostPowerupFUD(10, _id));
+        _fixture->SetUserData(new BoostPowerupFUD(10, 10, _id));
     }
 
 public:
     BoostPowerup(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-            _id(id), _type(type) {
+            Modifier(world, type, id, x_init, y_init, angle, configuration) {
         _setBodyDef(x_init, y_init, angle);
 
-        _body = world->CreateBody(&_bodyDef);
         _setFixtureDef(configuration);
         _body->SetUserData(this);
     }
@@ -105,20 +106,8 @@ public:
     }
 };
 
-class Rock{
+class Rock : public Modifier{
 private:
-    size_t _type, _id;
-    b2BodyDef _bodyDef;
-    b2Body* _body;
-    b2FixtureDef _fixtureDef;
-    b2Fixture* _fixture;
-
-    void _setBodyDef(float x_init, float y_init, float angle_init){
-        _bodyDef.type = b2_staticBody;
-        _bodyDef.position.Set(x_init, y_init);
-        _bodyDef.angle = angle_init;
-    }
-
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
         shape.SetAsBox(configuration->getRockHalfWidth(), configuration->getRockHalfHeight());
@@ -132,10 +121,7 @@ private:
 
 public:
     Rock(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-            _id(id), _type(type) {
-        _setBodyDef(x_init, y_init, angle);
-
-        _body = world->CreateBody(&_bodyDef);
+            Modifier(world, type, id, x_init, y_init, angle, configuration) {
         _setFixtureDef(configuration);
         _body->SetUserData(this);
     }
@@ -145,20 +131,8 @@ public:
     }
 };
 
-class Mud{
+class Mud : public Modifier{
 private:
-    size_t _type, _id;
-    b2BodyDef _bodyDef;
-    b2Body* _body;
-    b2FixtureDef _fixtureDef;
-    b2Fixture* _fixture;
-
-    void _setBodyDef(float x_init, float y_init, float angle_init){
-        _bodyDef.type = b2_staticBody;
-        _bodyDef.position.Set(x_init, y_init);
-        _bodyDef.angle = angle_init;
-    }
-
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
         shape.SetAsBox(configuration->getMudHalfWidth(), configuration->getMudHalfHeight());
@@ -172,10 +146,7 @@ private:
 
 public:
     Mud(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-            _id(id), _type(type) {
-        _setBodyDef(x_init, y_init, angle);
-
-        _body = world->CreateBody(&_bodyDef);
+            Modifier(world, type, id, x_init, y_init, angle, configuration) {
         _setFixtureDef(configuration);
         _body->SetUserData(this);
     }
@@ -185,20 +156,8 @@ public:
     }
 };
 
-class Oil{
+class Oil : public Modifier{
 private:
-    size_t _type, _id;
-    b2BodyDef _bodyDef;
-    b2Body* _body;
-    b2FixtureDef _fixtureDef;
-    b2Fixture* _fixture;
-
-    void _setBodyDef(float x_init, float y_init, float angle_init){
-        _bodyDef.type = b2_staticBody;
-        _bodyDef.position.Set(x_init, y_init);
-        _bodyDef.angle = angle_init;
-    }
-
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
         shape.SetAsBox(configuration->getOilHalfWidth(), configuration->getOilHalfHeight());
@@ -212,10 +171,7 @@ private:
 
 public:
     Oil(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-            _id(id), _type(type) {
-        _setBodyDef(x_init, y_init, angle);
-
-        _body = world->CreateBody(&_bodyDef);
+            Modifier(world, type, id, x_init, y_init, angle, configuration) {
         _setFixtureDef(configuration);
         _body->SetUserData(this);
     }

@@ -40,6 +40,7 @@ target_link_libraries(mm_server Box2D)
 
 install(FILES assets/bot_functions.lua DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/scene.json DESTINATION ${CMAKE_BINARY_DIR})
+install(FILES assets/map1.json DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/configuration.json DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_red.png DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_blue.png DESTINATION ${CMAKE_BINARY_DIR})
@@ -69,4 +70,3 @@ install(FILES assets/car_engine.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_brake.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_explosion.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/menu_button.wav DESTINATION ${CMAKE_BINARY_DIR})
-

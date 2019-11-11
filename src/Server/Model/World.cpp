@@ -6,12 +6,22 @@
 using json = nlohmann::json;
 
 World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
-            _timeStep(1/25.0), _n_of_cars(n_of_cars), _configuration(configuration){
+             _timeStep(1/25.0), _n_of_cars(n_of_cars), _configuration(configuration),
+              _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0) {
     b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
     _world = new b2World(gravity);
 
     _contactListener = new ContactListener(_world);
     _world->SetContactListener(_contactListener);
+
+    createTrack(_track);
+    createGrass(_grass);
+
+    _modifierType.push_back(TYPE_HEALTH_POWERUP);
+    _modifierType.push_back(TYPE_BOOST_POWERUP);
+    _modifierType.push_back(TYPE_ROCK);
+    _modifierType.push_back(TYPE_OIL);
+    _modifierType.push_back(TYPE_MUD);
 }
 
 void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
@@ -34,7 +44,7 @@ Car* World::createCar(size_t id){
 }
 
 void World::createTrack(std::vector<Track*>& track){
-    std::ifstream i("scene.json");
+    std::ifstream i("map1.json");
     json j; i >> j;
 
     size_t id = 0;
@@ -51,10 +61,13 @@ void World::createTrack(std::vector<Track*>& track){
         Track* _track = new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration);
         track.push_back(_track);
     }
+
+    track[0]->setAsStart();
+    track[track.size()-1]->setAsFinish();
 }
 
 void World::createGrass(std::vector<Grass*>& grass){
-    std::ifstream i("scene.json");
+    std::ifstream i("map1.json");
     json j; i >> j;
 
     size_t id = 0;
@@ -74,7 +87,7 @@ void World::createGrass(std::vector<Grass*>& grass){
 }
 
 json World::getSerializedMap() {
-    std::ifstream i("scene.json");
+    std::ifstream i("map1.json");
     json j; 
     i >> j;
     return j;
@@ -84,19 +97,18 @@ HealthPowerup* World::createHealthPowerup(){
     std::ifstream i("scene.json");
     json j; i >> j;
 
-    size_t id = 0;
+    size_t id = 10;
     float x, y, angle;
     int type;
 
     json hpowerups = j["health_powerups"];
-    for (auto& hp : hpowerups){
-        type = hp["type"].get<int>();
-        x = hp["x"].get<float>();
-        y = hp["y"].get<float>();
-        angle = hp["angle"].get<float>();
 
-        return new HealthPowerup(_world, type, id, x, y, angle * DEGTORAD, _configuration);
-    }
+    type = hpowerups.at(0)["type"].get<int>();
+    x = hpowerups.at(0)["x"].get<float>();
+    y = hpowerups.at(0)["y"].get<float>();
+    angle = hpowerups.at(0)["angle"].get<float>();
+
+    return (HealthPowerup*) Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 BoostPowerup* World::createBoostPowerup(){
@@ -113,7 +125,7 @@ BoostPowerup* World::createBoostPowerup(){
     angle = bpowerups.at(0)["angle"].get<float>();
     type = bpowerups.at(0)["type"].get<float>();
 
-    return new BoostPowerup(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    return (BoostPowerup*) Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 Mud* World::createMud(){
@@ -130,7 +142,7 @@ Mud* World::createMud(){
     angle = muds.at(0)["angle"].get<float>();
     type = muds.at(0)["type"].get<float>();
 
-    return new Mud(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    return (Mud*) Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 Oil* World::createOil(){
@@ -147,7 +159,7 @@ Oil* World::createOil(){
     angle = oils.at(0)["angle"].get<float>();
     type = oils.at(0)["type"].get<float>();
 
-    return new Oil(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    return (Oil*) Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
 Rock* World::createRock(){
@@ -164,15 +176,53 @@ Rock* World::createRock(){
     angle = rocks.at(0)["angle"].get<float>();
     type = rocks.at(0)["type"].get<float>();
 
-    return new Rock(_world, type, id, x, y, angle * DEGTORAD, _configuration);
+    return (Rock*) Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration);
 }
 
+void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle){
+    int rand = std::rand() % _track.size();
+    Track* randomTrack = _track[rand];
+
+    float xhi = randomTrack->x() - 2.5f;
+    float xlo = randomTrack->x() + 2.5f;
+
+    float yhi = randomTrack->y() - 2.5f;
+    float ylo = randomTrack->y() + 2.5f;
+
+    x = xlo + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(xhi-xlo)));
+    y = ylo + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(yhi-ylo)));
+    angle = randomTrack->angle();
+
+    int modifierType = std::rand() % _modifierType.size();
+    type = _modifierType[modifierType];
+
+    id = _maxId;
+    _maxId++;
+
+    _activeModifiers.push_back(Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration));
+    std::cout << "\nCreating a " << type << "with id " << id << '\n';
+}
+
+void World::_removeGrabbedModifiers(){
+    std::vector<Modifier*> aux;
+    for (size_t i=0; i<_activeModifiers.size(); ++i){
+        Modifier* modifier = _activeModifiers[i];
+        if (modifier->toDelete()) {
+            std::cout << "deleting " << i << "modifier\n";
+            delete modifier;
+        } else
+            aux.push_back(modifier);
+    }
+    _activeModifiers.swap(aux);
+}
 
 void World::step(uint32_t velocityIt, uint32_t positionIt){
     //how strongly to correct velocity
     //how strongly to correct position
     _world->Step( _timeStep, velocityIt, positionIt);
     _world->ClearForces();
+
+    _removeGrabbedModifiers();
 }
 
 b2World* World::getWorld(){

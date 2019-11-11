@@ -11,9 +11,10 @@
 enum SnapshotGameEventType {
 	ADD = 0,
 	REMOVE = 1,
-	MAP_LOAD_FINISHED = 2,
+    MAP_LOAD_FINISHED = 2,
 	MUD_SPLAT = 3,
-	GAME_OVER = 4
+	GAME_OVER = 4,
+	ID_ASSIGN = 5
 };
 
 struct GameEventStruct {
@@ -58,6 +59,8 @@ public:
 	void setMudSplatEvent();
 	
 	const GameEventsList& getGameEvents();
+
+    void setPlayerId(int id);
 
 	virtual ~SnapshotEvent() = default;
 

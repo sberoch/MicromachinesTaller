@@ -24,10 +24,19 @@ private:
 
     int _n_of_cars;
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
+    std::vector<Track*> _track;
+    std::vector<Grass*> _grass;
+
+    //A vector of active modifiers to delete
+    std::vector<Modifier*> _activeModifiers;
+    std::vector<int> _modifierType;
+    size_t _maxId;
 
     //Floor
     b2BodyDef _track_body_def;
     ContactListener* _contactListener;
+
+    void _removeGrabbedModifiers();
 public:
     World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
 
@@ -43,6 +52,8 @@ public:
     Mud* createMud();
     Oil* createOil();
     Rock* createRock();
+
+    void createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle);
 
     void step(uint32_t velocityIt, uint32_t positionIt);
 

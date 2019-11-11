@@ -6,6 +6,25 @@
 #include "../FixtureUserData.h"
 #include "../../../Common/Event/CommandEvent.h"
 #include "../../../Common/Constants.h"
+#include "../Track.h"
+
+enum StatusType {
+    GRABBED_HEALTH_POWERUP,
+    GRABBED_BOOST_POWERUP,
+    GRABBED_MUD,
+    GRABBED_ROCK,
+    GRABBED_OIL,
+    ON_GRASS,
+    EXPLODED,
+    WINNED,
+    NOTHING
+};
+
+struct Status {
+    StatusType status;
+    int timeOfAction;
+    size_t id;
+};
 
 class CarTurningState;
 class CarMovingState;
@@ -15,6 +34,7 @@ private:
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
     float _maxDriveForce;
+    float _desiredTorque;
 
     size_t _id;
     b2Fixture* _fixture;
@@ -23,23 +43,27 @@ private:
     CarMovingState* _state;
     CarTurningState* _turningState;
     bool _isMoving;
+    bool _exploded;
+    //Status _status;
+    std::vector<Status*> _status;
 
-    //Floor friction
-    b2FrictionJoint* _joint;
-    b2FrictionJointDef _jointDef;
-    bool _createJoint;
+    size_t _maxLaps;
+    size_t _maxtracksToLap;
+    size_t _tracksCounted;
 
     int _health;
-    float _previous_x, _previous_y;
+    float _previous_x, _previous_y, _previousAngle;
 
     GroundAreaFUD* _groundArea;
     float _currentTraction;
+    Track* _currentTrack;
+
+    bool _winner;
 
     void _setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
     void _setShapeAndFixture(std::shared_ptr<Configuration> configuration);
 
 public:
-    //Car(b2Body* carBody);
     Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
 
     Car(const Car &other) = delete;
@@ -49,15 +73,14 @@ public:
 
     void accelerate();
     void desaccelerate();
-    void friction();
     void turnLeft();
     void turnRight();
 
     //Contact with floor
-    void startContact(b2Body* ground);
-    void endContact(b2Body* ground);
-    void createFrictionJoint();
-    void destroyFrictionJoint();
+    void setTrack(Track* track);
+
+    std::vector<Status*> getStatus();
+    void resetStatus();
 
     void addGroundArea(GroundAreaFUD* ga);
     void removeGroundArea(GroundAreaFUD* ga);
@@ -68,11 +91,13 @@ public:
     void crash(b2Vec2 impactVel);
 
     //Modifiers
-    void handleHealthPowerup();
-    void handleBoostPowerup();
-    void handleMud(MudFUD* mudFud);
-    void handleOil(OilFUD* oilFud);
-    void handleRock(RockFUD* rockFud);
+    void handleHealthPowerup(size_t id);
+    void handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id);
+    void handleMud(MudFUD* mudFud, size_t id);
+    void handleOil(OilFUD* oilFud, size_t id);
+    void handleRock(RockFUD* rockFud, size_t id);
+
+    void stopEffect(const int& effectType);
 
     b2Vec2 getLateralVelocity();
     b2Vec2 getForwardVelocity();
@@ -95,9 +120,7 @@ public:
 
 class CarMovingState{
 public:
-    //static CarMovingState* makeMovingState(Input prevInput, Input currentInput);
     static CarMovingState* makeMovingState(const InputEnum& input);
-    //virtual CarMovingState* handleInput(Car& car, Input input) = 0;
     virtual CarMovingState* handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarMovingState(){}
@@ -105,9 +128,7 @@ public:
 
 class CarTurningState {
 public:
-    //static CarTurningState* makeTurningState(Input prevInput, Input currentInput);
     static CarTurningState* makeTurningState(const InputEnum& input);
-    //virtual CarTurningState* handleInput(Car& car, Input input) = 0;
     virtual CarTurningState* handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarTurningState(){}

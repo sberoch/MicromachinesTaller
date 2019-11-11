@@ -34,13 +34,10 @@ public:
 class GroundAreaFUD : public FixtureUserData {
 public:
     float frictionModifier;
-    bool outOfCourse;
     bool grass;
 
-    GroundAreaFUD(float fm, bool ooc, bool grass, size_t id) : FixtureUserData(FUD_GROUND_AREA, id) {
+    GroundAreaFUD(float fm, bool grass, size_t id) : FixtureUserData(FUD_GROUND_AREA, id), grass(grass){
         frictionModifier = fm;
-        outOfCourse = ooc;
-        grass = grass;
     }
 
     bool isGrass(){
@@ -56,11 +53,16 @@ public:
 class BoostPowerupFUD : public FixtureUserData {
 public:
     float time;
+    int speedToIncrease;
 
-    BoostPowerupFUD(float time, size_t id) : FixtureUserData(FUD_BOOST_POWERUP, id), time(time) {}
+    BoostPowerupFUD(float time, int speedToIncrease, size_t id) : FixtureUserData(FUD_BOOST_POWERUP, id), time(time), speedToIncrease(speedToIncrease) {}
 
     float getActionTime(){
         return time;
+    }
+
+    int getSpeedToIncrease(){
+        return speedToIncrease;
     }
 };
 

@@ -139,6 +139,10 @@ void SnapshotEvent::setMudSplatEvent() {
     setGameEvent(MUD_SPLAT, 0, 0, 0, 0, 0);
 }
 
+void SnapshotEvent::setPlayerId(int id) {
+    setGameEvent(ID_ASSIGN, 0, 0, 0, 0, id);
+}
+
 void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType, 
             int objectType, float x, float y, int angle, int id) {
     GameEventStruct gameEvent{};
