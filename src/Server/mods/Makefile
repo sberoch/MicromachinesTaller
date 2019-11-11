@@ -1,4 +1,4 @@
-CC_DL = gcc -ggdb3 -std=c89 -Wall -Wextra
+CC_DL = gcc -ggdb3 -std=c99 -Wall -Wextra
 CC = $(CC_DL) -pedantic-errors
 
 .PHONY: all clean run
