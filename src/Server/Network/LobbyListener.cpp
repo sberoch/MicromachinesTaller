@@ -21,10 +21,10 @@ void LobbyListener::run() {
     std::shared_ptr<Event> event;
     std::cout << "Lobby listener started" << std::endl;
     std::shared_ptr<LobbySnapshot> snapshot(new LobbySnapshot);
-    while (!gameStarted && running) {
+    while (running) {
         try {
-            while (!gameStarted && incomingEvents.get(event)) {
-                gameStarted = controller.handleInput(event->j, snapshot);
+            while (incomingEvents.get(event)) {
+                controller.handleInput(event->j, snapshot);
             }
         } catch (SocketError &se) {
             running = false;
