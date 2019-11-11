@@ -7,7 +7,8 @@
 Player::Player(std::shared_ptr<Car> car, size_t id) :
                         _car(std::move(car)),
                         _id(id),
-                        _modifierToAdd(false){}
+                        _modifierToAdd(false),
+                        _modifierDTO(new ModifierDTO()) {}
 
 
 void Player::handleInput(const InputEnum& input){
@@ -98,7 +99,7 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
 std::shared_ptr<SnapshotEvent> Player::sendStart(json j) {
     std::shared_ptr<SnapshotEvent> snap(new SnapshotEvent);
     snap->setMap(j);
-    snap->setPlayerId(_id);
+    snap->signalMapReady();
     return snap;
 }
 

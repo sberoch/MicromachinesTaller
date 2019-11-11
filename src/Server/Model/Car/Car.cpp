@@ -25,7 +25,7 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(100),
         _maxForwardSpeed(25),
         _maxBackwardSpeed(-5), _maxDriveForce(50), _desiredTorque(50),
-        _isMoving(false), _exploded(false),
+        _isMoving(false), _exploded(false), _currentTrack(nullptr),
         _currentTraction(1), _groundArea(), _status(),
         _maxLaps(3), _maxtracksToLap(20), _tracksCounted(0), _winner(false) {
     _setBodyDef(x_init, y_init, angle, configuration);
