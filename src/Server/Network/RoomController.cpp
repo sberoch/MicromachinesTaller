@@ -17,7 +17,6 @@ int RoomController::addRoom() {
     std::lock_guard<std::mutex> lock(this->m);
     int roomId = roomCounter.returnAndAddOne();
     std::shared_ptr<Room> room(new Room(roomId, MAX_AMOUNT_OF_CLIENTS));
-    room->start();
     rooms.insert({roomId, room});
     return roomId;
 }
@@ -155,7 +154,7 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
             snapshot->startGame(roomId);
             sendToClientsWithoutRoom(snapshot);
             sendToAllClientsWithRoom(snapshot);
-            rooms.at(roomId)->startGame();
+            rooms.at(roomId)->start();
             gameStarted = true;
             break;
         case COMMAND:

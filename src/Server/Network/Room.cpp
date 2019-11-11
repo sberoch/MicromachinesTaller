@@ -17,6 +17,7 @@ Room::Room(int roomId, int amountOfPlayers) : roomId(roomId),
 
 void Room::run() {
     std::cout << "Running" << std::endl;
+    startGame();
     game.run(running, incomingEvents, clients);
 }
 
@@ -72,6 +73,10 @@ void Room::sendSnapshotToClients(std::shared_ptr<LobbySnapshot>& snapshot){
 }
 
 void Room::startGame() {
+    for (auto& client: clients){
+        client.second->assignRoomQueue(&incomingEvents);
+        client.second->sendStart(game.getSerializedMap());
+    }
     game.startGame();
 }
 

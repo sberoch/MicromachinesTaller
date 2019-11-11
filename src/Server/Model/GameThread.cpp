@@ -30,13 +30,6 @@ void GameThread::run(std::atomic_bool& serverRunning,
         std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
     std::shared_ptr<Event> event;
 
-    while (!_gameStarted && serverRunning){}
-
-    for (auto& client: clients){
-        client.second->assignRoomQueue(&incomingEvents);
-        client.second->sendStart(getSerializedMap());
-    }
-
     while (roomRunning && serverRunning) {
         try {
             std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent);

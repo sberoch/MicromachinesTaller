@@ -78,7 +78,7 @@ void SnapshotEvent::send(Protocol& protocol) {
     }
 
     finalMessage = j.dump(4);
-    std::cout << finalMessage << std::endl;
+    //std::cout << finalMessage << std::endl;
     protocol.send(finalMessage);
 }
 

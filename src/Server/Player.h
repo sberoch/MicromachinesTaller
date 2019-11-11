@@ -25,7 +25,7 @@ class Player {
 private:
     std::shared_ptr<Car> _car;
     size_t _id;
-    ModifierDTO* _modifierDTO;
+    ModifierDTO* _modifierDTO{};
     bool _modifierToAdd;
 
     std::vector<Effect*> _effects;
