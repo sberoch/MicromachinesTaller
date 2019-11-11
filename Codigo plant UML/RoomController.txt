@@ -1,0 +1,25 @@
+@startuml
+
+title Manejo de las salas
+
+
+class RoomController {
+  -map<idRoom, room> rooms
+  -map<idClient, client> clientWithoutRoom 
+ 
+}
+
+class Room {
+    
+}
+class Client
+class SafeCounter {
+    -int count
+}
+
+
+RoomController "1" *-down- "many" Room: Composition
+RoomController "1" *-down- "many" Client: Composition
+RoomController "1" *-down- "1" SafeCounter: Composition
+
+@enduml

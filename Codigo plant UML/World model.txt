@@ -1,0 +1,25 @@
+@startuml
+
+title Modelado del juego
+
+class World {
+    -int numberOfCars
+    -shared_ptr<Configuration> config
+    -ContactListener* listener
+    -b2World* world
+    -float timeStep
+}
+
+class Configuration
+
+class ContactListener {
+    b2World* world
+}
+
+b2ContactListener <|-up- ContactListener: Inheritance
+World "1" *-down- "1" ContactListener: -listener
+World "1" *-down- "1" Configuration: -config
+World "1" *-down- "1" b2World: -world
+
+
+@enduml

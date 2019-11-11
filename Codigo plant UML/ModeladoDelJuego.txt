@@ -1,0 +1,54 @@
+@startuml
+
+title Modelado del juego
+
+class Game{
+    -World world
+    -shared_ptr<Configuration> config 
+    -vector<Track*> tracks
+    -vector<Grass*> grasses
+    +GameThread(size_t numberOfPlayers, shared_ptr<Configuration>& configuration)
+    +void run(atomic_bool& running, SafeQueue<Event>& incomingEvents,
+            unordered_map<int, Client> clients)
+}
+
+class World {
+    -size_t numberOfCars
+    -shared_ptr<Configuration> config
+    -ContactListener* listener
+    -b2World* world
+    -float timeStep
+    
+    +World(size_t numberOfCar, 
+    shared_ptr<Configuration> config)
+    +json getSerializedMap()
+    +void step()
+    +Car* createCar(size_t id)
+}
+
+class Track{
+    int type
+    size_t id
+    b2BodyDef bodyDef
+    b2FixtureDef fixtureDef
+    b2Fixture* fixture
+    b2Body* body
+}
+
+class Grass{
+    int type
+    size_t id
+    b2BodyDef bodyDef
+    b2FixtureDef fixtureDef
+    b2Fixture* fixture
+    b2Body* body
+}
+
+
+
+Game "1" *-down- "1" World: -world
+Game "1" *-down- "1" Track: -tracks
+Game "1" *-down- "1" Grass: -grasses
+
+
+@enduml

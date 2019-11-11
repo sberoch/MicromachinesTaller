@@ -1,0 +1,50 @@
+@startuml
+
+title Estructura cliente
+
+class Thread{
+    -thread thread
+    +void start()
+    +virtual void join();
+    +virtual void run();
+    +virtual ~Thread();
+}
+class Client {
+    -SafeQueue<Event>* receivingQueue
+    -SafeQueue<Event> sendingQueue
+    -EventReceiver receiver
+    -EventSender sender
+    -RoomController& controller;
+    -int id
+    +void run();
+    +void sendSnapshot();
+    +void sendStart(json j)
+    +void assignRoomQueue(SafeQueue<Event>* receivingQueue)
+    +void assignCar(shared_ptr<Car> car)
+}
+
+class Player{
+    -shared_ptr<Car> car
+    -size_t id
+    +Player(shared_ptr<Car> car, size_t id)
+    +void handleInput(InputEnum input)
+    +shared_ptr<SnapshotEvent> makeSnapshot()
+    +shared_ptr<SnapshotEvent> sendStart(json j)
+}
+class Protocol{
+    +Protocol(string portName, string hostNumber)
+    +Protocol(Socket socket)
+    +Protocol(Protocl&& ohter)
+    +string receive()
+    +void send(string message)
+    +void forceShutdown()
+}
+class Socket
+
+
+Thread <|-down- Client: Inhreritance
+Client "1" *-down- "1" Player: Composition
+Client "1" *-down- "1" Protocol: Composition
+Protocol "1" *-down- "1" Socket: -socket
+
+@enduml
