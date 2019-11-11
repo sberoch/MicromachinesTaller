@@ -1,7 +1,6 @@
 #include "MudSplatView.h"
 
-MudSplatView::MudSplatView(const SdlTexture& tex) {
-	this->texture = tex;
+MudSplatView::MudSplatView(const SdlTexture& tex) : ObjectView(tex) {
 	Area srcArea(0, 0, 1100, 620);
 	clips.push_back(srcArea);
 	horizontalScale = 0;

@@ -1,43 +1,34 @@
 #include "GameScene.h"
 #include "../Common/json.hpp"
 #include "../Common/Constants.h"
-#include "View/HealthBarFrontView.h"
-#include <SDL2/SDL.h>
 #include <iostream>
-#include <fstream>
-
-//Mock
-#include "View/MudSplatView.h"
 
 using json = nlohmann::json;
 
-GameScene::GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
-					SafeQueue<Event*>& sendQueue) : 
+GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
+					SafeQueue<Event*>& sendQueue, int& myId, bool& isBot) : 
 	window(window),
 	isDone(false),
 	recvQueue(recvQueue),
 	sendQueue(sendQueue),
+	myId(myId),
 
 	backgroundTex("background.png", window),
 	background(backgroundTex),
 	display(window),
 	
-	handler(window, audio, sendQueue),
+	handler(window, audio, sendQueue, myId),
 	creator(window),
 
 	gameObjects(creator),
-	bot(gameObjects),
-
+	bot(gameObjects, audio, sendQueue, myId),
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
-	yScreen(0) {
-		window.fill();
-
-		//Mock
-		myID = 11;
-		isBot = false;
-		loadStage();
-}
+	yScreen(0),
+	nextScene(SCENE_GAME),
+	isBot(isBot),
+	isGameOver(false),
+	isMapReady(false) {}
 
 bool GameScene::done() {
 	return isDone;
@@ -47,21 +38,21 @@ void GameScene::update() {
 	audio.playMusic();
 	window.getWindowSize(&xScreen, &yScreen);
 
-	ServerSnapshot* snap;
+	SnapshotEvent* snap;
 	if (recvQueue.pop(snap)) {
 		updateCars(snap->getCars());
-		updateGameEvents();
+		updateGameEvents(snap->getGameEvents());
 		delete snap;
 	}
 }
 
-void GameScene::updateCars(CarList cars) {
+void GameScene::updateCars(CarStructList cars) {
 	for (auto& car : cars) {
-		ObjectViewPtr carView = gameObjects.get(car.id);
+		ObjectViewPtr carView = gameObjects.getCar(car.id);
 		carView->setRotation(car.angle);
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
-		if (car.id == myID) {
+		if (car.id == myId) {
 			display.update(xScreen/2 - conv.blockToPixel(car.x),
 						   yScreen/2 - conv.blockToPixel(car.y),
 						   car.health);
@@ -69,8 +60,29 @@ void GameScene::updateCars(CarList cars) {
 	}	
 }
 
-void GameScene::updateGameEvents() {
+void GameScene::updateGameEvents(GameEventsList gameEvents) {
+	for (auto& gameEvent : gameEvents) {
+ 		switch(gameEvent.eventType) {
+			case ADD: addObject(gameEvent); break;
+			case REMOVE: removeObject(gameEvent); break;
+			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
+			case MUD_SPLAT: display.showMudSplat(); break;
+			case GAME_OVER: nextScene = SCENE_END; break;
+			default: break;
+		}
+	}
+}
 
+void GameScene::addObject(GameEventStruct gameEvent) {
+	ObjectViewPtr ov = creator.create(gameEvent.objectType, 
+										conv.blockToPixel(gameEvent.x), 
+										conv.blockToPixel(gameEvent.y), 
+										gameEvent.angle);
+	gameObjects.add(gameEvent.objectType, gameEvent.id, ov);
+}
+
+void GameScene::removeObject(GameEventStruct gameEvent) {
+	gameObjects.remove(gameEvent.objectType, gameEvent.id);
 }
 
 void GameScene::draw() {
@@ -82,43 +94,18 @@ void GameScene::draw() {
 }
 
 int GameScene::handle() {
-	if (isBot) {
-		bot.handle();
+	if (isMapReady) {
+		if (isBot) {
+			bot.handle();
 
-	} else {
-		handler.handle();
-		if (handler.done()) {
-			isDone = true;
+		} else {
+			handler.handle();
+			if (handler.done()) {
+				isDone = true;
+			}
 		}
 	}
-	//TODO: change this to support a final scene.
-	return SCENE_GAME;
-}
-
-void GameScene::loadStage() {
-	//TODO: this is sent by server
-	int type, x, y, angle;
-	std::ifstream i("test_scene.json");
-	json j; i >> j;
-
-	json objects = j["objects"];
-	for (auto& obj : objects) {
-		type = obj["type"].get<int>();
-		x = conv.blockToPixel(obj["x"].get<int>());
-		y = conv.blockToPixel(obj["y"].get<int>());
-		angle = obj["angle"].get<int>();
-		ObjectViewPtr ov = creator.create(type, x, y, angle);
-		gameObjects.add(std::make_pair(ov->getId(), ov));
-		if (ov->getId() == myID) {
-			//Center camera in car
-			window.getWindowSize(&xScreen, &yScreen);
-			display.cam_x = xScreen/2 - x;
-			display.cam_y = yScreen/2 - y;
-		}
-	}
-
-	//Mock
-	display.showMudSplat();
+	return nextScene;
 }
 
 void GameScene::drawBackground() { 

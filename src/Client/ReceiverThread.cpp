@@ -1,14 +1,38 @@
 #include "ReceiverThread.h"
 #include <iostream>
 
-ReceiverThread::ReceiverThread(Queue<ServerSnapshot*>& recvQueue, Protocol& protocol) :
-	recvQueue(recvQueue),
-	protocol(protocol) {}
+ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
+				   			   Queue<LobbySnapshot*>& lobbyRecvQueue, 
+				   			   Protocol& protocol) :
+	gameRecvQueue(gameRecvQueue),
+	lobbyRecvQueue(lobbyRecvQueue),
+	protocol(protocol),
+	_done(false),
+	_isGameMode(false) {}
 
 void ReceiverThread::run() {
-	ServerSnapshot* snap;
-	while(true) {
-		snap = new ServerSnapshot(protocol);
-		recvQueue.push(snap);
-	} //TODO: ver condicion
+	SnapshotEvent* gameSnap;
+	LobbySnapshot* lobbySnap;
+
+	while(!_done && !_isGameMode) {
+		lobbySnap = new LobbySnapshot(protocol);
+		lobbyRecvQueue.push(lobbySnap);
+
+		int id = lobbySnap->getMyId();
+		if (lobbySnap->gameStarted(id)) {
+			_isGameMode = true;
+		}
+	}
+	while(!_done && _isGameMode) {
+		gameSnap = new SnapshotEvent(protocol);
+		gameRecvQueue.push(gameSnap);
+	}
+}
+
+void ReceiverThread::setGameMode() {
+	_isGameMode = true;
+}
+
+ReceiverThread::~ReceiverThread() {
+	std::cout << "Recv thread killed.\n";
 }

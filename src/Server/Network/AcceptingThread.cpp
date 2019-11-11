@@ -9,26 +9,22 @@
 #include "../../Common/SocketError.h"
 
 AcceptingThread::AcceptingThread(Socket &acceptSocket):
-        acceptSocket(acceptSocket), roomController(running), running(true){}
+        acceptSocket(acceptSocket), running(true), roomController(running){}
 
 
  void AcceptingThread::run() {
     std::cout << "Starting acceptor" << std::endl;
     try {
-        roomController.start();
         while (running) {
             try {
                 Protocol newProtocol(this->acceptSocket.accept());
                 std::cout << "Client connected" << std::endl;
-                int clientId = clientCounter.addOneAndReturn();
+                int clientId = clientCounter.returnAndAddOne();
 
-                std::shared_ptr<ClientThread> newClientThread
-                        (new ClientThread(std::move(newProtocol), roomController, clientId));
-
-                roomController.addClient(clientId, newClientThread);
-
+                roomController.addClient(clientId, std::move(newProtocol));
             } catch (SocketError &e){
                 running = false;
+                roomController.stop();
             }
         }
     } catch(const std::exception &e) {
@@ -38,5 +34,7 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
     }
 }
 
-AcceptingThread::~AcceptingThread()= default;
+AcceptingThread::~AcceptingThread(){
+    roomController.stop();
+}
 

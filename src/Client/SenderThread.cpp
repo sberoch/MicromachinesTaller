@@ -11,5 +11,5 @@ void SenderThread::run() {
 		sendQueue.pop(event);
 		event->send(protocol);
 		delete event;
-	} //TODO: ver condicion
+	}
 }

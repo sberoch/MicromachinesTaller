@@ -4,81 +4,97 @@
 
 #include <sstream>
 #include <iostream>
+#include <utility>
 #include "ThClient.h"
 #include "../../Common/SocketError.h"
+#include "../../Common/Event/EventCreator.h"
 
-//Inicializa la variable atomica booleana y el atendedor de clientes.
-//Para este ultimo mueve el socket de la comunicacion.
-ClientThread::ClientThread(Protocol protocol, RoomController& controller, int clientId):
+
+ClientThread::ClientThread(Protocol protocol, RoomController& controller, int clientId,
+        std::atomic_bool& acceptSocketRunning):
             keepTalking(true),
             protocol(std::move(protocol)),
-            nonBlockingQueue(),
-            controller(controller),
-            id(clientId){}
+            id(clientId),
+            player(nullptr, clientId),
+            receivingNonBlockingQueue(nullptr),
+            sendingBlockingQueue(true),
+            sender(std::ref(this->protocol), sendingBlockingQueue,
+                   acceptSocketRunning),
+            receiver(std::ref(this->protocol), this->receivingNonBlockingQueue,
+                     acceptSocketRunning){}
 
-static int toInt(const std::string& string){
-    std::stringstream ss(string);
-    int x = 0;
-    ss >> x;
-    return x;
-}
-
-int ClientThread::askForRoomId(){
-    std::string message = "Ingrese el numero de sala: ";
-    protocol.send(message);
-    int id = toInt(protocol.receive());
-    return id;
-}
 
 void ClientThread::run() {
+    std::cout << "Client started" << std::endl;
     try {
-        while (this->keepTalking) {
         try {
-            controller.addClientToRoom(1, this->id);
-            protocol.send("Agregado");
-
-            bool quitMessage = false;
-            while (!quitMessage) {
-                std::string message = this->protocol.receive();
-                quitMessage = message == QUIT_STRING;
-                if (!quitMessage){
-                    std::cout << "Pushing: " << message << std::endl;
-                    this->nonBlockingQueue.push(message);
-                } else {
-                    std::cout << "Quitting" << std::endl;
-                }
-            }
+            this->sender.start();
+            this->receiver.start();
         } catch (SocketError &e) {
             keepTalking = false;
         }
-            keepTalking = false;
-        }
-    }  catch(const std::exception &e) {
+    } catch(const std::exception &e) {
         printf("ERROR from thClient: %s \n", e.what());
-    }  catch(...) {
+    } catch(...) {
         printf("Unknown error from thclient");
     }
 }
-
-std::string ClientThread::popElement(){
-    std::string element;
-    this->nonBlockingQueue.pop(element);
-    return element;
-}
-
-//void ClientThread::sendEvent(){
-//    this->nonBlockingQueue.push();
-//}
 
 //Detiene la ejecucion del cliente y pone la variable booleana en falso
 //para que el recolector de clientes muertos pueda reconocerlo como tal.
 void ClientThread::stop(){
     protocol.forceShutDown();
     keepTalking = false;
+    sender.join();
+    receiver.join();
 }
 
 //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
 bool ClientThread::isDead(){
     return !keepTalking;
+}
+
+void ClientThread::sendEvent(const std::shared_ptr<Event>& event) {
+    event->send(this->protocol);
+}
+
+void ClientThread::handleInput(const InputEnum &input) {
+    this->player.handleInput(input);
+}
+
+void ClientThread::assignCar(const std::shared_ptr<Car>& car){
+    this->player.assignCar(car);
+}
+
+void ClientThread::modifySnapshotFromClient(const std::shared_ptr<SnapshotEvent>& snapshot){
+    player.modifySnapshot(snapshot);
+}
+
+void ClientThread::sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot) {
+    std::shared_ptr<SnapshotEvent> newSnap(new SnapshotEvent(*snapshot.get()));
+    std::shared_ptr<Event> event(newSnap);
+    this->sendingBlockingQueue.push(event);
+    std::cout << "Sent\n";
+}
+
+
+void ClientThread::assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue) {
+    this->receivingNonBlockingQueue = receiveingQueue;
+    receiver.setQueue(receiveingQueue);
+}
+
+void ClientThread::sendStart(json j) {
+    std::shared_ptr<Event> event(this->player.sendStart(std::move(j)));
+    this->sendingBlockingQueue.push(event);
+}
+
+
+
+void ClientThread::sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot){
+    std::cout << "Enviando desde cliente: " << id << std::endl;
+    std::shared_ptr<LobbySnapshot> newSnap(new LobbySnapshot(*snapshot.get()));
+    newSnap->setPlayerId(this->id);
+    std::shared_ptr<Event> event(newSnap);
+    this->sendingBlockingQueue.push(event);
 }
 

@@ -3,49 +3,76 @@
 //
 
 #include <iostream>
+#include <memory>
 #include "Room.h"
-#include "../../Common/ServerSnapshot.h"
+#include "../../Common/Event/EventCreator.h"
+#include "../../Common/Event/CommandEvent.h"
 
-Room::Room() : running(true){}
+Room::Room(int roomId, int amountOfPlayers) : roomId(roomId),
+        maxAmountOfPlayers(amountOfPlayers),
+        running(true),
+        incomingEvents(false),
+        game(amountOfPlayers, std::make_shared<Configuration>()){
+}
 
 void Room::run() {
-    std::string commands;
-    while (running) {
-        for (auto &actualClient: clients) {
-            std::string popped = actualClient->popElement();
-            commands.append(popped);
+    std::cout << "Running" << std::endl;
+    game.run(running, incomingEvents, clients);
+}
 
-            std::cout << "Popped: " << popped << std::endl;
-        }
+bool Room::hasClient(int clientId){
+    return this->clients.count(clientId);
+}
 
-        //Hacer algo con los comandos.
-//        if (!commands.empty()){
-//            std::cout << "All commands: " << commands << std::endl;
-//            commands.clear();
-//        }
+void Room::addClientAlreadyCreated(int clientId, std::shared_ptr<ClientThread> newClient) {
+    if (clients.size() < maxAmountOfPlayers){
+        this->clients.insert({clientId, newClient});
+    } else {
+        throw std::runtime_error("Se intento meter un cliente a una sala llena");
     }
 }
 
-void Room::addClient(const std::shared_ptr<ClientThread>& newClient) {
-    this->clients.push_back(newClient);
-}
-
-
-bool Room::isDead() {
-    return !running;
+void Room::addClient(int clientId, std::shared_ptr<ClientThread> newClient) {
+    if (clients.size() < maxAmountOfPlayers){
+        newClient->assignCar(std::shared_ptr<Car>(this->game.createCar(clientId)));
+        this->clients.insert({clientId, newClient});
+    } else {
+        throw std::runtime_error("Se intento meter un cliente a una sala llena");
+    }
 }
 
 
 void Room::stop() {
     this->running = false;
     for (auto& client: clients){
-        client->stop();
-        client->join();
+        client.second->stop();
+        client.second->join();
     }
 }
 
 Room::~Room() {
     this->stop();
+}
+
+std::shared_ptr<Car> Room::createCar(int id) {
+    std::shared_ptr<Car> car(game.createCar(id));
+    return car;
+}
+
+std::shared_ptr<ClientThread> Room::eraseClientAndReturn(int clientId) {
+    std::shared_ptr<ClientThread> client = this->clients.at(clientId);
+    this->clients.erase(clientId);
+    return client;
+}
+
+void Room::sendSnapshotToClients(std::shared_ptr<LobbySnapshot>& snapshot){
+    for (auto& client: clients){
+        client.second->sendLobbySnapshot(snapshot);
+    }
+}
+
+void Room::startGame() {
+    game.startGame();
 }
 
 

@@ -1,45 +1,57 @@
-//
-// Created by alvaro on 30/10/19.
-//
-
 #ifndef MICROMACHINES_ROOMCONTROLLER_H
 #define MICROMACHINES_ROOMCONTROLLER_H
 
 #include <list>
 #include <unordered_map>
 #include <atomic>
-#include "Thread.h"
+#include "LobbyListener.h"
+#include "../../Common/Thread.h"
 #include "../../Common/SafeQueue.h"
 #include "SafeCounter.h"
+#include "../../Common/Protocol.h"
+#include "../../Common/Event/CommandEvent.h"
+#include "../../Common/Event/LobbySnapshot.h"
+
 
 class ClientThread;
 class Room;
 
-class RoomController : public Thread {
+class RoomController {
 private:
     std::unordered_map<int, std::shared_ptr<ClientThread>> clientsWithNoRoom;
     std::unordered_map<int, std::shared_ptr<Room>> rooms;
     SafeQueue<std::string> queue;
     SafeCounter roomCounter;
     std::atomic_bool& acceptSocketRunning;
+    std::mutex m;
+    LobbyListener listener;
+
+    int getRoomIdOfClient(int clientId);
+    void collectDeadClients();
+    void moveClientToNewRoom(int newRoomId, int clientId);
+
 public:
     explicit RoomController(std::atomic_bool& running);
 
-    void run() override;
+   int addRoom();
 
-   void addRoom();
-
-   void addClient(int clientId, const std::shared_ptr<ClientThread>& client);
+   void addClient(int clientId, Protocol protocol);
 
    void addClientToRoom(int roomId, int clientId);
 
-    bool isDead() override {
-        return false;
-    }
+   void stop();
 
-    void stop() override;
+   //Devuelve si se dio el comando play o no.
+   bool handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot);
 
-    ~RoomController() override;
+    void sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot);
+
+   ~RoomController();
+
+    void sendToClientsFromRoom(int roomId, std::shared_ptr<LobbySnapshot> snapshot);
+
+    void
+    sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot);
 };
 
 

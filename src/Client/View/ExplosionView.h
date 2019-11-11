@@ -6,6 +6,8 @@
 class ExplosionView : public ObjectView {
 private:
 	int frame;
+	int totalFrames;
+	bool done;
 public:
 	ExplosionView(const SdlTexture& tex);
  	virtual void drawAt(int x, int y) override;

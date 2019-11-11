@@ -11,7 +11,7 @@
 
 class EnterLobbyEvent: public Event {
 public:
-	//TODO: falta constructor con parametros
+	EnterLobbyEvent();
     virtual void send(Protocol &protocol) override;
     virtual ~EnterLobbyEvent() = default;
 };

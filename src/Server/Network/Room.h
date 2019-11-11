@@ -9,25 +9,39 @@
 #include <vector>
 #include <memory>
 #include "ThClient.h"
-#include "Thread.h"
+#include "../../Common/Thread.h"
+#include "../Model/GameThread.h"
 
 class Room: public Thread{
 private:
-    std::vector<std::shared_ptr<ClientThread>> clients;
+    int roomId;
+    int maxAmountOfPlayers;
     std::atomic<bool> running;
+    std::unordered_map<int ,std::shared_ptr<ClientThread>> clients;
+    SafeQueue<std::shared_ptr<Event>> incomingEvents;
+    GameThread game;
 public:
-    Room();
+    explicit Room(int roomId, int amountOfClients);
 
     void run() override;
 
-    void addClient(const std::shared_ptr<ClientThread>& newClient);
+    void addClient(int clientId, std::shared_ptr<ClientThread> newClient);
 
-    bool isDead() override;
+    void startGame();
 
-    //No utilizado
-    void stop() override;
+    void stop();
+
+    std::shared_ptr<Car> createCar(int id);
 
     ~Room() override;
+
+    bool hasClient(int clientId);
+    std::shared_ptr<ClientThread> eraseClientAndReturn(int clientId);
+
+    void sendSnapshotToClients(std::shared_ptr<LobbySnapshot> &snapshot);
+
+    void addClientAlreadyCreated(int clientId,
+                            std::shared_ptr<ClientThread> newClient);
 };
 
 

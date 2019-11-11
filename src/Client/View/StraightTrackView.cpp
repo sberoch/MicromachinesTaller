@@ -1,9 +1,9 @@
 #include "StraightTrackView.h"
+#include <iostream>
 
 StraightTrackView::StraightTrackView(const SdlTexture& tex, const int& angle) :
-	angle(angle) {
-	this->texture = tex;
-	Area srcArea(0, 0, 640, 688);
+	ObjectView(tex), angle(angle) {
+	Area srcArea(0, 0, 688, 640);
 	clips.push_back(srcArea);
 	horizontalScale = HOR_PS_STRAIGHT_TRACK;
 	verticalScale = VER_PS_STRAIGHT_TRACK;
@@ -17,3 +17,6 @@ void StraightTrackView::drawAt(int x, int y) {
 	texture.render(srcArea, destArea, (double) angle, SDL_FLIP_NONE);
 }
 
+int StraightTrackView::getAngle() {
+	return angle;
+}

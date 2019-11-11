@@ -3,9 +3,27 @@
 
 #include <vector>
 #include <map>
+#include <list>
 #include <string>
 #include "../Protocol.h"
 #include "Event.h"
+
+enum SnapshotGameEventType {
+	ADD = 0,
+	REMOVE = 1,
+	MAP_LOAD_FINISHED = 2,
+	MUD_SPLAT = 3,
+	GAME_OVER = 4
+};
+
+struct GameEventStruct {
+	SnapshotGameEventType eventType;
+	int objectType; //TODO: enum?
+	float x;
+	float y;
+	int angle;
+	int id;
+};
 
 struct CarStruct {
 	float x;
@@ -15,22 +33,41 @@ struct CarStruct {
 	int id;
 };
 
-typedef std::vector<CarStruct> CarList;
+typedef std::list<CarStruct> CarStructList;
+typedef std::vector<GameEventStruct> GameEventsList;
 
 class SnapshotEvent: public Event {
 private:
-	CarList carList;
+	CarStructList carStructList;
+	GameEventsList gameEventsList;
 public:
-    //Envia el estado de todos los autos.
+	SnapshotEvent() = default;
+	SnapshotEvent(SnapshotEvent& other);
+	explicit SnapshotEvent(Protocol &protocol);
     void send(Protocol &protocol) override;
 
-    void receive(Protocol &protocol);
-
 	void setCar(float x, float y, int angle, int health, int id);
-
-	const CarList& getCars();
+	const CarStructList& getCars();
 	
+    void setMap(const json& jMap);
+
+
+	void addGameItem(int type, float x, float y, int angle, int id);
+	void removeGameItem(int type, int id);
+	void signalMapReady();
+	void setMudSplatEvent();
+	
+	const GameEventsList& getGameEvents();
+
 	virtual ~SnapshotEvent() = default;
+
+private:
+	void setGameEvent(SnapshotGameEventType eventType, 
+			int objectType, float x, float y, int angle, int id);
+
+    CarStruct findCar(int id);
+
+    bool isThereACar(int id);
 };
 
 #endif // SERVER_SNAPSHOT_H

@@ -4,20 +4,24 @@
 #include "Model/Car/Car.h"
 #include "../Common/Socket.h"
 #include "../Common/Protocol.h"
-#include "../Common/InputEnum.h"
+#include "../Common/Event/CommandEvent.h"
+#include "../Common/Event/SnapshotEvent.h"
 
 class Player {
 private:
-    Protocol _protocol;
-    Car* _car; //TODO move car
+    std::shared_ptr<Car> _car;
+    size_t _id;
 
 public:
-    Player(Socket socket, Car* car);
+    Player(std::shared_ptr<Car> car, size_t id);
     void handleInput(const InputEnum& input);
     void handleInput(std::string& input);
-    void receive(std::string& received);
-    void send();
+    void receive(std::string& received, Protocol& protocol);
+    void modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot);
 
+    std::shared_ptr<SnapshotEvent> sendStart(json j);
+
+    void assignCar(std::shared_ptr<Car> newCar);
 };
 
 #endif //MICROMACHINES_PLAYER_H

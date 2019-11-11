@@ -10,7 +10,7 @@
 
 class EnterRoomEvent: public Event{
 public:
-	//TODO: falta constructor con argumentos
+	EnterRoomEvent(int id, int selectedRoom);
     virtual void send(Protocol &protocol) override;
     virtual ~EnterRoomEvent() = default;
 };

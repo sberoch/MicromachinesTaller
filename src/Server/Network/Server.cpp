@@ -11,11 +11,10 @@
 #define qCHAR 'q'
 
 Server::Server(const char* portNumber):
-                    acceptSocket(Socket::createAcceptingSocket(portNumber)) {
-
-}
+                    acceptSocket(Socket::createAcceptingSocket(portNumber)) {}
 
 void Server::run(){
+    std::cout << "Servidor creado" << std::endl;
     AcceptingThread acceptor(acceptSocket);
     acceptor.start();
 

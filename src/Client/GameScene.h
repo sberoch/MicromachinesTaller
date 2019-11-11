@@ -14,7 +14,7 @@
 #include <map>
 #include <string>
 #include "../Common/Converter.h"
-#include "../Common/ServerSnapshot.h"
+#include "../Common/Event/SnapshotEvent.h"
 #include "../Common/Event/Event.h"
 #include "../Common/SafeQueue.h"
 #include "../Common/Queue.h"
@@ -25,9 +25,12 @@ private:
 	SdlWindow& window;
 	Audio audio;
 	bool isDone;
+	
 
-	Queue<ServerSnapshot*>& recvQueue; 
+	Queue<SnapshotEvent*>& recvQueue; 
 	SafeQueue<Event*>& sendQueue;
+
+	int& myId;
 
 	SdlTexture backgroundTex;
 	BackgroundView background;
@@ -42,24 +45,27 @@ private:
 	Converter conv;
 	int cameraX, cameraY;
 	int xScreen, yScreen;
-
-	//Mock
-	int myID;
-	bool isBot;
+	int nextScene;
+	
+	bool& isBot;
+	bool isGameOver;
+	bool isMapReady;
 
 public:
-	GameScene(SdlWindow& window, Queue<ServerSnapshot*>& recvQueue, 
-					SafeQueue<Event*>& sendQueue);
+	GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
+					SafeQueue<Event*>& sendQueue, int& myId, bool& isBot);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
 	virtual int handle() override;
 	virtual ~GameScene() {}
 private:
-	void loadStage();
 	void drawBackground();
-	void updateCars(CarList cars);
-	void updateGameEvents();
+
+	void updateCars(CarStructList cars);
+	void updateGameEvents(GameEventsList gameEvents);
+	void addObject(GameEventStruct gameEvent);
+	void removeObject(GameEventStruct gameEvent);
 };
 
 #endif // GAME_SCENE_H

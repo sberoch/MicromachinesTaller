@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include "Track.h"
+#include "FixtureUserData.h"
 
 void Track::_setBodyDef(float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration){
     _bodyDef.type = b2_staticBody;
@@ -17,8 +18,8 @@ void Track::_setFixtureDef(std::shared_ptr<Configuration> configuration){
     _fixtureDef.friction = configuration->getTrackFriction();
     _fixtureDef.restitution = configuration->getTrackRestitution();
     _fixtureDef.isSensor = true; //TODO SEE SENSOR AND CONTACTLISTENER
-
-    _body->CreateFixture(&_fixtureDef);
+    _fixture = _body->CreateFixture(&_fixtureDef);
+    _fixture->SetUserData(new GroundAreaFUD(0.9f, false, false, _id));
 }
 
 Track::Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration) :

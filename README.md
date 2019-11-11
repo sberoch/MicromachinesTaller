@@ -13,7 +13,12 @@ Ejemplo uso:
     #include "../Common/json.hpp"  
     using json = nlohmann::json;
 ```
-    
+## Instalaciones
+Lua:
+sudo apt install lua5.3 liblua5.3-dev
+
+FFMPEG:
+sudo apt install ffmpeg
 
 ## Compilacion
 * mkdir build  

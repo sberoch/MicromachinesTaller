@@ -7,8 +7,13 @@
 
 
 #include <atomic>
+#include <iostream>
 #include "RoomController.h"
 #include "../../Common/Protocol.h"
+#include "../../Common/Event/Event.h"
+#include "../Player.h"
+#include "EventReceiver.h"
+#include "EventSender.h"
 
 #define QUIT_STRING "QUIT"
 
@@ -16,31 +21,45 @@ class ClientThread: public Thread {
 private:
     std::atomic<bool> keepTalking;
     Protocol protocol;
-    SafeQueue<std::string> nonBlockingQueue;
-    RoomController& controller;
     int id;
+    Player player;
+    SafeQueue<std::shared_ptr<Event>>* receivingNonBlockingQueue;
+    SafeQueue<std::shared_ptr<Event>> sendingBlockingQueue;
+    EventReceiver receiver;
+    EventSender sender;
 
 public:
     //Inicializa la variable atomica booleana y el atendedor de clientes.
     //Para este ultimo mueve el socket de la comunicacion.
-    explicit ClientThread(Protocol protocol, RoomController& controller, int clientId);
-
-    int askForRoomId();
+    ClientThread(Protocol protocol, RoomController& controller, int clientId,
+                    std::atomic_bool& acceptSocketRunning);
 
     void run() override;
 
-    std::string popElement();
-
     //Detiene la ejecucion del cliente y pone la variable booleana en falso
     //para que el recolector de clientes muertos pueda reconocerlo como tal.
-    void stop() override;
+    void stop();
 
     //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
-    bool isDead() override;
+    bool isDead();
 
-    ~ClientThread() override= default;
+    ~ClientThread() override{
+        std::cout << "Destruyendo client thread con id: " << id << std::endl;
+    };
 
-    void sendEvent();
+    void sendEvent(const std::shared_ptr<Event>& event);
+    void handleInput(const InputEnum& input);
+    void sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot);
+    void sendStart(json j);
+
+    void assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue);
+
+    void assignCar(const std::shared_ptr<Car>& car);
+
+    void sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot);
+
+    void
+    modifySnapshotFromClient(const std::shared_ptr<SnapshotEvent> &snapshot);
 };
 
 

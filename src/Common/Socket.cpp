@@ -12,7 +12,7 @@
 #include "SocketError.h"
 
 Socket::Socket() {
-    this->fd = socket(AF_INET, SOCK_STREAM, 0);
+    this->fd = -1;
 }
 
 Socket::Socket(int fd) {
@@ -26,8 +26,11 @@ Socket::Socket(Socket&& other) noexcept {
 }
 
 void Socket::stop(){
-    shutdown(this->fd, SHUT_RDWR);
-    close(this->fd);
+    if (this->fd != -1){
+        shutdown(this->fd, SHUT_RDWR);
+        close(this->fd);
+        this->fd = -1;
+    }
 }
 
 Socket::~Socket(){
@@ -157,12 +160,16 @@ void Socket::connectToServer(const std::string& hostName,
         }
 
         s = connect(this->fd, ptr->ai_addr, ptr->ai_addrlen);
+
         if (s == -1){
-            throw std::runtime_error("Error al conectarse al servidor");
+            close(this->fd);
         }
         connected = (s != -1);
     }
     freeaddrinfo(ai_list);
+    if (!connected) {
+        throw std::runtime_error("No me pude conectar");
+    }
 }
 
 Socket Socket::createAcceptingSocket(const std::string& portNumber) {
