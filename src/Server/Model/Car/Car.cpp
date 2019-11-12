@@ -23,7 +23,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 }
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(100),
+        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(1),
         _maxForwardSpeed(50), _onGrass(false),
         _maxBackwardSpeed(-3), _maxDriveForce(15), _desiredTorque(10),
         _isMoving(false), _exploded(false), _currentTrack(nullptr),
@@ -127,7 +127,10 @@ void Car::resetCar(){
     _health = 100;
     if (_currentTrack){
         b2Vec2 position = b2Vec2(_currentTrack->x(), _currentTrack->y());
-        _carBody->SetTransform(position, _currentTrack->angle() + 90 * DEGTORAD);
+        float angleCorrection = 0;
+        if (_currentTrack->type() == TYPE_CURVE_TRACK)
+            angleCorrection = 45 * DEGTORAD;
+        _carBody->SetTransform(position, _currentTrack->angle() + angleCorrection);
         _carBody->SetLinearVelocity(b2Vec2(0, 0));
     } else {
         b2Vec2 position = b2Vec2(_previous_x, _previous_y);
