@@ -51,14 +51,14 @@ private:
 
     size_t _maxLaps;
     size_t _maxtracksToLap;
-    size_t _tracksCounted;
+    size_t _laps;
 
     int _health;
     float _previous_x, _previous_y, _previousAngle;
 
     GroundAreaFUD* _groundArea;
     float _currentTraction;
-    Track* _currentTrack;
+    std::vector<Track*> _tracks;
     bool _onGrass;
 
     bool _winner;

@@ -33,9 +33,9 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std
         _maxLateralImpulse(configuration->getCarMaxLateralImpulse()),
         _angularImpulse(configuration->getCarAngularImpulse()),
         _onGrass(false), _isMoving(false), _exploded(false),
-        _currentTrack(nullptr),  _groundArea(),
+        _tracks(),  _groundArea(),
         _currentTraction(1), _status(),
-        _maxLaps(3), _maxtracksToLap(20), _tracksCounted(0), _winner(false) {
+        _maxLaps(3), _maxtracksToLap(20), _laps(0), _winner(false) {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
@@ -49,95 +49,22 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std
     _carBody->SetUserData(this);
 }
 
-Car::Car(Car&& other){
-    this->_maxForwardSpeed = other._maxForwardSpeed;
-    this->_maxBackwardSpeed = other._maxBackwardSpeed;
-    this->_maxDriveForce = other._maxDriveForce;
-    this->_id = other._id;
-    this->_carBodyDef = other._carBodyDef;
-    this->_carBody = other._carBody;
-    this->_state = other._state;
-    this->_turningState = other._turningState;
-    this->_isMoving = other._isMoving;
-    this->_health = other._health;
-    this->_previous_x = other._previous_x;
-    this->_previous_y = other._previous_y;
-    this->_groundArea = other._groundArea;
-    this->_currentTraction = other._currentTraction;
-
-    other._maxForwardSpeed = 0;
-    other._maxDriveForce = 0;
-    other._id = 0;
-    //other._carBodyDef = nullptr;
-    other._carBody = nullptr;
-    other._state = nullptr;
-    other._turningState = nullptr;
-    other._isMoving = false;
-    other._health = 0;
-    other._previous_x = 0;
-    other._previous_y = 0;
-    other._groundArea = nullptr;
-    other._currentTraction = 0;
-}
-
-Car& Car::operator=(Car&& other){
-    if (this == &other){
-        return *this;
-    }
-    if (this->_carBody)
-        free(this->_carBody);
-    if (this->_state)
-        free(this->_state);
-    if (this->_turningState)
-        free(this->_turningState);
-    this->_maxForwardSpeed = other._maxForwardSpeed;
-    this->_maxBackwardSpeed = other._maxBackwardSpeed;
-    this->_maxDriveForce = other._maxDriveForce;
-    this->_id = other._id;
-    this->_carBodyDef = other._carBodyDef;
-    this->_carBody = other._carBody;
-    this->_state = other._state;
-    this->_turningState = other._turningState;
-    this->_isMoving = other._isMoving;
-    this->_health = other._health;
-    this->_previous_x = other._previous_x;
-    this->_previous_y = other._previous_y;
-    this->_groundArea = other._groundArea;
-    this->_currentTraction = other._currentTraction;
-
-    other._maxForwardSpeed = 0;
-    other._maxDriveForce = 0;
-    other._id = 0;
-    //other._carBodyDef = nullptr;
-    other._carBody = nullptr;
-    other._state = nullptr;
-    other._turningState = nullptr;
-    other._isMoving = false;
-    other._health = 0;
-    other._previous_x = 0;
-    other._previous_y = 0;
-    other._groundArea = nullptr;
-    other._currentTraction = 0;
-
-    return *this;
-}
-
 void Car::setTrack(Track* track){
-    if (_currentTrack && !track->equals(_currentTrack)){
-        std::cout << "\nTracks counted " << _tracksCounted << '\n';
-        _tracksCounted ++;
+    for (size_t i=0; i<_tracks.size(); ++i){
+        if (_tracks[i]->equals(track))
+            return;
     }
-    _currentTrack = track;
+    _tracks.push_back(track);
 }
 
 void Car::resetCar(){
     _health = _maxHealth;
-    if (_currentTrack){
-        b2Vec2 position = b2Vec2(_currentTrack->x(), _currentTrack->y());
+    if (_tracks.back()){
+        b2Vec2 position = b2Vec2(_tracks.back()->x(), _tracks.back()->y());
         float angleCorrection = 0;
-        if (_currentTrack->type() == TYPE_CURVE_TRACK)
+        if (_tracks.back()->type() == TYPE_CURVE_TRACK)
             angleCorrection = 45 * DEGTORAD;
-        _carBody->SetTransform(position, _currentTrack->angle() + angleCorrection);
+        _carBody->SetTransform(position, _tracks.back()->angle() + angleCorrection);
         _carBody->SetLinearVelocity(b2Vec2(0, 0));
     } else {
         b2Vec2 position = b2Vec2(_previous_x, _previous_y);
@@ -229,12 +156,10 @@ void Car::addGroundArea(GroundAreaFUD* ga){
         _status.push_back(status);
         _onGrass = true;
     }
-    std::cout << "Added gd with " << _groundArea->frictionModifier ;
 }
 
 void Car::removeGroundArea(GroundAreaFUD* ga){
     _groundArea = nullptr;
-    std::cout << "No more ga\n";
 }
 
 void Car::handleInput(const InputEnum& input){
@@ -267,8 +192,12 @@ void Car::update(){
     _previous_x = _carBody->GetPosition().x;
     _previous_y = _carBody->GetPosition().y;
 
-    if (_tracksCounted > 0.8 * _maxtracksToLap * _maxLaps) {
-        std::cout << "\nWINNER!!!!!!!!!!!!!!!!!!!!!!!\n";
+    if (_tracks.back()->isFinish() && _tracks.size() > 0.8 * _maxtracksToLap){
+        _laps ++;
+        _tracks.clear();
+    }
+
+    if (_laps == _maxLaps) {
         _winner;
         Status* status = new Status;
         status->status = WINNED;
