@@ -26,17 +26,19 @@ void BotHandler::loadMap() {
 
 void BotHandler::handle() {
 	//std::clock_t begin = clock();
+	if (moveRepeatCounter > CYCLES_UNTIL_MOVE_REPEAT) {
+		moveRepeatCounter = 0;
+		ObjectViewPtr myCar = gameObjects.getCar(playerId);
+		InputEnum mov = (InputEnum) lua.getNextMovement(myCar->getX(), myCar->getY(), myCar->getAngle());
+		//bool hasAccelerated = (prevMov == mov) && (prevMov == ACCELERATE);
 
-	ObjectViewPtr myCar = gameObjects.getCar(playerId);
-	InputEnum mov = (InputEnum) lua.getNextMovement(myCar->getX(), myCar->getY(), myCar->getAngle());
-	bool hasAccelerated = (prevMov == mov) && (prevMov == ACCELERATE);
-
-	if (hasAccelerated || moveRepeatCounter > CYCLES_UNTIL_MOVE_REPEAT) {
-		prevMov = mov;
-		sendQueue.push(new CommandEvent(mov, playerId));
+		//if (hasAccelerated) {
+		//	prevMov = mov;
+			sendQueue.push(new CommandEvent(mov, playerId));
+		//}
+	} else {
+		moveRepeatCounter++;
 	}
-	moveRepeatCounter++;
-
 
 	//std::clock_t end = clock();
 	//double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
