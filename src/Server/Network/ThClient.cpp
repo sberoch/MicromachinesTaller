@@ -12,15 +12,15 @@
 
 ClientThread::ClientThread(Protocol protocol, RoomController& controller, int clientId,
         std::atomic_bool& acceptSocketRunning):
-            keepTalking(true),
-            protocol(std::move(protocol)),
-            id(clientId),
-            player(nullptr, clientId),
-            receivingNonBlockingQueue(nullptr),
-            sendingBlockingQueue(true),
-            sender(std::ref(this->protocol), sendingBlockingQueue,
+        keepTalking(true),
+        protocol(std::move(protocol)),
+        clientId(clientId),
+        player(nullptr, clientId),
+        receivingNonBlockingQueue(nullptr),
+        sendingBlockingQueue(true),
+        sender(std::ref(this->protocol), sendingBlockingQueue,
                    acceptSocketRunning, keepTalking),
-            receiver(std::ref(this->protocol), this->receivingNonBlockingQueue,
+        receiver(std::ref(this->protocol), this->receivingNonBlockingQueue,
                      acceptSocketRunning, keepTalking){}
 
 
@@ -100,10 +100,14 @@ void ClientThread::sendStart(json j) {
 
 
 void ClientThread::sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot){
-    std::cout << "Enviando desde cliente: " << id << std::endl;
+    std::cout << "Enviando desde cliente: " << clientId << std::endl;
     std::shared_ptr<LobbySnapshot> newSnap(new LobbySnapshot(*snapshot.get()));
-    newSnap->setPlayerId(this->id);
+    newSnap->setPlayerId(this->clientId);
     std::shared_ptr<Event> event(newSnap);
     this->sendingBlockingQueue.push(event);
+}
+
+void ClientThread::assignRoomId(int id) {
+    this->idFromRoom = id;
 }
 

@@ -113,7 +113,7 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
         case ENTER_ROOM:
             client_id = j["client_id"].get<int>();
             roomId = j["selected_room"].get<int>();
-            std::cout << "Enter to room " << roomId << " from client id: " << client_id << std::endl;
+            std::cout << "Enter to room " << roomId << " from client clientId: " << client_id << std::endl;
             this->addClientToRoom(roomId, client_id);
             snapshot->joinRoom(client_id, roomId);
             sendToAllClientsWithRoom(snapshot);
@@ -121,14 +121,14 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
             break;
         case CREATE_ROOM:
             roomId = addRoom();
-            std::cout << "Create room with id: " << roomId << std::endl;
+            std::cout << "Create room with clientId: " << roomId << std::endl;
             snapshot->createRoom(roomId);
             sendToAllClientsWithRoom(snapshot);
             sendToClientsWithoutRoom(snapshot);
             break;
         case PLAY:
             client_id = j["client_id"].get<int>();
-            std::cout << "Play from id: " << client_id << std::endl;
+            std::cout << "Play from clientId: " << client_id << std::endl;
             roomId = getRoomIdOfClient(client_id);
             snapshot->startGame(roomId);
             sendToClientsWithoutRoom(snapshot);

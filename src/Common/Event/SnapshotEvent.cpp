@@ -13,7 +13,7 @@ using json = nlohmann::json;
       "y": 10,
       "angle": 90,
       "health" : 100,
-      "id": 1
+      "clientId": 1
     }
   ],
   "events" : [
@@ -23,7 +23,7 @@ using json = nlohmann::json;
       "x": 15,
       "y": 9,
       "angle": 0
-      "id": 1
+      "clientId": 1
     }
   ]
 }
@@ -38,7 +38,7 @@ SnapshotEvent::SnapshotEvent(Protocol &protocol) {
                car["y"],
                car["angle"],
                car["health"],
-               car["id"]);
+               car["clientId"]);
     }
 
     for (auto& gameEvent : j["events"]) {
@@ -47,7 +47,7 @@ SnapshotEvent::SnapshotEvent(Protocol &protocol) {
                     gameEvent["x"],
                     gameEvent["y"],
                     gameEvent["angle"],
-                    gameEvent["id"]);
+                    gameEvent["clientId"]);
     }
 }
 
@@ -60,7 +60,7 @@ void SnapshotEvent::send(Protocol& protocol) {
         jCar["y"] = car.y;
         jCar["angle"] = car.angle;
         jCar["health"] = car.health;
-        jCar["id"] = car.id;
+        jCar["clientId"] = car.id;
 
         j["cars"].push_back(jCar);
     }
@@ -72,7 +72,7 @@ void SnapshotEvent::send(Protocol& protocol) {
         jGameEvent["x"] = gameEvent.x;
         jGameEvent["y"] = gameEvent.y;
         jGameEvent["angle"] = gameEvent.angle;
-        jGameEvent["id"] = gameEvent.id;
+        jGameEvent["clientId"] = gameEvent.id;
 
         j["events"].push_back(jGameEvent);
     }
@@ -156,7 +156,7 @@ void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType,
 }
 
 void SnapshotEvent::setMap(const json& jMap) {
-	//TODO: esto del id deberia venir de afuera
+	//TODO: esto del clientId deberia venir de afuera
 	std::cout << "Sending map\n";
 	int id = 0;
 	for (auto& car : jMap["cars"]) {

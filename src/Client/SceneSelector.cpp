@@ -33,7 +33,7 @@ void SceneSelector::run() {
 	BaseScene* scene;
 	bool done = false;
 	try {
-		while(!done) {
+		while(!receiver.finished()  && !sender.finished()) {
 			std::clock_t begin = clock();
 
 		    scene = scenes.at(currentScene);
@@ -55,7 +55,10 @@ void SceneSelector::run() {
 		    if (execTime < 25) this->sleep(25 - execTime);
 	    }
 	} catch (SocketError& se) {
+		std::cout << "Socket error capturado en SceneSelector" << std::endl;
 		done = true;
+	} catch (std::exception &e) {
+		std::cerr << e.what() << std::endl;
 	}
 }
 
@@ -64,8 +67,12 @@ void SceneSelector::sleep(int milliseconds) {
 }
 
 SceneSelector::~SceneSelector() {
+	std::cout << "destructor de scene selector" << std::endl;
 	receiver.join();
+	std::cout << "joineo receiver" << std::endl;
+	sendQueue.push(nullptr);
 	sender.join();
+	std::cout << "joineo sender" << std::endl;
 
 	for (auto& it : scenes) {
 		delete it.second;

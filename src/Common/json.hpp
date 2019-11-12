@@ -4549,7 +4549,7 @@ class json_sax_dom_parser
         errored = true;
         if (allow_exceptions)
         {
-            // determine the proper exception type from the id
+            // determine the proper exception type from the clientId
             switch ((ex.id / 100) % 100)
             {
                 case 1:
@@ -4796,7 +4796,7 @@ class json_sax_dom_callback_parser
         errored = true;
         if (allow_exceptions)
         {
-            // determine the proper exception type from the id
+            // determine the proper exception type from the clientId
             switch ((ex.id / 100) % 100)
             {
                 case 1:
@@ -12000,7 +12000,7 @@ class binary_writer
                                             "BSON key cannot contain code point U+0000 (at byte " + std::to_string(it) + ")"));
         }
 
-        return /*id*/ 1ul + name.size() + /*zero-terminator*/1u;
+        return /*clientId*/ 1ul + name.size() + /*zero-terminator*/1u;
     }
 
     /*!

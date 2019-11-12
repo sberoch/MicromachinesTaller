@@ -9,7 +9,7 @@
 
 class SocketError : public std::exception {
 public:
-    const char* what(){
+    const char* what() const noexcept override{
         return "Socket cerrado";
     }
 };

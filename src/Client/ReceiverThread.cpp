@@ -11,6 +11,7 @@ ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 	_isGameMode(false) {}
 
 void ReceiverThread::run() {
+	try{
 	SnapshotEvent* gameSnap;
 	LobbySnapshot* lobbySnap;
 
@@ -27,6 +28,13 @@ void ReceiverThread::run() {
 		gameSnap = new SnapshotEvent(protocol);
 		gameRecvQueue.push(gameSnap);
 	}
+	} catch (std::exception &e) {
+		std::cerr << e.what() << std::endl;
+	}
+	is_running = false;
+}
+bool ReceiverThread::finished() const {
+	return !is_running;
 }
 
 void ReceiverThread::setGameMode() {

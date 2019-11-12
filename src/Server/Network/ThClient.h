@@ -21,7 +21,8 @@ class ClientThread: public Thread {
 private:
     std::atomic<bool> keepTalking;
     Protocol protocol;
-    int id;
+    int clientId;
+    int idFromRoom;
     Player player;
     SafeQueue<std::shared_ptr<Event>>* receivingNonBlockingQueue;
     SafeQueue<std::shared_ptr<Event>> sendingBlockingQueue;
@@ -44,13 +45,14 @@ public:
     bool isDead();
 
     ~ClientThread() override{
-        std::cout << "Destruyendo client thread con id: " << id << std::endl;
+        std::cout << "Destruyendo client thread con clientId: " << clientId << std::endl;
     };
 
     void sendEvent(const std::shared_ptr<Event>& event);
     void handleInput(const InputEnum& input);
     void sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot);
     void sendStart(json j);
+    void assignRoomId(int id);
 
     void assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue);
 

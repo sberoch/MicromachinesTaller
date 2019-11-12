@@ -22,10 +22,19 @@ void LobbyListener::run() {
     std::shared_ptr<LobbySnapshot> snapshot(new LobbySnapshot);
     while (running) {
         try {
+            std::clock_t begin = clock();
             while (incomingEvents.get(event)) {
                 controller.handleInput(event->j, snapshot);
             }
             controller.collectDeadClients();
+             std::clock_t end = clock();
+            double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
+            double frames = 25;
+            if (execTime < frames) {
+                int to_sleep = (frames - execTime);
+                std::this_thread::sleep_for(
+                        std::chrono::milliseconds(to_sleep));
+            }
         } catch (SocketError &se) {
             running = false;
             std::cout << "Lobby listener (SE): " << se.what() << std::endl;

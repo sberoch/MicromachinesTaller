@@ -7,22 +7,22 @@
 {
   "rooms" : [
     {
-      "id": 0,
+      "clientId": 0,
       "gameStarted": true,
       "players": [
         {
-		  "id": 0
+		  "clientId": 0
         },
         {
-		  "id": 1
+		  "clientId": 1
         },
         {
-	      "id": 2
+	      "clientId": 2
         }
       ]
     },
     {
-      "id": 1,
+      "clientId": 1,
       "gameStarted": false
     }
   ],
@@ -36,9 +36,9 @@ LobbySnapshot::LobbySnapshot(Protocol& protocol) {
     for (auto& room : j["rooms"]) {
         std::list<int> players;
         for (auto& player : room["players"]) {
-            players.push_back(player["id"]);
+            players.push_back(player["clientId"]);
         }
-        addRoom(room["id"], room["gameStarted"], std::move(players));
+        addRoom(room["clientId"], room["gameStarted"], std::move(players));
     }
     this->actualClientId = j["player_id"];
 }
@@ -61,11 +61,11 @@ void LobbySnapshot::send(Protocol &protocol) {
 	j.clear();
     for (auto& room : roomsMap) {
         json jRoom;
-        jRoom["id"] = room.first;
+        jRoom["clientId"] = room.first;
         jRoom["gameStarted"] = room.second.gameStarted;
         for (auto& player : room.second.players) {
             json jPlayer;
-            jPlayer["id"] = player;
+            jPlayer["clientId"] = player;
             jRoom["players"].push_back(jPlayer);
         }
         j["rooms"].push_back(jRoom);

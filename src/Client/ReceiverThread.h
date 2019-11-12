@@ -19,6 +19,10 @@ public:
 				   Protocol& protocol);
 	virtual void run() override;
 	void setGameMode();
+	bool finished() const;
+	bool is_running{true};
+	ReceiverThread(ReceiverThread &copy) = delete;
+	ReceiverThread& operator=(const ReceiverThread &c) = delete;
 	~ReceiverThread();
 };
 

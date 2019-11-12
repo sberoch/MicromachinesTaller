@@ -21,6 +21,7 @@ private:
     std::unordered_map<int ,std::shared_ptr<ClientThread>> clients;
     SafeQueue<std::shared_ptr<Event>> incomingEvents;
     GameThread game;
+    std::vector<int> idsForPlayers;
 public:
     Room(std::atomic_bool& acceptSocketRunning, int roomId, int amountOfClients);
 
@@ -43,6 +44,8 @@ public:
 
     void addClientAlreadyCreated(int clientId,
                             std::shared_ptr<ClientThread> newClient);
+
+    int getAFreeId();
 };
 
 

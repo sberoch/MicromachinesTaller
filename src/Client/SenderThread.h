@@ -12,6 +12,9 @@ private:
 	Protocol& protocol;
 public:
 	SenderThread(SafeQueue<Event*>& sendQueue, Protocol& protocol);
+
+	bool finished() const;
+	bool is_running{true};
 	virtual void run() override;
 };
 

@@ -39,7 +39,7 @@ void GameScene::update() {
 	window.getWindowSize(&xScreen, &yScreen);
 
 	SnapshotEvent* snap;
-	if (recvQueue.pop(snap)) {
+	while (recvQueue.pop(snap)) {
 		updateCars(snap->getCars());
 		updateGameEvents(snap->getGameEvents());
 		delete snap;

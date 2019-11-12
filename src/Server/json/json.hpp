@@ -1836,7 +1836,7 @@ namespace detail
 /*!
 @brief general exception of the @ref basic_json class
 
-This class is an extension of `std::exception` objects with a member @a id for
+This class is an extension of `std::exception` objects with a member @a clientId for
 exception ids. It is used as the base class for all exceptions thrown by the
 @ref basic_json class. This class can hence be used as "wildcard" to catch
 exceptions.
@@ -1871,12 +1871,12 @@ class exception : public std::exception
         return m.what();
     }
 
-    /// the id of the exception
-    const int id;
+    /// the clientId of the exception
+    const int clientId;
 
   protected:
     JSON_HEDLEY_NON_NULL(3)
-    exception(int id_, const char* what_arg) : id(id_), m(what_arg) {}
+    exception(int id_, const char* what_arg) : clientId(id_), m(what_arg) {}
 
     static std::string name(const std::string& ename, int id_)
     {
@@ -1900,7 +1900,7 @@ file.
 
 Exceptions have ids 1xx.
 
-name / id                      | example message | description
+name / clientId                      | example message | description
 ------------------------------ | --------------- | -------------------------
 json.exception.parse_error.101 | parse error at 2: unexpected end of input; expected string literal | This error indicates a syntax error while deserializing a JSON text. The error message describes that an unexpected token (character) was encountered, and the member @a byte indicates the error position.
 json.exception.parse_error.102 | parse error at 14: missing or wrong low surrogate | JSON uses the `\uxxxx` format to describe Unicode characters. Code points above above 0xFFFF are split into two `\uxxxx` entries ("surrogate pairs"). This error indicates that the surrogate pair is incomplete or contains an invalid code point.
@@ -1937,7 +1937,7 @@ class parse_error : public exception
   public:
     /*!
     @brief create a parse error exception
-    @param[in] id_       the id of the exception
+    @param[in] id_       the clientId of the exception
     @param[in] pos       the position where the error occurred (or with
                          chars_read_total=0 if the position cannot be
                          determined)
@@ -1989,7 +1989,7 @@ the expected semantics.
 
 Exceptions have ids 2xx.
 
-name / id                           | example message | description
+name / clientId                           | example message | description
 ----------------------------------- | --------------- | -------------------------
 json.exception.invalid_iterator.201 | iterators are not compatible | The iterators passed to constructor @ref basic_json(InputIT first, InputIT last) are not compatible, meaning they do not belong to the same container. Therefore, the range (@a first, @a last) is invalid.
 json.exception.invalid_iterator.202 | iterator does not fit current value | In an erase or insert function, the passed iterator @a pos does not belong to the JSON value for which the function was called. It hence does not define a valid position for the deletion/insertion.
@@ -2041,7 +2041,7 @@ executed on a JSON value whose type does not match the expected semantics.
 
 Exceptions have ids 3xx.
 
-name / id                     | example message | description
+name / clientId                     | example message | description
 ----------------------------- | --------------- | -------------------------
 json.exception.type_error.301 | cannot create object from initializer list | To create an object from an initializer list, the initializer list must consist only of a list of pairs whose first element is a string. When this constraint is violated, an array is created instead.
 json.exception.type_error.302 | type must be object, but is array | During implicit or explicit value conversion, the JSON type must be compatible to the target type. For instance, a JSON string can only be converted into string types, but not into numbers or boolean types.
@@ -2095,7 +2095,7 @@ indices or nonexisting object keys.
 
 Exceptions have ids 4xx.
 
-name / id                       | example message | description
+name / clientId                       | example message | description
 ------------------------------- | --------------- | -------------------------
 json.exception.out_of_range.401 | array index 3 is out of range | The provided array index @a i is larger than @a size-1.
 json.exception.out_of_range.402 | array index '-' (3) is out of range | The special array index `-` in a JSON Pointer never describes a valid element of the array, but the index past the end. That is, it can only be used to add elements at this position, but not to read it.
@@ -2141,7 +2141,7 @@ other exception types.
 
 Exceptions have ids 5xx.
 
-name / id                      | example message | description
+name / clientId                      | example message | description
 ------------------------------ | --------------- | -------------------------
 json.exception.other_error.501 | unsuccessful: {"op":"test","path":"/baz", "value":"bar"} | A JSON Patch operation 'test' failed. The unsuccessful operation is also printed.
 
@@ -4549,8 +4549,8 @@ class json_sax_dom_parser
         errored = true;
         if (allow_exceptions)
         {
-            // determine the proper exception type from the id
-            switch ((ex.id / 100) % 100)
+            // determine the proper exception type from the clientId
+            switch ((ex.clientId / 100) % 100)
             {
                 case 1:
                     JSON_THROW(*static_cast<const detail::parse_error*>(&ex));
@@ -4796,8 +4796,8 @@ class json_sax_dom_callback_parser
         errored = true;
         if (allow_exceptions)
         {
-            // determine the proper exception type from the id
-            switch ((ex.id / 100) % 100)
+            // determine the proper exception type from the clientId
+            switch ((ex.clientId / 100) % 100)
             {
                 case 1:
                     JSON_THROW(*static_cast<const detail::parse_error*>(&ex));
@@ -11988,7 +11988,7 @@ class binary_writer
     //////////
 
     /*!
-    @return The size of a BSON document entry header, including the id marker
+    @return The size of a BSON document entry header, including the clientId marker
             and the entry name size (and its null-terminator).
     */
     static std::size_t calc_bson_entry_header_size(const string_t& name)
@@ -12000,7 +12000,7 @@ class binary_writer
                                             "BSON key cannot contain code point U+0000 (at byte " + std::to_string(it) + ")"));
         }
 
-        return /*id*/ 1ul + name.size() + /*zero-terminator*/1u;
+        return /*clientId*/ 1ul + name.size() + /*zero-terminator*/1u;
     }
 
     /*!

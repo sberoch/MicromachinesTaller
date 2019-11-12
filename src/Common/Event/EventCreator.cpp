@@ -55,15 +55,15 @@ std::shared_ptr<Event> EventCreator::makeEvent(const std::string& recvdEvent){
 //        return std::shared_ptr<Event>(new EnterLobbyEvent);
 //    }
 //    else if (type == PLAY_AS_USER){
-//        int id = j["client_id"].get<int>();
-//        return std::shared_ptr<Event>(new PlayAsUserEvent(id));
+//        int clientId = j["client_id"].get<int>();
+//        return std::shared_ptr<Event>(new PlayAsUserEvent(clientId));
 //    } else if (type == PLAY_AS_BOT){
-//        int id = j["client_id"].get<int>();
-//        return std::shared_ptr<Event>(new PlayAsBotEvent(id));
+//        int clientId = j["client_id"].get<int>();
+//        return std::shared_ptr<Event>(new PlayAsBotEvent(clientId));
 //    } else if (type == ENTER_ROOM)
-//        return std::shared_ptr<Event>(new EnterRoomEvent(id));
+//        return std::shared_ptr<Event>(new EnterRoomEvent(clientId));
 //    else if (type == PLAY)
-//        return std::shared_ptr<Event>(new PlayEvent(id));
+//        return std::shared_ptr<Event>(new PlayEvent(clientId));
 //    else
 //        throw std::runtime_error("Wrong event type");
 }
