@@ -47,12 +47,6 @@ public:
     Car* createCar(size_t id); //TODO move
 
     //Modifiers
-    HealthPowerup* createHealthPowerup();
-    BoostPowerup* createBoostPowerup();
-    Mud* createMud();
-    Oil* createOil();
-    Rock* createRock();
-
     void createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle);
 
     void step(uint32_t velocityIt, uint32_t positionIt);
