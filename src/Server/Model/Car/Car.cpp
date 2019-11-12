@@ -23,9 +23,9 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 }
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(1),
-        _maxForwardSpeed(50), _onGrass(false),
-        _maxBackwardSpeed(-3), _maxDriveForce(15), _desiredTorque(10),
+        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(100),
+        _maxForwardSpeed(40), _onGrass(false), _maxLateralImpulse(2.5f), _angularImpulse(0.9f),
+        _maxBackwardSpeed(-3), _maxDriveForce(15), _desiredTorque(20),
         _isMoving(false), _exploded(false), _currentTrack(nullptr),
         _currentTraction(1), _groundArea(), _status(),
         _maxLaps(3), _maxtracksToLap(20), _tracksCounted(0), _winner(false) {
@@ -195,12 +195,11 @@ void Car::turnRight(){
 }
 
 void Car::updateFriction(){
-    float maxLateralImpulse = 2.5f;
     b2Vec2 impulse = _carBody->GetMass() * -getLateralVelocity();
-    if (impulse.Length() > maxLateralImpulse)
-        impulse *= maxLateralImpulse / impulse.Length();
+    if (impulse.Length() > _maxLateralImpulse)
+        impulse *= _maxLateralImpulse / impulse.Length();
     _carBody->ApplyLinearImpulse(impulse, _carBody->GetWorldCenter(), true);
-    _carBody->ApplyAngularImpulse(0.9f * _carBody->GetInertia() * -_carBody->GetAngularVelocity(), true);
+    _carBody->ApplyAngularImpulse(_angularImpulse * _carBody->GetInertia() * -_carBody->GetAngularVelocity(), true);
 
     b2Vec2 currentForwardNormal = getForwardVelocity();
     float currentForwardSpeed = currentForwardNormal.Normalize();
@@ -351,10 +350,11 @@ void Car::handleOil(OilFUD* oilFud, size_t id){
     Status* status = new Status;
     status->status = GRABBED_OIL;
     status->id = id;
+    status->timeOfAction = oilFud->getActionTime();
     _status.push_back(status);
-    float damping = oilFud->getDamping();
 
-    //_carBody->SetLinearDamping(damping);
+    _angularImpulse = 0;
+    _carBody->ApplyAngularImpulse(1, true);
 }
 
 void Car::handleRock(RockFUD* rockFud, size_t id){
@@ -381,6 +381,7 @@ void Car::stopEffect(const int& effectType){
             _maxForwardSpeed += 10;
             break;
         case TYPE_OIL :
+            _angularImpulse = 0.9;
             break;
         case TYPE_GRASS :
             //TODO see how to do this

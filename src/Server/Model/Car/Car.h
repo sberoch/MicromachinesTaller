@@ -35,6 +35,8 @@ private:
     float _maxBackwardSpeed;
     float _maxDriveForce;
     float _desiredTorque;
+    float _maxLateralImpulse;
+    float _angularImpulse;
 
     size_t _id;
     b2Fixture* _fixture;
