@@ -1,0 +1,33 @@
+@startuml
+
+title Game
+
+class GameScene {
+	-Queue<SnapshotEvent*> gameRecvQueue
+	-SafeQueue<Event*> sendQueue
+	-GameObjects gameObjects
+	-int myId
+	-int isBot
+}
+
+class InputHandler {
+	+int handle()
+}
+
+class BotHandler {
+	+int handle()
+}
+
+class Audio {
+	+void playMusic()
+	+void playEffect()
+}
+
+class TextureCreator {
+	+ObjectViewPtr create()
+}
+
+GameScene "1" <-up- "1" InputHandler
+GameScene "1" <-up- "1" BotHandler
+GameScene "1" <-up- "1" Audio
+GameScene "1" <-up- "1" TextureCreator

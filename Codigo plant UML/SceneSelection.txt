@@ -1,0 +1,29 @@
+@startuml
+
+title SceneSelection
+
+class SceneSelector {
+	+void run()
+}
+
+class BaseScene {
+	+bool done()
+	+void update()
+	+void draw()
+	+int handle()
+}
+
+class MenuScene
+
+class LobbyScene
+
+class GameScene
+
+class EndScene
+
+SceneSelector "1" *-right- "*" BaseScene : "  agregation  "
+
+BaseScene <|-down- MenuScene: Inheritance
+BaseScene <|-down- LobbyScene: Inheritance
+BaseScene <|-down- GameScene: Inheritance
+BaseScene <|-down- EndScene: Inheritance
