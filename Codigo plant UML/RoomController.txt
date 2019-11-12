@@ -4,22 +4,49 @@ title Manejo de las salas
 
 
 class RoomController {
-  -map<idRoom, room> rooms
-  -map<idClient, client> clientWithoutRoom 
- 
+    -map<idRoom, room> rooms
+    -map<idClient, client> clientWithoutRoom 
+    -SafeCounter roomCounter
+    -std::atomic_bool& acceptSocketRunning
+    -std::mutex m
+    -LobbyListener listener
+    -Collector collector
+    +int addRoom()
+    +void addClient(int clientId, Protocol protocol)
+    +void addClientToRoom(int roomId, int clientId)
+}
+
+class LobbyListener {
+    
+}
+
+class Collector {
+    -map<idRoom, room>& rooms
+    -map<idClient, client>& clientWithoutRoom 
+    +collectDeadThreads()
 }
 
 class Room {
-    
+    -map<idClient, client> clients
+    +void addClient(int clientId,
+    shared_ptr<ClientThread> newClient);
+    +void startGame();
+    +bool isDead();
+    +void stop();
+    +void sendSnapshotToClients(std::shared_ptr
+    <LobbySnapshot> &snapshot);
 }
 class Client
 class SafeCounter {
     -int count
+    +returnAndAddOne()
 }
 
 
-RoomController "1" *-down- "many" Room: Composition
-RoomController "1" *-down- "many" Client: Composition
-RoomController "1" *-down- "1" SafeCounter: Composition
+RoomController "1" *-down- "many" Room: -rooms
+RoomController "1" *-down- "many" Client: -clientsWithoutRoom
+RoomController "1" *-down- "1" SafeCounter: -safeCounter
+RoomController "1" *-down- "1" LobbyListener: -listener
+RoomController "1" *-down- "1" Collector: -collector
 
 @enduml
