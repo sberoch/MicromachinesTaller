@@ -25,11 +25,10 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
     int i = 0;
     while (acceptSocketRunning && roomRunning) {
         try {
-            if (i % 100 == 0){
+            if (i % _configuration->getModifiersCreationFrequency() == 0){
                 size_t type, id;
                 float x, y, angle;
                 _world.createRandomModifier(type, id, x, y, angle);
-                std::cout << "Creating modifier in " << x << " " << y;
 
                 for (auto &actualClient : clients) {
                     actualClient.second->createModifier(type, id, x, y, angle);
@@ -61,7 +60,7 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
 
             std::clock_t end = clock();
             double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
-            double frames = 30;
+            double frames = _configuration->getFPS();
             if (execTime < frames) {
                 int to_sleep = (frames - execTime);
                 std::this_thread::sleep_for(

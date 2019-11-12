@@ -6,7 +6,7 @@
 using json = nlohmann::json;
 
 World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
-             _timeStep(1/25.0), _n_of_cars(n_of_cars), _configuration(configuration),
+             _timeStep(1/configuration->getFPS()), _n_of_cars(n_of_cars), _configuration(configuration),
              _cars(), _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0) {
     b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
     _world = new b2World(gravity);
@@ -32,7 +32,6 @@ void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
     x = cars.at(id)["x_init"].get<float>();
     y = cars.at(id)["y_init"].get<float>();
     angle = cars.at(id)["angle"].get<float>();
-    //Exception if accesing more than we have?
 }
 
 Car* World::createCar(size_t id){
@@ -115,52 +114,45 @@ void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, f
     _maxId++;
 
     _activeModifiers.push_back(Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration));
-    std::cout << "\nCreating a " << type << "with id " << id << '\n';
 }
 
 void World::_removeGrabbedModifiers(){
     std::vector<Modifier*> aux;
     for (size_t i=0; i<_activeModifiers.size(); ++i){
         Modifier* modifier = _activeModifiers[i];
-        if (modifier->toDelete()) {
-            std::cout << "deleting " << i << "modifier\n";
+        if (modifier->toDelete())
             delete modifier;
-        } else
+        else
             aux.push_back(modifier);
     }
     _activeModifiers.swap(aux);
 }
 
 void World::_updateCarsOnGrass(){
-    for (size_t i=0; i<_cars.size(); ++i){
-        if (_cars[i]->onGrass()){
-            float minDistance = 10;
-            for (size_t j=0; j<_track.size(); ++j){
-                float distance = _track[j]->getDistance(_cars[i]->x(), _cars[i]->y());
+    for (auto & _car : _cars){
+        if (_car->onGrass()){
+            float minDistance = _configuration->getMaxDistToTrack();
+            for (auto & j : _track){
+                float distance = j->getDistance(_car->x(), _car->y());
                 if (distance < minDistance) {
                     minDistance = distance;
                 }
             }
-            //TODO: maxdist from config file
-            if (minDistance > 5){
-                _cars[i]->resetCar();
+
+            if (minDistance > _configuration->getMaxDistToTrack()){
+                _car->resetCar();
             }
         }
     }
 }
 
 void World::step(uint32_t velocityIt, uint32_t positionIt){
-    //how strongly to correct velocity
-    //how strongly to correct position
+    //how strongly to correct velocity and position
     _world->Step( _timeStep, velocityIt, positionIt);
     _world->ClearForces();
 
     _removeGrabbedModifiers();
     _updateCarsOnGrass();
-}
-
-b2World* World::getWorld(){
-    return _world;
 }
 
 World::~World(){

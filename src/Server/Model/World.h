@@ -1,8 +1,5 @@
-
 #ifndef MICROMACHINES_WORLD_H
 #define MICROMACHINES_WORLD_H
-
-#define DEGTORAD 0.0174532925199432957f
 
 #include "../json/json.hpp"
 #include <Box2D/Box2D.h>
@@ -14,7 +11,6 @@
 #include "Modifier.h"
 
 using json = nlohmann::json;
-
 
 class World {
 private:
@@ -34,8 +30,6 @@ private:
     std::vector<int> _modifierType;
     size_t _maxId;
 
-    //Floor
-    b2BodyDef _track_body_def;
     ContactListener* _contactListener;
 
     void _removeGrabbedModifiers();
@@ -54,8 +48,6 @@ public:
     void createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle);
 
     void step(uint32_t velocityIt, uint32_t positionIt);
-
-    b2World* getWorld();
 
     ~World();
 };
