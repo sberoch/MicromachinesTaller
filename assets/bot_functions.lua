@@ -122,9 +122,7 @@ end
 function getDifferenceAngle(carX, carY, carAngle, trackX, trackY)
 	--angle 0 is north
 	carAngle = carAngle + 180
-	if carAngle >= 360 then
-		carAngle = carAngle - 360
-	end
+	carAngle = carAngle % 360
 	print(string.format("Car angle: %s", carAngle))
 
 	--get angle from points

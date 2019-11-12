@@ -25,7 +25,7 @@ void BotHandler::loadMap() {
 }
 
 void BotHandler::handle() {
-	std::clock_t begin = clock();
+	//std::clock_t begin = clock();
 
 	ObjectViewPtr myCar = gameObjects.getCar(playerId);
 	InputEnum mov = (InputEnum) lua.getNextMovement(myCar->getX(), myCar->getY(), myCar->getAngle());
@@ -38,9 +38,9 @@ void BotHandler::handle() {
 	moveRepeatCounter++;
 
 
-	std::clock_t end = clock();
-	double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
-	if (execTime < 10) this->sleep(10 - execTime);
+	//std::clock_t end = clock();
+	//double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
+	//if (execTime < 100) this->sleep(100 - execTime);
 }
 
 void BotHandler::sleep(int millisec) {
