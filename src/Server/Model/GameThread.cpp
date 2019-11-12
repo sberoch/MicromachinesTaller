@@ -12,17 +12,9 @@ using namespace std::chrono;
 GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration) :
                                              _configuration(configuration),
                                              _world(n_of_players, configuration),
-                                             _track(), _grass(), _gameToStart(true),
+                                             _gameToStart(true),
                                              _gameStarted(false),
-                                             _gameEnded(false){
-    _world.createTrack(_track);
-    _world.createGrass(_grass);
-    _hPowerup = _world.createHealthPowerup();
-    _bPowerup = _world.createBoostPowerup();
-    _mud = _world.createMud();
-    _rock = _world.createRock();
-    _oil = _world.createOil();
-}
+                                             _gameEnded(false){}
 
 void GameThread::run(std::atomic_bool& acceptSocketRunning,
         std::atomic_bool& roomRunning,
