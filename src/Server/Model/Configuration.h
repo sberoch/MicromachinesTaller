@@ -12,6 +12,8 @@ private:
     float _FPS;
     float _velocityIterations;
     float _positionIterations;
+    float _maxDistToTrack;
+    int _modifiersCreationFrequency;
 
     //Car
     float _carHalfWidth;
@@ -77,6 +79,8 @@ public:
     float getFPS();
     float getVelocityIterations();
     float getPositionIterations();
+    float getMaxDistToTrack();
+    int getModifiersCreationFrequency();
 
     float getCarWidth();
     float getCarHeight();

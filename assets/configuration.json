@@ -1,11 +1,13 @@
 {
   "world_configuration" :
     {
-    "gravityX" : 0,
-    "gravityY" : 0,
-    "FPS" : 25,
-    "velocityIterations" : 8,
-    "positionIterations" : 3
+      "gravityX" : 0,
+      "gravityY" : 0,
+      "FPS" : 25,
+      "velocityIterations" : 8,
+      "positionIterations" : 3,
+      "maxDistToTrack" : 3,
+      "modifiersCreationFrequency" : 150
     },
   "car_configuration":
     {

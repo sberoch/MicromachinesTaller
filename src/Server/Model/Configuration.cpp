@@ -16,6 +16,8 @@ Configuration::Configuration() {
     _FPS = worldConfig["FPS"].get<float>();
     _velocityIterations = worldConfig["velocityIterations"].get<float>();
     _positionIterations = worldConfig["positionIterations"].get<float>();
+    _maxDistToTrack = worldConfig["maxDistToTrack"].get<float>();
+    _modifiersCreationFrequency = worldConfig["modifiersCreationFrequency"].get<int>();
 
     json carConfig = j["car_configuration"];
     _carHalfWidth = carConfig["carHalfWidth"].get<float>();
@@ -98,6 +100,16 @@ float Configuration::getVelocityIterations(){
 float Configuration::getPositionIterations(){
     return _positionIterations;
 }
+
+float Configuration::getMaxDistToTrack(){
+    return _maxDistToTrack;
+}
+
+int Configuration::getModifiersCreationFrequency(){
+    return _modifiersCreationFrequency;
+}
+
+//Car
 
 float Configuration::getCarWidth(){
     return _carHalfWidth;
