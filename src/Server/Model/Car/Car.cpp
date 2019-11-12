@@ -374,8 +374,12 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
     float velToReduce = rockFud->getVelToReduce();
     int healthToReduce = rockFud->getHealthToReduce();
 
-    if (_health < healthToReduce)
+    if (_health < healthToReduce){
         _exploded = true;
+        Status* status = new Status;
+        status->status = EXPLODED;
+        _status.push_back(status);
+    }
     _health -= healthToReduce;
     _maxForwardSpeed -= velToReduce;
 }
