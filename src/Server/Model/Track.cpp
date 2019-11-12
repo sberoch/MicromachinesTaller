@@ -14,8 +14,8 @@ void Track::_setFixtureDef(std::shared_ptr<Configuration> configuration){
     b2PolygonShape shape;
     shape.SetAsBox(configuration->getTrackWidth(), configuration->getTrackHeight());
     _fixtureDef.shape = &shape;
-    _fixtureDef.density = 1;//configuration->getTrackDensity();
-    _fixtureDef.friction = 0.1;//configuration->getTrackFriction();
+    _fixtureDef.density = configuration->getTrackDensity();
+    _fixtureDef.friction = configuration->getTrackFriction();
     _fixtureDef.restitution = configuration->getTrackRestitution();
     _fixtureDef.isSensor = true;
     _fixture = _body->CreateFixture(&_fixtureDef);
