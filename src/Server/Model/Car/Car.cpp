@@ -23,9 +23,9 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 }
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(1),
-        _maxForwardSpeed(30), _onGrass(false),
-        _maxBackwardSpeed(-3), _maxDriveForce(25), _desiredTorque(5),
+        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(100),
+        _maxForwardSpeed(50), _onGrass(false),
+        _maxBackwardSpeed(-3), _maxDriveForce(15), _desiredTorque(10),
         _isMoving(false), _exploded(false), _currentTrack(nullptr),
         _currentTraction(1), _groundArea(), _status(),
         _maxLaps(3), _maxtracksToLap(20), _tracksCounted(0), _winner(false) {
@@ -146,9 +146,7 @@ b2Vec2 Car::getForwardVelocity(){
 }
 
 void Car::accelerate(){
-    //std::cout << "Acelerando ";
     _isMoving = true;
-    float desiredSpeed = _maxForwardSpeed;
 
     //find current speed in forward direction
     b2Vec2 currentForwardNormal = _carBody->GetWorldVector( b2Vec2(0,1) );
@@ -156,20 +154,17 @@ void Car::accelerate(){
 
     //apply necessary force
     float force = 0;
-    if (desiredSpeed > currentSpeed)
+    if (_maxForwardSpeed > currentSpeed)
         force = _maxDriveForce;
-    else if (desiredSpeed < currentSpeed)
+    else if (_maxForwardSpeed < currentSpeed)
         force = -_maxDriveForce;
     else
         return;
-    _carBody->ApplyForce(_currentTraction * force * currentForwardNormal, _carBody->GetWorldCenter(), true);
-    //std::cout << "  x " << x() << " y " << y() << " angle" << angle() << '\n';
+    _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
 }
 
 void Car::desaccelerate(){
-    //std::cout << "Descelerando ";
     _isMoving = true;
-    float desiredSpeed = _maxBackwardSpeed;
 
     //find current speed in forward direction
     b2Vec2 currentForwardNormal = _carBody->GetWorldVector( b2Vec2(0,1) );
@@ -177,30 +172,23 @@ void Car::desaccelerate(){
 
     //apply necessary force
     float force = 0;
-    if ( desiredSpeed > currentSpeed )
+    if ( _maxBackwardSpeed > currentSpeed )
         force = _maxDriveForce;
-    else if ( desiredSpeed < currentSpeed )
+    else if ( _maxBackwardSpeed < currentSpeed )
         force = -_maxDriveForce;
     else
         return;
-    _carBody->ApplyForce(_currentTraction * force * currentForwardNormal, _carBody->GetWorldCenter(), true);
-    //std::cout << "x " << x() << " y " << y() << " angle" << angle()<< '\n';
+    _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
 }
 
 void Car::turnLeft(){
-    //std::cout << "\nTurn left";
-    float desiredTorque = -_desiredTorque;
     if (_isMoving)
-        _carBody->ApplyTorque( desiredTorque, true );
-    //std::cout << " x " << x() << " y " << y() << " angle" << angle();
+        _carBody->ApplyTorque( -_desiredTorque, true );
 }
 
 void Car::turnRight(){
-    //std::cout << "\nTurn right";
-    float desiredTorque = _desiredTorque;
     if (_isMoving)
-        _carBody->ApplyTorque( desiredTorque, true );
-    //std::cout << " x " << x() << " y " << y() << " angle" << angle();
+        _carBody->ApplyTorque( _desiredTorque, true );
 }
 
 void Car::updateFriction(){
