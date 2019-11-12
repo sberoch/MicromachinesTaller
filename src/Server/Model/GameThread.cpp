@@ -42,7 +42,11 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
             if (!clients.empty()) {
                 while (incomingEvents.get(event)) {
                     std::cout << "---Command: " << event->j["cmd_id"].get<int>() << std::endl;
-                   clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+                    clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+                }
+
+                for (auto& client: clients){
+                    client.second->update();
                 }
 
                 step();

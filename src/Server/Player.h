@@ -44,6 +44,8 @@ public:
     std::shared_ptr<SnapshotEvent> sendStart(json j);
 
     void assignCar(std::shared_ptr<Car> newCar);
+
+    void update();
 };
 
 #endif //MICROMACHINES_PLAYER_H

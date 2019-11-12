@@ -10,10 +10,14 @@ Player::Player(std::shared_ptr<Car> car, size_t id) :
                         _modifierToAdd(false),
                         _modifierDTO(new ModifierDTO()) {}
 
+void Player::update(){
+    _car->update();
+}
+
 
 void Player::handleInput(const InputEnum& input){
     _car->handleInput(input);
-    _car->update();
+    //_car->update();
 
     std::vector<Effect*> aux;
     for (int i=0; i<_effects.size(); ++i){

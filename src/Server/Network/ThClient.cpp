@@ -111,3 +111,7 @@ void ClientThread::assignRoomId(int id) {
     this->idFromRoom = id;
 }
 
+void ClientThread::update(){
+    player.update();
+}
+

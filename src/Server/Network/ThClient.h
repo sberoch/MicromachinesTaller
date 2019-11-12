@@ -65,6 +65,8 @@ public:
 
     void createModifier(const size_t& type, const size_t& id, const float& x,
             const float& y, const float& angle);
+
+    void update();
 };
 
 
