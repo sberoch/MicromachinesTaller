@@ -23,7 +23,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 }
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(100),
+        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(1),
         _maxForwardSpeed(30),
         _maxBackwardSpeed(-3), _maxDriveForce(25), _desiredTorque(5),
         _isMoving(false), _exploded(false), _currentTrack(nullptr),
@@ -258,8 +258,10 @@ void Car::update(){
     updateFriction();
     updateTraction();
 
-    if (_exploded)
+    if (_exploded){
         resetCar();
+        _exploded = false;
+    }
 
     if (speed() == 0)
         _isMoving = false;
@@ -367,8 +369,10 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
     float velToReduce = rockFud->getVelToReduce();
     int healthToReduce = rockFud->getHealthToReduce();
 
+    if (_health < healthToReduce)
+        _exploded = true;
     _health -= healthToReduce;
-    _maxForwardSpeed -= velToReduce; //???
+    _maxForwardSpeed -= velToReduce;
 }
 
 void Car::stopEffect(const int& effectType){
