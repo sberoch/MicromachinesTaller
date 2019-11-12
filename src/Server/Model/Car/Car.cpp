@@ -25,7 +25,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(1),
         _maxForwardSpeed(30),
-        _maxBackwardSpeed(-3), _maxDriveForce(25), _desiredTorque(5),
+        _maxBackwardSpeed(-3), _maxDriveForce(25), _desiredTorque(30),
         _isMoving(false), _exploded(false), _currentTrack(nullptr),
         _currentTraction(1), _groundArea(), _status(),
         _maxLaps(3), _maxtracksToLap(20), _tracksCounted(0), _winner(false) {

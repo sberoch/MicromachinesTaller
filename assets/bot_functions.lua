@@ -89,13 +89,13 @@ end
 
 function getMoveFromAngleDiff(angleDiff)
 	if (angleDiff < -10) then
-		--print(string.format("L"))
+		print(string.format("L"))
 		return _n_turn_left
 	elseif (angleDiff > 10) then
-		--print(string.format("R"))
+		print(string.format("R"))
 		return _n_turn_right
 	else
-		--print(string.format("A"))
+		print(string.format("A"))
 		return _n_accelerate
 	end
 end
