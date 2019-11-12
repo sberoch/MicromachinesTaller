@@ -1,28 +1,9 @@
 #include <iostream>
 
-#include "Model/Configuration.h"
+
 #include "Model/GameThread.h"
 #include "Network/Server.h"
-#include <thread>
 
-//int main(int argc, char const *argv[]) {
-//    try {
-////        std::shared_ptr<Configuration> configuration(
-////                std::make_shared<Configuration>());
-////        Game game(1, configuration);
-////
-////        game.run();
-////        game.join();
-//
-//        Server server()
-//    } catch (std::exception& e){
-//        std::cout << e.what() << std::endl;
-//    } catch (...) {
-//        std::cout << "Server UnknownException.\n";
-//    }
-//
-//	return 0;
-//}
 
 int main(int argc, char *argv[]) {
     try {
@@ -42,3 +23,26 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+
+
+
+//int main(int argc, char *argv[]) {
+//    std::unordered_map<int, int*> map;
+//    std::atomic_bool running(false);
+//    int n1 = 1;
+//    int n2 = 2;
+//    int* nulo = nullptr;
+//    int* v1 = &n1;
+//    int* v2 = &n2;
+//
+//    map.insert({n1, v1});
+//    map.insert({n2, v2});
+//    map.insert({3, nulo});
+//
+//    eraseNulls(map);
+//
+//    std::cout << "Hola " << std::endl;
+//
+//    return 0;
+//}

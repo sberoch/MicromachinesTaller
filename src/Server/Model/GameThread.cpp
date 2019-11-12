@@ -14,8 +14,7 @@ GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>
                                              _world(n_of_players, configuration),
                                              _track(), _grass(), _gameToStart(true),
                                              _gameStarted(false),
-                                             _gameEnded(false),
-                                             roomRunning(true){
+                                             _gameEnded(false){
     _world.createTrack(_track);
     _world.createGrass(_grass);
     _hPowerup = _world.createHealthPowerup();
@@ -25,13 +24,14 @@ GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>
     _oil = _world.createOil();
 }
 
-void GameThread::run(std::atomic_bool& serverRunning,
+void GameThread::run(std::atomic_bool& acceptSocketRunning,
+        std::atomic_bool& roomRunning,
         SafeQueue<std::shared_ptr<Event>>& incomingEvents,
         std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
     std::shared_ptr<Event> event;
 
     int i = 0;
-    while (roomRunning && serverRunning) {
+    while (acceptSocketRunning && roomRunning) {
         try {
             if (i % 100 == 0){
                 size_t type, id;
@@ -82,7 +82,7 @@ void GameThread::run(std::atomic_bool& serverRunning,
             roomRunning = false;
             std::cout << "Excepcion desde game thread: " << std::endl;
         } catch (...) {
-            serverRunning = false;
+            roomRunning = false;
             std::cerr << "Game Thread: UnknownException.\n";
         }
     }

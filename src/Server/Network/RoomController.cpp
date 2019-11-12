@@ -1,6 +1,7 @@
 #include <iostream>
 #include "RoomController.h"
 #include "Room.h"
+#include "Collector.h"
 #include "../../Common/Event/LobbySnapshot.h"
 
 #define MAX_AMOUNT_OF_CLIENTS 4
@@ -8,7 +9,8 @@
 
 RoomController::RoomController(std::atomic_bool &running) :
             queue(false), acceptSocketRunning(running),
-            listener(clientsWithNoRoom, running, *this){
+            listener(clientsWithNoRoom, running, *this),
+            collector(clientsWithNoRoom, rooms){
     listener.start();
 }
 
@@ -16,25 +18,13 @@ RoomController::RoomController(std::atomic_bool &running) :
 int RoomController::addRoom() {
     std::lock_guard<std::mutex> lock(this->m);
     int roomId = roomCounter.returnAndAddOne();
-    std::shared_ptr<Room> room(new Room(roomId, MAX_AMOUNT_OF_CLIENTS));
+    std::shared_ptr<Room> room(new Room(acceptSocketRunning, roomId, MAX_AMOUNT_OF_CLIENTS));
     rooms.insert({roomId, room});
     return roomId;
 }
 
 void RoomController::collectDeadClients(){
-    std::vector<int> idsToBeEliminated;
-
-    for (auto &actualClient: clientsWithNoRoom) {
-        if (actualClient.second->isDead()) {
-            actualClient.second->join();
-            actualClient.second = nullptr;
-            idsToBeEliminated.push_back(actualClient.first);
-        }
-    }
-
-    for (auto& actualId: idsToBeEliminated){
-        clientsWithNoRoom.erase(actualId);
-    }
+    collector.collectDeadClients();
 }
 
 int RoomController::getRoomIdOfClient(int clientId) {
@@ -76,28 +66,20 @@ void RoomController::addClient(int clientId, Protocol protocol) {
     collectDeadClients();
 }
 
-
-RoomController::~RoomController() {
-    this->stop();
-}
-
 void RoomController::stop() {
     std::lock_guard<std::mutex> lock(this->m);
+    listener.join();
     std::cout << "Destroying clients with no room" << std::endl;
     for (auto &client: clientsWithNoRoom){
         client.second->stop();
         client.second->join();
     }
 
-    clientsWithNoRoom.clear();
-
     std::cout << "Destroying rooms" << std::endl;
     for (auto &room: rooms){
         room.second->stop();
         room.second->join();
     }
-
-    rooms.clear();
 }
 
 void RoomController::sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot){
@@ -109,10 +91,7 @@ void RoomController::sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> sna
 
 void RoomController::sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot){
     std::lock_guard<std::mutex> lock(this->m);
-    int counter = 0;
     for (auto& actualRoom: rooms){
-        counter++;
-        std::cout << "Counter:" << counter << std::endl;
         actualRoom.second->sendSnapshotToClients(snapshot);
     }
 }
@@ -124,11 +103,11 @@ void RoomController::sendToClientsFromRoom(int roomId, std::shared_ptr<LobbySnap
 bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot) {
     bool gameStarted = false;
     Type input = (Type) j["type"].get<int>();
-    int client_id = -1;
+    int client_id;
     int roomId;
     switch (input) {
         case ENTER_LOBBY:
-            std::cout << "Enter lobby con id: " << client_id << std::endl;
+            std::cout << "Enter lobby" << std::endl;
             sendToClientsWithoutRoom(snapshot);
             break;
         case ENTER_ROOM:
@@ -149,7 +128,7 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
             break;
         case PLAY:
             client_id = j["client_id"].get<int>();
-            std::cout << "Enter room con id: " << client_id << std::endl;
+            std::cout << "Play from id: " << client_id << std::endl;
             roomId = getRoomIdOfClient(client_id);
             snapshot->startGame(roomId);
             sendToClientsWithoutRoom(snapshot);
@@ -158,10 +137,8 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
             gameStarted = true;
             break;
         case COMMAND:
-            std::cout << "Command con id: " << client_id << std::endl;
             break;
         case GAME_SNAPSHOT:
-            std::cout << "Snapshot con id: " << client_id << std::endl;
             break;
         case LOBBY_SNAPSHOT:
             break;
@@ -169,3 +146,13 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
 
     return gameStarted;
 }
+
+
+RoomController::~RoomController() {
+    if (acceptSocketRunning){
+        this->stop();
+        acceptSocketRunning = false;
+    }
+}
+
+

@@ -20,11 +20,13 @@ private:
     std::shared_ptr<Configuration> _configuration;
 
     bool _gameToStart, _gameStarted, _gameEnded;
-    std::atomic_bool roomRunning;
 public:
     GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration);
-    void run(std::atomic_bool& serverRunning, SafeQueue<std::shared_ptr<Event>>& incomingEvents,
+    void run(std::atomic_bool& acceptSocketRunning,
+             std::atomic_bool& roomRunning,
+             SafeQueue<std::shared_ptr<Event>>& incomingEvents,
              std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients);
+
     void join();
     ~GameThread();
     json getSerializedMap();

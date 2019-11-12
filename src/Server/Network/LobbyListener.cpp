@@ -17,7 +17,6 @@ LobbyListener::LobbyListener(
                                     controller(controller){}
 
 void LobbyListener::run() {
-    bool gameStarted = false;
     std::shared_ptr<Event> event;
     std::cout << "Lobby listener started" << std::endl;
     std::shared_ptr<LobbySnapshot> snapshot(new LobbySnapshot);
@@ -26,6 +25,7 @@ void LobbyListener::run() {
             while (incomingEvents.get(event)) {
                 controller.handleInput(event->j, snapshot);
             }
+            controller.collectDeadClients();
         } catch (SocketError &se) {
             running = false;
             std::cout << "Lobby listener (SE): " << se.what() << std::endl;
@@ -39,8 +39,20 @@ void LobbyListener::run() {
     }
 }
 
-void LobbyListener::createRoom(){
-    this->controller.addRoom();
+void LobbyListener::collectDeadClients(){
+    std::vector<int> idsToBeEliminated;
+
+    for (auto &actualClient: clients) {
+        if (actualClient.second->isDead()) {
+            actualClient.second->join();
+            actualClient.second = nullptr;
+            idsToBeEliminated.push_back(actualClient.first);
+        }
+    }
+
+    for (auto& actualId: idsToBeEliminated){
+        clients.erase(actualId);
+    }
 }
 
 LobbyListener::~LobbyListener() = default;

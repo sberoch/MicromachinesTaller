@@ -16,12 +16,15 @@ private:
     SafeQueue<std::shared_ptr<Event>>& sendingBlockingQueue;
     Protocol& protocol;
     std::atomic_bool& acceptSocketRunning;
+    std::atomic_bool& clientStillTalking;
 
 public:
     EventSender(Protocol& protocol, SafeQueue<std::shared_ptr<Event>>& sendingBlockingQueue,
-                std::atomic_bool& acceptSocketRunning);
+                std::atomic_bool& acceptSocketRunning,
+                std::atomic_bool& clientStillTalking);
     void run() override;
-    void joinThread();
+
+    void stop();
 };
 
 

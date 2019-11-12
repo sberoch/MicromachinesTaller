@@ -18,13 +18,16 @@ private:
     Protocol& protocol;
     SafeQueue<std::shared_ptr<Event>>* receivingNonBlockingQueue;
     std::atomic_bool& acceptSocketRunning;
+    std::atomic_bool& clientStillTalking;
 
 public:
     EventReceiver(Protocol& protocol, SafeQueue<std::shared_ptr<Event>>* nonBlockingQueue,
-            std::atomic_bool& acceptSocketRunning);
+                std::atomic_bool& acceptSocketRunning,
+                std::atomic_bool& clientStillTalking);
     void run() override;
     void setQueue(SafeQueue<std::shared_ptr<Event>>* receivingNonBlockingQueue);
-    void joinThread() ;
+
+    void stop();
 };
 
 

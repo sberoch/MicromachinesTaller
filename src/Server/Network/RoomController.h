@@ -11,10 +11,11 @@
 #include "../../Common/Protocol.h"
 #include "../../Common/Event/CommandEvent.h"
 #include "../../Common/Event/LobbySnapshot.h"
-
+#include "Collector.h"
 
 class ClientThread;
 class Room;
+class Collector;
 
 class RoomController {
 private:
@@ -25,9 +26,10 @@ private:
     std::atomic_bool& acceptSocketRunning;
     std::mutex m;
     LobbyListener listener;
+    Collector collector;
 
     int getRoomIdOfClient(int clientId);
-    void collectDeadClients();
+
     void moveClientToNewRoom(int newRoomId, int clientId);
 
 public:
@@ -52,6 +54,8 @@ public:
 
     void
     sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot);
+
+    void collectDeadClients();
 };
 
 

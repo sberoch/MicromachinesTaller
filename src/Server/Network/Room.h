@@ -16,19 +16,20 @@ class Room: public Thread{
 private:
     int roomId;
     int maxAmountOfPlayers;
-    std::atomic<bool> running;
+    std::atomic_bool& acceptSocketRunning;
+    std::atomic_bool roomRunning;
     std::unordered_map<int ,std::shared_ptr<ClientThread>> clients;
     SafeQueue<std::shared_ptr<Event>> incomingEvents;
     GameThread game;
 public:
-    explicit Room(int roomId, int amountOfClients);
+    Room(std::atomic_bool& acceptSocketRunning, int roomId, int amountOfClients);
 
     void run() override;
 
     void addClient(int clientId, std::shared_ptr<ClientThread> newClient);
 
     void startGame();
-
+    bool isDead();
     void stop();
 
     std::shared_ptr<Car> createCar(int id);

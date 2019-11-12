@@ -7,18 +7,33 @@
 #include "Room.h"
 #include "../../Common/Event/EventCreator.h"
 #include "../../Common/Event/CommandEvent.h"
+#include "../../Common/SocketError.h"
 
-Room::Room(int roomId, int amountOfPlayers) : roomId(roomId),
-        maxAmountOfPlayers(amountOfPlayers),
-        running(true),
-        incomingEvents(false),
-        game(amountOfPlayers, std::make_shared<Configuration>()){
+Room::Room(std::atomic_bool& acceptSocketRunning,
+        int roomId, int amountOfPlayers) : roomId(roomId),
+                                              maxAmountOfPlayers(amountOfPlayers),
+                                              acceptSocketRunning(acceptSocketRunning),
+                                              roomRunning(true),
+                                              incomingEvents(false),
+                                              game(amountOfPlayers, std::make_shared<Configuration>()){
 }
 
 void Room::run() {
+    try{
     std::cout << "Running" << std::endl;
     startGame();
-    game.run(running, incomingEvents, clients);
+    game.run(acceptSocketRunning,roomRunning, incomingEvents, clients);
+
+    } catch (SocketError &se) {
+        roomRunning = false;
+        std::cout << "Room id: " << roomId << " (SE): " << se.what() << std::endl;
+    } catch (std::exception &e){
+        roomRunning = false;
+        std::cout << "Room id: " << roomId << " (E): " << e.what() << std::endl;
+    } catch (...) {
+        roomRunning = false;
+        std::cout << "Room id: " << roomId << " unknown exception" << std::endl;
+    }
 }
 
 bool Room::hasClient(int clientId){
@@ -43,17 +58,6 @@ void Room::addClient(int clientId, std::shared_ptr<ClientThread> newClient) {
 }
 
 
-void Room::stop() {
-    this->running = false;
-    for (auto& client: clients){
-        client.second->stop();
-        client.second->join();
-    }
-}
-
-Room::~Room() {
-    this->stop();
-}
 
 std::shared_ptr<Car> Room::createCar(int id) {
     std::shared_ptr<Car> car(game.createCar(id));
@@ -80,6 +84,22 @@ void Room::startGame() {
     game.startGame();
 }
 
+bool Room::isDead() {
+    return !roomRunning;
+}
+
+
+void Room::stop() {
+    this->roomRunning = false;
+    for (auto& client: clients){
+        client.second->stop();
+        client.second->join();
+    }
+}
+
+Room::~Room() {
+    this->stop();
+}
 
 
 

@@ -31,6 +31,8 @@ public:
     ~LobbyListener() override;
 
     SafeQueue<std::shared_ptr<Event>>* getReceivingQueue();
+
+    void collectDeadClients();
 };
 
 

@@ -6,16 +6,18 @@
 
 EventSender::EventSender(Protocol &protocol,
          SafeQueue<std::shared_ptr<Event>> &sendingBlockingQueue,
-         std::atomic_bool& acceptSocketRunning):
+         std::atomic_bool& acceptSocketRunning,
+         std::atomic_bool& clientStillTalking):
         protocol(protocol),
         sendingBlockingQueue(sendingBlockingQueue),
-        acceptSocketRunning(acceptSocketRunning){}
+        acceptSocketRunning(acceptSocketRunning),
+        clientStillTalking(clientStillTalking){}
 
 void EventSender::run() {
     //std::cout << "Sending" << std::endl;
     std::shared_ptr<Event> toBeSent;
     try {
-        while (acceptSocketRunning) {
+        while (acceptSocketRunning && clientStillTalking) {
             sendingBlockingQueue.pop(toBeSent);
             toBeSent->send(protocol);
         }
@@ -29,6 +31,6 @@ void EventSender::run() {
     }
 }
 
-void EventSender::joinThread() {
-    this->join();
+void EventSender::stop() {
+    clientStillTalking = false;
 }

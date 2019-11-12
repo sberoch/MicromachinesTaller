@@ -19,9 +19,9 @@ ClientThread::ClientThread(Protocol protocol, RoomController& controller, int cl
             receivingNonBlockingQueue(nullptr),
             sendingBlockingQueue(true),
             sender(std::ref(this->protocol), sendingBlockingQueue,
-                   acceptSocketRunning),
+                   acceptSocketRunning, keepTalking),
             receiver(std::ref(this->protocol), this->receivingNonBlockingQueue,
-                     acceptSocketRunning){}
+                     acceptSocketRunning, keepTalking){}
 
 
 void ClientThread::run() {
@@ -45,6 +45,10 @@ void ClientThread::run() {
 void ClientThread::stop(){
     protocol.forceShutDown();
     keepTalking = false;
+
+    sender.stop();
+    receiver.stop();
+
     sender.join();
     receiver.join();
 }
