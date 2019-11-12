@@ -54,7 +54,7 @@
     "halfWidth" : 0.5,
     "halfHeight" : 0.5,
     "density" : 1,
-    "time" : 2
+    "actionTime" : 30
   },
   "mudConfiguration" :
   {
@@ -76,7 +76,7 @@
     "halfWidth" : 1,
     "halfHeight" : 0.5,
     "density" : 1,
-    "time" : 1,
+    "time" : 30,
     "damping" : 10
   }
 }

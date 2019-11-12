@@ -59,6 +59,7 @@ Configuration::Configuration() {
     _boostPowerUpHalfWidth = boostPUConfig["halfWidth"].get<float>();
     _boostPowerUpHalfHeight = boostPUConfig["halfHeight"].get<float>();
     _boostPowerUpDensity = boostPUConfig["density"].get<float>();
+    _boostPowerUpActionTime = boostPUConfig["actionTime"].get<float>();
 
     json mudConfig = j["mudConfiguration"];
     _mudHalfWidth = mudConfig["halfWidth"].get<float>();
@@ -233,6 +234,10 @@ float Configuration::getBoostPowerUpHalfHeight(){
 
 float Configuration::getBoostPowerUpDensity(){
     return _boostPowerUpDensity;
+}
+
+float Configuration::getBoostPowerUpActionTime() {
+    return _boostPowerUpActionTime;
 }
 
 float Configuration::getRockHalfWidth(){
