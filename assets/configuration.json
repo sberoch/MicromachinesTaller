@@ -12,15 +12,18 @@
       "carHalfWidth" : 0.5,
       "carHalfHeight" : 1,
       "maxHealth" : 100,
-      "maxForwardVelocity" : 25,
-      "maxBackwardsVelocity" : -5,
-      "acceleration" : 5,
-      "maneuvrability" : 10,
-      "grab" : 10,
-      "linearDamping" : 0.1,
+      "maxForwardVelocity" : 40,
+      "maxBackwardsVelocity" : -3,
+      "maxLateralImpulse" : 2.5,
+      "maxDriveForce" : 15,
+      "angularImpulse" : 0.9,
+      "desiredTorque" : 30,
+      "linearDamping" : 0.2,
       "angularDamping" : 3,
       "linearVelocityInit" : 0,
-      "angularVelocityInit" : 0
+      "angularVelocityInit" : 0,
+      "density" : 1,
+      "friction" : 0.5
     },
   "track_configuration" :
     {
@@ -48,14 +51,15 @@
   {
     "halfWidth" : 0.5,
     "halfHeight" : 0.5,
-    "density" : 1
+    "density" : 1,
+    "time" : 2
   },
   "mudConfiguration" :
   {
     "halfWidth" : 1,
     "halfHeight" : 0.5,
     "density" : 1,
-    "time" : 10
+    "time" : 1
   },
   "rockConfiguration" :
   {
@@ -70,7 +74,7 @@
     "halfWidth" : 1,
     "halfHeight" : 0.5,
     "density" : 1,
-    "time" : 10,
+    "time" : 1,
     "damping" : 10
   }
 }

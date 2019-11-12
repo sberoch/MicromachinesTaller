@@ -19,10 +19,16 @@ private:
     float _maxHealth;
     float _maxForwardVelocity;
     float _maxBackwardsVelocity;
+    float _maxLateralImpulse;
+    float _maxDriveForce;
+    float _angularImpulse;
+    float _desiredTorque;
     float _linearDamping;
     float _angularDamping;
     float _linearVelocityInit;
     float _angularVelocityInit;
+    float _carDensity;
+    float _carFriction;
 
     //Track
     float _trackHalfWidth;
@@ -74,10 +80,19 @@ public:
 
     float getCarWidth();
     float getCarHeight();
+    float getCarMaxHealth();
+    float getCarMaxForwardVelocity();
+    float getCarMaxBackwardsVelocity();
+    float getCarMaxLateralImpulse();
+    float getCarMaxDriveForce();
+    float getCarAngularImpulse();
+    float getCarDesiredTorque();
     float getLinearDamping();
     float getAngularDamping();
     float getLinearVelocityInit();
     float getAngularVelocityInit();
+    float getCarDensity();
+    float getCarFriction();
 
     float getTrackWidth();
     float getTrackHeight();

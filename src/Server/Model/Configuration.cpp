@@ -23,10 +23,16 @@ Configuration::Configuration() {
     _maxHealth = carConfig["maxHealth"].get<float>();
     _maxForwardVelocity = carConfig["maxForwardVelocity"].get<float>();
     _maxBackwardsVelocity = carConfig["maxBackwardsVelocity"].get<float>();
+    _maxLateralImpulse = carConfig["maxLateralImpulse"].get<float>();
+    _maxDriveForce = carConfig["maxDriveForce"].get<float>();
+    _angularImpulse = carConfig["angularImpulse"].get<float>();
+    _desiredTorque = carConfig["desiredTorque"].get<float>();
     _linearDamping = carConfig["linearDamping"].get<float>();
     _angularDamping = carConfig["angularDamping"].get<float>();
     _linearVelocityInit = carConfig["linearVelocityInit"].get<float>();
     _angularVelocityInit = carConfig["angularVelocityInit"].get<float>();
+    _carDensity = carConfig["density"].get<float>();
+    _carFriction = carConfig["friction"].get<float>();
 
     json trackConfig = j["track_configuration"];
     _trackHalfWidth = trackConfig["halfWidth"].get<float>();
@@ -99,6 +105,42 @@ float Configuration::getCarWidth(){
 
 float Configuration::getCarHeight(){
     return _carHalfHeight;
+}
+
+float Configuration::getCarMaxHealth(){
+    return _maxHealth;
+}
+
+float Configuration::getCarMaxForwardVelocity(){
+    return _maxForwardVelocity;
+}
+
+float Configuration::getCarMaxBackwardsVelocity(){
+    return _maxBackwardsVelocity;
+}
+
+float Configuration::getCarMaxLateralImpulse(){
+    return _maxLateralImpulse;
+}
+
+float Configuration::getCarMaxDriveForce(){
+    return _maxDriveForce;
+}
+
+float Configuration::getCarAngularImpulse(){
+    return _angularImpulse;
+}
+
+float Configuration::getCarDesiredTorque(){
+    return _desiredTorque;
+}
+
+float Configuration::getCarDensity(){
+    return _carDensity;
+}
+
+float Configuration::getCarFriction(){
+    return _carFriction;
 }
 
 float Configuration::getLinearDamping(){
