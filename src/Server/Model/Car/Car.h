@@ -37,6 +37,7 @@ private:
     float _desiredTorque;
     float _maxLateralImpulse;
     float _angularImpulse;
+    size_t _maxHealth;
 
     size_t _id;
     b2Fixture* _fixture;
@@ -46,7 +47,6 @@ private:
     CarTurningState* _turningState;
     bool _isMoving;
     bool _exploded;
-    //Status _status;
     std::vector<Status*> _status;
 
     size_t _maxLaps;

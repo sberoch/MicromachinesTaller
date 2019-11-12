@@ -8,8 +8,8 @@ void Car::_setShapeAndFixture(std::shared_ptr<Configuration> configuration){
 
     b2FixtureDef boxFixtureDef;
     boxFixtureDef.shape = &boxShape;
-    boxFixtureDef.density = 1;
-    boxFixtureDef.friction = 0.5f;
+    boxFixtureDef.density = configuration->getCarDensity();
+    boxFixtureDef.friction = configuration->getCarFriction();
     _fixture = _carBody->CreateFixture(&boxFixtureDef);
     _fixture->SetUserData(new CarFUD(_id));
 }
@@ -23,11 +23,18 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 }
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(100),
-        _maxForwardSpeed(40), _onGrass(false), _maxLateralImpulse(2.5f), _angularImpulse(0.9f),
-        _maxBackwardSpeed(-3), _maxDriveForce(15), _desiredTorque(20),
-        _isMoving(false), _exploded(false), _currentTrack(nullptr),
-        _currentTraction(1), _groundArea(), _status(),
+        _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0),
+        _maxHealth(configuration->getCarMaxHealth()),
+        _health(configuration->getCarMaxHealth()),
+        _maxForwardSpeed(configuration->getCarMaxForwardVelocity()),
+        _maxBackwardSpeed(configuration->getCarMaxBackwardsVelocity()),
+        _maxDriveForce(configuration->getCarMaxDriveForce()),
+        _desiredTorque(configuration->getCarDesiredTorque()),
+        _maxLateralImpulse(configuration->getCarMaxLateralImpulse()),
+        _angularImpulse(configuration->getCarAngularImpulse()),
+        _onGrass(false), _isMoving(false), _exploded(false),
+        _currentTrack(nullptr),  _groundArea(),
+        _currentTraction(1), _status(),
         _maxLaps(3), _maxtracksToLap(20), _tracksCounted(0), _winner(false) {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
@@ -124,7 +131,7 @@ void Car::setTrack(Track* track){
 }
 
 void Car::resetCar(){
-    _health = 100;
+    _health = _maxHealth;
     if (_currentTrack){
         b2Vec2 position = b2Vec2(_currentTrack->x(), _currentTrack->y());
         float angleCorrection = 0;
@@ -301,18 +308,15 @@ const bool Car::onGrass(){
     return _onGrass;
 }
 
-//TODO que impacten bien y que al llegar a cero explote
 void Car::crash(b2Vec2 impactVel){
-    std::cout << "\nImpact vel: " << impactVel.x << ' ' << impactVel.y ;
     float vel = sqrt(pow(impactVel.x, 2) + pow(impactVel.y, 2));
     _health -= 2 * vel;
-    std::cout << "\nHealth: " << _health;
+
     if (_health <= 0){
         _exploded = true;
         Status* status = new Status;
         status->status = EXPLODED;
         _status.push_back(status);
-        std::cout << "Health is 0\n";
     }
 }
 
@@ -321,10 +325,9 @@ void Car::handleHealthPowerup(size_t id){
     status->status = GRABBED_HEALTH_POWERUP;
     status->id = id;
     _status.push_back(status);
-    std::cout << "\nHealth bhp: " << _health;
-    if ((_health + 10) < 100)
+
+    if ((_health + 10) < _maxHealth)
         _health += 10;
-    std::cout << "\nHealth ahp: " << _health;
 }
 
 void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
@@ -333,10 +336,8 @@ void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
     status->timeOfAction = bpuFud->getActionTime();
     status->id = id;
     _status.push_back(status);
-    std::cout << "Max speed bbp: " << _maxForwardSpeed << ' ';
+
     _maxForwardSpeed += bpuFud->getSpeedToIncrease();
-    std::cout << "Max speed abp: " << _maxForwardSpeed << '\n';
-    //Ver como ponerlo por un rato nada mas
 }
 
 void Car::handleMud(MudFUD* mudFud, size_t id){
@@ -354,7 +355,8 @@ void Car::handleOil(OilFUD* oilFud, size_t id){
     _status.push_back(status);
 
     _angularImpulse = 0;
-    _carBody->ApplyAngularImpulse(1, true);
+    float randImpulse = -1 + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(1-(-1))));
+    _carBody->ApplyAngularImpulse(randImpulse, true);
 }
 
 void Car::handleRock(RockFUD* rockFud, size_t id){
@@ -367,9 +369,9 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
 
     if (_health < healthToReduce){
         _exploded = true;
-        Status* status = new Status;
-        status->status = EXPLODED;
-        _status.push_back(status);
+        Status* expStatus = new Status;
+        expStatus->status = EXPLODED;
+        _status.push_back(expStatus);
     }
     _health -= healthToReduce;
     _maxForwardSpeed -= velToReduce;
@@ -399,7 +401,7 @@ void Car::resetStatus(){
     for (size_t i=0; i<_status.size(); ++i){
         delete _status[i];
     }
-    _status.clear(); //No se si es necesario
+    _status.clear();
 }
 
 Car::~Car(){
