@@ -89,13 +89,13 @@ end
 
 function getMoveFromAngleDiff(angleDiff)
 	if (angleDiff < -10) then
-		--print(string.format("L"))
+		print(string.format("L"))
 		return _n_turn_left
 	elseif (angleDiff > 10) then
-		--print(string.format("R"))
+		print(string.format("R"))
 		return _n_turn_right
 	else
-		--print(string.format("A"))
+		print(string.format("A"))
 		return _n_accelerate
 	end
 end
@@ -122,9 +122,7 @@ end
 function getDifferenceAngle(carX, carY, carAngle, trackX, trackY)
 	--angle 0 is north
 	carAngle = carAngle + 180
-	if carAngle >= 360 then
-		carAngle = carAngle - 360
-	end
+	carAngle = carAngle % 360
 	print(string.format("Car angle: %s", carAngle))
 
 	--get angle from points

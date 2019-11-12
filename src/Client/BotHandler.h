@@ -6,6 +6,7 @@
 #include "Audio.h"
 #include "../Common/Event/Event.h"
 #include "../Common/SafeQueue.h"
+#include "../Common/Event/CommandEvent.h"
 
 class BotHandler {
 private:
@@ -14,6 +15,9 @@ private:
 	Audio& audio;
 	SafeQueue<Event*>& sendQueue;
 	int& playerId;
+
+	InputEnum prevMov = STOP_TURNING_LEFT; //It is never the first move
+	int moveRepeatCounter;
 
 public:
 	BotHandler(GameObjects& gameObjects, Audio& audio, SafeQueue<Event*>& sendQueue, int& playerId);
