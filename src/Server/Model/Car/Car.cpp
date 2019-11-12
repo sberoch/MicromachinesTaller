@@ -192,7 +192,7 @@ void Car::update(){
     _previous_x = _carBody->GetPosition().x;
     _previous_y = _carBody->GetPosition().y;
 
-    if (_tracks.back()->isFinish() && _tracks.size() > 0.8 * _maxtracksToLap){
+    if (_tracks.size() > 0.8 * _maxtracksToLap && _tracks.back()->isFinish()){
         _laps ++;
         _tracks.clear();
     }
@@ -315,9 +315,7 @@ void Car::stopEffect(const int& effectType){
             _angularImpulse = 0.9;
             break;
         case TYPE_GRASS :
-            //TODO see how to do this
             //If it is still in grass after n steps reduce vel in half
-            //See distance with track
             break;
     }
 }

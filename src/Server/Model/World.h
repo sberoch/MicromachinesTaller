@@ -19,7 +19,6 @@ private:
     std::shared_ptr<Configuration> _configuration;
 
     int _n_of_cars;
-    //TODO use shared pointers
     std::vector<Car*> _cars;
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
     std::vector<Track*> _track;
@@ -42,7 +41,7 @@ public:
 
     void createTrack(std::vector<Track*>& track);
     void createGrass(std::vector<Grass*>& grass);
-    Car* createCar(size_t id); //TODO move
+    Car* createCar(size_t id);
 
     //Modifiers
     void createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle);

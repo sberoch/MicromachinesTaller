@@ -57,7 +57,6 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
             case NOTHING :
                 break;
             case EXPLODED:
-                std::cout << "Exploded ";
                 snapshot->addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), 0);
                 break;
             case GRABBED_HEALTH_POWERUP :
@@ -75,10 +74,8 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
                 snapshot->removeGameItem(TYPE_ROCK, status[i]->id);
                 break;
             case GRABBED_OIL :
+                _addEffect(TYPE_OIL, status[i]->timeOfAction);
                 snapshot->removeGameItem(TYPE_OIL, status[i]->id);
-                break;
-            case ON_GRASS:
-                _addEffect(TYPE_GRASS, status[i]->timeOfAction);
                 break;
             case WINNED :
                 //Terminar juego y lanzar podio

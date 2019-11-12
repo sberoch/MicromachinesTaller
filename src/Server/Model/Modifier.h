@@ -74,7 +74,6 @@ public:
     }
 
     ~HealthPowerup(){
-        std::cout << "DESTROYING HPU!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
         _body->GetWorld()->DestroyBody(_body);
     }
 };
@@ -89,7 +88,7 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new BoostPowerupFUD(10, 10, _id));
+        _fixture->SetUserData(new BoostPowerupFUD(configuration->getBoostPowerUpActionTime(), 10, _id));
     }
 
 public:
