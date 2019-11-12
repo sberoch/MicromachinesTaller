@@ -57,6 +57,7 @@ private:
     GroundAreaFUD* _groundArea;
     float _currentTraction;
     Track* _currentTrack;
+    bool _onGrass;
 
     bool _winner;
 
@@ -114,6 +115,7 @@ public:
     const float speed();
     const b2Vec2 linearVelocity();
     b2Body* body() const;
+    const bool onGrass();
 
     ~Car();
 };

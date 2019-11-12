@@ -7,7 +7,7 @@ using json = nlohmann::json;
 
 World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
              _timeStep(1/25.0), _n_of_cars(n_of_cars), _configuration(configuration),
-              _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0) {
+             _cars(), _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0) {
     b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
     _world = new b2World(gravity);
 
@@ -39,8 +39,9 @@ Car* World::createCar(size_t id){
     float x_init, y_init, angle_init;
     _getCarConfigData(id, x_init, y_init, angle_init);
 
-    //return std::move(Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration));
-    return new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
+    Car* car = new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
+    _cars.push_back(car);
+    return car;
 }
 
 void World::createTrack(std::vector<Track*>& track){
@@ -130,6 +131,24 @@ void World::_removeGrabbedModifiers(){
     _activeModifiers.swap(aux);
 }
 
+void World::_updateCarsOnGrass(){
+    for (size_t i=0; i<_cars.size(); ++i){
+        if (_cars[i]->onGrass()){
+            float minDistance = 10;
+            for (size_t j=0; j<_track.size(); ++j){
+                float distance = _track[j]->getDistance(_cars[i]->x(), _cars[i]->y());
+                if (distance < minDistance) {
+                    minDistance = distance;
+                }
+            }
+            //TODO: maxdist from config file
+            if (minDistance > 5){
+                _cars[i]->resetCar();
+            }
+        }
+    }
+}
+
 void World::step(uint32_t velocityIt, uint32_t positionIt){
     //how strongly to correct velocity
     //how strongly to correct position
@@ -137,6 +156,7 @@ void World::step(uint32_t velocityIt, uint32_t positionIt){
     _world->ClearForces();
 
     _removeGrabbedModifiers();
+    _updateCarsOnGrass();
 }
 
 b2World* World::getWorld(){

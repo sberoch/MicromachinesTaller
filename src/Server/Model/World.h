@@ -23,6 +23,8 @@ private:
     std::shared_ptr<Configuration> _configuration;
 
     int _n_of_cars;
+    //TODO use shared pointers
+    std::vector<Car*> _cars;
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
     std::vector<Track*> _track;
     std::vector<Grass*> _grass;
@@ -37,6 +39,8 @@ private:
     ContactListener* _contactListener;
 
     void _removeGrabbedModifiers();
+    void _updateCarsOnGrass();
+
 public:
     World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
 

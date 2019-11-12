@@ -24,7 +24,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
 
 Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0), _health(1),
-        _maxForwardSpeed(30),
+        _maxForwardSpeed(30), _onGrass(false),
         _maxBackwardSpeed(-3), _maxDriveForce(25), _desiredTorque(5),
         _isMoving(false), _exploded(false), _currentTrack(nullptr),
         _currentTraction(1), _groundArea(), _status(),
@@ -126,9 +126,9 @@ void Car::setTrack(Track* track){
 void Car::resetCar(){
     _health = 100;
     if (_currentTrack){
-        std::cout << "\nExploded, putting in center of track\n";
         b2Vec2 position = b2Vec2(_currentTrack->x(), _currentTrack->y());
         _carBody->SetTransform(position, _currentTrack->angle() + 90 * DEGTORAD);
+        _carBody->SetLinearVelocity(b2Vec2(0, 0));
     } else {
         b2Vec2 position = b2Vec2(_previous_x, _previous_y);
         _carBody->SetTransform(position, _previousAngle);
@@ -230,6 +230,7 @@ void Car::addGroundArea(GroundAreaFUD* ga){
         Status* status = new Status;
         status->status = ON_GRASS;
         _status.push_back(status);
+        _onGrass = true;
     }
     std::cout << "Added gd with " << _groundArea->frictionModifier ;
 }
@@ -304,6 +305,10 @@ const b2Vec2 Car::linearVelocity(){
 
 b2Body* Car::body() const {
     return _carBody;
+}
+
+const bool Car::onGrass(){
+    return _onGrass;
 }
 
 //TODO que impacten bien y que al llegar a cero explote

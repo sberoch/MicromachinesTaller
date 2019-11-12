@@ -60,17 +60,32 @@ bool Track::_isBetweenLimits(const float& pos, const char& xOrY){
 }
 
 float Track::getDistance(const float& x, const float& y){
+    float leftXLim = this->x() - 2.5f;
+    float rightXLim = this->x() + 2.5f;
+    float upperYLim = this->y() + 2.5f;
+    float bottomYLim = this->y() - 2.5f;
+
     if (_isBetweenLimits(x, 'x') && !_isBetweenLimits(y, 'y')){
         if (y > this->y()) {
-            return y - this->y() + 2.5f;
+            return (y - this->y() + 2.5f);
         } else {
-            return this->y() - 2.5f - y;
+            return (this->y() - 2.5f - y);
         }
     } else if (!_isBetweenLimits(x, 'x') && _isBetweenLimits(y, 'y')){
         if (x > this->x()) {
-            return x - this->x() + 2.5f;
+            return (x - this->x() + 2.5f);
         } else {
-            return this->x() - 2.5f - x;
+            return (this->x() - 2.5f - x);
+        }
+    } else if (!_isBetweenLimits(x, 'x') && !_isBetweenLimits(y, 'y')){
+        if (x > this->x() && y > this->y()) {
+            return sqrt(pow(abs(x - rightXLim), 2) + pow(abs(y - upperYLim), 2));
+        } else if (x < this->x() && y > this->y()){
+            return sqrt(pow(abs(x - leftXLim), 2) + pow(abs(y - upperYLim), 2));
+        } else if (x > this->x() && y < this->y()) {
+            return sqrt(pow(abs(x - rightXLim), 2) + pow(abs(y - bottomYLim), 2));
+        } else {
+            return sqrt(pow(abs(x - leftXLim), 2) + pow(abs(y - bottomYLim), 2));
         }
     }
 
