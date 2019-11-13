@@ -10,11 +10,11 @@ class SenderThread : public Thread {
 private:
 	SafeQueue<Event*>& sendQueue;
 	Protocol& protocol;
+	bool _done;
 public:
 	SenderThread(SafeQueue<Event*>& sendQueue, Protocol& protocol);
 
 	bool finished() const;
-	bool is_running{true};
 	virtual void run() override;
 };
 

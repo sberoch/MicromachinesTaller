@@ -12,35 +12,32 @@ ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 
 void ReceiverThread::run() {
 	try{
-	SnapshotEvent* gameSnap;
-	LobbySnapshot* lobbySnap;
+		SnapshotEvent* gameSnap;
+		LobbySnapshot* lobbySnap;
 
-	while(!_done && !_isGameMode) {
-		lobbySnap = new LobbySnapshot(protocol);
-		lobbyRecvQueue.push(lobbySnap);
+		while(!_isGameMode) {
+			lobbySnap = new LobbySnapshot(protocol);
+			lobbyRecvQueue.push(lobbySnap);
 
-		int id = lobbySnap->getMyId();
-		if (lobbySnap->gameStarted(id)) {
-			_isGameMode = true;
+			int id = lobbySnap->getMyId();
+			if (lobbySnap->gameStarted(id)) {
+				_isGameMode = true;
+			}
 		}
-	}
-	while(!_done && _isGameMode) {
-		gameSnap = new SnapshotEvent(protocol);
-		gameRecvQueue.push(gameSnap);
-	}
+		while(_isGameMode) {
+			gameSnap = new SnapshotEvent(protocol);
+			gameRecvQueue.push(gameSnap);
+		}
+
 	} catch (std::exception &e) {
 		std::cerr << e.what() << std::endl;
 	}
-	is_running = false;
+	_done = true;
 }
 bool ReceiverThread::finished() const {
-	return !is_running;
+	return _done;
 }
 
 void ReceiverThread::setGameMode() {
 	_isGameMode = true;
-}
-
-ReceiverThread::~ReceiverThread() {
-	std::cout << "Recv thread killed.\n";
 }

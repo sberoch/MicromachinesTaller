@@ -17,13 +17,13 @@ public:
 	ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 				   Queue<LobbySnapshot*>& lobbyRecvQueue, 
 				   Protocol& protocol);
+
 	virtual void run() override;
 	void setGameMode();
 	bool finished() const;
-	bool is_running{true};
+
 	ReceiverThread(ReceiverThread &copy) = delete;
 	ReceiverThread& operator=(const ReceiverThread &c) = delete;
-	~ReceiverThread();
 };
 
 #endif // RECEIVER_THREAD_H

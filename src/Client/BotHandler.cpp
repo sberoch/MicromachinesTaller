@@ -1,11 +1,8 @@
 #include "BotHandler.h"
 #include "TextureCreator.h"
 #include <iostream>
-#include <ctime>
-#include <thread>
-#include <chrono>
 
-#define CYCLES_UNTIL_MOVE_REPEAT 10
+#define CYCLES_UNTIL_MOVE_REPEAT 1
 
 BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio, SafeQueue<Event*>& sendQueue, int& playerId) :
 	gameObjects(gameObjects), 
@@ -25,26 +22,13 @@ void BotHandler::loadMap() {
 }
 
 void BotHandler::handle() {
-	//std::clock_t begin = clock();
 	if (moveRepeatCounter > CYCLES_UNTIL_MOVE_REPEAT) {
 		moveRepeatCounter = 0;
 		ObjectViewPtr myCar = gameObjects.getCar(playerId);
 		InputEnum mov = (InputEnum) lua.getNextMovement(myCar->getX(), myCar->getY(), myCar->getAngle());
-		//bool hasAccelerated = (prevMov == mov) && (prevMov == ACCELERATE);
+		sendQueue.push(new CommandEvent(mov, playerId));
 
-		//if (hasAccelerated) {
-		//	prevMov = mov;
-			sendQueue.push(new CommandEvent(mov, playerId));
-		//}
 	} else {
 		moveRepeatCounter++;
 	}
-
-	//std::clock_t end = clock();
-	//double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
-	//if (execTime < 100) this->sleep(100 - execTime);
-}
-
-void BotHandler::sleep(int millisec) {
-	std::this_thread::sleep_for(std::chrono::milliseconds(millisec));
 }

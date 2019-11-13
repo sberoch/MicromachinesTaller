@@ -3,26 +3,26 @@
 
 SenderThread::SenderThread(SafeQueue<Event*>& sendQueue, Protocol& protocol) : 
 	sendQueue(sendQueue),
-	protocol(protocol) {}
+	protocol(protocol),
+	_done(false) {}
 
 void SenderThread::run() {
 	try{
-	Event* event;
-	while(true) {
-		sendQueue.pop(event);
-		if (event == nullptr){
-			break;
+		Event* event;
+		while(true) {
+			sendQueue.pop(event);
+			if (event == nullptr) {
+				break;
+			}
+			event->send(protocol);
+			delete event;
 		}
-		std::cout << "sending from cli\n";
-		event->send(protocol);
-		delete event;
+	} catch (std::exception &e) {
+		std::cerr << e.what() << std::endl;
 	}
-} catch (std::exception &e) {
-	std::cerr << e.what() << std::endl;
-}
-is_running = false;
+	_done = true;
 }
 
 bool SenderThread::finished() const {
-	return !is_running;
+	return _done;
 }

@@ -24,8 +24,6 @@ public:
 	void loadMap();
 	void handle();
 
-private:
-	void sleep(int millisec);
 };
 
 #endif // BOT_HANDLER_H
