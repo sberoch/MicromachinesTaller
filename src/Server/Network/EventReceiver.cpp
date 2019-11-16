@@ -4,6 +4,7 @@
 
 #include "EventReceiver.h"
 #include "../../Common/Event/EventCreator.h"
+#include "../../Common/SocketError.h"
 
 EventReceiver::EventReceiver(Protocol &protocol,
                              SafeQueue<std::shared_ptr<Event>> *nonBlockingQueue,
@@ -25,8 +26,10 @@ void EventReceiver::run() {
                 std::shared_ptr<Event> event(creator.makeEvent(recvEvent));
                 receivingNonBlockingQueue->push(event);
             }
-        }
-        catch(const std::exception& e) {
+        } catch(const SocketError &e){
+            clientStillTalking = false;
+            std::cout << "Socket error from event receiver" << std::endl;
+        } catch(const std::exception& e) {
             //Habria que avisar de alguna forma la desconexion.
             clientStillTalking = false;
             printf("Socket cerrado: %s \n.", e.what());

@@ -20,7 +20,6 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
                 Protocol newProtocol(this->acceptSocket.accept());
                 std::cout << "Client connected" << std::endl;
                 int clientId = clientCounter.returnAndAddOne();
-
                 roomController.addClient(clientId, std::move(newProtocol));
             } catch (SocketError &e){
                 running = false;

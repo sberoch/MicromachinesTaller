@@ -19,6 +19,7 @@ private:
     std::unordered_map<int, std::shared_ptr<ClientThread>>& clients;
     SafeQueue<std::shared_ptr<Event>> incomingEvents;
     std::atomic_bool& running;
+    std::atomic_bool listening;
     RoomController& controller;
 
 public:
@@ -33,6 +34,8 @@ public:
     SafeQueue<std::shared_ptr<Event>>* getReceivingQueue();
 
     void collectDeadClients();
+
+    void stop();
 };
 
 

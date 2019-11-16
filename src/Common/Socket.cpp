@@ -27,6 +27,7 @@ Socket::Socket(Socket&& other) noexcept {
 
 void Socket::stop(){
     if (this->fd != -1){
+        std::cout << "Shutting down accepting socket" << std::endl;
         shutdown(this->fd, SHUT_RDWR);
         close(this->fd);
         this->fd = -1;

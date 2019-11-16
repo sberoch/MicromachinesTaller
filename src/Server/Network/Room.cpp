@@ -93,8 +93,10 @@ bool Room::isDead() {
 void Room::stop() {
     this->roomRunning = false;
     for (auto& client: clients){
-        client.second->stop();
-        client.second->join();
+        if (!client.second->isDead()){
+            client.second->stop();
+            client.second->join();
+        }
     }
 }
 

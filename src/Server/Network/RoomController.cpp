@@ -68,6 +68,7 @@ void RoomController::addClient(int clientId, Protocol protocol) {
 
 void RoomController::stop() {
     std::lock_guard<std::mutex> lock(this->m);
+    listener.stop();
     listener.join();
     std::cout << "Destroying clients with no room" << std::endl;
     for (auto &client: clientsWithNoRoom){

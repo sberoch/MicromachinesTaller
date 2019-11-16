@@ -14,13 +14,14 @@ LobbyListener::LobbyListener(
         std::atomic_bool &running, RoomController& controller): clients(clients),
                                     incomingEvents(false),
                                     running(running),
+                                    listening(true),
                                     controller(controller){}
 
 void LobbyListener::run() {
     std::shared_ptr<Event> event;
     std::cout << "Lobby listener started" << std::endl;
     std::shared_ptr<LobbySnapshot> snapshot(new LobbySnapshot);
-    while (running) {
+    while (listening && running) {
         try {
             std::clock_t begin = clock();
             while (incomingEvents.get(event)) {
@@ -36,36 +37,25 @@ void LobbyListener::run() {
                         std::chrono::milliseconds(to_sleep));
             }
         } catch (SocketError &se) {
-            running = false;
+            listening = false;
             std::cout << "Lobby listener (SE): " << se.what() << std::endl;
         } catch (std::exception &e){
-            running = false;
+            listening = false;
             std::cout << "Lobby listener (E): " << e.what() << std::endl;
         } catch (...) {
-            running = false;
+            listening = false;
             std::cerr << "Lobby listener: UnknownException.\n";
         }
     }
 }
 
-void LobbyListener::collectDeadClients(){
-    std::vector<int> idsToBeEliminated;
-
-    for (auto &actualClient: clients) {
-        if (actualClient.second->isDead()) {
-            actualClient.second->join();
-            actualClient.second = nullptr;
-            idsToBeEliminated.push_back(actualClient.first);
-        }
-    }
-
-    for (auto& actualId: idsToBeEliminated){
-        clients.erase(actualId);
-    }
-}
 
 LobbyListener::~LobbyListener() = default;
 
 SafeQueue<std::shared_ptr<Event>>* LobbyListener::getReceivingQueue() {
     return &this->incomingEvents;
+}
+
+void LobbyListener::stop(){
+    listening = false;
 }

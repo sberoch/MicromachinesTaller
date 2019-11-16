@@ -3,6 +3,7 @@
 //
 
 #include "EventSender.h"
+#include "../../Common/SocketError.h"
 
 EventSender::EventSender(Protocol &protocol,
          SafeQueue<std::shared_ptr<Event>> &sendingBlockingQueue,
@@ -14,19 +15,22 @@ EventSender::EventSender(Protocol &protocol,
         clientStillTalking(clientStillTalking){}
 
 void EventSender::run() {
-    //std::cout << "Sending" << std::endl;
+    std::cout << "Sender started." << std::endl;
     std::shared_ptr<Event> toBeSent;
     try {
         while (acceptSocketRunning && clientStillTalking) {
             sendingBlockingQueue.pop(toBeSent);
             toBeSent->send(protocol);
         }
+    } catch(const SocketError &e){
+        clientStillTalking = false;
+        std::cout << "Socket error from event sender" << std::endl;
     } catch(const std::exception& e) {
         //TODO:Habria que avisar de alguna forma la desconexion.
-        acceptSocketRunning = false;
+        clientStillTalking = false;
         printf("Socket cerrado.");
     } catch(...) {
-        acceptSocketRunning = false;
+        clientStillTalking = false;
         printf("Unknown error from thclient");
     }
 }
