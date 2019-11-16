@@ -8,7 +8,8 @@ _n_desaccelerate = 0
 _prev_x = 0
 _prev_y = 0
 _isFirstMove = true
-_MAX_VEL_ON_TURNS =  20
+_MAX_VEL_ON_TURNS = 25
+_justDesaccelerated = false
 
 tracks = nil
 firstAssigned = false
@@ -65,10 +66,13 @@ function getNextMovement(carX, carY, carAngle)
 			print(string.format("angleDiff: %s", diff))
 			velocity = getVelocity(carX, carY)
 			if shouldBrake(velocity, diff) then
+				_justDesaccelerated = true
 				return _n_desaccelerate
 			elseif velocity == 0 then
+				_justDesaccelerated = false
 				return _n_accelerate
 			else
+				_justDesaccelerated = false
 				return getMoveFromAngleDiff(diff)
 			end
 		end
@@ -88,10 +92,10 @@ end
 
 
 function getMoveFromAngleDiff(angleDiff)
-	if (angleDiff < -10) then
+	if (angleDiff < -15) then
 		print(string.format("L"))
 		return _n_turn_left
-	elseif (angleDiff > 10) then
+	elseif (angleDiff > 15) then
 		print(string.format("R"))
 		return _n_turn_right
 	else
@@ -163,7 +167,7 @@ end
 
 
 function shouldBrake(velocity, angleDiff)
-	return ((velocity > _MAX_VEL_ON_TURNS) and ((angleDiff > 20) or (angleDiff < -20)))
+	return ((velocity > _MAX_VEL_ON_TURNS) and ((angleDiff > 35) or (angleDiff < -35)) and (not _justDesaccelerated))
 end
 
 --Average with ponderance on first point.

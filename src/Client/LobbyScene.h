@@ -28,6 +28,7 @@ private:
 	RoomsMap roomsMap;
 	std::vector<ObjectViewPtr> roomViews;
 	std::vector<ObjectViewPtr> playerViews;
+	ObjectViewPtr arrow;
 
 	bool _done;
 	bool fullscreen;
@@ -47,6 +48,7 @@ public:
 private:
 	void updateRooms(RoomsMap roomsMap);
 	void drawRooms();
+	void drawArrows();
 	bool insidePlayButton(int x, int y);
 	bool insideUserButton(int x, int y);
 	bool insideBotButton(int x, int y);

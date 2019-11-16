@@ -20,6 +20,7 @@
 #define TYPE_ROOM_4 118
 #define TYPE_START_LINE 119
 #define TYPE_GRASS 120
+#define TYPE_ARROW 121
 
 //Scenes
 #define SCENE_MENU 200

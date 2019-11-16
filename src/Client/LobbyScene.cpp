@@ -27,6 +27,8 @@ LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
 		playerViews.push_back(creator.create(TYPE_CAR_BLUE, 0, 0, 270));
 		playerViews.push_back(creator.create(TYPE_CAR_YELLOW, 0, 0, 270));
 		playerViews.push_back(creator.create(TYPE_CAR_GREEN, 0, 0, 270));
+
+		arrow = creator.create(TYPE_ARROW, 0, 0, 0);
 	}
 
 bool LobbyScene::done() {
@@ -65,6 +67,7 @@ void LobbyScene::draw() {
 	window.fill();
 	backgroundLobby.drawAt(xScreen/2, yScreen/2);
 	drawRooms();
+	drawArrows();
 	window.render();
 }
 
@@ -77,6 +80,12 @@ void LobbyScene::drawRooms() {
 		for (int i = 0; i < roomsMap.at(selectedRoom).players.size(); ++i) {
 			playerViews.at(i)->drawAt(0.76*xScreen, (0.22 + 0.1*i)*yScreen);
 		}
+	}
+}
+
+void LobbyScene::drawArrows() {
+	if (selectedRoom != -1) {
+		arrow->drawAt(0.12*xScreen, (0.22 + 0.1*selectedRoom)*yScreen);
 	}
 }
 
@@ -162,7 +171,7 @@ bool LobbyScene::insideJoinRoomButton(int x, int y) {
 
 void LobbyScene::checkInsideAnyRoom(int x, int y) {
 	for (int i = 0; i < roomsMap.size(); ++i) {
-		Area btn(0.26*xScreen, (0.17 + 0.1*i)*yScreen, 0.3*xScreen, 0.1*yScreen);
+		Area btn(0.15*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
 		if (btn.isInside(x, y)) {
 			audio.playEffect(SFX_BUTTON);
 			selectedRoom = i;
