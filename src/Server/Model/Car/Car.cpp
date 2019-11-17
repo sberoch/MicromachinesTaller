@@ -155,6 +155,8 @@ void Car::addGroundArea(GroundAreaFUD* ga){
         status->status = ON_GRASS;
         _status.push_back(status);
         _onGrass = true;
+    } else {
+        _onGrass = false;
     }
 }
 

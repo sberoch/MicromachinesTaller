@@ -139,7 +139,7 @@ void World::_updateCarsOnGrass(){
                 }
             }
 
-            if (minDistance > _configuration->getMaxDistToTrack()){
+            if (minDistance >= _configuration->getMaxDistToTrack()){
                 _car->resetCar();
             }
         }
