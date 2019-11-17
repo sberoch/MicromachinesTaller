@@ -11,6 +11,7 @@ struct RoomStruct {
 	int id;
 	bool gameStarted;
 	std::list<int> players;
+	std::vector<bool> selectedCars = {false, false, false, false};
 };
 
 typedef std::map<int, RoomStruct> RoomsMap;
@@ -29,6 +30,7 @@ public:
 	void createRoom(int room_id);
 	void joinRoom(int player_id, int room_id);
 	void startGame(int room_id);
+	void addSelectedCar(int room_id, int player_room_id);
 
 	const RoomsMap& getRooms();
 	int getMyId();
@@ -38,7 +40,7 @@ public:
     void setPlayerId(int id);
 
 private:
-	void addRoom(int id, bool gameStarted, std::list<int> players);
+	void addRoom(int id, bool gameStarted, std::list<int> players, std::vector<bool> selectedCars);
 
     void removeIdFromOldRoom(int player_id);
 };

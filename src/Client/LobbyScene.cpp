@@ -30,6 +30,7 @@ LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
 		playerViews.push_back(creator.create(TYPE_CAR_GREEN, 0, 0, 270));
 
 		arrow = creator.create(TYPE_ARROW, 0, 0, 0);
+		carSelected = creator.create(TYPE_CAR_SELECTED, 0, 0, 270);
 	}
 
 bool LobbyScene::done() {
@@ -84,6 +85,13 @@ void LobbyScene::drawPlayers() {
 		for (int i = 0; i < 4; ++i) {
 			playerViews.at(i)->drawAt(0.76*xScreen, (0.22 + 0.1*i)*yScreen);
 		}
+		std::vector<bool> selectedCars = roomsMap.at(selectedRoom).selectedCars;
+		for (int i = 0; i < 4; ++i) {
+			if (selectedCars.at(i)) {
+				carSelected->drawAt(0.76*xScreen, (0.22 + 0.1*i)*yScreen);
+			}
+		}
+
 	}
 }
 
@@ -126,14 +134,16 @@ int LobbyScene::handle() {
 				}
 			}
 			else if (insideJoinRoomButton(x, y)) {
-				if (roomsMap.size() > 0 && selectedRoom != -1) {
+				if (roomsMap.size() > 0 && selectedRoom != -1 && selectedPlayer != -1) {
 					hasJoinedARoom = true;
 					audio.playEffect(SFX_BUTTON);
-					sendQueue.push(new EnterRoomEvent(myId, selectedRoom));
+					sendQueue.push(new EnterRoomEvent(myId, selectedRoom, selectedPlayer));
 				}
 			} else {
 				checkInsideAnyRoom(x, y);
-				checkInsideAnyPlayer(x, y);
+				if (!hasJoinedARoom) {
+					checkInsideAnyPlayer(x, y);
+				}
 			}
 
 		} else if (e.type == SDL_KEYDOWN) {
@@ -190,7 +200,7 @@ void LobbyScene::checkInsideAnyRoom(int x, int y) {
 void LobbyScene::checkInsideAnyPlayer(int x, int y) {
 	for (int i = 0; i < 4; ++i) {
 		Area btn(0.65*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
-		if (btn.isInside(x, y)) {
+		if (btn.isInside(x, y) && !roomsMap.at(selectedRoom).selectedCars.at(i)) {
 			audio.playEffect(SFX_BUTTON);
 			selectedPlayer = i;
 		}

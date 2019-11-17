@@ -106,6 +106,7 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
     Type input = (Type) j["type"].get<int>();
     int client_id;
     int roomId;
+    int playerInRoomId;
     switch (input) {
         case ENTER_LOBBY:
             std::cout << "Enter lobby" << std::endl;
@@ -114,9 +115,19 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
         case ENTER_ROOM:
             client_id = j["client_id"].get<int>();
             roomId = j["selected_room"].get<int>();
-            std::cout << "Enter to room " << roomId << " from client clientId: " << client_id << std::endl;
+            playerInRoomId = j["selected_player"].get<int>();
+            std::cout << "Enter to room " << roomId 
+                    << " from client clientId: " << client_id
+                    << " with player id " << playerInRoomId << std::endl;
+
+            //TODO: no toque nada mas alla de estos metodos, hay que asignar el 
+                    //id dentro del room que el player eligio (playerInRoomId)
             this->addClientToRoom(roomId, client_id);
             snapshot->joinRoom(client_id, roomId);
+            //---
+
+            snapshot->addSelectedCar(client_id, playerInRoomId);
+
             sendToAllClientsWithRoom(snapshot);
             sendToClientsWithoutRoom(snapshot);
             break;

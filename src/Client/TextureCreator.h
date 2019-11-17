@@ -29,6 +29,7 @@ private:
 	SdlTexture room4Tex;
 	SdlTexture startLineTex;
 	SdlTexture arrowTex;
+	SdlTexture carSelectedTex;
 public:
 	TextureCreator(const SdlWindow& window);
 	ObjectViewPtr create(int type, int x, int y, int angle);

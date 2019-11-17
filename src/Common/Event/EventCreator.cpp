@@ -18,7 +18,7 @@ std::shared_ptr<Event> EventCreator::makeEvent(const std::string& recvdEvent){
     auto j = json::parse(recvdEvent);
     int type = j["type"].get<int>();
     int id;
-    int selectedRoom;
+    int selectedRoom, selectedPlayer;
     std::cout << "Type: " << type << std::endl;
     
     switch (type) {
@@ -32,7 +32,8 @@ std::shared_ptr<Event> EventCreator::makeEvent(const std::string& recvdEvent){
         case ENTER_ROOM: 
             id = j["client_id"].get<int>();
             selectedRoom = j["selected_room"].get<int>();
-            return std::shared_ptr<Event>(new EnterRoomEvent(id, selectedRoom));
+            selectedPlayer = j["selected_player"].get<int>();
+            return std::shared_ptr<Event>(new EnterRoomEvent(id, selectedRoom, selectedPlayer));
             
         case CREATE_ROOM:
             return std::shared_ptr<Event>(new CreateRoomEvent);

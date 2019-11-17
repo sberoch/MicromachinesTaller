@@ -29,6 +29,7 @@ private:
 	std::vector<ObjectViewPtr> roomViews;
 	std::vector<ObjectViewPtr> playerViews;
 	ObjectViewPtr arrow;
+	ObjectViewPtr carSelected;
 
 	bool _done;
 	bool fullscreen;
