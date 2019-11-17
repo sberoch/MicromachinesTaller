@@ -33,8 +33,10 @@ private:
 	bool _done;
 	bool fullscreen;
 	int selectedRoom;
+	int selectedPlayer;
 	int nextScene;
 	int xScreen, yScreen;
+
 	int& myId;
 	bool hasJoinedARoom;
 	bool& isBot;
@@ -48,6 +50,7 @@ public:
 private:
 	void updateRooms(RoomsMap roomsMap);
 	void drawRooms();
+	void drawPlayers();
 	void drawArrows();
 	bool insidePlayButton(int x, int y);
 	bool insideUserButton(int x, int y);
@@ -55,6 +58,7 @@ private:
 	bool insideCreateRoomButton(int x, int y);
 	bool insideJoinRoomButton(int x, int y);
 	void checkInsideAnyRoom(int x, int y);
+	void checkInsideAnyPlayer(int x, int y);
 };
 
 #endif // LOBBY_SCENE_H

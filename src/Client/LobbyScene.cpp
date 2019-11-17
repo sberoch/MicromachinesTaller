@@ -13,7 +13,8 @@ LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
 	creator(window),
 	_done(false),
 	fullscreen(true),
-	selectedRoom(-1),
+	selectedRoom(-1), 
+	selectedPlayer(-1),
 	nextScene(SCENE_LOBBY),
 	hasJoinedARoom(false),
 	myId(myId),
@@ -67,6 +68,7 @@ void LobbyScene::draw() {
 	window.fill();
 	backgroundLobby.drawAt(xScreen/2, yScreen/2);
 	drawRooms();
+	drawPlayers();
 	drawArrows();
 	window.render();
 }
@@ -75,9 +77,11 @@ void LobbyScene::drawRooms() {
 	for (int i = 0; i < roomsMap.size(); ++i) {
 		roomViews.at(i)->drawAt(0.26*xScreen, (0.22 + 0.1*i)*yScreen);
 	}
+}
 
+void LobbyScene::drawPlayers() {
 	if (selectedRoom != -1) {
-		for (int i = 0; i < roomsMap.at(selectedRoom).players.size(); ++i) {
+		for (int i = 0; i < 4; ++i) {
 			playerViews.at(i)->drawAt(0.76*xScreen, (0.22 + 0.1*i)*yScreen);
 		}
 	}
@@ -86,6 +90,9 @@ void LobbyScene::drawRooms() {
 void LobbyScene::drawArrows() {
 	if (selectedRoom != -1) {
 		arrow->drawAt(0.12*xScreen, (0.22 + 0.1*selectedRoom)*yScreen);
+	}
+	if (selectedPlayer != -1) {
+		arrow->drawAt(0.62*xScreen, (0.22 + 0.1*selectedPlayer)*yScreen);
 	}
 }
 
@@ -126,6 +133,7 @@ int LobbyScene::handle() {
 				}
 			} else {
 				checkInsideAnyRoom(x, y);
+				checkInsideAnyPlayer(x, y);
 			}
 
 		} else if (e.type == SDL_KEYDOWN) {
@@ -175,6 +183,16 @@ void LobbyScene::checkInsideAnyRoom(int x, int y) {
 		if (btn.isInside(x, y)) {
 			audio.playEffect(SFX_BUTTON);
 			selectedRoom = i;
+		}
+	}
+}
+
+void LobbyScene::checkInsideAnyPlayer(int x, int y) {
+	for (int i = 0; i < 4; ++i) {
+		Area btn(0.65*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
+		if (btn.isInside(x, y)) {
+			audio.playEffect(SFX_BUTTON);
+			selectedPlayer = i;
 		}
 	}
 }
