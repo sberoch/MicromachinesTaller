@@ -26,10 +26,10 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0),
         _maxHealth(configuration->getCarMaxHealth()),
         _health(configuration->getCarMaxHealth()),
-        _maxForwardSpeed(configuration->getCarMaxForwardVelocity()),
-        _maxBackwardSpeed(configuration->getCarMaxBackwardsVelocity()),
-        _maxDriveForce(configuration->getCarMaxDriveForce()),
-        _desiredTorque(configuration->getCarDesiredTorque()),
+        _maxForwardSpeed(60),
+        _maxBackwardSpeed(-10),
+        _maxDriveForce(20),
+        _desiredTorque(25),
         _maxLateralImpulse(configuration->getCarMaxLateralImpulse()),
         _angularImpulse(configuration->getCarAngularImpulse()),
         _onGrass(false), _isMoving(false), _exploded(false),
@@ -268,7 +268,8 @@ void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
     status->id = id;
     _status.push_back(status);
 
-    _maxForwardSpeed += bpuFud->getSpeedToIncrease();
+    _maxForwardSpeed += 100;//bpuFud->getSpeedToIncrease();
+    _maxDriveForce = 30;
 }
 
 void Car::handleMud(MudFUD* mudFud, size_t id){
@@ -311,7 +312,8 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
 void Car::stopEffect(const int& effectType){
     switch (effectType) {
         case TYPE_BOOST_POWERUP :
-            _maxForwardSpeed += 10;
+            _maxForwardSpeed -= 100;
+            _maxDriveForce = 20;
             break;
         case TYPE_OIL :
             _angularImpulse = 0.9;

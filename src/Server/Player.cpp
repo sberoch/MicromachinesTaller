@@ -12,16 +12,11 @@ Player::Player(std::shared_ptr<Car> car, size_t id) :
 
 void Player::update(){
     _car->update();
-}
-
-
-void Player::handleInput(const InputEnum& input){
-    _car->handleInput(input);
-    //_car->update();
 
     std::vector<Effect*> aux;
     for (int i=0; i<_effects.size(); ++i){
         _effects[i]->timeOfAction --;
+        std::cout << "ioa " << _effects[i]->timeOfAction << "!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
         if (_effects[i]->timeOfAction == 0){
             _car->stopEffect(_effects[i]->type);
             delete _effects[i];
@@ -30,6 +25,11 @@ void Player::handleInput(const InputEnum& input){
         }
     }
     _effects.swap(aux);
+}
+
+
+void Player::handleInput(const InputEnum& input){
+    _car->handleInput(input);
 }
 
 void Player::receive(std::string& received, Protocol& protocol){
