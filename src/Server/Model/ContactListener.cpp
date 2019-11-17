@@ -143,7 +143,7 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
         Car* car = (Car*) a->GetBody()->GetUserData();
         Rock* rock = (Rock*) b->GetBody()->GetUserData();
 
-        contact->SetEnabled(false);
+        //contact->SetEnabled(false);
 
         if (began){
             rock->markToDelete();
@@ -154,7 +154,7 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
         Car* car = (Car*) b->GetBody()->GetUserData();
         Rock* rock = (Rock*) a->GetBody()->GetUserData();
 
-        contact->SetEnabled(false);
+        //contact->SetEnabled(false);
 
         if (began){
             rock->markToDelete();

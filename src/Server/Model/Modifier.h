@@ -112,7 +112,8 @@ private:
         shape.SetAsBox(configuration->getRockHalfWidth(), configuration->getRockHalfHeight());
         _fixtureDef.shape = &shape;
         _fixtureDef.density = configuration->getRockDensity();
-        _fixtureDef.isSensor = true;
+        _fixtureDef.isSensor = false;
+        _fixtureDef.restitution = 0.3f;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
         _fixture->SetUserData(new RockFUD(configuration->getRockVelToReduce(), configuration->getRockHealthToReduce(), _id));
