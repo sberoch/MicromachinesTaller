@@ -110,9 +110,9 @@ void Car::desaccelerate(){
     //apply necessary force
     float force = 0;
     if ( _maxBackwardSpeed > currentSpeed )
-        force = _maxDriveForce;
+        force = 15;
     else if ( _maxBackwardSpeed < currentSpeed )
-        force = -_maxDriveForce;
+        force = -15;
     else
         return;
     _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
@@ -306,7 +306,8 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
         _status.push_back(expStatus);
     }
     _health -= healthToReduce;
-    _maxForwardSpeed -= velToReduce;
+    if (_maxForwardSpeed - velToReduce > 10)
+        _maxForwardSpeed -= velToReduce;
 }
 
 void Car::stopEffect(const int& effectType){
