@@ -21,8 +21,8 @@ private:
     int _n_of_cars;
     std::vector<Car*> _cars;
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
-    std::vector<Track*> _track;
-    std::vector<Grass*> _grass;
+    std::vector<std::shared_ptr<Track>> _track;
+    std::vector<std::shared_ptr<Grass>> _grass;
 
     //A vector of active modifiers to delete
     std::vector<Modifier*> _activeModifiers;
@@ -39,8 +39,8 @@ public:
 
     json getSerializedMap();
 
-    void createTrack(std::vector<Track*>& track);
-    void createGrass(std::vector<Grass*>& grass);
+    void createTrack();
+    void createGrass();
     Car* createCar(size_t id);
 
     //Modifiers

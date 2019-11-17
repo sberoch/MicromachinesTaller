@@ -2,6 +2,7 @@
 #include "World.h"
 #include "../json/json.hpp"
 #include <iostream>
+#include <memory>
 
 using json = nlohmann::json;
 
@@ -14,8 +15,8 @@ World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
     _contactListener = new ContactListener(_world);
     _world->SetContactListener(_contactListener);
 
-    createTrack(_track);
-    createGrass(_grass);
+    createTrack();
+    createGrass();
 
     _modifierType.push_back(TYPE_HEALTH_POWERUP);
     _modifierType.push_back(TYPE_BOOST_POWERUP);
@@ -43,7 +44,7 @@ Car* World::createCar(size_t id){
     return car;
 }
 
-void World::createTrack(std::vector<Track*>& track){
+void World::createTrack(){
     std::ifstream i("map1.json");
     json j; i >> j;
 
@@ -58,15 +59,15 @@ void World::createTrack(std::vector<Track*>& track){
         angle = t["angle"].get<float>();
         type = t["type"].get<float>();
         id++;
-        Track* _track = new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration);
-        track.push_back(_track);
+        std::shared_ptr<Track> track = std::make_shared<Track>(new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration));
+        _track.push_back(track);
     }
 
-    track[0]->setAsStart();
-    track[track.size()-1]->setAsFinish();
+    _track[0]->setAsStart();
+    _track[_track.size()-1]->setAsFinish();
 }
 
-void World::createGrass(std::vector<Grass*>& grass){
+void World::createGrass(){
     std::ifstream i("map1.json");
     json j; i >> j;
 
@@ -81,8 +82,8 @@ void World::createGrass(std::vector<Grass*>& grass){
         angle = g["angle"].get<float>();
         type = g["type"].get<float>();
         id++;
-        Grass* _grass = new Grass(_world, id, type, x, y, angle * DEGTORAD, _configuration);
-        grass.push_back(_grass);
+        std::shared_ptr<Grass> grass = std::make_shared<Grass>(_world, id, type, x, y, angle * DEGTORAD, _configuration);
+        _grass.push_back(grass);
     }
 }
 
@@ -97,11 +98,11 @@ void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, f
     int rand = std::rand() % _track.size();
     Track* randomTrack = _track[rand];
 
-    float xhi = randomTrack->x() - 2.5f;
-    float xlo = randomTrack->x() + 2.5f;
+    float xhi = randomTrack->x() - _configuration->getTrackWidth();
+    float xlo = randomTrack->x() + _configuration->getTrackWidth();
 
-    float yhi = randomTrack->y() - 2.5f;
-    float ylo = randomTrack->y() + 2.5f;
+    float yhi = randomTrack->y() - _configuration->getTrackHeight();
+    float ylo = randomTrack->y() + _configuration->getTrackHeight();
 
     x = xlo + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(xhi-xlo)));
     y = ylo + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(yhi-ylo)));
@@ -134,14 +135,12 @@ void World::_updateCarsOnGrass(){
             float minDistance = _configuration->getMaxDistToTrack();
             for (auto & j : _track){
                 float distance = j->getDistance(_car->x(), _car->y());
-                if (distance < minDistance) {
+                if (distance < minDistance)
                     minDistance = distance;
-                }
             }
 
-            if (minDistance >= _configuration->getMaxDistToTrack()){
+            if (minDistance >= _configuration->getMaxDistToTrack())
                 _car->resetCar();
-            }
         }
     }
 }
