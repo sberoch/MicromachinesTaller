@@ -59,7 +59,7 @@ void World::createTrack(){
         angle = t["angle"].get<float>();
         type = t["type"].get<float>();
         id++;
-        std::shared_ptr<Track> track = std::make_shared<Track>(new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration));
+        std::shared_ptr<Track> track = std::shared_ptr<Track>(new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration));
         _track.push_back(track);
     }
 
@@ -82,7 +82,7 @@ void World::createGrass(){
         angle = g["angle"].get<float>();
         type = g["type"].get<float>();
         id++;
-        std::shared_ptr<Grass> grass = std::make_shared<Grass>(_world, id, type, x, y, angle * DEGTORAD, _configuration);
+        std::shared_ptr<Grass> grass = std::shared_ptr<Grass>(new Grass(_world, id, type, x, y, angle * DEGTORAD, _configuration));
         _grass.push_back(grass);
     }
 }
@@ -96,7 +96,7 @@ json World::getSerializedMap() {
 
 void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle){
     int rand = std::rand() % _track.size();
-    Track* randomTrack = _track[rand];
+    std::shared_ptr<Track> randomTrack = _track[rand];
 
     float xhi = randomTrack->x() - _configuration->getTrackWidth();
     float xlo = randomTrack->x() + _configuration->getTrackWidth();
