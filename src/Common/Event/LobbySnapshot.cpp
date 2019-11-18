@@ -125,6 +125,10 @@ void LobbySnapshot::addSelectedCar(int room_id, int player_room_id) {
     roomsMap.at(room_id).selectedCars[player_room_id] = true;
 }
 
+void LobbySnapshot::removeSelectedCar(int room_id, int player_room_id) {
+    roomsMap.at(room_id).selectedCars[player_room_id] = false;
+}
+
 const RoomsMap& LobbySnapshot::getRooms() {
     return roomsMap;
 }

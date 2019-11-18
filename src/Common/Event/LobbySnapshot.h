@@ -30,7 +30,9 @@ public:
     void createRoom(int room_id);
     void joinRoom(int player_id, int room_id);
     void startGame(int room_id);
+
     void addSelectedCar(int room_id, int player_room_id);
+    void removeSelectedCar(int room_id, int player_room_id);
 
     const RoomsMap& getRooms();
     int getMyId();
