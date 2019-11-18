@@ -8,7 +8,7 @@ include_directories(${CMAKE_SOURCE_DIR}/src/3rd-party)
 
 message("[INFO] Agregando Box2D como libreria")
 file(GLOB_RECURSE BOX2D_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/3rd-party/Box2D/*.cpp" "src/3rd-party/Box2D/*.h")
-add_library(Box2D STATIC ${BOX2D_SOURCES} src/Server/mods/speedPlugin.h)
+add_library(Box2D STATIC ${BOX2D_SOURCES} src/Server/mods/speedPlugin.h src/Server/mods/Plugin1.cpp src/Server/mods/main.cpp)
 
 message("[INFO] Cargando fuentes del servidor")
 file(GLOB_RECURSE SERVER_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Server/*.cpp" "src/Server/*.h")
@@ -22,7 +22,7 @@ file(GLOB_RECURSE CLIENT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Client/*.cpp"
 add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES})
 target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer)
 
-add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES} src/Server/Model/GameThread.cpp src/Server/Model/Configuration.cpp src/Server/Model/Configuration.h src/Server/Player.cpp src/Server/Player.h src/Server/Model/Grass.cpp src/Server/Model/Grass.h src/Server/Model/Modifier.cpp src/Server/Model/Modifier.h)
+add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES} src/Server/Model/GameThread.cpp src/Server/Model/Configuration.cpp src/Server/Model/Configuration.h src/Server/Player.cpp src/Server/Player.h src/Server/Model/Grass.cpp src/Server/Model/Grass.h src/Server/Model/Modifier.cpp src/Server/Model/Modifier.h src/Server/mods/Plugin1.cpp)
 target_link_libraries(mm_server Box2D)
 
 install(FILES assets/scene.json DESTINATION ${CMAKE_BINARY_DIR})

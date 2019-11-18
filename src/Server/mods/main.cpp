@@ -11,7 +11,22 @@
 typedef void* dynamic_lib_handle;
 
 static dynamic_lib_handle load_lib(const std::string& path);
-static Widget* instantiate(const dynamic_lib_handle handle);
+
+//static Plugin* instantiate(const dynamic_lib_handle handle);
+static Plugin* instantiate(const dynamic_lib_handle handle) {
+
+    if (handle == nullptr) return nullptr;
+
+    void *maker = dlsym(handle , "factory");
+
+    if (maker == nullptr) return nullptr;
+
+    typedef Plugin* (*fptr)();
+    fptr func = reinterpret_cast<fptr>(reinterpret_cast<void*>(maker));
+
+    return func();
+}
+
 static void close_lib(dynamic_lib_handle handle);
 
 struct dynamic_lib {
@@ -60,31 +75,16 @@ int main(int argc, char **argv) {
     // call each widget's message() func.
     for (Plugin* p : plugins) {
         if (p == nullptr) continue;
-
         std::cout << p->message() << std::endl;
         delete p;
     }
 }
 
 static dynamic_lib_handle load_lib(const std::string& path) {
-std::cout << "Trying to open: " << path << std::endl;
-return dlopen(path.data() , RTLD_NOW); // get a handle to the lib, may be nullptr.
+    std::cout << "Trying to open: " << path << std::endl;
+    return dlopen(path.data() , RTLD_NOW); // get a handle to the lib, may be nullptr.
 // RTLD_NOW ensures that all the symbols are resolved immediately. This means that
 // if a symbol cannot be found, the program will crash now instead of later.
-}
-
-static Plugin* instantiate(const dynamic_lib_handle handle) {
-
-    if (handle == nullptr) return nullptr;
-
-    void *maker = dlsym(handle , "factory");
-
-    if (maker == nullptr) return nullptr;
-
-    typedef Plugin* (*fptr)();
-    fptr func = reinterpret_cast<fptr>(reinterpret_cast<void*>(maker));
-
-    return func();
 }
 
 static void close_lib(dynamic_lib_handle handle) {
