@@ -74,3 +74,5 @@ install(FILES assets/car_engine.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_brake.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_explosion.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/menu_button.wav DESTINATION ${CMAKE_BINARY_DIR})
+
+install(FILES src/Server/mods/libs.txt DESTINATION ${CMAKE_BINARY_DIR})
