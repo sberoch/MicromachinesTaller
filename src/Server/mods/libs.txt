@@ -1,1 +1,1 @@
-./Plugin1.so
+../src/Server/mods/Plugin1.so

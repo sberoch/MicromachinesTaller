@@ -1,3 +1,5 @@
+#include <zconf.h>
+#include <sys/param.h>
 #include "ModsThread.h"
 
 ModsThread::ModsThread(std::string libs_filename) : unique_signal(42) {
@@ -49,7 +51,13 @@ Plugin* ModsThread::instantiate(const dynamic_lib_handle handle) {
 
 dynamic_lib_handle ModsThread::load_lib(const std::string &path) {
     std::cout << "Trying to open: " << path << std::endl;
-    return dlopen(path.data() , RTLD_NOW); // get a handle to the lib, may be nullptr.
-// RTLD_NOW ensures that all the symbols are resolved immediately. This means that
-// if a symbol cannot be found, the program will crash now instead of later.
+    void* shared_lib = dlopen(path.data(), RTLD_NOW);
+    const char* err = dlerror();
+    if (!shared_lib) {
+        printf("dlopen failed: %s\n", err);
+        return nullptr;
+    }
+    return shared_lib;
 }
+
+

@@ -8,6 +8,10 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <stdio.h>
+#include <cstdlib>
+#include <dirent.h>
+#include <string.h>
 
 #include "Plugin.h"
 #include "DTOs.h"
@@ -41,7 +45,7 @@ private:
 public:
     ModsThread(std::string libs_filename);
     void run();
-    ~ModsThread();
+    ~ModsThread() = default;
 };
 
 #endif //MICROMACHINES_MODSTHREAD_H
