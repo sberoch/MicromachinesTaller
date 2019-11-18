@@ -191,6 +191,8 @@ void LobbyScene::checkInsideAnyRoom(int x, int y) {
     for (int i = 0; i < roomsMap.size(); ++i) {
         Area btn(0.15*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
         if (btn.isInside(x, y)) {
+            hasJoinedARoom = false;
+            selectedPlayer = -1;
             audio.playEffect(SFX_BUTTON);
             selectedRoom = i;
         }
