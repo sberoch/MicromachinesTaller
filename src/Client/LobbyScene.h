@@ -34,13 +34,14 @@ private:
 
     bool _done;
     bool fullscreen;
-    int selectedRoom;
-    int selectedPlayer;
     int nextScene;
     int xScreen, yScreen;
 
+    int selectedRoom;
+    int selectedPlayer;
     int& myId;
-    bool hasJoinedARoom;
+    int joinedRoom;
+    int joinedPlayer;
     bool& isBot;
 public:
     LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,

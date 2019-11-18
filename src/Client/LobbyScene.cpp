@@ -13,10 +13,12 @@ LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
         creator(window),
         _done(false),
         fullscreen(true),
+        nextScene(SCENE_LOBBY),
+
         selectedRoom(-1),
         selectedPlayer(-1),
-        nextScene(SCENE_LOBBY),
-        hasJoinedARoom(false),
+        joinedRoom(-1),
+        joinedPlayer(-1),
         myId(myId),
         isBot(isBot) {
     roomViews.push_back(creator.create(TYPE_ROOM_1, 0, 0, 0));
@@ -113,7 +115,7 @@ int LobbyScene::handle() {
             int x, y;
             SDL_GetMouseState(&x, &y);
             if (insidePlayButton(x, y)) {
-                if (roomsMap.size() > 0 && selectedRoom != -1 && hasJoinedARoom) {
+                if (roomsMap.size() > 0 && selectedRoom != -1 && joinedRoom != -1) {
                     sendQueue.push(new PlayEvent(myId));
                     audio.playEffect(SFX_BUTTON);
                     nextScene = SCENE_GAME;
@@ -135,15 +137,14 @@ int LobbyScene::handle() {
             }
             else if (insideJoinRoomButton(x, y)) {
                 if (roomsMap.size() > 0 && selectedRoom != -1 && selectedPlayer != -1) {
-                    hasJoinedARoom = true;
+                    joinedRoom = selectedRoom;
+                    joinedPlayer = selectedPlayer;
                     audio.playEffect(SFX_BUTTON);
                     sendQueue.push(new EnterRoomEvent(myId, selectedRoom, selectedPlayer));
                 }
             } else {
                 checkInsideAnyRoom(x, y);
-                if (!hasJoinedARoom) {
-                    checkInsideAnyPlayer(x, y);
-                }
+                checkInsideAnyPlayer(x, y);
             }
 
         } else if (e.type == SDL_KEYDOWN) {
@@ -189,10 +190,16 @@ bool LobbyScene::insideJoinRoomButton(int x, int y) {
 
 void LobbyScene::checkInsideAnyRoom(int x, int y) {
     for (int i = 0; i < roomsMap.size(); ++i) {
+
         Area btn(0.15*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
+
         if (btn.isInside(x, y)) {
-            hasJoinedARoom = false;
-            selectedPlayer = -1;
+            if (joinedRoom == i) {
+                selectedPlayer = joinedPlayer;
+            } else {
+                selectedPlayer = -1;
+            }
+            
             audio.playEffect(SFX_BUTTON);
             selectedRoom = i;
         }
@@ -201,8 +208,11 @@ void LobbyScene::checkInsideAnyRoom(int x, int y) {
 
 void LobbyScene::checkInsideAnyPlayer(int x, int y) {
     for (int i = 0; i < 4; ++i) {
+
         Area btn(0.65*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
-        if (btn.isInside(x, y) && !roomsMap.at(selectedRoom).selectedCars.at(i)) {
+        bool alreadyPicked = roomsMap.at(selectedRoom).selectedCars.at(i);
+
+        if (btn.isInside(x, y) && !alreadyPicked && selectedPlayer == -1) {
             audio.playEffect(SFX_BUTTON);
             selectedPlayer = i;
         }
