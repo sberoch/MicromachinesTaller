@@ -23,7 +23,7 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
     std::shared_ptr<Event> event;
 
     int i = 0;
-    while (acceptSocketRunning && roomRunning) {
+    while (roomRunning && acceptSocketRunning) {
         try {
             if (i % _configuration->getModifiersCreationFrequency() == 0){
                 size_t type, id;
@@ -33,7 +33,6 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                 for (auto &actualClient : clients) {
                     actualClient.second->createModifier(type, id, x, y, angle);
                 }
-
             }
 
             std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent);
@@ -72,7 +71,7 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
             }
         } catch (SocketError &se) {
             roomRunning = false;
-            std::cerr << se.what();
+            std::cout << "SocketErrorFromGameTrhead" << se.what() <<std::endl;
         } catch (std::exception &e){
             roomRunning = false;
             std::cout << "Excepcion desde game thread: " << std::endl;

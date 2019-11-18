@@ -24,6 +24,7 @@ private:
     SafeQueue<std::string> queue;
     SafeCounter roomCounter;
     std::atomic_bool& acceptSocketRunning;
+    std::atomic_bool stopped;
     std::mutex m;
     LobbyListener listener;
     Collector collector;

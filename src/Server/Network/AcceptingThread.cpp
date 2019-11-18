@@ -21,11 +21,13 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
                 std::cout << "Client connected" << std::endl;
                 int clientId = clientCounter.returnAndAddOne();
                 roomController.addClient(clientId, std::move(newProtocol));
-            } catch (SocketError &e){
+            } catch (SocketError &e) {
                 running = false;
                 roomController.stop();
             }
         }
+    } catch (SocketError &e) {
+        printf("SocketError from accepting Thread: %s \n", e.what());
     } catch(const std::exception &e) {
         printf("ERROR from accepting Thread: %s \n", e.what());
     } catch(...) {
@@ -34,6 +36,6 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
 }
 
 AcceptingThread::~AcceptingThread(){
-    roomController.stop();
+    //roomController.stop();
 }
 

@@ -9,6 +9,7 @@
 
 RoomController::RoomController(std::atomic_bool &running) :
             queue(false), acceptSocketRunning(running),
+            stopped(false),
             listener(clientsWithNoRoom, running, *this),
             collector(clientsWithNoRoom, rooms){
     listener.start();
@@ -67,21 +68,29 @@ void RoomController::addClient(int clientId, Protocol protocol) {
 }
 
 void RoomController::stop() {
-    std::lock_guard<std::mutex> lock(this->m);
-    listener.stop();
-    listener.join();
-    std::cout << "Destroying clients with no room" << std::endl;
-    for (auto &client: clientsWithNoRoom){
-        client.second->stop();
-        client.second->join();
-    }
+    //std::lock_guard<std::mutex> lock(this->m);
+    if (!stopped) {
+        listener.stop();
+        listener.join();
+        std::cout << "Destroying clients with no room" << std::endl;
+        for (auto &client: clientsWithNoRoom) {
+            if (!client.second->isDead()) {
+                client.second->stop();
+                client.second->join();
+            }
+        }
 
-    std::cout << "Destroying rooms" << std::endl;
-    for (auto &room: rooms){
-        room.second->stop();
-        room.second->join();
+        std::cout << "Destroying rooms" << std::endl;
+        for (auto &room: rooms) {
+            if (!room.second->isDead()) {
+                room.second->stop();
+                room.second->joinThread();
+            }
+        }
+        stopped = true;
     }
 }
+
 
 void RoomController::sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot){
     std::lock_guard<std::mutex> lock(this->m);

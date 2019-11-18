@@ -46,6 +46,8 @@ public:
                             std::shared_ptr<ClientThread> newClient);
 
     int getAFreeId();
+
+    void joinThread();
 };
 
 

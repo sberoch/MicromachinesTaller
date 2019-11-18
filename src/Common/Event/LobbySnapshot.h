@@ -7,6 +7,11 @@
 #include <map>
 #include <list>
 
+struct PlayerStruct {
+    int clientId;
+    int idInRoom;
+};
+
 struct RoomStruct {
 	int id;
 	bool gameStarted;
@@ -18,7 +23,7 @@ typedef std::map<int, RoomStruct> RoomsMap;
 class LobbySnapshot : public Event {
 private:
 	RoomsMap roomsMap;
-	int actualClientId;
+	PlayerStruct actualClient{};
 public:
 	LobbySnapshot() = default;
 

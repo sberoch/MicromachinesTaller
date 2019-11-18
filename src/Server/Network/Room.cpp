@@ -58,6 +58,10 @@ void Room::addClient(int clientId, std::shared_ptr<ClientThread> newClient) {
     }
 }
 
+void Room::joinThread() {
+    std::cout << "Joineando room: " << this->roomId << std::endl;
+    this->join();
+}
 
 
 std::shared_ptr<Car> Room::createCar(int id) {
