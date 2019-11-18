@@ -342,6 +342,10 @@ Car::~Car(){
     delete _turningState;
 }
 
+void Car::assignId(int id) {
+    this->_id = id;
+}
+
 //////////////////////// CAR MOVING STATE ///////////////////////////
 
 class NegAcceleratingState : public CarMovingState {

@@ -24,13 +24,14 @@ private:
     SafeQueue<std::string> queue;
     SafeCounter roomCounter;
     std::atomic_bool& acceptSocketRunning;
+    std::atomic_bool stopped;
     std::mutex m;
     LobbyListener listener;
     Collector collector;
 
     int getRoomIdOfClient(int clientId);
 
-    void moveClientToNewRoom(int newRoomId, int clientId);
+    void moveClientToNewRoom(int newRoomId, int clientId, int newPlayerIdFromRoom);
 
 public:
     explicit RoomController(std::atomic_bool& running);
@@ -38,8 +39,6 @@ public:
    int addRoom();
 
    void addClient(int clientId, Protocol protocol);
-
-   void addClientToRoom(int roomId, int clientId);
 
    void stop();
 
@@ -56,6 +55,10 @@ public:
     sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot);
 
     void collectDeadClients();
+
+    void addClientToRoom(int roomId, int clientId, int playerIdInRoom);
+
+    int getIdFromRoom(int clientId);
 };
 
 

@@ -28,6 +28,4 @@ void Server::run(){
 
 
 
-Server::~Server() {
-
-}
+Server::~Server() = default;

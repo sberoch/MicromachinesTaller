@@ -35,10 +35,7 @@ void Socket::stop(){
 }
 
 Socket::~Socket(){
-    if (this->fd != -1) {
-        shutdown(this->fd, SHUT_RDWR);
-        close(this->fd);
-    }
+   this->stop();
 }
 
 void Socket::setHintsForServer(void* addrinfo){

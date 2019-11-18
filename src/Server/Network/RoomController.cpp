@@ -9,6 +9,7 @@
 
 RoomController::RoomController(std::atomic_bool &running) :
             queue(false), acceptSocketRunning(running),
+            stopped(false),
             listener(clientsWithNoRoom, running, *this),
             collector(clientsWithNoRoom, rooms){
     listener.start();
@@ -36,24 +37,34 @@ int RoomController::getRoomIdOfClient(int clientId) {
     return -1;
 }
 
-void RoomController::moveClientToNewRoom(int newRoomId, int clientId){
+
+int RoomController::getIdFromRoom(int clientId) {
+    for (auto &room: rooms) {
+        if (room.second->hasClient(clientId)) {
+            return room.second->getRoomIdFromClient(clientId);
+        }
+    }
+    return -1;
+}
+
+void RoomController::moveClientToNewRoom(int newRoomId, int clientId, int newPlayerIdFromRoom){
     int oldRoomId = getRoomIdOfClient(clientId);
     auto client = rooms.at(oldRoomId)->eraseClientAndReturn(clientId);
+    client->assignIdFromRoom(newPlayerIdFromRoom);
     rooms.at(newRoomId)->addClientAlreadyCreated(clientId, client);
 }
 
 
-void RoomController::addClientToRoom(int roomId, int clientId) {
+void RoomController::addClientToRoom(int newRoomId, int clientId, int playerIdInRoom) {
     std::lock_guard<std::mutex> lock(this->m);
-    std::cout << "Client added to room " << roomId << std::endl;
-
+    std::cout << "Client added to room " << newRoomId << std::endl;
     if (clientsWithNoRoom.count(clientId)) {
-        rooms.at(roomId)->addClient(clientId, this->clientsWithNoRoom[clientId]);
+        clientsWithNoRoom.at(clientId)->assignIdFromRoom(playerIdInRoom);
+        rooms.at(newRoomId)->addClient(clientId, this->clientsWithNoRoom[clientId]);
         this->clientsWithNoRoom.erase(clientId);
     } else {
-        moveClientToNewRoom(roomId, clientId);
+        moveClientToNewRoom(newRoomId, clientId, playerIdInRoom);
     }
-
 }
 
 void RoomController::addClient(int clientId, Protocol protocol) {
@@ -67,21 +78,29 @@ void RoomController::addClient(int clientId, Protocol protocol) {
 }
 
 void RoomController::stop() {
-    std::lock_guard<std::mutex> lock(this->m);
-    listener.stop();
-    listener.join();
-    std::cout << "Destroying clients with no room" << std::endl;
-    for (auto &client: clientsWithNoRoom){
-        client.second->stop();
-        client.second->join();
-    }
+    //std::lock_guard<std::mutex> lock(this->m);
+    if (!stopped) {
+        listener.stop();
+        listener.join();
+        std::cout << "Destroying clients with no room" << std::endl;
+        for (auto &client: clientsWithNoRoom) {
+            if (!client.second->isDead()) {
+                client.second->stop();
+                client.second->join();
+            }
+        }
 
-    std::cout << "Destroying rooms" << std::endl;
-    for (auto &room: rooms){
-        room.second->stop();
-        room.second->join();
+        std::cout << "Destroying rooms" << std::endl;
+        for (auto &room: rooms) {
+            if (!room.second->isDead()) {
+                room.second->stop();
+                room.second->joinThread();
+            }
+        }
+        stopped = true;
     }
 }
+
 
 void RoomController::sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot){
     std::lock_guard<std::mutex> lock(this->m);
@@ -106,6 +125,9 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
     Type input = (Type) j["type"].get<int>();
     int client_id;
     int roomId;
+    int playerInRoomId;
+    int oldRoomId;
+    int oldIdFromRoom;
     switch (input) {
         case ENTER_LOBBY:
             std::cout << "Enter lobby" << std::endl;
@@ -114,9 +136,19 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
         case ENTER_ROOM:
             client_id = j["client_id"].get<int>();
             roomId = j["selected_room"].get<int>();
-            std::cout << "Enter to room " << roomId << " from client clientId: " << client_id << std::endl;
-            this->addClientToRoom(roomId, client_id);
+            playerInRoomId = j["selected_player"].get<int>();
+            std::cout << "Enter to room " << roomId
+                      << " from client clientId: " << client_id
+                      << " with player id " << playerInRoomId << std::endl;
+
+            oldRoomId = getRoomIdOfClient(client_id);
+            oldIdFromRoom = getIdFromRoom(client_id);
+            addClientToRoom(roomId, client_id, playerInRoomId);
             snapshot->joinRoom(client_id, roomId);
+
+            snapshot->removeSelectedCar(oldRoomId, oldIdFromRoom);
+            snapshot->addSelectedCar(roomId, playerInRoomId);
+
             sendToAllClientsWithRoom(snapshot);
             sendToClientsWithoutRoom(snapshot);
             break;
@@ -155,5 +187,6 @@ RoomController::~RoomController() {
         acceptSocketRunning = false;
     }
 }
+
 
 

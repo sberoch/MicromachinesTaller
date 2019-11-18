@@ -20,7 +20,6 @@ public:
              SafeQueue<std::shared_ptr<Event>>& incomingEvents,
              std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients);
 
-    void join();
     ~GameThread();
     json getSerializedMap();
     std::shared_ptr<Car> createCar(int id);

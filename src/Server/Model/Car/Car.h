@@ -115,6 +115,7 @@ public:
     const float angle();
     const float health();
     const float speed();
+    void assignId(int id);
     const b2Vec2 linearVelocity();
     b2Body* body() const;
     const bool onGrass();

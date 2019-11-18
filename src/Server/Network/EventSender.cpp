@@ -19,12 +19,14 @@ void EventSender::run() {
     std::shared_ptr<Event> toBeSent;
     try {
         while (acceptSocketRunning && clientStillTalking) {
-            sendingBlockingQueue.pop(toBeSent);
-            toBeSent->send(protocol);
+            try {
+                sendingBlockingQueue.pop(toBeSent);
+                toBeSent->send(protocol);
+            } catch (const SocketError &e) {
+                clientStillTalking = false;
+                std::cout << "Socket error from event sender" << std::endl;
+            }
         }
-    } catch(const SocketError &e){
-        clientStillTalking = false;
-        std::cout << "Socket error from event sender" << std::endl;
     } catch(const std::exception& e) {
         //TODO:Habria que avisar de alguna forma la desconexion.
         clientStillTalking = false;
