@@ -18,9 +18,9 @@ std::shared_ptr<Event> EventCreator::makeEvent(const std::string& recvdEvent){
     auto j = json::parse(recvdEvent);
     int type = j["type"].get<int>();
     int id;
-    int selectedRoom;
+    int selectedRoom, selectedPlayer;
     std::cout << "Type: " << type << std::endl;
-    
+
     switch (type) {
         case COMMAND:
             return std::shared_ptr<Event>(new CommandEvent(j));
@@ -28,25 +28,26 @@ std::shared_ptr<Event> EventCreator::makeEvent(const std::string& recvdEvent){
             return std::shared_ptr<Event>(new SnapshotEvent);
         case ENTER_LOBBY:
             return std::shared_ptr<Event>(new EnterLobbyEvent);
-            
-        case ENTER_ROOM: 
+
+        case ENTER_ROOM:
             id = j["client_id"].get<int>();
             selectedRoom = j["selected_room"].get<int>();
-            return std::shared_ptr<Event>(new EnterRoomEvent(id, selectedRoom));
-            
+            selectedPlayer = j["selected_player"].get<int>();
+            return std::shared_ptr<Event>(new EnterRoomEvent(id, selectedRoom, selectedPlayer));
+
         case CREATE_ROOM:
             return std::shared_ptr<Event>(new CreateRoomEvent);
-        
+
         case PLAY: {
             id = j["client_id"].get<int>();
             return std::shared_ptr<Event>(new PlayEvent(id));
         }
 
-        default: 
+        default:
             throw std::runtime_error("Wrong event type");
     }
-    
-    
+
+
 //    if (type == COMMAND)
 //        return std::shared_ptr<Event>(new CommandEvent(j));
 //    else if (type == SNAPSHOT)

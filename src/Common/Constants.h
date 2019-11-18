@@ -21,6 +21,7 @@
 #define TYPE_START_LINE 119
 #define TYPE_GRASS 120
 #define TYPE_ARROW 121
+#define TYPE_CAR_SELECTED 122
 
 //Scenes
 #define SCENE_MENU 200
