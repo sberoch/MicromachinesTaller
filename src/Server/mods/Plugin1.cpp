@@ -6,7 +6,7 @@
 class Plugin1 : public Plugin {
 public:
     std::string message(void) {
-        return "Hello. I'm Test Widget1\nOh and the unique_signal is: " + std::to_string(unique_signal);
+        return "Hello. I'm Test Widget1\n";
     }
 
     void run(WorldDTO* world){
