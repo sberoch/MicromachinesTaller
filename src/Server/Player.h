@@ -24,7 +24,7 @@ struct Effect {
 class Player {
 private:
     std::shared_ptr<Car> _car;
-    size_t _id;
+    int& inRoomId;
     ModifierDTO* _modifierDTO;
     bool _modifierToAdd;
 
@@ -34,7 +34,7 @@ private:
 
 
 public:
-    Player(std::shared_ptr<Car> car, size_t id);
+    Player(std::shared_ptr<Car> car, int& inRoomId);
     void handleInput(const InputEnum& input);
     void handleInput(std::string& input);
     void createModifier(const size_t& type, const size_t& id, const float& x, const float& y, const float& angle);
@@ -43,7 +43,9 @@ public:
 
     std::shared_ptr<SnapshotEvent> sendStart(json j);
 
-    void assignCar(std::shared_ptr<Car> newCar);
+    void assignCarAndId(std::shared_ptr<Car> newCar);
+
+    void assignCarId(int id);
 
     void update();
 };

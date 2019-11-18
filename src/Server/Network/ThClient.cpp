@@ -15,7 +15,7 @@ ClientThread::ClientThread(Protocol protocol, RoomController& controller, int cl
         keepTalking(true),
         protocol(std::move(protocol)),
         clientId(clientId),
-        player(nullptr, clientId),
+        player(nullptr, idFromRoom),
         receivingNonBlockingQueue(nullptr),
         sendingBlockingQueue(true),
         sender(std::ref(this->protocol), sendingBlockingQueue,
@@ -67,7 +67,7 @@ void ClientThread::handleInput(const InputEnum &input) {
 }
 
 void ClientThread::assignCar(const std::shared_ptr<Car>& car){
-    this->player.assignCar(car);
+    this->player.assignCarAndId(car);
 }
 
 void ClientThread::createModifier(const size_t& type, const size_t& id, const float& x,
@@ -114,4 +114,5 @@ void ClientThread::assignRoomId(int id) {
 void ClientThread::update(){
     player.update();
 }
+
 

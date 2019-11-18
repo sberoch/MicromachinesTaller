@@ -4,9 +4,9 @@
 #include <utility>
 #include "../Server/Model/Car/Car.h"
 
-Player::Player(std::shared_ptr<Car> car, size_t id) :
+Player::Player(std::shared_ptr<Car> car, int& inRoomId) :
                         _car(std::move(car)),
-                        _id(id),
+                        inRoomId(inRoomId),
                         _modifierToAdd(false),
                         _modifierDTO(new ModifierDTO()) {}
 
@@ -94,7 +94,7 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
         _modifierToAdd = false;
     }
 
-    snapshot->setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), _id);
+    snapshot->setCar(_car->x(), _car->y(), _car->angle() * RADTODEG, _car->health(), inRoomId);
 }
 
 std::shared_ptr<SnapshotEvent> Player::sendStart(json j) {
@@ -104,6 +104,7 @@ std::shared_ptr<SnapshotEvent> Player::sendStart(json j) {
     return snap;
 }
 
-void Player::assignCar(std::shared_ptr<Car> newCar) {
+void Player::assignCarAndId(std::shared_ptr<Car> newCar) {
+    newCar->assignId(this->inRoomId);
     this->_car = std::move(newCar);
 }

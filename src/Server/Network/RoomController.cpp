@@ -37,22 +37,24 @@ int RoomController::getRoomIdOfClient(int clientId) {
     return -1;
 }
 
-void RoomController::moveClientToNewRoom(int newRoomId, int clientId){
+void RoomController::moveClientToNewRoom(int newRoomId, int clientId, int newPlayerIdFromRoom){
     int oldRoomId = getRoomIdOfClient(clientId);
     auto client = rooms.at(oldRoomId)->eraseClientAndReturn(clientId);
+    client->assignRoomId(newPlayerIdFromRoom);
     rooms.at(newRoomId)->addClientAlreadyCreated(clientId, client);
 }
 
 
-void RoomController::addClientToRoom(int roomId, int clientId) {
+void RoomController::addClientToRoom(int roomId, int clientId, int playerIdInRoom) {
     std::lock_guard<std::mutex> lock(this->m);
     std::cout << "Client added to room " << roomId << std::endl;
 
     if (clientsWithNoRoom.count(clientId)) {
+        clientsWithNoRoom.at(clientId)->assignRoomId(playerIdInRoom);
         rooms.at(roomId)->addClient(clientId, this->clientsWithNoRoom[clientId]);
         this->clientsWithNoRoom.erase(clientId);
     } else {
-        moveClientToNewRoom(roomId, clientId);
+        moveClientToNewRoom(roomId, clientId, playerIdInRoom);
     }
 
 }
@@ -131,7 +133,7 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
 
             //TODO: no toque nada mas alla de estos metodos, hay que asignar el
             //id dentro del room que el player eligio (playerInRoomId)
-            this->addClientToRoom(roomId, client_id);
+            this->addClientToRoom(roomId, client_id, playerInRoomId);
             snapshot->joinRoom(client_id, roomId);
 
             snapshot->addSelectedCar(client_id, playerInRoomId);

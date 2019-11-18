@@ -51,7 +51,8 @@ void Room::addClientAlreadyCreated(int clientId, std::shared_ptr<ClientThread> n
 void Room::addClient(int clientId, std::shared_ptr<ClientThread> newClient) {
     if (clients.size() < maxAmountOfPlayers){
         // Usar id propia del room
-        newClient->assignCar(std::shared_ptr<Car>(this->game.createCar(clientId)));
+        auto car = std::shared_ptr<Car>(createCar(0));
+        newClient->assignCar(car);
         this->clients.insert({clientId, newClient});
     } else {
         throw std::runtime_error("Se intento meter un cliente a una sala llena");

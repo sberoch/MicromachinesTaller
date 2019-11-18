@@ -31,7 +31,7 @@ private:
 
     int getRoomIdOfClient(int clientId);
 
-    void moveClientToNewRoom(int newRoomId, int clientId);
+    void moveClientToNewRoom(int newRoomId, int clientId, int newPlayerIdFromRoom);
 
 public:
     explicit RoomController(std::atomic_bool& running);
@@ -40,7 +40,7 @@ public:
 
    void addClient(int clientId, Protocol protocol);
 
-   void addClientToRoom(int roomId, int clientId);
+   void addClientToRoom(int roomId, int clientId, int playerIdInRoom);
 
    void stop();
 
