@@ -11,6 +11,7 @@
 #include "../Common/Event/SnapshotEvent.h"
 #include "../Common/Event/LobbySnapshot.h"
 #include "../Common/Protocol.h"
+#include "PlayerDescriptor.h"
 #include <map>
 
 class SceneSelector {
@@ -28,8 +29,7 @@ private:
 	SenderThread sender;
 	
 	int currentScene;
-	int myId;
-	bool isBot;
+	PlayerDescriptor player;
 
 public:
 	SceneSelector(int xScreen, int yScreen,

@@ -6,27 +6,26 @@
 using json = nlohmann::json;
 
 GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
-					SafeQueue<Event*>& sendQueue, int& myId, bool& isBot) : 
+					SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) : 
 	window(window),
 	isDone(false),
 	recvQueue(recvQueue),
 	sendQueue(sendQueue),
-	myId(myId),
+	player(player),
 
 	backgroundTex("background.png", window),
 	background(backgroundTex),
 	display(window),
 	
-	handler(window, audio, sendQueue, myId),
+	handler(window, audio, sendQueue, player.globalId),
 	creator(window),
 
 	gameObjects(creator),
-	bot(gameObjects, audio, sendQueue, myId),
+	bot(gameObjects, audio, sendQueue, player),
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
 	yScreen(0),
 	nextScene(SCENE_GAME),
-	isBot(isBot),
 	isGameOver(false),
 	isMapReady(false) {}
 
@@ -52,7 +51,7 @@ void GameScene::updateCars(CarStructList cars) {
 		carView->setRotation(car.angle);
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
-		if (car.id == myId) {
+		if (car.id == player.playerId) {
 			display.update(xScreen/2 - conv.blockToPixel(car.x),
 						   yScreen/2 - conv.blockToPixel(car.y),
 						   car.health);
@@ -95,7 +94,7 @@ void GameScene::draw() {
 
 int GameScene::handle() {
 	if (isMapReady) {
-		if (isBot) {
+		if (player.isBot) {
 			bot.handle();
 
 		} else {

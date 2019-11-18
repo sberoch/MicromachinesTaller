@@ -4,7 +4,7 @@
 #include "../Common/Event/PlayEvent.h"
 
 LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
-                       SafeQueue<Event*>& sendQueue, int& myId, bool& isBot) :
+                       SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) :
         window(window),
         lobbyRecvQueue(lobbyRecvQueue),
         sendQueue(sendQueue),
@@ -19,8 +19,7 @@ LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
         selectedPlayer(-1),
         joinedRoom(-1),
         joinedPlayer(-1),
-        myId(myId),
-        isBot(isBot) {
+        player(player) {
     roomViews.push_back(creator.create(TYPE_ROOM_1, 0, 0, 0));
     roomViews.push_back(creator.create(TYPE_ROOM_2, 0, 0, 0));
     roomViews.push_back(creator.create(TYPE_ROOM_3, 0, 0, 0));
@@ -46,7 +45,7 @@ void LobbyScene::update() {
     LobbySnapshot* snap;
     if (lobbyRecvQueue.pop(snap)) {
         updateRooms(snap->getRooms());
-        myId = snap->getMyId();
+        player.globalId = snap->getMyId();
     }
 
 }
@@ -58,8 +57,8 @@ void LobbyScene::updateRooms(RoomsMap roomsMap) {
     //Check if any game started and if i'm in it.
     for (auto& room : roomsMap) {
         if (room.second.gameStarted) {
-            for (auto& player : room.second.players) {
-                if (player == myId) {
+            for (auto& playerId : room.second.players) {
+                if (playerId == player.globalId) {
                     nextScene = SCENE_GAME;
                 }
             }
@@ -116,17 +115,17 @@ int LobbyScene::handle() {
             SDL_GetMouseState(&x, &y);
             if (insidePlayButton(x, y)) {
                 if (roomsMap.size() > 0 && selectedRoom != -1 && joinedRoom != -1) {
-                    sendQueue.push(new PlayEvent(myId));
+                    sendQueue.push(new PlayEvent(player.globalId));
                     audio.playEffect(SFX_BUTTON);
                     nextScene = SCENE_GAME;
                 }
             }
             else if (insideUserButton(x, y)) {
-                isBot = false;
+                player.isBot = false;
                 audio.playEffect(SFX_BUTTON);
             }
             else if (insideBotButton(x, y)) {
-                isBot = true;
+                player.isBot = true;
                 audio.playEffect(SFX_BUTTON);
             }
             else if (insideCreateRoomButton(x, y)) {
@@ -140,7 +139,8 @@ int LobbyScene::handle() {
                     joinedRoom = selectedRoom;
                     joinedPlayer = selectedPlayer;
                     audio.playEffect(SFX_BUTTON);
-                    sendQueue.push(new EnterRoomEvent(myId, selectedRoom, selectedPlayer));
+                    sendQueue.push(new EnterRoomEvent(player.globalId, selectedRoom, joinedPlayer));
+                    player.playerId = joinedPlayer;
                 }
             } else {
                 checkInsideAnyRoom(x, y);
@@ -211,8 +211,9 @@ void LobbyScene::checkInsideAnyPlayer(int x, int y) {
 
         Area btn(0.65*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
         bool alreadyPicked = roomsMap.at(selectedRoom).selectedCars.at(i);
+        bool canChange = (joinedPlayer == -1) || (joinedRoom != selectedRoom); 
 
-        if (btn.isInside(x, y) && !alreadyPicked && selectedPlayer == -1) {
+        if (btn.isInside(x, y) && !alreadyPicked && canChange) {
             audio.playEffect(SFX_BUTTON);
             selectedPlayer = i;
         }

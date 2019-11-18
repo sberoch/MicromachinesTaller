@@ -12,6 +12,7 @@
 #include "TextureCreator.h"
 #include "Audio.h"
 #include "View/BackgroundView.h"
+#include "PlayerDescriptor.h"
 #include <vector>
 
 
@@ -36,16 +37,15 @@ private:
     bool fullscreen;
     int nextScene;
     int xScreen, yScreen;
+    PlayerDescriptor& player;
 
     int selectedRoom;
     int selectedPlayer;
-    int& myId;
     int joinedRoom;
     int joinedPlayer;
-    bool& isBot;
 public:
     LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
-               SafeQueue<Event*>& sendQueue, int& myId, bool& isBot);
+               SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
     virtual bool done() override;
     virtual void update() override;
     virtual void draw() override;

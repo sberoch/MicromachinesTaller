@@ -17,12 +17,10 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 	sendQueue(true),
 	receiver(gameRecvQueue, lobbyRecvQueue, protocol),
 	sender(sendQueue, protocol),
-	currentScene(SCENE_MENU),
-	myId(-1),
-	isBot(false) {
+	currentScene(SCENE_MENU) {
 		scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window, sendQueue)));
-		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, lobbyRecvQueue, sendQueue, myId, isBot)));
-		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, gameRecvQueue, sendQueue, myId, isBot)));
+		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, lobbyRecvQueue, sendQueue, player)));
+		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, gameRecvQueue, sendQueue, player)));
 		scenes.insert(std::make_pair(SCENE_END, new EndScene(window)));
 		
 		receiver.start();
