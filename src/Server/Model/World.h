@@ -9,6 +9,7 @@
 #include "FixtureUserData.h"
 #include "Grass.h"
 #include "Modifier.h"
+#include "../mods/DTOs.h"
 
 using json = nlohmann::json;
 
@@ -47,6 +48,8 @@ public:
     void createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle);
 
     void step(uint32_t velocityIt, uint32_t positionIt);
+
+    void toDTO(WorldDTO_t* world);
 
     ~World();
 };

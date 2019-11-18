@@ -25,10 +25,10 @@ typedef struct TrackDTO {
 } TrackDTO_t;
 
 typedef struct WorldDTO {
-    CarDTO_t* cars[MAX_CARS];
+    CarDTO_t cars[MAX_CARS];
     size_t cars_size;
 
-    TrackDTO_t* track[MAX_TRACKS];
+    TrackDTO_t track[MAX_TRACKS];
     size_t track_size;
 } WorldDTO_t;
 

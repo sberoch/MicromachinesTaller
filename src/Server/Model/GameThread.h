@@ -7,9 +7,14 @@
 #include "../Network/ThClient.h"
 #include <thread>
 
+#include "../mods/ModsThread.h"
+
 class GameThread {
 private:
     World _world;
+
+    WorldDTO_t _worldDTO;
+
     std::shared_ptr<Configuration> _configuration;
 
     bool _gameToStart, _gameStarted, _gameEnded;

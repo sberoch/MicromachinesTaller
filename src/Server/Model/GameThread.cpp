@@ -14,13 +14,18 @@ GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>
                                              _world(n_of_players, configuration),
                                              _gameToStart(true),
                                              _gameStarted(false),
-                                             _gameEnded(false){}
+                                             _gameEnded(false){
+
+}
 
 void GameThread::run(std::atomic_bool& acceptSocketRunning,
         std::atomic_bool& roomRunning,
         SafeQueue<std::shared_ptr<Event>>& incomingEvents,
         std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
     std::shared_ptr<Event> event;
+
+    ModsThread modsThread("libs.txt");
+    modsThread.run();
 
     int i = 0;
     while (roomRunning && acceptSocketRunning) {
@@ -84,6 +89,7 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
 
 void GameThread::step(){
     _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
+    _world.toDTO(&_worldDTO);
 }
 
 GameThread::~GameThread() {}
