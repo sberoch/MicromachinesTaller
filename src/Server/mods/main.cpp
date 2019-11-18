@@ -7,6 +7,41 @@
 #include <vector>
 
 #include "Plugin.h"
+#include "DTOs.h"
+
+CarDTO_t car1;
+CarDTO_t car2;
+TrackDTO_t track;
+WorldDTO_t world;
+
+void initialiceWorld(CarDTO_t* car1, CarDTO_t* car2, TrackDTO_t* track, WorldDTO_t* world){
+    car1->x = 0;
+    car1->y = 0;
+    car1->maxForwardSpeed = 10;
+    car1->lapsCompleted = 0;
+    car1->health = 100;
+    car1->id = 0;
+
+    car2->x = 1;
+    car2->y = 1;
+    car2->maxForwardSpeed = 10;
+    car2->lapsCompleted = 0;
+    car2->health = 100;
+    car2->id = 1;
+
+    world->cars[0] = car1;
+    world->cars[1] = car2;
+    world->cars_size = 2;
+
+    track->x = 0;
+    track->y = 0;
+    track->halfHeight = 2.5;
+    track->halfWidth = 2.5;
+    track->start = true;
+
+    world->track[0] = track;
+    world->track_size = 1;
+}
 
 typedef void* dynamic_lib_handle;
 
@@ -47,6 +82,8 @@ int main(int argc, char **argv) {
     if (argc < 2)
         return 1;
 
+    initialiceWorld(&car1, &car2, &track, &world);
+
     std::vector<dynamic_lib> libs;
 
     try {
@@ -76,6 +113,7 @@ int main(int argc, char **argv) {
     for (Plugin* p : plugins) {
         if (p == nullptr) continue;
         std::cout << p->message() << std::endl;
+        p->run(&world);
         delete p;
     }
 }
