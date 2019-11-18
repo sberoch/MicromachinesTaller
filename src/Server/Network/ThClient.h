@@ -52,7 +52,6 @@ public:
     void handleInput(const InputEnum& input);
     void sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot);
     void sendStart(json j);
-    void assignRoomId(int id);
 
     void assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue);
 
@@ -67,6 +66,10 @@ public:
             const float& y, const float& angle);
 
     void update();
+
+    void assignIdFromRoom(int idFromRoom);
+
+    int getIdFromRoom();
 };
 
 

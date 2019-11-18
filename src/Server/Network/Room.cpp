@@ -109,5 +109,9 @@ Room::~Room() {
     this->stop();
 }
 
+int Room::getRoomIdFromClient(int clientId) {
+    return clients.at(clientId)->getIdFromRoom();
+}
+
 
 

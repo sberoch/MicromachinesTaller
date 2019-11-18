@@ -48,6 +48,8 @@ public:
     int getAFreeId();
 
     void joinThread();
+
+    int getRoomIdFromClient(int clientId);
 };
 
 

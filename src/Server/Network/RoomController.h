@@ -40,8 +40,6 @@ public:
 
    void addClient(int clientId, Protocol protocol);
 
-   void addClientToRoom(int roomId, int clientId, int playerIdInRoom);
-
    void stop();
 
    //Devuelve si se dio el comando play o no.
@@ -57,6 +55,10 @@ public:
     sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot);
 
     void collectDeadClients();
+
+    void addClientToRoom(int roomId, int clientId, int playerIdInRoom);
+
+    int getIdFromRoom(int clientId);
 };
 
 

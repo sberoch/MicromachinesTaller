@@ -37,26 +37,34 @@ int RoomController::getRoomIdOfClient(int clientId) {
     return -1;
 }
 
+
+int RoomController::getIdFromRoom(int clientId) {
+    for (auto &room: rooms) {
+        if (room.second->hasClient(clientId)) {
+            return room.second->getRoomIdFromClient(clientId);
+        }
+    }
+    return -1;
+}
+
 void RoomController::moveClientToNewRoom(int newRoomId, int clientId, int newPlayerIdFromRoom){
     int oldRoomId = getRoomIdOfClient(clientId);
     auto client = rooms.at(oldRoomId)->eraseClientAndReturn(clientId);
-    client->assignRoomId(newPlayerIdFromRoom);
+    client->assignIdFromRoom(newPlayerIdFromRoom);
     rooms.at(newRoomId)->addClientAlreadyCreated(clientId, client);
 }
 
 
-void RoomController::addClientToRoom(int roomId, int clientId, int playerIdInRoom) {
+void RoomController::addClientToRoom(int newRoomId, int clientId, int playerIdInRoom) {
     std::lock_guard<std::mutex> lock(this->m);
-    std::cout << "Client added to room " << roomId << std::endl;
-
+    std::cout << "Client added to room " << newRoomId << std::endl;
     if (clientsWithNoRoom.count(clientId)) {
-        clientsWithNoRoom.at(clientId)->assignRoomId(playerIdInRoom);
-        rooms.at(roomId)->addClient(clientId, this->clientsWithNoRoom[clientId]);
+        clientsWithNoRoom.at(clientId)->assignIdFromRoom(playerIdInRoom);
+        rooms.at(newRoomId)->addClient(clientId, this->clientsWithNoRoom[clientId]);
         this->clientsWithNoRoom.erase(clientId);
     } else {
-        moveClientToNewRoom(roomId, clientId, playerIdInRoom);
+        moveClientToNewRoom(newRoomId, clientId, playerIdInRoom);
     }
-
 }
 
 void RoomController::addClient(int clientId, Protocol protocol) {
@@ -118,6 +126,8 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
     int client_id;
     int roomId;
     int playerInRoomId;
+    int oldRoomId;
+    int oldIdFromRoom;
     switch (input) {
         case ENTER_LOBBY:
             std::cout << "Enter lobby" << std::endl;
@@ -131,12 +141,13 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
                       << " from client clientId: " << client_id
                       << " with player id " << playerInRoomId << std::endl;
 
-            //TODO: no toque nada mas alla de estos metodos, hay que asignar el
-            //id dentro del room que el player eligio (playerInRoomId)
-            this->addClientToRoom(roomId, client_id, playerInRoomId);
+            oldRoomId = getRoomIdOfClient(client_id);
+            oldIdFromRoom = getIdFromRoom(client_id);
+            addClientToRoom(roomId, client_id, playerInRoomId);
             snapshot->joinRoom(client_id, roomId);
 
-            snapshot->addSelectedCar(client_id, playerInRoomId);
+            snapshot->removeSelectedCar(oldRoomId, oldIdFromRoom);
+            snapshot->addSelectedCar(roomId, playerInRoomId);
 
             sendToAllClientsWithRoom(snapshot);
             sendToClientsWithoutRoom(snapshot);
@@ -176,5 +187,6 @@ RoomController::~RoomController() {
         acceptSocketRunning = false;
     }
 }
+
 
 

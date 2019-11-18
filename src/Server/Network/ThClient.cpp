@@ -107,12 +107,17 @@ void ClientThread::sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot){
     this->sendingBlockingQueue.push(event);
 }
 
-void ClientThread::assignRoomId(int id) {
-    this->idFromRoom = id;
+
+void ClientThread::assignIdFromRoom(int idFromRoom){
+    this->idFromRoom = idFromRoom;
 }
 
 void ClientThread::update(){
     player.update();
+}
+
+int ClientThread::getIdFromRoom() {
+    return this->idFromRoom;
 }
 
 
