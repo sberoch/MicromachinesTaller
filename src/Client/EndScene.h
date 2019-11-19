@@ -5,12 +5,17 @@
 #include "SdlWindow.h"
 #include "SdlTexture.h"
 #include "View/BackgroundView.h"
+#include "TextureCreator.h"
+#include <vector>
 
 class EndScene : public BaseScene {
 private:
 	SdlWindow& window;
 	SdlTexture backgroundEndTex;
 	BackgroundView backgroundEnd;
+
+	TextureCreator creator;
+	std::vector<ObjectViewPtr> carViews;
 
 	SDL_Event e;
 	bool _done;
@@ -25,6 +30,7 @@ public:
 	virtual ~EndScene() {}
 private:
 	bool insideQuitButton(int x, int y);
+	void drawCars();
 };
 
 #endif // END_SCENE_H

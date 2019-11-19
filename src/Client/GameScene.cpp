@@ -96,6 +96,9 @@ int GameScene::handle() {
 	if (isMapReady) {
 		if (player.isBot) {
 			bot.handle();
+			if (bot.done()) {
+				isDone = true;
+			}
 
 		} else {
 			handler.handle();
