@@ -7,7 +7,7 @@
 #include "../Network/ThClient.h"
 #include <thread>
 
-#include "../mods/ModsThread.h"
+#include "../ModsThread.h"
 
 class GameThread {
 private:

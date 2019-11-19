@@ -9,8 +9,8 @@
 #include <string>
 #include <vector>
 
-#include "Plugin.h"
-#include "DTOs.h"
+#include "../mods/Plugin.h"
+#include "../mods/DTOs.h"
 
 typedef void* dynamic_lib_handle;
 

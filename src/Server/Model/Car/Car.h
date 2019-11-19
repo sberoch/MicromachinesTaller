@@ -7,7 +7,7 @@
 #include "../../../Common/Event/CommandEvent.h"
 #include "../../../Common/Constants.h"
 #include "../Track.h"
-#include "../../mods/DTOs.h"
+#include "../mods/DTOs.h"
 
 enum StatusType {
     GRABBED_HEALTH_POWERUP,

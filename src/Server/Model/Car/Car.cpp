@@ -272,6 +272,8 @@ void Car::handleHealthPowerup(size_t id){
 
     if ((_health + 10) < _maxHealth)
         _health += 10;
+    else
+        _health = _maxHealth;
 }
 
 void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
@@ -319,8 +321,7 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
         _status.push_back(expStatus);
     }
     _health -= healthToReduce;
-    if (_maxForwardSpeed - velToReduce > 10)
-        _maxForwardSpeed -= velToReduce;
+    //TODO Que baje aceleracion
 }
 
 void Car::stopEffect(const int& effectType){

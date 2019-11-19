@@ -14,7 +14,8 @@ GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>
                                              _world(n_of_players, configuration),
                                              _gameToStart(true),
                                              _gameStarted(false),
-                                             _gameEnded(false){
+                                             _gameEnded(false),
+                                             _worldDTO() {
 
 }
 
@@ -25,21 +26,10 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
     std::shared_ptr<Event> event;
 
     ModsThread modsThread("libs.txt", &_worldDTO);
-    modsThread.run();
 
     int i = 0;
     while (roomRunning && acceptSocketRunning) {
         try {
-            if (i % _configuration->getModifiersCreationFrequency() == 0){
-                size_t type, id;
-                float x, y, angle;
-                _world.createRandomModifier(type, id, x, y, angle);
-
-                for (auto &actualClient : clients) {
-                    actualClient.second->createModifier(type, id, x, y, angle);
-                }
-            }
-
             std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent);
             std::clock_t begin = clock();
 
@@ -54,8 +44,20 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                 }
 
                 step();
-                modsThread.run();
-                applyPluginChanges();
+                if ((i % _configuration->getModifiersCreationFrequency()) == 0){
+                    modsThread.run();
+                    applyPluginChanges();
+
+                    for (size_t i=0; i<MAX_MODIFIERS; ++i){
+                        ModifierDTO modifier = _worldDTO.modifiers[i];
+                        if (modifier.newModifier){
+                            _worldDTO.modifiers[i].newModifier = false;
+                            for (auto &actualClient : clients) {
+                                actualClient.second->createModifier(modifier.type, modifier.id, modifier.x, modifier.y, modifier.angle);
+                            }
+                        }
+                    }
+                }
 
                 for (auto &actualClient : clients) {
                     actualClient.second->modifySnapshotFromClient(snapshot);
@@ -95,7 +97,7 @@ void GameThread::step(){
 }
 
 void GameThread::applyPluginChanges() {
-    _world.dtoToModel(_worldDTO);
+    _world.dtoToModel(&_worldDTO);
 }
 
 GameThread::~GameThread() {}
