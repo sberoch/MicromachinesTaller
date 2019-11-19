@@ -197,7 +197,9 @@ void Car::update(){
         _tracks.clear();
     }
 
-    if (_laps == _maxLaps) {
+    std::cout << "Tracks: " << _tracks.size() << std::endl;
+    std::cout << "Laps: " << _laps << std::endl;
+    if (_laps == 2) {
         _winner;
         Status* status = new Status;
         status->status = WINNED;

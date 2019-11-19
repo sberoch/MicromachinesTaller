@@ -82,7 +82,7 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
                 snapshot->removeGameItem(TYPE_OIL, status[i]->id);
                 break;
             case WINNED :
-                //Terminar juego y lanzar podio
+                snapshot->setGameOver();
                 break;
         }
     }
