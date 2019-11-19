@@ -2,7 +2,7 @@
 #include "Car.h"
 #include "../FixtureUserData.h"
 
-void Car::_setShapeAndFixture(std::shared_ptr<Configuration> configuration){
+void Car::_setShapeAndFixture(const std::shared_ptr<Configuration>& configuration){
     b2PolygonShape boxShape;
     boxShape.SetAsBox(configuration->getCarWidth(),configuration->getCarHeight());
 
@@ -14,7 +14,7 @@ void Car::_setShapeAndFixture(std::shared_ptr<Configuration> configuration){
     _fixture->SetUserData(new CarFUD(_id));
 }
 
-void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration){
+void Car::_setBodyDef(float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration){
     _carBodyDef.type = b2_dynamicBody;
     _carBodyDef.linearDamping = configuration->getLinearDamping();
     _carBodyDef.angularDamping = configuration->getAngularDamping();
@@ -22,7 +22,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<C
     _carBodyDef.angle = angle;
 }
 
-Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration) :
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0),
         _maxHealth(configuration->getCarMaxHealth()),
         _health(configuration->getCarMaxHealth()),
@@ -165,16 +165,13 @@ void Car::removeGroundArea(GroundAreaFUD* ga){
 }
 
 void Car::handleInput(const InputEnum& input){
-    CarMovingState* state = _state->handleInput(*this, input);
-    if (state != NULL){
-        delete _state;
+    std::shared_ptr<CarMovingState> state = _state->handleInput(*this, input);
+    if (state != NULL)
         _state = state;
-    }
-    CarTurningState* turningState = _turningState->handleInput(*this, input);
-    if (turningState != NULL){
-        delete _turningState;
+    
+    std::shared_ptr<CarTurningState> turningState = _turningState->handleInput(*this, input);
+    if (turningState != NULL)
         _turningState = turningState;
-    }
 }
 
 void Car::update(){
@@ -311,7 +308,7 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
 
     if (_health < healthToReduce){
         _exploded = true;
-        Status* expStatus = new Status;
+        auto* expStatus = new Status;
         expStatus->status = EXPLODED;
         _status.push_back(expStatus);
     }
@@ -348,8 +345,6 @@ void Car::resetStatus(){
 
 Car::~Car(){
     _carBody->GetWorld()->DestroyBody(_carBody);
-    delete _state;
-    delete _turningState;
 }
 
 void Car::assignId(int id) {
@@ -360,7 +355,7 @@ void Car::assignId(int id) {
 
 class NegAcceleratingState : public CarMovingState {
 public:
-    CarMovingState* handleInput(Car& car, const InputEnum& input){
+    std::shared_ptr<CarMovingState> handleInput(Car& car, const InputEnum& input){
         return makeMovingState(input);
     }
 
@@ -371,7 +366,7 @@ public:
 
 class AcceleratingState : public CarMovingState {
 public:
-    CarMovingState* handleInput(Car& car, const InputEnum& input){
+    std::shared_ptr<CarMovingState> handleInput(Car& car, const InputEnum& input){
         return makeMovingState(input);
     }
 
@@ -383,7 +378,7 @@ public:
 
 class WithoutAcceleratingState : public CarMovingState {
 public:
-    CarMovingState* handleInput(Car& car, const InputEnum& input){
+    std::shared_ptr<CarMovingState> handleInput(Car& car, const InputEnum& input){
         return makeMovingState(input);
     }
 
@@ -393,13 +388,13 @@ public:
     }
 };
 
-CarMovingState* CarMovingState::makeMovingState(const InputEnum& input){
+std::shared_ptr<CarMovingState> CarMovingState::makeMovingState(const InputEnum& input){
     if (input == STOP_ACCELERATING || input == STOP_DESACCELERATING){
-        return new WithoutAcceleratingState();
+        return std::shared_ptr<CarMovingState>(new WithoutAcceleratingState());
     } else if (input == ACCELERATE) {
-        return new AcceleratingState();
+        return std::shared_ptr<CarMovingState>(new AcceleratingState());
     } else if(input == DESACCELERATE) {
-        return new NegAcceleratingState();
+        return std::shared_ptr<CarMovingState>(new NegAcceleratingState());
     }
     return nullptr;
 }
@@ -409,7 +404,7 @@ CarMovingState* CarMovingState::makeMovingState(const InputEnum& input){
 
 class NotTurningState : public CarTurningState{
 public:
-    CarTurningState* handleInput(Car& car, const InputEnum& input){
+    std::shared_ptr<CarTurningState> handleInput(Car& car, const InputEnum& input){
         return makeTurningState(input);
     }
 
@@ -421,7 +416,7 @@ public:
 
 class TurningLeftState : public CarTurningState {
 public:
-    CarTurningState* handleInput(Car& car, const InputEnum& input){
+    std::shared_ptr<CarTurningState> handleInput(Car& car, const InputEnum& input){
         return makeTurningState(input);
     }
 
@@ -433,7 +428,7 @@ public:
 
 class TurningRightState : public CarTurningState {
 public:
-    CarTurningState* handleInput(Car& car, const InputEnum& input){
+    std::shared_ptr<CarTurningState> handleInput(Car& car, const InputEnum& input){
         return makeTurningState(input);
     }
 
@@ -443,13 +438,13 @@ public:
     }
 };
 
-CarTurningState* CarTurningState::makeTurningState(const InputEnum& input){
+std::shared_ptr<CarTurningState> CarTurningState::makeTurningState(const InputEnum& input){
     if (input == STOP_TURNING_LEFT || input == STOP_TURNING_RIGHT) {
-        return new NotTurningState();
+        return std::shared_ptr<CarTurningState>(new NotTurningState());
     } else if (input == TURN_RIGHT) {
-        return new TurningRightState();
+        return std::shared_ptr<CarTurningState>(new TurningRightState());
     } else if(input == TURN_LEFT) {
-        return new TurningLeftState();
+        return std::shared_ptr<CarTurningState>(new TurningLeftState());
     }
 
     return nullptr;

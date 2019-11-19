@@ -36,7 +36,7 @@ private:
     void _updateCarsOnGrass();
 
 public:
-    World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
+    World(size_t n_of_cars, const std::shared_ptr<Configuration>& configuration);
 
     json getSerializedMap();
 

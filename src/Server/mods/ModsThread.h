@@ -8,10 +8,6 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <stdio.h>
-#include <cstdlib>
-#include <dirent.h>
-#include <string.h>
 
 #include "Plugin.h"
 #include "DTOs.h"

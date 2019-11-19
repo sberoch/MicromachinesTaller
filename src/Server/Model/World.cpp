@@ -6,7 +6,7 @@
 
 using json = nlohmann::json;
 
-World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
+World::World(size_t n_of_cars, const std::shared_ptr<Configuration>& configuration) :
              _timeStep(1/configuration->getFPS()), _n_of_cars(n_of_cars), _configuration(configuration),
              _cars(), _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0) {
     b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());

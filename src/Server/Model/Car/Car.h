@@ -32,6 +32,8 @@ class CarMovingState;
 
 class Car{
 private:
+    size_t _id;
+
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
     float _maxDriveForce;
@@ -40,12 +42,11 @@ private:
     float _angularImpulse;
     size_t _maxHealth;
 
-    size_t _id;
     b2Fixture* _fixture;
     b2BodyDef _carBodyDef;
     b2Body* _carBody;
-    CarMovingState* _state;
-    CarTurningState* _turningState;
+    std::shared_ptr<CarMovingState> _state;
+    std::shared_ptr<CarTurningState> _turningState;
     bool _isMoving;
     bool _exploded;
     std::vector<Status*> _status;
@@ -64,11 +65,11 @@ private:
 
     bool _winner;
 
-    void _setBodyDef(float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
-    void _setShapeAndFixture(std::shared_ptr<Configuration> configuration);
+    void _setBodyDef(float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration);
+    void _setShapeAndFixture(const std::shared_ptr<Configuration>& configuration);
 
 public:
-    Car(b2World* world, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration);
+    Car(b2World* world, size_t id, float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration);
 
     Car(const Car &other) = delete;
     Car& operator=(const Car &other) = delete;
@@ -129,16 +130,16 @@ public:
 
 class CarMovingState{
 public:
-    static CarMovingState* makeMovingState(const InputEnum& input);
-    virtual CarMovingState* handleInput(Car& car, const InputEnum& input) = 0;
+    static std::shared_ptr<CarMovingState> makeMovingState(const InputEnum& input);
+    virtual std::shared_ptr<CarMovingState> handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarMovingState(){}
 };
 
 class CarTurningState {
 public:
-    static CarTurningState* makeTurningState(const InputEnum& input);
-    virtual CarTurningState* handleInput(Car& car, const InputEnum& input) = 0;
+    static std::shared_ptr<CarTurningState> makeTurningState(const InputEnum& input);
+    virtual std::shared_ptr<CarTurningState> handleInput(Car& car, const InputEnum& input) = 0;
     virtual void update(Car& car) = 0;
     virtual ~CarTurningState(){}
 };

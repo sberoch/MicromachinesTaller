@@ -143,8 +143,6 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
         Car* car = (Car*) a->GetBody()->GetUserData();
         Rock* rock = (Rock*) b->GetBody()->GetUserData();
 
-        //contact->SetEnabled(false);
-
         if (began){
             rock->markToDelete();
             car->handleRock((RockFUD*) fudB, rock->getId());
@@ -153,8 +151,6 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
     } else if (fudA->getType() == FUD_ROCK && fudB->getType() == FUD_CAR){
         Car* car = (Car*) b->GetBody()->GetUserData();
         Rock* rock = (Rock*) a->GetBody()->GetUserData();
-
-        //contact->SetEnabled(false);
 
         if (began){
             rock->markToDelete();
