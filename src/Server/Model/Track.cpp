@@ -119,6 +119,7 @@ bool Track::equals(Track* other){
 void Track::toDTO(TrackDTO_t* trackDTO) {
     trackDTO->x = this->x();
     trackDTO->y = this->y();
+    trackDTO->angle = this->angle();
     trackDTO->halfWidth = 2.5f;
     trackDTO->halfHeight = 2.5f;
     trackDTO->start = this->isStart();
