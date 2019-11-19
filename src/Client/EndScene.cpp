@@ -31,8 +31,6 @@ void EndScene::update() {
 	    	arrivedPlayers.push_back(arrivedPlayer);
 	    }
 	}
-
-	std::cout << arrivedPlayers.size() << std::endl;
 }
 
 void EndScene::draw() {

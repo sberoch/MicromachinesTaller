@@ -60,6 +60,7 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                         int clientId = actualClient.first;
                         addToFinishedPlayersAndRemoveFromClients(clients, clientId);
                         endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
+                        actualClient.second->sendSnapshot(snapshot);
                     }
                 }
 
@@ -69,7 +70,6 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                 }
 
                 for (auto &actualFinishedPlayer: finishedPlayers){
-                    actualFinishedPlayer->sendSnapshot(snapshot);
                     actualFinishedPlayer->sendEndEvent(endSnapshot);
                 }
             }

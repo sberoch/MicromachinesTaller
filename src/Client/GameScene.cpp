@@ -86,7 +86,6 @@ void GameScene::removeObject(GameEventStruct gameEvent) {
 
 void GameScene::gameOver(GameEventStruct gameEvent) {
 	if (gameEvent.id == player.playerId) {
-		std::cout << "acaasdadsasadsads\n";
 		nextScene = SCENE_END;
 	}
 }

@@ -36,7 +36,6 @@ void ReceiverThread::run() {
 			gameRecvQueue.push(gameSnap);
 		}
 		while(_currentScene == SCENE_END) {
-			std::cout << "asdasdasdasadadssdads\n";
 		    endSnap = new EndSnapshot(protocol);
 		    endRecvQueue.push(endSnap);
 		}
