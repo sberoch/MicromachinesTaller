@@ -18,6 +18,7 @@ class SceneSelector {
 private:
 	SdlWindow window;
 	std::map<int, BaseScene*> scenes;
+	int currentScene;
 
 	Protocol protocol;
 
@@ -28,7 +29,6 @@ private:
 	ReceiverThread receiver;
 	SenderThread sender;
 	
-	int currentScene;
 	PlayerDescriptor player;
 
 public:

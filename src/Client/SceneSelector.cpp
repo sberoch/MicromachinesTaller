@@ -13,11 +13,11 @@
 SceneSelector::SceneSelector(int xScreen, int yScreen,
 		const std::string& host, const std::string& port) : 
 	window(xScreen, yScreen),
+	currentScene(SCENE_MENU),
 	protocol(host, port),
 	sendQueue(true),
-	receiver(gameRecvQueue, lobbyRecvQueue, protocol),
-	sender(sendQueue, protocol),
-	currentScene(SCENE_MENU) {
+	receiver(gameRecvQueue, lobbyRecvQueue, protocol, currentScene),
+	sender(sendQueue, protocol) {
 		scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window, sendQueue)));
 		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, lobbyRecvQueue, sendQueue, player)));
 		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, gameRecvQueue, sendQueue, player)));
@@ -41,10 +41,6 @@ void SceneSelector::run() {
 		    if (scene->done()) {
 		    	done = true;
 		    	protocol.forceShutDown(); //No estoy seguro de que vaya aca
-		    }
-
-		    if (currentScene == SCENE_GAME) {
-		    	receiver.setGameMode();
 		    }
 
 		    //Check exec time and sleep

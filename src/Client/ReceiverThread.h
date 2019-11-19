@@ -13,10 +13,11 @@ private:
 	Protocol& protocol;
 	bool _done;
 	bool _isGameMode;
+	int& _currentScene;
 public:
 	ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 				   Queue<LobbySnapshot*>& lobbyRecvQueue, 
-				   Protocol& protocol);
+				   Protocol& protocol, int& currentScene);
 
 	virtual void run() override;
 	void setGameMode();

@@ -3,12 +3,13 @@
 
 ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 				   			   Queue<LobbySnapshot*>& lobbyRecvQueue, 
-				   			   Protocol& protocol) :
+				   			   Protocol& protocol, int& currentScene) :
 	gameRecvQueue(gameRecvQueue),
 	lobbyRecvQueue(lobbyRecvQueue),
 	protocol(protocol),
 	_done(false),
-	_isGameMode(false) {}
+	_isGameMode(false),
+	_currentScene(currentScene) {}
 
 void ReceiverThread::run() {
 	try{
