@@ -2,10 +2,8 @@
 // Created by alvaro on 30/9/19.
 //
 
-
 #include <future>
 #include "AcceptingThread.h"
-#include "../../Common/Protocol.h"
 #include "../../Common/SocketError.h"
 
 AcceptingThread::AcceptingThread(Socket &acceptSocket):
@@ -35,7 +33,5 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
     }
 }
 
-AcceptingThread::~AcceptingThread(){
-    //roomController.stop();
-}
+AcceptingThread::~AcceptingThread()= default;
 

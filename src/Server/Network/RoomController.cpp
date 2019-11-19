@@ -6,7 +6,6 @@
 
 #define MAX_AMOUNT_OF_CLIENTS 4
 
-
 RoomController::RoomController(std::atomic_bool &running) :
             queue(false), acceptSocketRunning(running),
             stopped(false),
@@ -182,10 +181,10 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
 
 
 RoomController::~RoomController() {
-    if (acceptSocketRunning){
-        this->stop();
-        acceptSocketRunning = false;
-    }
+//    if (acceptSocketRunning){
+//        this->stop();
+//        acceptSocketRunning = false;
+//    }
 }
 
 

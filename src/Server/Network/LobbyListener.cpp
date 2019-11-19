@@ -4,7 +4,6 @@
 
 #include "LobbyListener.h"
 #include "../../Common/Event/Event.h"
-#include "../../Common/Event/CommandEvent.h"
 #include "../../Common/SocketError.h"
 #include "RoomController.h"
 #include "ThClient.h"
@@ -49,9 +48,6 @@ void LobbyListener::run() {
     }
 }
 
-
-LobbyListener::~LobbyListener() = default;
-
 SafeQueue<std::shared_ptr<Event>>* LobbyListener::getReceivingQueue() {
     return &this->incomingEvents;
 }
@@ -59,3 +55,5 @@ SafeQueue<std::shared_ptr<Event>>* LobbyListener::getReceivingQueue() {
 void LobbyListener::stop(){
     listening = false;
 }
+
+LobbyListener::~LobbyListener() = default;
