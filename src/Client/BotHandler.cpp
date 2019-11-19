@@ -10,7 +10,8 @@ BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio,
         audio(audio),
         sendQueue(sendQueue),
         player(player),
-        moveRepeatCounter(0) {
+        moveRepeatCounter(0),
+        _done(false) {
     lua.open("bot_functions.lua");
 }
 
@@ -32,4 +33,14 @@ void BotHandler::handle() {
     } else {
         moveRepeatCounter++;
     }
+
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            _done = true;
+        }
+    }
+}
+
+bool BotHandler::done() {
+    return _done;
 }
