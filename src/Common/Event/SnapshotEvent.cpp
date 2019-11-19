@@ -158,17 +158,15 @@ void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType,
 void SnapshotEvent::setMap(const json& jMap) {
 	//TODO: esto del clientId deberia venir de afuera
 	std::cout << "Sending map\n";
-	int id = 0;
 	for (auto& car : jMap["cars"]) {
         setGameEvent(ADD, 
         			car["color"],
         			car["x_init"],
                		car["y_init"],
                		car["angle"],
-               		id);
-        id++;
+               		car["id_from_room"]);
     }
-    id = 0;
+    int id = 0;
     for (auto& track : jMap["tracks"])  {
     	setGameEvent(ADD,
     				track["type"],

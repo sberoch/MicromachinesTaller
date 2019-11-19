@@ -26,7 +26,8 @@ World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
 
 void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
     std::ifstream i("scene.json");
-    json j; i >> j;
+    json j;
+    i >> j;
 
     json cars = j["cars"];
     x = cars.at(id)["x_init"].get<float>();
@@ -34,13 +35,30 @@ void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
     angle = cars.at(id)["angle"].get<float>();
 }
 
-Car* World::createCar(size_t id){
-    float x_init, y_init, angle_init;
-    _getCarConfigData(id, x_init, y_init, angle_init);
+json World::getCarById(int id, json cars){
+    json carFound;
 
-    Car* car = new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
-    _cars.push_back(car);
-    return car;
+    for (auto& actualCar: cars){
+        if (actualCar["id_from_room"] == id){
+            carFound = actualCar;
+        }
+    }
+    return carFound;
+}
+
+Car* World::createCar(size_t id, json j){
+    float x_init, y_init, angle_init;
+    //_getCarConfigData(id, x_init, y_init, angle_init);
+    json cars = j["cars"];
+    json car = getCarById(id, cars);
+
+    x_init = car["x_init"].get<float>();
+    y_init = car["y_init"].get<float>();
+    angle_init = car["angle"].get<float>();
+
+    Car* newCar = new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
+    _cars.push_back(newCar);
+    return newCar;
 }
 
 void World::createTrack(std::vector<Track*>& track){

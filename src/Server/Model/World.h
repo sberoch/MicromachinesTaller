@@ -41,7 +41,7 @@ public:
 
     void createTrack(std::vector<Track*>& track);
     void createGrass(std::vector<Grass*>& grass);
-    Car* createCar(size_t id);
+    Car* createCar(size_t id, json cars);
 
     //Modifiers
     void createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle);
@@ -49,6 +49,8 @@ public:
     void step(uint32_t velocityIt, uint32_t positionIt);
 
     ~World();
+
+    json getCarById(int id, json j);
 };
 
 

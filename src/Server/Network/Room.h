@@ -33,7 +33,7 @@ public:
     bool isDead();
     void stop();
 
-    std::shared_ptr<Car> createCar(int id);
+    std::shared_ptr<Car> createCar(int id, json j);
 
     ~Room() override;
 
@@ -50,6 +50,12 @@ public:
     void joinThread();
 
     int getRoomIdFromClient(int clientId);
+
+    void addPlayersToJson(json& j);
+
+    void addCarToEachPlayer(const json& j);
+
+    int getColourFromId(int id);
 };
 
 

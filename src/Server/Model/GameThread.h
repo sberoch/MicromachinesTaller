@@ -22,7 +22,7 @@ public:
 
     ~GameThread();
     json getSerializedMap();
-    std::shared_ptr<Car> createCar(int id);
+    std::shared_ptr<Car> createCar(int id, json j);
     void step();
 
     void startGame();

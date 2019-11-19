@@ -92,8 +92,8 @@ json GameThread::getSerializedMap() {
     return _world.getSerializedMap();
 }
 
-std::shared_ptr<Car> GameThread::createCar(int id){
-    return std::shared_ptr<Car>(_world.createCar(id));
+std::shared_ptr<Car> GameThread::createCar(int id, json j){
+    return std::shared_ptr<Car>(_world.createCar(id, j));
 }
 
 void GameThread::startGame() {
