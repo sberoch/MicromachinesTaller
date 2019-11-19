@@ -82,6 +82,9 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
                 snapshot->removeGameItem(TYPE_OIL, status[i]->id);
                 break;
             case WINNED :
+                //TODO: falta ver en que orden
+                //      idea: mandarle el gameOver solo al ganador, que este mande un evento de
+                //            vuelta que le llegue al game, y este manda en orden a los demas autos.
                 snapshot->setGameOver();
                 break;
         }
