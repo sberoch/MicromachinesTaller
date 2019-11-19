@@ -79,7 +79,7 @@ void Room::sendSnapshotToClients(std::shared_ptr<LobbySnapshot>& snapshot){
     }
 }
 
-#define X_INIT 15
+#define X_INIT 14
 #define Y_INIT 8
 
 void Room::addPlayersToJson(json& j){
@@ -94,8 +94,7 @@ void Room::addPlayersToJson(json& j){
         jActual["y_init"] = Y_INIT + yDeviation;
         jActual["angle"] = 180;
         j["cars"].push_back(jActual);
-        xDeviation += 5;
-        yDeviation--;
+        xDeviation++;
     }
 }
 
