@@ -8,7 +8,8 @@ Player::Player(std::shared_ptr<Car> car, int& inRoomId) :
                         _car(std::move(car)),
                         inRoomId(inRoomId),
                         _modifierToAdd(false),
-                        _modifierDTO(new ModifierDTO()) {}
+                        _modifierDTO(new ModifierDTO()),
+                        done(false){}
 
 void Player::update(){
     _car->update();
@@ -17,7 +18,6 @@ void Player::update(){
 
 void Player::handleInput(const InputEnum& input){
     _car->handleInput(input);
-    //_car->update();
 
     std::vector<Effect*> aux;
     for (int i=0; i<_effects.size(); ++i){
@@ -82,6 +82,7 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
                 snapshot->removeGameItem(TYPE_OIL, status[i]->id);
                 break;
             case WINNED :
+                done = true;
                 snapshot->setGameOver(inRoomId);
                 break;
         }
@@ -107,4 +108,8 @@ std::shared_ptr<SnapshotEvent> Player::sendStart(json j) {
 void Player::assignCarAndId(std::shared_ptr<Car> newCar) {
     newCar->assignId(this->inRoomId);
     this->_car = std::move(newCar);
+}
+
+bool Player::finishedPlaying() {
+    return done;
 }

@@ -57,7 +57,11 @@ public:
 	void removeGameItem(int type, int id);
 	void signalMapReady();
 	void setMudSplatEvent();
+<<<<<<< Updated upstream
 	void setGameOver(int inRoomId);
+=======
+	void setGameOver(int playerId);
+>>>>>>> Stashed changes
 	
 	const GameEventsList& getGameEvents();
 

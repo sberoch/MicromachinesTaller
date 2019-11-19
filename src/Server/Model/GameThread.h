@@ -11,6 +11,7 @@ class GameThread {
 private:
     World _world;
     std::shared_ptr<Configuration> _configuration;
+    std::list<std::shared_ptr<ClientThread>> finishedPlayers;
 
     bool _gameToStart, _gameStarted, _gameEnded;
 public:
@@ -26,6 +27,10 @@ public:
     void step();
 
     void startGame();
+
+    void addToFinishedPlayersAndRemoveFromClients(
+            std::unordered_map<int, std::shared_ptr<ClientThread>> &clients,
+            int clientToBeRemovedId);
 };
 
 #endif //MICROMACHINES_GAMETHREAD_H

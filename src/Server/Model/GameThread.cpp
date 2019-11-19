@@ -6,6 +6,7 @@
 #include <iostream>
 #include "../../Common/Event/EventCreator.h"
 #include "../Network/ThClient.h"
+#include "../../Common/Event/EndSnapshot.h"
 
 using namespace std::chrono;
 
@@ -36,12 +37,20 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
             }
 
             std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent);
+            std::shared_ptr<EndSnapshot> endSnapshot(new EndSnapshot);
             std::clock_t begin = clock();
 
             if (!clients.empty()) {
                 while (incomingEvents.get(event)) {
                     std::cout << "---Command: " << event->j["cmd_id"].get<int>() << std::endl;
-                    clients[event->j["client_id"]]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+                    int clientId = event->j["client_id"];
+                    clients[clientId]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+
+                    if (clients.at(clientId)->finishedPlaying()){
+                        std::cout << "Player finished" << std::endl;
+                        addToFinishedPlayersAndRemoveFromClients(clients, clientId);
+                        endSnapshot->addPlayerFinished(clients.at(clientId)->getIdFromRoom());
+                    }
                 }
 
                 for (auto& client: clients){
@@ -54,8 +63,13 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                     actualClient.second->modifySnapshotFromClient(snapshot);
                 }
 
+
                 for (auto &actualClient : clients) {
                     actualClient.second->sendSnapshot(snapshot);
+                }
+
+                for (auto &actualFinishedPlayer: finishedPlayers){
+                    actualFinishedPlayer->sendEndEvent(endSnapshot);
                 }
             }
 
@@ -99,3 +113,11 @@ std::shared_ptr<Car> GameThread::createCar(int id, json j){
 void GameThread::startGame() {
     _gameStarted = true;
 }
+
+void GameThread::addToFinishedPlayersAndRemoveFromClients(
+        std::unordered_map<int, std::shared_ptr<ClientThread>> &clients,
+        int clientToBeRemovedId) {
+    finishedPlayers.push_back(clients.at(clientToBeRemovedId));
+    clients.erase(clientToBeRemovedId);
+}
+

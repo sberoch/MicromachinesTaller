@@ -119,4 +119,13 @@ int ClientThread::getIdFromRoom() {
     return this->idFromRoom;
 }
 
+bool ClientThread::finishedPlaying() {
+    return this->player.finishedPlaying();
+}
+
+void ClientThread::sendEndEvent(const std::shared_ptr <EndSnapshot> &endSnapshot) {
+    std::shared_ptr<EndSnapshot> endSnapshotCopy(endSnapshot);
+    endSnapshotCopy->send(protocol);
+}
+
 

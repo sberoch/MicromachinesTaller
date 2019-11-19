@@ -14,6 +14,7 @@
 #include "../Player.h"
 #include "EventReceiver.h"
 #include "EventSender.h"
+#include "../../Common/Event/EndSnapshot.h"
 
 #define QUIT_STRING "QUIT"
 
@@ -70,6 +71,10 @@ public:
     void assignIdFromRoom(int idFromRoom);
 
     int getIdFromRoom();
+
+    bool finishedPlaying();
+
+    void sendEndEvent(const std::shared_ptr<EndSnapshot> &endSnapshot);
 };
 
 
