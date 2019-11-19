@@ -44,11 +44,12 @@ void ClientThread::run() {
 //para que el recolector de clientes muertos pueda reconocerlo como tal.
 void ClientThread::stop(){
     protocol.forceShutDown();
+    sendingBlockingQueue.push(nullptr);
     keepTalking = false;
 
-    sender.stop();
-    sendingBlockingQueue.push(nullptr);
-    receiver.stop();
+    //sender.stop();
+
+    //receiver.stop();
 
     sender.join();
     receiver.join();
@@ -126,6 +127,10 @@ bool ClientThread::finishedPlaying() {
 void ClientThread::sendEndEvent(const std::shared_ptr <EndSnapshot> &endSnapshot) {
     std::shared_ptr<EndSnapshot> endSnapshotCopy(endSnapshot);
     this->sendingBlockingQueue.push(endSnapshotCopy);
+}
+
+void ClientThread::start() {
+    this->run();
 }
 
 

@@ -26,7 +26,7 @@ void LobbyListener::run() {
             while (incomingEvents.get(event)) {
                 controller.handleInput(event->j, snapshot);
             }
-            controller.collectDeadClients();
+            //controller.collectDeadClients();
              std::clock_t end = clock();
             double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
             double frames = 25;

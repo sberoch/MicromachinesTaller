@@ -175,11 +175,11 @@ void World::step(uint32_t velocityIt, uint32_t positionIt){
 
 World::~World(){
     b2Body* node = _world->GetBodyList();
-    while (node){
-        b2Body* b = node;
-        node = node->GetNext();
-        _world->DestroyBody(b);
-    }
+//    while (node){
+//        b2Body* b = node;
+//        node = node->GetNext();
+//        _world->DestroyBody(b);
+//    }
 
     delete _world;
 }

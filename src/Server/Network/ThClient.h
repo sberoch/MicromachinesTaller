@@ -18,7 +18,7 @@
 
 #define QUIT_STRING "QUIT"
 
-class ClientThread: public Thread {
+class ClientThread {
 private:
     std::atomic<bool> keepTalking;
     Protocol protocol;
@@ -35,8 +35,8 @@ public:
     //Para este ultimo mueve el socket de la comunicacion.
     ClientThread(Protocol protocol, RoomController& controller, int clientId,
                     std::atomic_bool& acceptSocketRunning);
-
-    void run() override;
+    void start();
+    void run();
 
     //Detiene la ejecucion del cliente y pone la variable booleana en falso
     //para que el recolector de clientes muertos pueda reconocerlo como tal.
@@ -45,7 +45,7 @@ public:
     //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
     bool isDead();
 
-    ~ClientThread() override{
+    ~ClientThread() {
         std::cout << "Destruyendo client thread con clientId: " << clientId << std::endl;
     };
 
