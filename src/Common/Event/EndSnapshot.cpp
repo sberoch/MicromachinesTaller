@@ -13,6 +13,8 @@ EndSnapshot::EndSnapshot(Protocol& protocol) {
 	std::string serialized = protocol.receive();
     this->j = json::parse(serialized);
 
+    std::cout << j.dump(4) << std::endl;
+
     for (auto& finishedPlayer : j["finished_queue"]) {
     	finishedQueue.push_back(finishedPlayer);
     }

@@ -69,6 +69,7 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                 }
 
                 for (auto &actualFinishedPlayer: finishedPlayers){
+                    actualFinishedPlayer->sendSnapshot(snapshot);
                     actualFinishedPlayer->sendEndEvent(endSnapshot);
                 }
             }
