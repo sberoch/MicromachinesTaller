@@ -7,8 +7,7 @@
 Player::Player(std::shared_ptr<Car> car, int& inRoomId) :
                         _car(std::move(car)),
                         inRoomId(inRoomId),
-                        _modifierToAdd(false),
-                        _modifierDTO(new ModifierDTO()) {}
+                        _modifierToAdd(false) {}
 
 void Player::update(){
     _car->update();
@@ -45,11 +44,11 @@ void Player::_addEffect(const int& effectType, const int& timeOfAction){
 
 void Player::createModifier(const size_t& type, const size_t& id, const float& x, const float& y, const float& angle){
     _modifierToAdd = true;
-    _modifierDTO->id = id;
-    _modifierDTO->type = type;
-    _modifierDTO->x = x;
-    _modifierDTO->y = y;
-    _modifierDTO->angle = angle;
+    _modifierDTO.id = id;
+    _modifierDTO.type = type;
+    _modifierDTO.x = x;
+    _modifierDTO.y = y;
+    _modifierDTO.angle = angle;
 }
 
 
@@ -90,7 +89,7 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
     _car->resetStatus();
 
     if (_modifierToAdd){
-        snapshot->addGameItem(_modifierDTO->type, _modifierDTO->x, _modifierDTO->y, _modifierDTO->angle, _modifierDTO->id);
+        snapshot->addGameItem(_modifierDTO.type, _modifierDTO.x, _modifierDTO.y, _modifierDTO.angle, _modifierDTO.id);
         _modifierToAdd = false;
     }
 
