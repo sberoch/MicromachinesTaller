@@ -124,6 +124,7 @@ public:
     const bool onGrass();
 
     void carToDTO(CarDTO_t* carDTO);
+    void dtoToModel(const CarDTO_t& carDTO);
 
     ~Car();
 };

@@ -50,6 +50,7 @@ public:
     void step(uint32_t velocityIt, uint32_t positionIt);
 
     void toDTO(WorldDTO_t* world);
+    void dtoToModel(const WorldDTO_t& worldDTO);
 
     ~World();
 };

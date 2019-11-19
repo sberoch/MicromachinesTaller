@@ -229,13 +229,19 @@ const b2Vec2 Car::linearVelocity(){
 }
 
 void Car::carToDTO(CarDTO_t* carDTO) {
+    carDTO->id = _id;
     carDTO->x = this->x();
     carDTO->y = this->y();
     carDTO->angle = this->angle();
     carDTO->health = this->health();
     carDTO->maxForwardSpeed = _maxForwardSpeed;
     carDTO->lapsCompleted = _laps;
-    carDTO->id = _id;
+}
+
+void Car::dtoToModel(const CarDTO_t& carDTO) {
+    _health = carDTO.health;
+    _maxForwardSpeed = carDTO.maxForwardSpeed;
+    _laps = carDTO.lapsCompleted;
 }
 
 b2Body* Car::body() const {

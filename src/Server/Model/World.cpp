@@ -174,3 +174,9 @@ void World::toDTO(WorldDTO_t* world){
         _track[i]->toDTO(&world->track[i]);
     world->track_size = _track.size();
 }
+
+void World::dtoToModel(const WorldDTO_t& worldDTO) {
+    for (size_t i=0; i<_cars.size(); ++i){
+        _cars[i]->dtoToModel(worldDTO.cars[i]);
+    }
+}
