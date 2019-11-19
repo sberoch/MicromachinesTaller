@@ -116,6 +116,14 @@ bool Track::equals(Track* other){
     return other->x() == x() && other->y() == y() && other->angle() == angle();
 }
 
+void Track::toDTO(TrackDTO_t* trackDTO) {
+    trackDTO->x = this->x();
+    trackDTO->y = this->y();
+    trackDTO->halfWidth = 2.5f;
+    trackDTO->halfHeight = 2.5f;
+    trackDTO->start = this->isStart();
+}
+
 Track::~Track(){
     _body->GetWorld()->DestroyBody(_body);
 }

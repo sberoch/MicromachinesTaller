@@ -166,11 +166,11 @@ World::~World(){
 }
 
 void World::toDTO(WorldDTO_t* world){
-    for (size_t i=0; i<_cars.size(); ++i){
-        world->cars[i].x = _cars[i]->x();
-        world->cars[i].y = _cars[i]->y();
-        world->cars[i].health = _cars[i]->health();
-        //world->cars[i]->id = _cars[i]->id();
-    }
+    for (size_t i=0; i<_cars.size(); ++i)
+        _cars[i]->carToDTO(&world->cars[i]);
+    world->cars_size = _cars.size();
 
+    for (size_t i=0; i<_track.size(); ++i)
+        _track[i]->toDTO(&world->track[i]);
+    world->track_size = _track.size();
 }

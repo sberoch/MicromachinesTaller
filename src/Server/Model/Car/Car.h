@@ -7,6 +7,7 @@
 #include "../../../Common/Event/CommandEvent.h"
 #include "../../../Common/Constants.h"
 #include "../Track.h"
+#include "../../mods/DTOs.h"
 
 enum StatusType {
     GRABBED_HEALTH_POWERUP,
@@ -115,10 +116,13 @@ public:
     const float angle();
     const float health();
     const float speed();
+
     void assignId(int id);
     const b2Vec2 linearVelocity();
     b2Body* body() const;
     const bool onGrass();
+
+    void carToDTO(CarDTO_t* carDTO);
 
     ~Car();
 };

@@ -231,6 +231,16 @@ const b2Vec2 Car::linearVelocity(){
     return _carBody->GetLinearVelocity();
 }
 
+void Car::carToDTO(CarDTO_t* carDTO) {
+    carDTO->x = this->x();
+    carDTO->y = this->y();
+    carDTO->angle = this->angle();
+    carDTO->health = this->health();
+    carDTO->maxForwardSpeed = _maxForwardSpeed;
+    carDTO->lapsCompleted = _laps;
+    carDTO->id = _id;
+}
+
 b2Body* Car::body() const {
     return _carBody;
 }
