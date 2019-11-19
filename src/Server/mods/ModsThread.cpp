@@ -2,7 +2,7 @@
 #include <sys/param.h>
 #include "ModsThread.h"
 
-ModsThread::ModsThread(std::string libs_filename) : unique_signal(42) {
+ModsThread::ModsThread(const std::string& libs_filename, WorldDTO_t* worldDTO) : unique_signal(42), _worldDTO(worldDTO) {
     try {
         std::cout << "Opening: " << libs_filename << std::endl;
         std::ifstream fs(libs_filename);
@@ -10,28 +10,31 @@ ModsThread::ModsThread(std::string libs_filename) : unique_signal(42) {
 
         // read from the file.
         while(std::getline(fs, tmp))
-            libs.push_back(dynamic_lib(tmp));
+            libs.emplace_back(tmp);
+
+        // load up all the libs
+        for (auto& l : libs) {
+            l.handle = load_lib(l.path);
+        }
+
+
     } catch (std::exception& e) {
         std::cerr << e.what() << std::endl;
     }
 }
 
 void ModsThread::run() {
-    // load up all the libs
-    for (auto& l : libs) {
-        l.handle = load_lib(l.path);
-    }
-
-    std::vector<Plugin*> plugins;
+    //TODO: see why p is hpu
+    plugins.clear();
     // instantiate!
     for (auto& l : libs)
         plugins.push_back( instantiate(l.handle) );
 
-    // call each widget's message() func.
+    // call each plugin's run func.
     for (Plugin* p : plugins) {
         if (p == nullptr) continue;
         std::cout << p->message() << std::endl;
-        //p->run(&world);
+        p->run(_worldDTO);
         delete p;
     }
 }

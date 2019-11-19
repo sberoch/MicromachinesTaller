@@ -2,9 +2,6 @@
 #define _PLUGIN_H
 
 #include "DTOs.h"
-
-extern int unique_signal; // for use in proving symbol stuff.
-
 #include <string>
 
 class Plugin {

@@ -34,12 +34,15 @@ class ModsThread {
 private:
     std::vector<dynamic_lib> libs;
     int unique_signal;
+    std::vector<Plugin*> plugins;
+
+    WorldDTO_t* _worldDTO;
 
     dynamic_lib_handle load_lib(const std::string& path);
     Plugin* instantiate(const dynamic_lib_handle handle);
 
 public:
-    ModsThread(std::string libs_filename);
+    ModsThread(const std::string& libs_filename, WorldDTO_t* worldDTO);
     void run();
     ~ModsThread() = default;
 };
