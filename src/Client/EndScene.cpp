@@ -2,17 +2,18 @@
 #include "../Common/Constants.h"
 #include <iostream>
 
-EndScene::EndScene(SdlWindow& window) : 
+EndScene::EndScene(SdlWindow& window, Queue<EndSnapshot*>& endRecvQueue) : 
 	window(window),
+	endRecvQueue(endRecvQueue),
 	backgroundEndTex("end_screen.png", window),
 	backgroundEnd(backgroundEndTex),
 	creator(window),
 	_done(false),
 	fullscreen(true) {
-		carViews.push_back(creator.create(TYPE_CAR_RED, 0, 0, 270));
-    	carViews.push_back(creator.create(TYPE_CAR_BLUE, 0, 0, 270));
-   		carViews.push_back(creator.create(TYPE_CAR_YELLOW, 0, 0, 270));
-    	carViews.push_back(creator.create(TYPE_CAR_GREEN, 0, 0, 270));
+		carViews.insert({TYPE_CAR_RED, creator.create(TYPE_CAR_RED, 0, 0, 270)});
+    	carViews.insert({TYPE_CAR_BLUE, creator.create(TYPE_CAR_BLUE, 0, 0, 270)});
+   		carViews.insert({TYPE_CAR_YELLOW, creator.create(TYPE_CAR_YELLOW, 0, 0, 270)});
+    	carViews.insert({TYPE_CAR_GREEN, creator.create(TYPE_CAR_GREEN, 0, 0, 270)});
 }
 
 bool EndScene::done() {
@@ -22,6 +23,16 @@ bool EndScene::done() {
 void EndScene::update() {
 	window.getWindowSize(&xScreen, &yScreen);
 	backgroundEnd.setDims(xScreen, yScreen);
+
+	arrivedPlayers.clear();
+	EndSnapshot* snap;
+	while (endRecvQueue.pop(snap)) {
+	    for (auto& arrivedPlayer : snap->getFinishedQueue()) {
+	    	arrivedPlayers.push_back(arrivedPlayer);
+	    }
+	}
+
+	std::cout << arrivedPlayers.size() << std::endl;
 }
 
 void EndScene::draw() {
@@ -61,8 +72,8 @@ int EndScene::handle() {
 
 void EndScene::drawCars() {
 	//TODO: dibujar solo los que haya en partida y en orden de llegada
-	for (int i = 0; i < 4; ++i)	{
-		carViews.at(i)->drawAt(0.5*xScreen, (0.27 + 0.14*i)*yScreen);
+	for (int i = 0; i < arrivedPlayers.size(); i++)	{
+		carViews.at(arrivedPlayers.at(i))->drawAt(0.5*xScreen, (0.27 + 0.14*i)*yScreen);
 	}
 }
 

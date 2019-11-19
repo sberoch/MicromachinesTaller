@@ -1,33 +1,43 @@
 #include "ReceiverThread.h"
+#include "../Common/Constants.h"
 #include <iostream>
 
 ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
-				   			   Queue<LobbySnapshot*>& lobbyRecvQueue, 
+				   			   Queue<LobbySnapshot*>& lobbyRecvQueue,
+				   			   Queue<EndSnapshot*>& endRecvQueue, 
 				   			   Protocol& protocol, int& currentScene) :
 	gameRecvQueue(gameRecvQueue),
 	lobbyRecvQueue(lobbyRecvQueue),
+	endRecvQueue(endRecvQueue),
 	protocol(protocol),
 	_done(false),
 	_isGameMode(false),
 	_currentScene(currentScene) {}
 
 void ReceiverThread::run() {
+
+	//TODO: while (!done)
+	//			switch
+	//				while (curr scene)
+	// para poder hacer lo de volver a escenas anteriores
+
+
 	try{
 		SnapshotEvent* gameSnap;
 		LobbySnapshot* lobbySnap;
+		EndSnapshot* endSnap;
 
-		while(!_isGameMode) {
+		while(_currentScene == SCENE_LOBBY || _currentScene == SCENE_MENU) {
 			lobbySnap = new LobbySnapshot(protocol);
 			lobbyRecvQueue.push(lobbySnap);
-
-			int id = lobbySnap->getMyId();
-			if (lobbySnap->gameStarted(id)) {
-				_isGameMode = true;
-			}
 		}
-		while(_isGameMode) {
+		while(_currentScene == SCENE_GAME) {
 			gameSnap = new SnapshotEvent(protocol);
 			gameRecvQueue.push(gameSnap);
+		}
+		while(_currentScene == SCENE_END) {
+		    endSnap = new EndSnapshot(protocol);
+		    endRecvQueue.push(endSnap);
 		}
 
 	} catch (std::exception &e) {

@@ -45,12 +45,6 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                     std::cout << "---Command: " << event->j["cmd_id"].get<int>() << std::endl;
                     int clientId = event->j["client_id"];
                     clients[clientId]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
-
-                    if (clients.at(clientId)->finishedPlaying()){
-                        std::cout << "Player finished" << std::endl;
-                        addToFinishedPlayersAndRemoveFromClients(clients, clientId);
-                        endSnapshot->addPlayerFinished(clients.at(clientId)->getIdFromRoom());
-                    }
                 }
 
                 for (auto& client: clients){
@@ -61,6 +55,12 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
 
                 for (auto &actualClient : clients) {
                     actualClient.second->modifySnapshotFromClient(snapshot);
+                    if (actualClient.second->finishedPlaying()){
+                        std::cout << "Player finished" << std::endl;
+                        int clientId = actualClient.first;
+                        addToFinishedPlayersAndRemoveFromClients(clients, clientId);
+                        endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
+                    }
                 }
 
 

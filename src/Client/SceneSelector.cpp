@@ -16,12 +16,12 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 	currentScene(SCENE_MENU),
 	protocol(host, port),
 	sendQueue(true),
-	receiver(gameRecvQueue, lobbyRecvQueue, protocol, currentScene),
+	receiver(gameRecvQueue, lobbyRecvQueue, endRecvQueue, protocol, currentScene),
 	sender(sendQueue, protocol) {
 		scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window, sendQueue)));
 		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, lobbyRecvQueue, sendQueue, player)));
 		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, gameRecvQueue, sendQueue, player)));
-		scenes.insert(std::make_pair(SCENE_END, new EndScene(window)));
+		scenes.insert(std::make_pair(SCENE_END, new EndScene(window, endRecvQueue)));
 		
 		receiver.start();
 		sender.start();

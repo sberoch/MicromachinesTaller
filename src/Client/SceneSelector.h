@@ -10,6 +10,7 @@
 #include "../Common/Event/Event.h"
 #include "../Common/Event/SnapshotEvent.h"
 #include "../Common/Event/LobbySnapshot.h"
+#include "../Common/Event/EndSnapshot.h"
 #include "../Common/Protocol.h"
 #include "PlayerDescriptor.h"
 #include <map>
@@ -24,6 +25,7 @@ private:
 
 	Queue<SnapshotEvent*> gameRecvQueue;
 	Queue<LobbySnapshot*> lobbyRecvQueue;
+	Queue<EndSnapshot*> endRecvQueue;
 	SafeQueue<Event*> sendQueue;
 
 	ReceiverThread receiver;

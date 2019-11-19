@@ -125,7 +125,7 @@ bool ClientThread::finishedPlaying() {
 
 void ClientThread::sendEndEvent(const std::shared_ptr <EndSnapshot> &endSnapshot) {
     std::shared_ptr<EndSnapshot> endSnapshotCopy(endSnapshot);
-    endSnapshotCopy->send(protocol);
+    this->sendingBlockingQueue.push(endSnapshotCopy);
 }
 
 

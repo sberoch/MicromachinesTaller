@@ -5,8 +5,10 @@
 #include "SdlWindow.h"
 #include "SdlTexture.h"
 #include "View/BackgroundView.h"
+#include "../Common/Queue.h"
+#include "../Common/Event/EndSnapshot.h"
 #include "TextureCreator.h"
-#include <vector>
+#include <map>
 
 class EndScene : public BaseScene {
 private:
@@ -14,15 +16,19 @@ private:
 	SdlTexture backgroundEndTex;
 	BackgroundView backgroundEnd;
 
+	Queue<EndSnapshot*>& endRecvQueue;
+
 	TextureCreator creator;
-	std::vector<ObjectViewPtr> carViews;
+	std::map<int, ObjectViewPtr> carViews;
+
+	std::vector<int> arrivedPlayers;
 
 	SDL_Event e;
 	bool _done;
 	bool fullscreen;
 	int xScreen, yScreen;
 public:
-	EndScene(SdlWindow& window);
+	EndScene(SdlWindow& window, Queue<EndSnapshot*>& endRecvQueue);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
