@@ -24,7 +24,7 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
         std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
     std::shared_ptr<Event> event;
 
-    ModsThread modsThread("libs.txt");
+    ModsThread modsThread("libs.txt", &_worldDTO);
     modsThread.run();
 
     int i = 0;
@@ -54,6 +54,8 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                 }
 
                 step();
+                modsThread.run();
+                applyPluginChanges();
 
                 for (auto &actualClient : clients) {
                     actualClient.second->modifySnapshotFromClient(snapshot);
@@ -90,6 +92,10 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
 void GameThread::step(){
     _world.step(_configuration->getVelocityIterations(), _configuration->getPositionIterations());
     _world.toDTO(&_worldDTO);
+}
+
+void GameThread::applyPluginChanges() {
+    _world.dtoToModel(_worldDTO);
 }
 
 GameThread::~GameThread() {}

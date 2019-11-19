@@ -30,6 +30,9 @@ public:
     std::shared_ptr<Car> createCar(int id);
     void step();
 
+    //Method to apply changes in DTO to model
+    void applyPluginChanges();
+
     void startGame();
 };
 
