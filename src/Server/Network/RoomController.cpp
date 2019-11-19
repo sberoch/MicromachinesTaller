@@ -83,10 +83,9 @@ void RoomController::stop() {
         listener.join();
         std::cout << "Destroying clients with no room" << std::endl;
         for (auto &client: clientsWithNoRoom) {
-            if (!client.second->isDead()) {
+            //if (!client.second->isDead()) {
                 client.second->stop();
-                client.second->join();
-            }
+            //}
         }
 
         std::cout << "Destroying rooms" << std::endl;
@@ -94,7 +93,7 @@ void RoomController::stop() {
             //if (!room.second->isDead()) {
                 room.second->stop();
                 room.second->joinThread();
-           // }
+            //}
         }
         stopped = true;
     }
