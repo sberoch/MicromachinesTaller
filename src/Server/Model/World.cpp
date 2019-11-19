@@ -59,7 +59,7 @@ void World::createTrack(){
         angle = t["angle"].get<float>();
         type = t["type"].get<float>();
         id++;
-        std::shared_ptr<Track> track = std::shared_ptr<Track>(new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration));
+        std::shared_ptr<Track> track(new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration));
         _track.push_back(track);
     }
 
@@ -82,7 +82,7 @@ void World::createGrass(){
         angle = g["angle"].get<float>();
         type = g["type"].get<float>();
         id++;
-        std::shared_ptr<Grass> grass = std::shared_ptr<Grass>(new Grass(_world, id, type, x, y, angle * DEGTORAD, _configuration));
+        std::shared_ptr<Grass> grass(new Grass(_world, id, type, x, y, angle * DEGTORAD, _configuration));
         _grass.push_back(grass);
     }
 }
@@ -173,10 +173,26 @@ void World::toDTO(WorldDTO_t* world){
     for (size_t i=0; i<_track.size(); ++i)
         _track[i]->toDTO(&world->track[i]);
     world->track_size = _track.size();
+
+    for (size_t i=0; i<_activeModifiers.size(); ++i){
+        _activeModifiers[i]->toDTO(&world->modifiers[i]);
+    }
+
+    for (size_t i=_activeModifiers.size(); i<MAX_MODIFIERS; ++i){
+        world->modifiers[i].active = false;
+    }
 }
 
-void World::dtoToModel(const WorldDTO_t& worldDTO) {
+void World::dtoToModel(WorldDTO_t* worldDTO) {
     for (size_t i=0; i<_cars.size(); ++i){
-        _cars[i]->dtoToModel(worldDTO.cars[i]);
+        _cars[i]->dtoToModel(worldDTO->cars[i]);
+    }
+
+    for (size_t i=0; i<MAX_MODIFIERS; ++i){
+        ModifierDTO modifier = worldDTO->modifiers[i];
+        if (modifier.newModifier){
+            _activeModifiers.push_back(Modifier::makeModifier(_world, modifier.type, modifier.id, modifier.x, modifier.y,
+                                                              modifier.angle * DEGTORAD, _configuration));
+        }
     }
 }
