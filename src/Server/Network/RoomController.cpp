@@ -91,10 +91,10 @@ void RoomController::stop() {
 
         std::cout << "Destroying rooms" << std::endl;
         for (auto &room: rooms) {
-            if (!room.second->isDead()) {
+            //if (!room.second->isDead()) {
                 room.second->stop();
                 room.second->joinThread();
-            }
+           // }
         }
         stopped = true;
     }

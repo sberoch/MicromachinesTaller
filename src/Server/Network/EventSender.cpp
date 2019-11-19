@@ -21,6 +21,8 @@ void EventSender::run() {
         while (acceptSocketRunning && clientStillTalking) {
             try {
                 sendingBlockingQueue.pop(toBeSent);
+                if (toBeSent == nullptr)
+                    clientStillTalking = false;
                 toBeSent->send(protocol);
             } catch (const SocketError &e) {
                 clientStillTalking = false;

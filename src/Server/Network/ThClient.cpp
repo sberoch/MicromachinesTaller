@@ -47,6 +47,7 @@ void ClientThread::stop(){
     keepTalking = false;
 
     sender.stop();
+    sendingBlockingQueue.push(nullptr);
     receiver.stop();
 
     sender.join();
