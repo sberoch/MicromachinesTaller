@@ -36,7 +36,7 @@ file(GLOB_RECURSE CLIENT_SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/Client/*.cpp"
 add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES})
 target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer lua5.3)
 
-add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES} src/Server/mods/ModsThread.cpp src/Server/mods/ModsThread.h)
+add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES})
 target_link_libraries(mm_server Box2D ${CMAKE_DL_LIBS})
 
 
@@ -75,4 +75,4 @@ install(FILES assets/car_brake.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/car_explosion.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/menu_button.wav DESTINATION ${CMAKE_BINARY_DIR})
 
-install(FILES src/Server/mods/libs.txt DESTINATION ${CMAKE_BINARY_DIR})
+install(FILES src/mods/libs.txt DESTINATION ${CMAKE_BINARY_DIR})
