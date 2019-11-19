@@ -64,6 +64,7 @@ private:
 	void updateGameEvents(GameEventsList gameEvents);
 	void addObject(GameEventStruct gameEvent);
 	void removeObject(GameEventStruct gameEvent);
+	void gameOver(GameEventStruct gameEvent);
 };
 
 #endif // GAME_SCENE_H

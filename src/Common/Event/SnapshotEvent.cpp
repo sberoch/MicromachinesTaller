@@ -135,8 +135,8 @@ void SnapshotEvent::signalMapReady() {
     setGameEvent(MAP_LOAD_FINISHED, 0, 0, 0, 0, 0);
 }
 
-void SnapshotEvent::setGameOver() {
-    setGameEvent(GAME_OVER, 0, 0, 0, 0, 0);
+void SnapshotEvent::setGameOver(int inRoomId) {
+    setGameEvent(GAME_OVER, 0, 0, 0, 0, inRoomId);
 }
 
 void SnapshotEvent::setMudSplatEvent() {

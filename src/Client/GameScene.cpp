@@ -66,7 +66,7 @@ void GameScene::updateGameEvents(GameEventsList gameEvents) {
 			case REMOVE: removeObject(gameEvent); break;
 			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
-			case GAME_OVER: nextScene = SCENE_END; break;
+			case GAME_OVER: gameOver(gameEvent); break;
 			default: break;
 		}
 	}
@@ -82,6 +82,12 @@ void GameScene::addObject(GameEventStruct gameEvent) {
 
 void GameScene::removeObject(GameEventStruct gameEvent) {
 	gameObjects.remove(gameEvent.objectType, gameEvent.id);
+}
+
+void GameScene::gameOver(GameEventStruct gameEvent) {
+	if (gameEvent.id == player.playerId) {
+		nextScene = SCENE_END;
+	}
 }
 
 void GameScene::draw() {
