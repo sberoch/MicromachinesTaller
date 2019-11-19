@@ -29,3 +29,4 @@ public:
 extern "C" Plugin* factory(void) {
     return static_cast<Plugin*>(new Plugin1);
 }
+

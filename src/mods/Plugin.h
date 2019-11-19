@@ -14,11 +14,3 @@ public:
 
 #endif
 
-/*#include <stdio.h>
-#include "DTOs.h"
-
-int plugin_func(void);
-
-void plugin_car_damaged(CarDTO_t* cars[], size_t size);
-
-*/

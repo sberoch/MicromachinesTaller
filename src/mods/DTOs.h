@@ -2,9 +2,12 @@
 #define MICROMACHINES_DTOS_H
 
 #include <stdio.h>
+#include "../Common/Constants.h"
 
 #define MAX_CARS 4
 #define MAX_TRACKS 30
+#define MAX_MODIFIERS 10
+#define MODIFIER_TYPES 5
 
 typedef struct CarDTO {
     float x;
@@ -21,8 +24,19 @@ typedef struct TrackDTO {
     float y; //Center of mass in y axis
     float halfWidth;
     float halfHeight;
+    float angle;
     bool start;
 } TrackDTO_t;
+
+typedef struct ModifierDTO {
+    size_t id;
+    size_t type;
+    float x;
+    float y;
+    float angle;
+    bool newModifier;
+    bool active;
+} ModifierDTO_t;
 
 typedef struct WorldDTO {
     CarDTO_t cars[MAX_CARS];
@@ -30,6 +44,9 @@ typedef struct WorldDTO {
 
     TrackDTO_t track[MAX_TRACKS];
     size_t track_size;
+
+    ModifierDTO_t modifiers[MAX_MODIFIERS];
+    size_t max_id;
 } WorldDTO_t;
 
 

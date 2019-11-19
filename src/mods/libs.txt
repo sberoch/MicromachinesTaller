@@ -1,0 +1,2 @@
+../src/mods/Plugin1.so
+../src/mods/Plugin2.so
