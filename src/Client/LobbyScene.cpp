@@ -39,15 +39,20 @@ bool LobbyScene::done() {
 }
 
 void LobbyScene::update() {
-    window.getWindowSize(&xScreen, &yScreen);
-    backgroundLobby.setDims(xScreen, yScreen);
+    try {
+        window.getWindowSize(&xScreen, &yScreen);
+        backgroundLobby.setDims(xScreen, yScreen);
 
-    LobbySnapshot* snap;
-    if (lobbyRecvQueue.pop(snap)) {
-        updateRooms(snap->getRooms());
-        player.globalId = snap->getMyId();
+        LobbySnapshot *snap;
+        if (lobbyRecvQueue.pop(snap)) {
+            updateRooms(snap->getRooms());
+            player.globalId = snap->getMyId();
+        }
+    } catch (std::exception &e) {
+        std::cerr << "Error from lobby scene" << e.what() << std::endl;
+    } catch (...){
+        std::cerr << "Unknown error from lobby scene" << std::endl;
     }
-
 }
 
 void LobbyScene::updateRooms(RoomsMap roomsMap) {

@@ -56,8 +56,10 @@ void SceneSelector::run() {
 		std::cerr << "Socket error captured in SceneSelector" << std::endl;
 		done = true;
 	} catch (std::exception &e) {
-		std::cerr << e.what() << std::endl;
-	}
+		std::cerr << "Excepction from scene selector: " << e.what() << std::endl;
+	} catch (...){
+        std::cerr << "Unknown error from scene selector" << std::endl;
+    }
 }
 
 void SceneSelector::sleep(int milliseconds) {

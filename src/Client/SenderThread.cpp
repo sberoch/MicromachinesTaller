@@ -17,9 +17,11 @@ void SenderThread::run() {
 			event->send(protocol);
 			delete event;
 		}
-	} catch (std::exception &e) {
-		std::cerr << e.what() << std::endl;
-	}
+    } catch (std::exception &e) {
+        std::cerr << "Error from sender Thread" << e.what() << std::endl;
+    } catch (...){
+        std::cerr << "Unknown error from sender Thread" << std::endl;
+    }
 	_done = true;
 }
 
