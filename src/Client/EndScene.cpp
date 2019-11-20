@@ -26,7 +26,7 @@ void EndScene::update() {
 
 	arrivedPlayers.clear();
 	EndSnapshot* snap;
-	while (endRecvQueue.pop(snap)) {
+	if (endRecvQueue.pop(snap)) {
 	    for (auto& arrivedPlayer : snap->getFinishedQueue()) {
 	    	arrivedPlayers.push_back(arrivedPlayer);
 	    }
