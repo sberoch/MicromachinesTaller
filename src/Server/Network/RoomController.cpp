@@ -163,9 +163,7 @@ RoomController::~RoomController() {
     listener.stop();
     listener.join();
     std::cout << "Destroying clients with no room" << std::endl;
-//    for (auto &client: clientsWithNoRoom) {
-//        client.second->stop();
-//    }
+
     clientsWithNoRoom.clear();
 
     std::cout << "Destroying rooms" << std::endl;
@@ -173,6 +171,8 @@ RoomController::~RoomController() {
         room.second->stop();
         room.second->joinThread();
     }
+
+    rooms.clear();
 }
 
 

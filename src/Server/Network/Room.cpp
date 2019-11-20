@@ -126,14 +126,11 @@ bool Room::isDead() {
 
 void Room::stop() {
     this->roomRunning = false;
-//    for (auto& client: clients){
-//        client.second->stop();
-//    }
     clients.clear();
 }
 
 Room::~Room() {
-    //this->stop();
+    this->stop();
 }
 
 int Room::getRoomIdFromClient(int clientId) {
