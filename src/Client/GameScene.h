@@ -55,8 +55,8 @@ public:
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
-	virtual int handle() override;
-	virtual ~GameScene() {}
+	virtual int handle(SDL_Event& event) override;
+	virtual ~GameScene() = default;
 private:
 	void drawBackground();
 

@@ -9,7 +9,8 @@ MenuScene::MenuScene(SdlWindow& window, SafeQueue<Event*>& sendQueue) :
 	backgroundMenuTex("menu_background.png", window),
 	backgroundMenu(backgroundMenuTex),
 	_done(false),
-	fullscreen(true) {}
+	fullscreen(true),
+	nextScene(SCENE_MENU){}
 
 bool MenuScene::done() {
 	return _done;
@@ -26,39 +27,22 @@ void MenuScene::draw() {
 	window.render();
 }
 
-int MenuScene::handle() {
-	nextScene = SCENE_MENU;
-	while (SDL_PollEvent(&e) && !_done) {
-		if (e.type == SDL_QUIT) {
+int MenuScene::handle(SDL_Event& event) {
+	std::cout << "asdasdad\n";
+	if (event.type == SDL_MOUSEBUTTONDOWN) {
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		if (insideQuitButton(x, y)) {
+			audio.playEffect(SFX_BUTTON);
 			_done = true;
 
-		} else if (e.type == SDL_MOUSEBUTTONDOWN) {
-			int x, y;
-			SDL_GetMouseState(&x, &y);
-			if (insideQuitButton(x, y)) {
-				audio.playEffect(SFX_BUTTON);	
-				_done = true;
-				
-			} else if (insidePlayButton(x, y)) {
-				audio.playEffect(SFX_BUTTON);
-				sendQueue.push(new EnterLobbyEvent());
-				nextScene = SCENE_LOBBY;
-			}
-
-		} else if (e.type == SDL_KEYDOWN) {
-			SDL_KeyboardEvent& keyEvent = (SDL_KeyboardEvent&) e;
-			if (keyEvent.keysym.sym == SDLK_F11) {
-				if (fullscreen) {
-					window.setFullscreen(false);
-					fullscreen = false;
-				} else {
-					window.setFullscreen(true);
-					fullscreen = true;
-				}
-			}
+		} else if (insidePlayButton(x, y)) {
+			audio.playEffect(SFX_BUTTON);
+			sendQueue.push(new EnterLobbyEvent());
+			nextScene = SCENE_LOBBY;
 		}
 	}
-	
+
 	return nextScene;
 }
 

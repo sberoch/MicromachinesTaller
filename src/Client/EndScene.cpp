@@ -40,36 +40,18 @@ void EndScene::draw() {
 	window.render();
 }
 
-int EndScene::handle() {
-	while (SDL_PollEvent(&e) && !_done) {
-		if (e.type == SDL_QUIT) {
-			_done = true;
-
-		} else if (e.type == SDL_MOUSEBUTTONDOWN) {
-			int x, y;
-			SDL_GetMouseState(&x, &y);
-			if (insideQuitButton(x, y)) {
-				_done = true;
-			}
-
-		} else if (e.type == SDL_KEYDOWN) {
-			SDL_KeyboardEvent& keyEvent = (SDL_KeyboardEvent&) e;
-			if (keyEvent.keysym.sym == SDLK_F11) {
-				if (fullscreen) {
-					window.setFullscreen(false);
-					fullscreen = false;
-				} else {
-					window.setFullscreen(true);
-					fullscreen = true;
-				}
-			}
-		}
-	}
-	return SCENE_END;
+int EndScene::handle(SDL_Event& event) {
+    if (event.type == SDL_MOUSEBUTTONDOWN) {
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        if (insideQuitButton(x, y)) {
+            _done = true;
+        }
+        return SCENE_END;
+    }
 }
 
 void EndScene::drawCars() {
-	//TODO: dibujar solo los que haya en partida y en orden de llegada
 	for (int i = 0; i < arrivedPlayers.size(); i++)	{
 		carViews.at(arrivedPlayers.at(i))->drawAt(0.5*xScreen, (0.27 + 0.14*i)*yScreen);
 	}

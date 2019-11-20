@@ -14,6 +14,8 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 		const std::string& host, const std::string& port) : 
 	window(xScreen, yScreen),
 	currentScene(SCENE_MENU),
+	done(false),
+	fullscreen(true),
 	protocol(host, port),
 	sendQueue(true),
 	receiver(gameRecvQueue, lobbyRecvQueue, endRecvQueue, protocol, currentScene),
@@ -29,18 +31,18 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 
 void SceneSelector::run() {
 	BaseScene* scene;
-	bool done = false;
 	try {
 		while(!receiver.finished() && !sender.finished()) {
 			std::clock_t begin = clock();
 
-		    scene = scenes.at(currentScene);
-		    scene->update();
-		    scene->draw();
-		    currentScene = scene->handle();
-		    if (scene->done()) {
-		    	done = true;
-		    	protocol.forceShutDown(); //No estoy seguro de que vaya aca
+		    if (currentScene != 0) {
+		    	scene = scenes.at(currentScene);
+				scene->update();
+				scene->draw();
+				currentScene = handle(scene);
+				if (done || scene->done()) {
+					protocol.forceShutDown(); //No estoy seguro de que vaya aca
+				}
 		    }
 
 		    //Check exec time and sleep
@@ -50,11 +52,34 @@ void SceneSelector::run() {
 	    }
 	} catch (SocketError& se) {
 		std::cerr << "Socket error captured in SceneSelector" << std::endl;
-		done = true;
 	} catch (std::exception &e) {
 		std::cerr << "Excepction from scene selector: " << e.what() << std::endl;
 	} catch (...){
         std::cerr << "Unknown error from scene selector" << std::endl;
+    }
+}
+
+int SceneSelector::handle(BaseScene* scene) {
+    //Handle events common to all scenes
+    while (SDL_PollEvent(&event) && !done) {
+        if (event.type == SDL_QUIT) {
+            done = true;
+            return currentScene;
+
+        } else if (event.type == SDL_KEYDOWN) {
+            SDL_KeyboardEvent& keyEvent = (SDL_KeyboardEvent&) event;
+            if (keyEvent.keysym.sym == SDLK_F11) {
+                if (fullscreen) {
+                    window.setFullscreen(false);
+                    fullscreen = false;
+                } else {
+                    window.setFullscreen(true);
+                    fullscreen = true;
+                }
+                return currentScene;
+            }
+        }
+		return scene->handle(event);
     }
 }
 

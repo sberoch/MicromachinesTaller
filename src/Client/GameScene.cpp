@@ -98,16 +98,16 @@ void GameScene::draw() {
 	window.render();
 }
 
-int GameScene::handle() {
+int GameScene::handle(SDL_Event& event) {
 	if (isMapReady) {
 		if (player.isBot) {
-			bot.handle();
+			bot.handle(event);
 			if (bot.done()) {
 				isDone = true;
 			}
 
 		} else {
-			handler.handle();
+			handler.handle(event);
 			if (handler.done()) {
 				isDone = true;
 			}

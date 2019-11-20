@@ -17,15 +17,13 @@ private:
 	SafeQueue<Event*>& sendQueue;
 	PlayerDescriptor& player;
 	int moveRepeatCounter;
-
-	SDL_Event event;
 	bool _done;
 public:
 	BotHandler(GameObjects& gameObjects, Audio& audio, 
 		SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
 	bool done();
 	void loadMap();
-	void handle();
+	void handle(SDL_Event& event);
 
 };
 

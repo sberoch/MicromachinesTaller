@@ -2,6 +2,7 @@
 #define SCENE_SELECTOR_H
 
 #include "SdlWindow.h"
+#include "SdlTexture.h"
 #include "BaseScene.h"
 #include "ReceiverThread.h"
 #include "SenderThread.h"
@@ -20,6 +21,9 @@ private:
 	SdlWindow window;
 	std::map<int, BaseScene*> scenes;
 	int currentScene;
+	SDL_Event event;
+	bool done;
+	bool fullscreen;
 
 	Protocol protocol;
 
@@ -41,6 +45,7 @@ public:
 
 private:
 	void sleep(int milliseconds);
+    int handle(BaseScene* scene);
 };
 
 #endif // SCENE_SELECTOR_H

@@ -110,62 +110,45 @@ void LobbyScene::drawArrows() {
     }
 }
 
-int LobbyScene::handle() {
-    while (SDL_PollEvent(&e) && !_done) {
-        if (e.type == SDL_QUIT) {
-            _done = true;
-
-        } else if (e.type == SDL_MOUSEBUTTONDOWN) {
-            int x, y;
-            SDL_GetMouseState(&x, &y);
-            if (insidePlayButton(x, y)) {
-                if (roomsMap.size() > 0 && selectedRoom != -1 && joinedRoom != -1) {
-                    sendQueue.push(new PlayEvent(player.globalId));
-                    audio.playEffect(SFX_BUTTON);
-                    nextScene = SCENE_GAME;
-                }
-            }
-            else if (insideUserButton(x, y)) {
-                player.isBot = false;
-                audio.playEffect(SFX_BUTTON);
-            }
-            else if (insideBotButton(x, y)) {
-                player.isBot = true;
-                audio.playEffect(SFX_BUTTON);
-            }
-            else if (insideCreateRoomButton(x, y)) {
-                if (roomsMap.size() < 4) {
-                    sendQueue.push(new CreateRoomEvent());
-                    audio.playEffect(SFX_BUTTON);
-                }
-            }
-            else if (insideJoinRoomButton(x, y)) {
-                if (roomsMap.size() > 0 && selectedRoom != -1 && selectedPlayer != -1) {
-                    joinedRoom = selectedRoom;
-                    joinedPlayer = selectedPlayer;
-                    audio.playEffect(SFX_BUTTON);
-                    sendQueue.push(new EnterRoomEvent(player.globalId, selectedRoom, joinedPlayer));
-                    player.playerId = joinedPlayer;
-                }
-            } else {
-                checkInsideAnyRoom(x, y);
-                checkInsideAnyPlayer(x, y);
-            }
-
-        } else if (e.type == SDL_KEYDOWN) {
-            SDL_KeyboardEvent& keyEvent = (SDL_KeyboardEvent&) e;
-            if (keyEvent.keysym.sym == SDLK_F11) {
-                if (fullscreen) {
-                    window.setFullscreen(false);
-                    fullscreen = false;
-                } else {
-                    window.setFullscreen(true);
-                    fullscreen = true;
-                }
-            }
-        }
-    }
-    return nextScene;
+int LobbyScene::handle(SDL_Event& event) {
+	if (event.type == SDL_MOUSEBUTTONDOWN) {
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		if (insidePlayButton(x, y)) {
+			if (roomsMap.size() > 0 && selectedRoom != -1 && joinedRoom != -1) {
+				sendQueue.push(new PlayEvent(player.globalId));
+				audio.playEffect(SFX_BUTTON);
+				nextScene = SCENE_GAME;
+			}
+		}
+		else if (insideUserButton(x, y)) {
+			player.isBot = false;
+			audio.playEffect(SFX_BUTTON);
+		}
+		else if (insideBotButton(x, y)) {
+			player.isBot = true;
+			audio.playEffect(SFX_BUTTON);
+		}
+		else if (insideCreateRoomButton(x, y)) {
+			if (roomsMap.size() < 4) {
+				sendQueue.push(new CreateRoomEvent());
+				audio.playEffect(SFX_BUTTON);
+			}
+		}
+		else if (insideJoinRoomButton(x, y)) {
+			if (roomsMap.size() > 0 && selectedRoom != -1 && selectedPlayer != -1) {
+				joinedRoom = selectedRoom;
+				joinedPlayer = selectedPlayer;
+				audio.playEffect(SFX_BUTTON);
+				sendQueue.push(new EnterRoomEvent(player.globalId, selectedRoom, joinedPlayer));
+				player.playerId = joinedPlayer;
+			}
+		} else {
+			checkInsideAnyRoom(x, y);
+			checkInsideAnyPlayer(x, y);
+		}
+	}
+	return nextScene;
 }
 
 bool LobbyScene::insidePlayButton(int x, int y) {
