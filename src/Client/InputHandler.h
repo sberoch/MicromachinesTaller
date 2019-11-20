@@ -6,6 +6,7 @@
 #include "Audio.h"
 #include "../Common/Event/Event.h"
 #include "../Common/SafeQueue.h"
+#include "PlayerDescriptor.h"
 
 class InputHandler {
 private:
@@ -17,10 +18,10 @@ private:
 	bool _done;
 	bool fullscreen;
 	bool up_pressed, left_pressed, down_pressed, right_pressed;
-	int& clientId;
+	PlayerDescriptor& player;
 public:
 	InputHandler(SdlWindow& window, Audio& audio,
-		SafeQueue<Event*>& sendQueue, int& clientId);
+                 SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
 	bool done();
 	void handle();
 };

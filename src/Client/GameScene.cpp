@@ -17,7 +17,7 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	background(backgroundTex),
 	display(window),
 	
-	handler(window, audio, sendQueue, player.globalId),
+	handler(window, audio, sendQueue, player),
 	creator(window),
 
 	gameObjects(creator),

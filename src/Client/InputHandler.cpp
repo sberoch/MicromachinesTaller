@@ -3,12 +3,12 @@
 #include "../Common/Event/CommandEvent.h"
 #include <iostream>
 
-InputHandler::InputHandler(SdlWindow& window, Audio& audio, 
-					SafeQueue<Event*>& sendQueue, int& clientId) :
+InputHandler::InputHandler(SdlWindow& window, Audio& audio,
+                           SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) :
 	window(window),
 	audio(audio),
 	sendQueue(sendQueue),
-	clientId(clientId) {
+	player(player) {
 	_done = false;
 	fullscreen = true;
 	up_pressed = false;
@@ -33,7 +33,7 @@ void InputHandler::handle() {
 				case SDLK_a: {
 					//Turn left
 					if (!left_pressed) {
-						sendQueue.push(new CommandEvent(TURN_LEFT, clientId));
+						sendQueue.push(new CommandEvent(TURN_LEFT, player.globalId));
 					}
 					left_pressed = true;
 					break;
@@ -41,7 +41,7 @@ void InputHandler::handle() {
 				case SDLK_d: {
 					//Turn right
 					if (!right_pressed) {
-						sendQueue.push(new CommandEvent(TURN_RIGHT, clientId));
+						sendQueue.push(new CommandEvent(TURN_RIGHT, player.globalId));
 					}
 					right_pressed = true;
 					break;
@@ -50,7 +50,7 @@ void InputHandler::handle() {
 					//Accelerate
 					if (!up_pressed) {
 						audio.playEffect(SFX_CAR_ENGINE);
-						sendQueue.push(new CommandEvent(ACCELERATE, clientId));
+						sendQueue.push(new CommandEvent(ACCELERATE, player.globalId));
 					}
 					up_pressed = true;
 					break;
@@ -59,7 +59,7 @@ void InputHandler::handle() {
 					//Brake
 					if (!down_pressed) {
 						audio.playEffect(SFX_CAR_BRAKE);
-						sendQueue.push(new CommandEvent(DESACCELERATE, clientId));
+						sendQueue.push(new CommandEvent(DESACCELERATE, player.globalId));
 					}
 					down_pressed = true;
 					break;
@@ -75,9 +75,8 @@ void InputHandler::handle() {
 					break;
 				}
 
-				//Mock
-				case SDLK_k: {
-					audio.playEffect(SFX_CAR_EXPLOSION);
+				case SDLK_b: {
+					player.isBot = true;
 					break;
 				}
 			}
@@ -87,7 +86,7 @@ void InputHandler::handle() {
 				case SDLK_a: {
 					//Stop turning left
 					if (left_pressed) {
-						sendQueue.push(new CommandEvent(STOP_TURNING_LEFT, clientId));
+						sendQueue.push(new CommandEvent(STOP_TURNING_LEFT, player.globalId));
 					}
 					left_pressed = false;
 					break;
@@ -95,7 +94,7 @@ void InputHandler::handle() {
 				case SDLK_d: {
 					//Stop turning right
 					if (right_pressed) {
-						sendQueue.push(new CommandEvent(STOP_TURNING_RIGHT, clientId));
+						sendQueue.push(new CommandEvent(STOP_TURNING_RIGHT, player.globalId));
 					}
 					right_pressed = false;
 					break;
@@ -104,7 +103,7 @@ void InputHandler::handle() {
 					//Stop accelerating
 					if (up_pressed) {
 						audio.stopEffect(SFX_CAR_ENGINE);
-						sendQueue.push(new CommandEvent(STOP_ACCELERATING, clientId));
+						sendQueue.push(new CommandEvent(STOP_ACCELERATING, player.globalId));
 					}
 					up_pressed = false;
 					break;
@@ -112,7 +111,7 @@ void InputHandler::handle() {
 				case SDLK_s: {
 					//Stop braking
 					if (down_pressed) {
-						sendQueue.push(new CommandEvent(STOP_DESACCELERATING, clientId));
+						sendQueue.push(new CommandEvent(STOP_DESACCELERATING, player.globalId));
 					}
 					down_pressed = false;
 					break;

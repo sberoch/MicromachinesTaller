@@ -37,6 +37,11 @@ void BotHandler::handle() {
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
             _done = true;
+        } else if (event.type == SDL_KEYDOWN) {
+            SDL_KeyboardEvent& keyEvent = (SDL_KeyboardEvent&) event;
+            if (keyEvent.keysym.sym == SDLK_b) {
+                player.isBot = false;
+            }
         }
     }
 }
