@@ -21,15 +21,19 @@ void ReceiverThread::run() {
 	//				while (curr scene)
 	// para poder hacer lo de volver a escenas anteriores
 
-
-	try{
-		SnapshotEvent* gameSnap;
-		LobbySnapshot* lobbySnap;
-		EndSnapshot* endSnap;
+	SnapshotEvent* gameSnap;
+	LobbySnapshot* lobbySnap;
+	EndSnapshot* endSnap;
+	try {
 
 		while(_currentScene == SCENE_LOBBY || _currentScene == SCENE_MENU) {
 			lobbySnap = new LobbySnapshot(protocol);
 			lobbyRecvQueue.push(lobbySnap);
+
+			int id = lobbySnap->getMyId();
+			if (lobbySnap->gameStarted(id)) {
+				_currentScene = SCENE_GAME;
+			}
 		}
 		while(_currentScene == SCENE_GAME) {
 			gameSnap = new SnapshotEvent(protocol);

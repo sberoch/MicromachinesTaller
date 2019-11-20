@@ -33,6 +33,8 @@ SnapshotEvent::SnapshotEvent(Protocol &protocol) {
     std::string serialized = protocol.receive();
     this->j = json::parse(serialized);
 
+    std::cout << serialized << std::endl;
+
     for (auto& car : j["cars"]) {
         setCar(car["x"],
                car["y"],
@@ -78,7 +80,6 @@ void SnapshotEvent::send(Protocol& protocol) {
     }
 
     finalMessage = j.dump(4);
-    //std::cout << finalMessage << std::endl;
     protocol.send(finalMessage);
 }
 
