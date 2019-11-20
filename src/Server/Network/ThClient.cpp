@@ -40,20 +40,7 @@ void ClientThread::run() {
     }
 }
 
-//Detiene la ejecucion del cliente y pone la variable booleana en falso
-//para que el recolector de clientes muertos pueda reconocerlo como tal.
-void ClientThread::stop(){
-    protocol.forceShutDown();
-    sendingBlockingQueue.push(nullptr);
-    keepTalking = false;
 
-    //sender.stop();
-
-    //receiver.stop();
-
-    sender.join();
-    receiver.join();
-}
 
 //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
 bool ClientThread::isDead(){
@@ -131,6 +118,23 @@ void ClientThread::sendEndEvent(const std::shared_ptr <EndSnapshot> &endSnapshot
 
 void ClientThread::start() {
     this->run();
+}
+
+//Detiene la ejecucion del cliente y pone la variable booleana en falso
+//para que el recolector de clientes muertos pueda reconocerlo como tal.
+//PRIVADA.
+void ClientThread::stop(){
+    protocol.forceShutDown();
+    sendingBlockingQueue.push(nullptr);
+    keepTalking = false;
+
+    sender.join();
+    receiver.join();
+}
+
+ClientThread::~ClientThread() {
+    std::cout << "Destruyendo client thread con clientId: " << clientId << std::endl;
+    stop();
 }
 
 

@@ -30,6 +30,9 @@ private:
     EventReceiver receiver;
     EventSender sender;
 
+    //Detiene la ejecucion del cliente y pone la variable booleana en falso
+    //para que el recolector de clientes muertos pueda reconocerlo como tal.
+    void stop();
 public:
     //Inicializa la variable atomica booleana y el atendedor de clientes.
     //Para este ultimo mueve el socket de la comunicacion.
@@ -38,16 +41,10 @@ public:
     void start();
     void run();
 
-    //Detiene la ejecucion del cliente y pone la variable booleana en falso
-    //para que el recolector de clientes muertos pueda reconocerlo como tal.
-    void stop();
-
     //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
     bool isDead();
 
-    ~ClientThread() {
-        std::cout << "Destruyendo client thread con clientId: " << clientId << std::endl;
-    };
+    ~ClientThread();
 
     void sendEvent(const std::shared_ptr<Event>& event);
     void handleInput(const InputEnum& input);

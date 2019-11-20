@@ -40,8 +40,6 @@ public:
 
    void addClient(int clientId, Protocol protocol);
 
-   void stop();
-
    //Devuelve si se dio el comando play o no.
    bool handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot);
 

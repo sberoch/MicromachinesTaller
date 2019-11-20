@@ -11,7 +11,7 @@
 LobbyListener::LobbyListener(
         std::unordered_map<int, std::shared_ptr<ClientThread>> &clients,
         std::atomic_bool &running, RoomController& controller): clients(clients),
-                                    incomingEvents(false),
+                                    incomingEvents(true),
                                     running(running),
                                     listening(true),
                                     controller(controller){}
@@ -22,19 +22,14 @@ void LobbyListener::run() {
     std::shared_ptr<LobbySnapshot> snapshot(new LobbySnapshot);
     while (listening && running) {
         try {
-            std::clock_t begin = clock();
-            while (incomingEvents.get(event)) {
+            incomingEvents.pop(event);
+
+            if (event != nullptr)
                 controller.handleInput(event->j, snapshot);
-            }
+            else
+                listening = false;
+
             //controller.collectDeadClients();
-             std::clock_t end = clock();
-            double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
-            double frames = 25;
-            if (execTime < frames) {
-                int to_sleep = (frames - execTime);
-                std::this_thread::sleep_for(
-                        std::chrono::milliseconds(to_sleep));
-            }
         } catch (SocketError &se) {
             listening = false;
             std::cout << "Lobby listener (SE): " << se.what() << std::endl;
@@ -54,6 +49,7 @@ SafeQueue<std::shared_ptr<Event>>* LobbyListener::getReceivingQueue() {
 
 void LobbyListener::stop(){
     listening = false;
+    incomingEvents.push(nullptr);
 }
 
 LobbyListener::~LobbyListener() = default;
