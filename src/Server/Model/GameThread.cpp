@@ -27,7 +27,6 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
     int i = 0;
     while (roomRunning && acceptSocketRunning) {
         try {
-            bool changed = false;
             if (i % _configuration->getModifiersCreationFrequency() == 0){
                 size_t type, id;
                 float x, y, angle;
@@ -61,7 +60,6 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                     actualClient.second->sendSnapshot(snapshot);
                     addToFinishedPlayers(clients, clientId);
                     endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
-                    changed = true;
                 }
             }
 
@@ -74,11 +72,9 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                 actualClient.second->sendSnapshot(snapshot);
             }
 
-            if (changed) {
-                for (auto &actualFinishedPlayer: finishedPlayers) {
-                    actualFinishedPlayer->sendEndEvent(endSnapshot);
-                }
-                changed = false;
+
+            for (auto &actualFinishedPlayer: finishedPlayers) {
+                actualFinishedPlayer->sendEndEvent(endSnapshot);
             }
 
             i++;
