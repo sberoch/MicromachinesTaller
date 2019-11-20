@@ -20,9 +20,10 @@ GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>
 void GameThread::run(std::atomic_bool& acceptSocketRunning,
         std::atomic_bool& roomRunning,
         SafeQueue<std::shared_ptr<Event>>& incomingEvents,
-        std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients){
-    std::shared_ptr<Event> event;
+        std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients) {
 
+    std::shared_ptr<Event> event;
+    std::shared_ptr<EndSnapshot> endSnapshot(new EndSnapshot);
     int i = 0;
     while (roomRunning && acceptSocketRunning) {
         try {
@@ -37,41 +38,38 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
             }
 
             std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent);
-            std::shared_ptr<EndSnapshot> endSnapshot(new EndSnapshot);
             std::clock_t begin = clock();
 
-            if (!clients.empty()) {
-                while (incomingEvents.get(event)) {
-                    std::cout << "---Command: " << event->j["cmd_id"].get<int>() << std::endl;
-                    int clientId = event->j["client_id"];
-                    clients[clientId]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
-                }
+            while (incomingEvents.get(event)) {
+                std::cout << "---Command: " << event->j["cmd_id"].get<int>() << std::endl;
+                int clientId = event->j["client_id"];
+                clients[clientId]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+            }
 
-                for (auto& client: clients){
-                    client.second->update();
-                }
+            for (auto& client: clients){
+                client.second->update();
+            }
 
-                step();
+            step();
 
-                for (auto &actualClient : clients) {
-                    actualClient.second->modifySnapshotFromClient(snapshot);
-                    if (actualClient.second->finishedPlaying()){
-                        std::cout << "Player finished" << std::endl;
-                        int clientId = actualClient.first;
-                        addToFinishedPlayersAndRemoveFromClients(clients, clientId);
-                        endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
-                        actualClient.second->sendSnapshot(snapshot);
-                    }
-                }
-
-
-                for (auto &actualClient : clients) {
+            for (auto &actualClient : clients) {
+                actualClient.second->modifySnapshotFromClient(snapshot);
+                if (actualClient.second->finishedPlaying()){
+                    std::cout << "Player finished" << std::endl;
+                    int clientId = actualClient.first;
                     actualClient.second->sendSnapshot(snapshot);
+                    addToFinishedPlayersAndRemoveFromClients(clients, clientId);
+                    endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
                 }
+            }
 
-                for (auto &actualFinishedPlayer: finishedPlayers){
-                    actualFinishedPlayer->sendEndEvent(endSnapshot);
-                }
+
+            for (auto &actualClient : clients) {
+                actualClient.second->sendSnapshot(snapshot);
+            }
+
+            for (auto &actualFinishedPlayer: finishedPlayers) {
+                actualFinishedPlayer->sendEndEvent(endSnapshot);
             }
 
             i++;

@@ -21,6 +21,8 @@ public:
     ~EndSnapshot() override = default;
 
     void addPlayerFinished(int idFromRoom);
+
+    int getColourFromId(int id);
 };
 
 
