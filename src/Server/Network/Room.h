@@ -45,8 +45,6 @@ public:
     void addClientAlreadyCreated(int clientId,
                             std::shared_ptr<ClientThread> newClient);
 
-    int getAFreeId();
-
     void joinThread();
 
     int getRoomIdFromClient(int clientId);

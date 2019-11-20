@@ -76,29 +76,6 @@ void RoomController::addClient(int clientId, Protocol protocol) {
     collectDeadClients();
 }
 
-void RoomController::stop() {
-    //std::lock_guard<std::mutex> lock(this->m);
-    if (!stopped) {
-        listener.stop();
-        listener.join();
-        std::cout << "Destroying clients with no room" << std::endl;
-        for (auto &client: clientsWithNoRoom) {
-            //if (!client.second->isDead()) {
-                client.second->stop();
-            //}
-        }
-
-        std::cout << "Destroying rooms" << std::endl;
-        for (auto &room: rooms) {
-            //if (!room.second->isDead()) {
-                room.second->stop();
-                room.second->joinThread();
-            //}
-        }
-        stopped = true;
-    }
-}
-
 
 void RoomController::sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot){
     std::lock_guard<std::mutex> lock(this->m);
@@ -180,10 +157,22 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
 
 
 RoomController::~RoomController() {
-//    if (acceptSocketRunning){
-//        this->stop();
-//        acceptSocketRunning = false;
+    std::lock_guard<std::mutex> lock(this->m);
+    std::cout << "Borrando controller" << std::endl;
+
+    listener.stop();
+    listener.join();
+    std::cout << "Destroying clients with no room" << std::endl;
+//    for (auto &client: clientsWithNoRoom) {
+//        client.second->stop();
 //    }
+    clientsWithNoRoom.clear();
+
+    std::cout << "Destroying rooms" << std::endl;
+    for (auto &room: rooms) {
+        room.second->stop();
+        room.second->joinThread();
+    }
 }
 
 
