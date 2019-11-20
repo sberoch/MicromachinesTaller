@@ -107,6 +107,10 @@ int ClientThread::getIdFromRoom() {
     return this->idFromRoom;
 }
 
+int ClientThread::getClientId(){
+    return this->clientId;
+}
+
 bool ClientThread::finishedPlaying() {
     return this->player.finishedPlaying();
 }

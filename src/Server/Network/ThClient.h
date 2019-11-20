@@ -72,6 +72,8 @@ public:
     bool finishedPlaying();
 
     void sendEndEvent(const std::shared_ptr<EndSnapshot> &endSnapshot);
+
+    int getClientId();
 };
 
 

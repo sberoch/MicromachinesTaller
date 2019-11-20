@@ -58,11 +58,15 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
                     std::cout << "Player finished" << std::endl;
                     int clientId = actualClient.first;
                     actualClient.second->sendSnapshot(snapshot);
-                    addToFinishedPlayersAndRemoveFromClients(clients, clientId);
+                    addToFinishedPlayers(clients, clientId);
                     endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
                 }
             }
 
+            for (auto& actualFinishedPlayer: finishedPlayers){
+                if (clients.count(actualFinishedPlayer->getClientId()))
+                    clients.erase(actualFinishedPlayer->getClientId());
+            }
 
             for (auto &actualClient : clients) {
                 actualClient.second->sendSnapshot(snapshot);
@@ -113,10 +117,9 @@ void GameThread::startGame() {
     _gameStarted = true;
 }
 
-void GameThread::addToFinishedPlayersAndRemoveFromClients(
+void GameThread::addToFinishedPlayers(
         std::unordered_map<int, std::shared_ptr<ClientThread>> &clients,
         int clientToBeRemovedId) {
     finishedPlayers.push_back(clients.at(clientToBeRemovedId));
-    clients.erase(clientToBeRemovedId);
 }
 

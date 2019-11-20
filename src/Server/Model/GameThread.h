@@ -28,7 +28,7 @@ public:
 
     void startGame();
 
-    void addToFinishedPlayersAndRemoveFromClients(
+    void addToFinishedPlayers(
             std::unordered_map<int, std::shared_ptr<ClientThread>> &clients,
             int clientToBeRemovedId);
 };
