@@ -159,7 +159,7 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
     }
 
     if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_GROUND_AREA){
-        if (!((GroundAreaFUD*) fudB)->isGrass()){
+        if (!((GroundAreaFUD*) fudB)->isGrass() && !began){
             Car* car = (Car*) a->GetBody()->GetUserData();
             auto* track = (Track*) b->GetBody()->GetUserData();
             car->setTrack(track);
@@ -167,7 +167,7 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
         contact->ResetFriction();
         carVsGroundArea(a, b, began);
     } else if (fudA->getType() == FUD_GROUND_AREA && fudB->getType() == FUD_CAR){
-        if (!((GroundAreaFUD*) fudA)->isGrass()){
+        if (!((GroundAreaFUD*) fudA)->isGrass() && !began){
             Car* car = (Car*) b->GetBody()->GetUserData();
             auto* track = (Track*) a->GetBody()->GetUserData();
             car->setTrack(track);

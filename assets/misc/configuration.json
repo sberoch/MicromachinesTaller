@@ -1,0 +1,82 @@
+{
+  "world_configuration" :
+    {
+      "gravityX" : 0,
+      "gravityY" : 0,
+      "FPS" : 25,
+      "velocityIterations" : 8,
+      "positionIterations" : 3,
+      "maxDistToTrack" : 3,
+      "modifiersCreationFrequency" : 150
+    },
+  "car_configuration":
+    {
+      "carHalfWidth" : 0.5,
+      "carHalfHeight" : 1,
+      "maxHealth" : 100,
+      "maxForwardVelocity" : 40,
+      "maxBackwardsVelocity" : -3,
+      "maxLateralImpulse" : 2.5,
+      "maxDriveForce" : 15,
+      "angularImpulse" : 0.9,
+      "desiredTorque" : 30,
+      "linearDamping" : 0.2,
+      "angularDamping" : 3,
+      "linearVelocityInit" : 0,
+      "angularVelocityInit" : 0,
+      "density" : 1,
+      "friction" : 0.5
+    },
+  "track_configuration" :
+    {
+      "halfWidth" : 2.5,
+      "halfHeight" : 2.5,
+      "density" : 1,
+      "friction" : 0.1,
+      "restitution" : 0
+    },
+  "grass_configuration" :
+    {
+      "halfWidth" : 2.5,
+      "halfHeight" : 2.5,
+      "density" : 1,
+      "friction" : 1,
+      "restitution" : 0
+    },
+  "healthPowerupConfiguration" :
+    {
+      "halfWidth" : 0.5,
+      "halfHeight" : 0.5,
+      "density" : 1
+    },
+  "boostPowerupConfiguration" :
+  {
+    "halfWidth" : 0.5,
+    "halfHeight" : 0.5,
+    "density" : 1,
+    "actionTime" : 30
+  },
+  "mudConfiguration" :
+  {
+    "halfWidth" : 1,
+    "halfHeight" : 0.5,
+    "density" : 1,
+    "time" : 1
+  },
+  "rockConfiguration" :
+  {
+    "halfWidth" : 0.5,
+    "halfHeight" : 0.5,
+    "density" : 1,
+    "velToReduce" : 10,
+    "healthToReduce" : 10
+  },
+  "oilConfiguration" :
+  {
+    "halfWidth" : 1,
+    "halfHeight" : 0.5,
+    "density" : 1,
+    "time" : 30,
+    "damping" : 10
+  }
+}

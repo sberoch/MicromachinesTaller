@@ -16,6 +16,7 @@ private:
     WorldDTO_t _worldDTO;
 
     std::shared_ptr<Configuration> _configuration;
+    std::list<std::shared_ptr<ClientThread>> finishedPlayers;
 
     bool _gameToStart, _gameStarted, _gameEnded;
 public:
@@ -27,13 +28,17 @@ public:
 
     ~GameThread();
     json getSerializedMap();
-    std::shared_ptr<Car> createCar(int id);
+    std::shared_ptr<Car> createCar(int id, json j);
     void step();
 
     //Method to apply changes in DTO to model
     void applyPluginChanges();
 
     void startGame();
+
+    void addToFinishedPlayers(
+            std::unordered_map<int, std::shared_ptr<ClientThread>> &clients,
+            int clientToBeRemovedId);
 };
 
 #endif //MICROMACHINES_GAMETHREAD_H

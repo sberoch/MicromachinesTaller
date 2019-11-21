@@ -6,27 +6,26 @@
 using json = nlohmann::json;
 
 GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
-					SafeQueue<Event*>& sendQueue, int& myId, bool& isBot) : 
+					SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) : 
 	window(window),
 	isDone(false),
 	recvQueue(recvQueue),
 	sendQueue(sendQueue),
-	myId(myId),
+	player(player),
 
 	backgroundTex("background.png", window),
 	background(backgroundTex),
 	display(window),
 	
-	handler(window, audio, sendQueue, myId),
+	handler(window, audio, sendQueue, player),
 	creator(window),
 
 	gameObjects(creator),
-	bot(gameObjects, audio, sendQueue, myId),
+	bot(gameObjects, audio, sendQueue, player),
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
 	yScreen(0),
 	nextScene(SCENE_GAME),
-	isBot(isBot),
 	isGameOver(false),
 	isMapReady(false) {}
 
@@ -52,7 +51,7 @@ void GameScene::updateCars(CarStructList cars) {
 		carView->setRotation(car.angle);
 		carView->move(conv.blockToPixel(car.x),
 					  conv.blockToPixel(car.y));
-		if (car.id == myId) {
+		if (car.id == player.playerId) {
 			display.update(xScreen/2 - conv.blockToPixel(car.x),
 						   yScreen/2 - conv.blockToPixel(car.y),
 						   car.health);
@@ -67,7 +66,7 @@ void GameScene::updateGameEvents(GameEventsList gameEvents) {
 			case REMOVE: removeObject(gameEvent); break;
 			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
-			case GAME_OVER: nextScene = SCENE_END; break;
+			case GAME_OVER: gameOver(gameEvent); break;
 			default: break;
 		}
 	}
@@ -85,6 +84,12 @@ void GameScene::removeObject(GameEventStruct gameEvent) {
 	gameObjects.remove(gameEvent.objectType, gameEvent.id);
 }
 
+void GameScene::gameOver(GameEventStruct gameEvent) {
+	if (gameEvent.id == player.playerId) {
+		nextScene = SCENE_END;
+	}
+}
+
 void GameScene::draw() {
 	window.fill();
 	drawBackground();
@@ -95,8 +100,11 @@ void GameScene::draw() {
 
 int GameScene::handle() {
 	if (isMapReady) {
-		if (isBot) {
+		if (player.isBot) {
 			bot.handle();
+			if (bot.done()) {
+				isDone = true;
+			}
 
 		} else {
 			handler.handle();

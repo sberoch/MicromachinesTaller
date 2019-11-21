@@ -50,9 +50,6 @@ void Room::addClientAlreadyCreated(int clientId, std::shared_ptr<ClientThread> n
 
 void Room::addClient(int clientId, std::shared_ptr<ClientThread> newClient) {
     if (clients.size() < maxAmountOfPlayers){
-        // Usar id propia del room
-        auto car = std::shared_ptr<Car>(createCar(0));
-        newClient->assignCar(car);
         this->clients.insert({clientId, newClient});
     } else {
         throw std::runtime_error("Se intento meter un cliente a una sala llena");
@@ -65,8 +62,8 @@ void Room::joinThread() {
 }
 
 
-std::shared_ptr<Car> Room::createCar(int id) {
-    std::shared_ptr<Car> car(game.createCar(id));
+std::shared_ptr<Car> Room::createCar(int id, json j) {
+    std::shared_ptr<Car> car(game.createCar(id, j));
     return car;
 }
 
@@ -82,10 +79,42 @@ void Room::sendSnapshotToClients(std::shared_ptr<LobbySnapshot>& snapshot){
     }
 }
 
+#define X_INIT 14
+#define Y_INIT 8
+
+void Room::addPlayersToJson(json& j){
+    int xDeviation = 0;
+    int yDeviation = 0;
+    for (auto& client: clients){
+        json jActual;
+        int id = client.second->getIdFromRoom();
+        jActual["id_from_room"] = id;
+        jActual["color"] = getColourFromId(id);
+        jActual["x_init"] = X_INIT + xDeviation;
+        jActual["y_init"] = Y_INIT + yDeviation;
+        jActual["angle"] = 180;
+        j["cars"].push_back(jActual);
+        xDeviation++;
+    }
+}
+
+void Room::addCarToEachPlayer(const json& j){
+    for (auto& client: clients){
+        int id = client.second->getIdFromRoom();
+        auto car = std::shared_ptr<Car>(createCar(id, j));
+        client.second->assignCar(car);
+    }
+}
+
 void Room::startGame() {
+    json jFinal = game.getSerializedMap();
+    addPlayersToJson(jFinal);
+
+    addCarToEachPlayer(jFinal);
+
     for (auto& client: clients){
         client.second->assignRoomQueue(&incomingEvents);
-        client.second->sendStart(game.getSerializedMap());
+        client.second->sendStart(jFinal);
     }
     game.startGame();
 }
@@ -97,12 +126,7 @@ bool Room::isDead() {
 
 void Room::stop() {
     this->roomRunning = false;
-    for (auto& client: clients){
-        if (!client.second->isDead()){
-            client.second->stop();
-            client.second->join();
-        }
-    }
+    clients.clear();
 }
 
 Room::~Room() {
@@ -111,6 +135,22 @@ Room::~Room() {
 
 int Room::getRoomIdFromClient(int clientId) {
     return clients.at(clientId)->getIdFromRoom();
+}
+
+
+int Room::getColourFromId(int id) {
+    switch(id){
+        case 0:
+            return TYPE_CAR_RED;
+        case 1:
+            return TYPE_CAR_BLUE;
+        case 2:
+            return TYPE_CAR_YELLOW;
+        case 3:
+            return TYPE_CAR_GREEN;
+        default:
+            return -1;
+    }
 }
 
 

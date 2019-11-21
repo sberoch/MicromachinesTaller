@@ -25,23 +25,30 @@ World::World(size_t n_of_cars, const std::shared_ptr<Configuration>& configurati
     _modifierType.push_back(TYPE_MUD);
 }
 
-void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
-    std::ifstream i("scene.json");
-    json j; i >> j;
+json World::getCarById(int id, json cars){
+    json carFound;
 
-    json cars = j["cars"];
-    x = cars.at(id)["x_init"].get<float>();
-    y = cars.at(id)["y_init"].get<float>();
-    angle = cars.at(id)["angle"].get<float>();
+    for (auto& actualCar: cars){
+        if (actualCar["id_from_room"] == id){
+            carFound = actualCar;
+        }
+    }
+    return carFound;
 }
 
-Car* World::createCar(size_t id){
+Car* World::createCar(size_t id, json j){
     float x_init, y_init, angle_init;
-    _getCarConfigData(id, x_init, y_init, angle_init);
 
-    Car* car = new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
-    _cars.push_back(car);
-    return car;
+    json cars = j["cars"];
+    json car = getCarById(id, cars);
+
+    x_init = car["x_init"].get<float>();
+    y_init = car["y_init"].get<float>();
+    angle_init = car["angle"].get<float>();
+
+    Car* newCar = new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
+    _cars.push_back(newCar);
+    return newCar;
 }
 
 void World::createTrack(){
@@ -94,29 +101,6 @@ json World::getSerializedMap() {
     return j;
 }
 
-void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle){
-    int rand = std::rand() % _track.size();
-    std::shared_ptr<Track> randomTrack = _track[rand];
-
-    float xhi = randomTrack->x() - _configuration->getTrackWidth();
-    float xlo = randomTrack->x() + _configuration->getTrackWidth();
-
-    float yhi = randomTrack->y() - _configuration->getTrackHeight();
-    float ylo = randomTrack->y() + _configuration->getTrackHeight();
-
-    x = xlo + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(xhi-xlo)));
-    y = ylo + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(yhi-ylo)));
-    angle = randomTrack->angle();
-
-    int modifierType = std::rand() % _modifierType.size();
-    type = _modifierType[modifierType];
-
-    id = _maxId;
-    _maxId++;
-
-    _activeModifiers.push_back(Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration));
-}
-
 void World::_removeGrabbedModifiers(){
     std::vector<Modifier*> aux;
     for (size_t i=0; i<_activeModifiers.size(); ++i){
@@ -155,13 +139,6 @@ void World::step(uint32_t velocityIt, uint32_t positionIt){
 }
 
 World::~World(){
-    b2Body* node = _world->GetBodyList();
-    while (node){
-        b2Body* b = node;
-        node = node->GetNext();
-        _world->DestroyBody(b);
-    }
-
     delete _world;
 }
 

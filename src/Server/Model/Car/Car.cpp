@@ -35,7 +35,7 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, con
         _onGrass(false), _isMoving(false), _exploded(false),
         _tracks(),  _groundArea(),
         _currentTraction(1), _status(),
-        _maxLaps(3), _maxtracksToLap(20), _laps(0), _winner(false) {
+        _maxLaps(1), _maxtracksToLap(20), _laps(0), _winner(false) {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving

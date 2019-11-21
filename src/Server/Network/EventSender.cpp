@@ -21,7 +21,12 @@ void EventSender::run() {
         while (acceptSocketRunning && clientStillTalking) {
             try {
                 sendingBlockingQueue.pop(toBeSent);
-                toBeSent->send(protocol);
+                if (toBeSent == nullptr){
+                    clientStillTalking = false;
+                }
+
+                if (clientStillTalking)
+                    toBeSent->send(protocol);
             } catch (const SocketError &e) {
                 clientStillTalking = false;
                 std::cout << "Socket error from event sender" << std::endl;

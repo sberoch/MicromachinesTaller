@@ -40,18 +40,7 @@ void ClientThread::run() {
     }
 }
 
-//Detiene la ejecucion del cliente y pone la variable booleana en falso
-//para que el recolector de clientes muertos pueda reconocerlo como tal.
-void ClientThread::stop(){
-    protocol.forceShutDown();
-    keepTalking = false;
 
-    sender.stop();
-    receiver.stop();
-
-    sender.join();
-    receiver.join();
-}
 
 //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
 bool ClientThread::isDead(){
@@ -97,8 +86,6 @@ void ClientThread::sendStart(json j) {
     this->sendingBlockingQueue.push(event);
 }
 
-
-
 void ClientThread::sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot){
     std::cout << "Enviando desde cliente: " << clientId << std::endl;
     std::shared_ptr<LobbySnapshot> newSnap(new LobbySnapshot(*snapshot.get()));
@@ -118,6 +105,40 @@ void ClientThread::update(){
 
 int ClientThread::getIdFromRoom() {
     return this->idFromRoom;
+}
+
+int ClientThread::getClientId(){
+    return this->clientId;
+}
+
+bool ClientThread::finishedPlaying() {
+    return this->player.finishedPlaying();
+}
+
+void ClientThread::sendEndEvent(const std::shared_ptr <EndSnapshot> &endSnapshot) {
+    std::shared_ptr<EndSnapshot> endSnapshotCopy(endSnapshot);
+    this->sendingBlockingQueue.push(endSnapshotCopy);
+}
+
+void ClientThread::start() {
+    this->run();
+}
+
+//Detiene la ejecucion del cliente y pone la variable booleana en falso
+//para que el recolector de clientes muertos pueda reconocerlo como tal.
+//PRIVADA.
+void ClientThread::stop(){
+    protocol.forceShutDown();
+    sendingBlockingQueue.push(nullptr);
+    keepTalking = false;
+
+    sender.join();
+    receiver.join();
+}
+
+ClientThread::~ClientThread() {
+    std::cout << "Destruyendo client thread con clientId: " << clientId << std::endl;
+    stop();
 }
 
 

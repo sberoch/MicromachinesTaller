@@ -29,14 +29,12 @@ void eraseNulls(std::unordered_map<T1, T2>& map) {
 void Collector::collectDeadClients(){
     for (auto &actualClient: clients) {
         if (actualClient.second->isDead()) {
-            actualClient.second->join();
             actualClient.second = nullptr;
         }
     }
 
     for (auto &actualRoom: rooms) {
         if (actualRoom.second->isDead()) {
-            actualRoom.second->join();
             actualRoom.second = nullptr;
         }
     }

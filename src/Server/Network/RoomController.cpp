@@ -6,7 +6,6 @@
 
 #define MAX_AMOUNT_OF_CLIENTS 4
 
-
 RoomController::RoomController(std::atomic_bool &running) :
             queue(false), acceptSocketRunning(running),
             stopped(false),
@@ -75,30 +74,6 @@ void RoomController::addClient(int clientId, Protocol protocol) {
     client->assignRoomQueue(listener.getReceivingQueue());
     client->start();
     collectDeadClients();
-}
-
-void RoomController::stop() {
-    //std::lock_guard<std::mutex> lock(this->m);
-    if (!stopped) {
-        listener.stop();
-        listener.join();
-        std::cout << "Destroying clients with no room" << std::endl;
-        for (auto &client: clientsWithNoRoom) {
-            if (!client.second->isDead()) {
-                client.second->stop();
-                client.second->join();
-            }
-        }
-
-        std::cout << "Destroying rooms" << std::endl;
-        for (auto &room: rooms) {
-            if (!room.second->isDead()) {
-                room.second->stop();
-                room.second->joinThread();
-            }
-        }
-        stopped = true;
-    }
 }
 
 
@@ -182,10 +157,22 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
 
 
 RoomController::~RoomController() {
-    if (acceptSocketRunning){
-        this->stop();
-        acceptSocketRunning = false;
+    std::lock_guard<std::mutex> lock(this->m);
+    std::cout << "Borrando controller" << std::endl;
+
+    listener.stop();
+    listener.join();
+    std::cout << "Destroying clients with no room" << std::endl;
+
+    clientsWithNoRoom.clear();
+
+    std::cout << "Destroying rooms" << std::endl;
+    for (auto &room: rooms) {
+        room.second->stop();
+        room.second->joinThread();
     }
+
+    rooms.clear();
 }
 
 

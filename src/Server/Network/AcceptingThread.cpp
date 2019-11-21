@@ -2,10 +2,8 @@
 // Created by alvaro on 30/9/19.
 //
 
-
 #include <future>
 #include "AcceptingThread.h"
-#include "../../Common/Protocol.h"
 #include "../../Common/SocketError.h"
 
 AcceptingThread::AcceptingThread(Socket &acceptSocket):
@@ -23,7 +21,6 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
                 roomController.addClient(clientId, std::move(newProtocol));
             } catch (SocketError &e) {
                 running = false;
-                roomController.stop();
             }
         }
     } catch (SocketError &e) {
@@ -36,6 +33,6 @@ AcceptingThread::AcceptingThread(Socket &acceptSocket):
 }
 
 AcceptingThread::~AcceptingThread(){
-    //roomController.stop();
+    std::cout << "Borrando aceptador." << std::endl;
 }
 

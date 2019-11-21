@@ -10,26 +10,28 @@
 #include "../Common/Event/Event.h"
 #include "../Common/Event/SnapshotEvent.h"
 #include "../Common/Event/LobbySnapshot.h"
+#include "../Common/Event/EndSnapshot.h"
 #include "../Common/Protocol.h"
+#include "PlayerDescriptor.h"
 #include <map>
 
 class SceneSelector {
 private:
 	SdlWindow window;
 	std::map<int, BaseScene*> scenes;
+	int currentScene;
 
 	Protocol protocol;
 
 	Queue<SnapshotEvent*> gameRecvQueue;
 	Queue<LobbySnapshot*> lobbyRecvQueue;
+	Queue<EndSnapshot*> endRecvQueue;
 	SafeQueue<Event*> sendQueue;
 
 	ReceiverThread receiver;
 	SenderThread sender;
 	
-	int currentScene;
-	int myId;
-	bool isBot;
+	PlayerDescriptor player;
 
 public:
 	SceneSelector(int xScreen, int yScreen,

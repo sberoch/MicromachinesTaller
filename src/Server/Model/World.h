@@ -40,9 +40,10 @@ public:
 
     json getSerializedMap();
 
+
     void createTrack();
     void createGrass();
-    Car* createCar(size_t id);
+    Car* createCar(size_t id, json cars);
 
     //Modifiers
     void createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle);
@@ -53,6 +54,8 @@ public:
     void dtoToModel(WorldDTO_t* worldDTO);
 
     ~World();
+
+    json getCarById(int id, json j);
 };
 
 

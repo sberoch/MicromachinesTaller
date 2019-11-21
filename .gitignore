@@ -5,3 +5,4 @@ src/Test/build/
 .idea
 cmake-build-debug
 micromachines.zip
+*.todo

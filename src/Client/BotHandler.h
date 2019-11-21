@@ -7,6 +7,7 @@
 #include "../Common/Event/Event.h"
 #include "../Common/SafeQueue.h"
 #include "../Common/Event/CommandEvent.h"
+#include "PlayerDescriptor.h"
 
 class BotHandler {
 private:
@@ -14,13 +15,15 @@ private:
 	LuaInterpreter lua;
 	Audio& audio;
 	SafeQueue<Event*>& sendQueue;
-	int& playerId;
-
-	InputEnum prevMov = STOP_TURNING_LEFT; //It is never the first move
+	PlayerDescriptor& player;
 	int moveRepeatCounter;
 
+	SDL_Event event;
+	bool _done;
 public:
-	BotHandler(GameObjects& gameObjects, Audio& audio, SafeQueue<Event*>& sendQueue, int& playerId);
+	BotHandler(GameObjects& gameObjects, Audio& audio, 
+		SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
+	bool done();
 	void loadMap();
 	void handle();
 

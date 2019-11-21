@@ -14,10 +14,11 @@
 #include "../Player.h"
 #include "EventReceiver.h"
 #include "EventSender.h"
+#include "../../Common/Event/EndSnapshot.h"
 
 #define QUIT_STRING "QUIT"
 
-class ClientThread: public Thread {
+class ClientThread {
 private:
     std::atomic<bool> keepTalking;
     Protocol protocol;
@@ -29,24 +30,21 @@ private:
     EventReceiver receiver;
     EventSender sender;
 
+    //Detiene la ejecucion del cliente y pone la variable booleana en falso
+    //para que el recolector de clientes muertos pueda reconocerlo como tal.
+    void stop();
 public:
     //Inicializa la variable atomica booleana y el atendedor de clientes.
     //Para este ultimo mueve el socket de la comunicacion.
     ClientThread(Protocol protocol, RoomController& controller, int clientId,
                     std::atomic_bool& acceptSocketRunning);
-
-    void run() override;
-
-    //Detiene la ejecucion del cliente y pone la variable booleana en falso
-    //para que el recolector de clientes muertos pueda reconocerlo como tal.
-    void stop();
+    void start();
+    void run();
 
     //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
     bool isDead();
 
-    ~ClientThread() override{
-        std::cout << "Destruyendo client thread con clientId: " << clientId << std::endl;
-    };
+    ~ClientThread();
 
     void sendEvent(const std::shared_ptr<Event>& event);
     void handleInput(const InputEnum& input);
@@ -70,6 +68,12 @@ public:
     void assignIdFromRoom(int idFromRoom);
 
     int getIdFromRoom();
+
+    bool finishedPlaying();
+
+    void sendEndEvent(const std::shared_ptr<EndSnapshot> &endSnapshot);
+
+    int getClientId();
 };
 
 

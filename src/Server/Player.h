@@ -22,6 +22,7 @@ private:
     bool _modifierToAdd;
 
     std::vector<Effect*> _effects;
+    bool done;
 
     void _addEffect(const int& effectType, const int& timeOfAction);
 
@@ -41,6 +42,8 @@ public:
     void assignCarId(int id);
 
     void update();
+
+    bool finishedPlaying();
 };
 
 #endif //MICROMACHINES_PLAYER_H

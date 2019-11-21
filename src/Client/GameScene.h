@@ -18,6 +18,7 @@
 #include "../Common/Event/Event.h"
 #include "../Common/SafeQueue.h"
 #include "../Common/Queue.h"
+#include "PlayerDescriptor.h"
 
 
 class GameScene : public BaseScene {
@@ -26,11 +27,9 @@ private:
 	Audio audio;
 	bool isDone;
 	
-
 	Queue<SnapshotEvent*>& recvQueue; 
 	SafeQueue<Event*>& sendQueue;
-
-	int& myId;
+	PlayerDescriptor& player;
 
 	SdlTexture backgroundTex;
 	BackgroundView background;
@@ -47,13 +46,12 @@ private:
 	int xScreen, yScreen;
 	int nextScene;
 	
-	bool& isBot;
 	bool isGameOver;
 	bool isMapReady;
 
 public:
 	GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
-					SafeQueue<Event*>& sendQueue, int& myId, bool& isBot);
+					SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
@@ -66,6 +64,7 @@ private:
 	void updateGameEvents(GameEventsList gameEvents);
 	void addObject(GameEventStruct gameEvent);
 	void removeObject(GameEventStruct gameEvent);
+	void gameOver(GameEventStruct gameEvent);
 };
 
 #endif // GAME_SCENE_H

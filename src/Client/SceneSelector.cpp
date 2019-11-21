@@ -13,17 +13,15 @@
 SceneSelector::SceneSelector(int xScreen, int yScreen,
 		const std::string& host, const std::string& port) : 
 	window(xScreen, yScreen),
+	currentScene(SCENE_MENU),
 	protocol(host, port),
 	sendQueue(true),
-	receiver(gameRecvQueue, lobbyRecvQueue, protocol),
-	sender(sendQueue, protocol),
-	currentScene(SCENE_MENU),
-	myId(-1),
-	isBot(false) {
+	receiver(gameRecvQueue, lobbyRecvQueue, endRecvQueue, protocol, currentScene),
+	sender(sendQueue, protocol) {
 		scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window, sendQueue)));
-		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, lobbyRecvQueue, sendQueue, myId, isBot)));
-		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, gameRecvQueue, sendQueue, myId, isBot)));
-		scenes.insert(std::make_pair(SCENE_END, new EndScene(window)));
+		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, lobbyRecvQueue, sendQueue, player)));
+		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, gameRecvQueue, sendQueue, player)));
+		scenes.insert(std::make_pair(SCENE_END, new EndScene(window, endRecvQueue)));
 		
 		receiver.start();
 		sender.start();
@@ -45,10 +43,6 @@ void SceneSelector::run() {
 		    	protocol.forceShutDown(); //No estoy seguro de que vaya aca
 		    }
 
-		    if (currentScene == SCENE_GAME) {
-		    	receiver.setGameMode();
-		    }
-
 		    //Check exec time and sleep
 		    std::clock_t end = clock();
 		    double execTime = double(end - begin) / (CLOCKS_PER_SEC/1000);
@@ -58,8 +52,10 @@ void SceneSelector::run() {
 		std::cerr << "Socket error captured in SceneSelector" << std::endl;
 		done = true;
 	} catch (std::exception &e) {
-		std::cerr << e.what() << std::endl;
-	}
+		std::cerr << "Excepction from scene selector: " << e.what() << std::endl;
+	} catch (...){
+        std::cerr << "Unknown error from scene selector" << std::endl;
+    }
 }
 
 void SceneSelector::sleep(int milliseconds) {

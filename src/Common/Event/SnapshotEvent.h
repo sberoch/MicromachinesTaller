@@ -57,6 +57,8 @@ public:
 	void removeGameItem(int type, int id);
 	void signalMapReady();
 	void setMudSplatEvent();
+
+	void setGameOver(int inRoomId);
 	
 	const GameEventsList& getGameEvents();
 
