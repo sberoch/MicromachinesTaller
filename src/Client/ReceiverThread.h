@@ -5,25 +5,25 @@
 #include "../Common/Event/SnapshotEvent.h"
 #include "../Common/Event/LobbySnapshot.h"
 #include "../Common/Event/EndSnapshot.h"
-#include "../Common/Queue.h"
+#include "../Common/Constants.h"
+#include "../Common/SafeQueue.h"
 
 class ReceiverThread : public Thread {
 private:
-	Queue<SnapshotEvent*>& gameRecvQueue;
-	Queue<LobbySnapshot*>& lobbyRecvQueue;
-	Queue<EndSnapshot*>& endRecvQueue;
+	SafeQueue<std::shared_ptr<SnapshotEvent>>& gameRecvQueue;
+	SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue;
+	SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue;
 	Protocol& protocol;
 	bool _done;
 	bool _isGameMode;
-	int& _currentScene;
+	Scene& _currentScene;
 public:
-	ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
-				   Queue<LobbySnapshot*>& lobbyRecvQueue,
-				   Queue<EndSnapshot*>& endRecvQueue,
-				   Protocol& protocol, int& currentScene);
+	ReceiverThread(SafeQueue<std::shared_ptr<SnapshotEvent>>& gameRecvQueue,
+					SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue,
+					SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue,
+					Protocol& protocol, Scene& currentScene);
 
 	virtual void run() override;
-	void setGameMode();
 	bool finished() const;
 
 	ReceiverThread(ReceiverThread &copy) = delete;

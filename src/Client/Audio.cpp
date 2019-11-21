@@ -30,6 +30,10 @@ Audio::Audio() {
 	if (carExplosion == NULL) printf("%s\n", Mix_GetError());
 	effects.insert(std::make_pair(SFX_CAR_EXPLOSION, carExplosion));
 
+	carCollision = Mix_LoadWAV("collision.wav");
+	if (carCollision == NULL) printf("%s\n", Mix_GetError());
+	effects.insert(std::make_pair(SFX_CAR_COLLISION, carCollision));
+
 	menuButton = Mix_LoadWAV("menu_button.wav");
 	if (menuButton == NULL) printf("%s\n", Mix_GetError());
 	effects.insert(std::make_pair(SFX_BUTTON, menuButton));
@@ -45,7 +49,7 @@ void Audio::stopMusic() {
 	Mix_HaltMusic();
 }
 
-void Audio::playEffect(int effectID) {
+void Audio::playEffect(SoundEffect effectID) {
 	Mix_Chunk* effect = effects.at(effectID);
 	if (effectID == SFX_CAR_ENGINE) {
 		//Played undefined ammount of time
@@ -58,7 +62,7 @@ void Audio::playEffect(int effectID) {
 	}
 }
 
-void Audio::stopEffect(int effectID) {
+void Audio::stopEffect(SoundEffect effectID) {
 	if (effectID == SFX_CAR_ENGINE) {
 		Mix_HaltChannel(CAR_ENGINE_CHANNEL);
 	}

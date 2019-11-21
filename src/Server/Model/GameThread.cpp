@@ -10,23 +10,26 @@
 
 using namespace std::chrono;
 
-GameThread::GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration) :
+GameThread::GameThread(size_t n_of_players, 
+                    const std::shared_ptr<Configuration>& configuration,
+                    std::atomic_bool& acceptSocketRunning,
+                    std::atomic_bool& roomRunning,
+                    SafeQueue<std::shared_ptr<Event>>& incomingEvents,
+                    std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients) :
                                              _configuration(configuration),
                                              _world(n_of_players, configuration),
-                                             _gameToStart(true),
-                                             _gameStarted(false),
-                                             _gameEnded(false),
-                                             _worldDTO() {
+                                             _worldDTO(),
+                                             acceptSocketRunning(acceptSocketRunning),
+                                             roomRunning(roomRunning),
+                                             incomingEvents(incomingEvents),
+                                             clients(clients) {
 
 }
 
-void GameThread::run(std::atomic_bool& acceptSocketRunning,
-        std::atomic_bool& roomRunning,
-        SafeQueue<std::shared_ptr<Event>>& incomingEvents,
-        std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients) {
-
+void GameThread::run() {
+    std::cout << "Running GameThread" << std::endl;
     ModsThread modsThread("libs.txt", &_worldDTO);
-
+    gameStarted = true;
     std::shared_ptr<Event> event;
     std::shared_ptr<EndSnapshot> endSnapshot(new EndSnapshot);
 
@@ -111,6 +114,7 @@ void GameThread::run(std::atomic_bool& acceptSocketRunning,
             std::cerr << "Game Thread: UnknownException.\n";
         }
     }
+    std::cout << "GameThread ready to be joined" << std::endl;
 }
 
 void GameThread::step(){
@@ -122,7 +126,6 @@ void GameThread::applyPluginChanges() {
     _world.dtoToModel(&_worldDTO);
 }
 
-GameThread::~GameThread() {}
 
 json GameThread::getSerializedMap() {
     return _world.getSerializedMap();
@@ -132,13 +135,12 @@ std::shared_ptr<Car> GameThread::createCar(int id, json j){
     return std::shared_ptr<Car>(_world.createCar(id, j));
 }
 
-void GameThread::startGame() {
-    _gameStarted = true;
-}
-
 void GameThread::addToFinishedPlayers(
         std::unordered_map<int, std::shared_ptr<ClientThread>> &clients,
         int clientToBeRemovedId) {
     finishedPlayers.push_back(clients.at(clientToBeRemovedId));
 }
+
+
+GameThread::~GameThread() = default;
 

@@ -1,13 +1,12 @@
 #include "GameScene.h"
-#include "../Common/json.hpp"
-#include "../Common/Constants.h"
 #include <iostream>
 
 using json = nlohmann::json;
 
-GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
-					SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) : 
+GameScene::GameScene(SdlWindow& window, SafeQueue<std::shared_ptr<SnapshotEvent>>& recvQueue,
+					 SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player) :
 	window(window),
+	recorder(REC_SIZE_HOR, REC_SIZE_VERT),
 	isDone(false),
 	recvQueue(recvQueue),
 	sendQueue(sendQueue),
@@ -17,11 +16,11 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	background(backgroundTex),
 	display(window),
 	
-	handler(window, audio, sendQueue, player),
+	handler(window, audio, recorder, sendQueue, player),
 	creator(window),
 
 	gameObjects(creator),
-	bot(gameObjects, audio, sendQueue, player),
+	bot(gameObjects, audio, recorder, sendQueue, player),
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
 	yScreen(0),
@@ -37,15 +36,14 @@ void GameScene::update() {
 	audio.playMusic();
 	window.getWindowSize(&xScreen, &yScreen);
 
-	SnapshotEvent* snap;
-	while (recvQueue.pop(snap)) {
+	std::shared_ptr<SnapshotEvent> snap;
+	while (recvQueue.get(snap)) {
 		updateCars(snap->getCars());
 		updateGameEvents(snap->getGameEvents());
-		delete snap;
 	}
 }
 
-void GameScene::updateCars(CarStructList cars) {
+void GameScene::updateCars(const CarStructList& cars) {
 	for (auto& car : cars) {
 		ObjectViewPtr carView = gameObjects.getCar(car.id);
 		carView->setRotation(car.angle);
@@ -59,7 +57,7 @@ void GameScene::updateCars(CarStructList cars) {
 	}	
 }
 
-void GameScene::updateGameEvents(GameEventsList gameEvents) {
+void GameScene::updateGameEvents(const GameEventsList& gameEvents) {
 	for (auto& gameEvent : gameEvents) {
  		switch(gameEvent.eventType) {
 			case ADD: addObject(gameEvent); break;
@@ -67,17 +65,21 @@ void GameScene::updateGameEvents(GameEventsList gameEvents) {
 			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
 			case GAME_OVER: gameOver(gameEvent); break;
+			case LAP_COMPLETED: display.setLapNumber(gameEvent.id); break; //Id is being used for the lap number.
 			default: break;
 		}
 	}
 }
 
 void GameScene::addObject(GameEventStruct gameEvent) {
-	ObjectViewPtr ov = creator.create(gameEvent.objectType, 
+	ObjectViewPtr ov = creator.create((ObjectType) gameEvent.objectType,
 										conv.blockToPixel(gameEvent.x), 
 										conv.blockToPixel(gameEvent.y), 
 										gameEvent.angle);
 	gameObjects.add(gameEvent.objectType, gameEvent.id, ov);
+	if (gameEvent.objectType == TYPE_EXPLOSION) {
+		audio.playEffect(SFX_CAR_EXPLOSION);
+	}
 }
 
 void GameScene::removeObject(GameEventStruct gameEvent) {
@@ -98,7 +100,7 @@ void GameScene::draw() {
 	window.render();
 }
 
-int GameScene::handle() {
+Scene GameScene::handle() {
 	if (isMapReady) {
 		if (player.isBot) {
 			bot.handle();

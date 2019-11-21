@@ -2,7 +2,7 @@
 #include "../Common/Constants.h"
 #include <iostream>
 
-EndScene::EndScene(SdlWindow& window, Queue<EndSnapshot*>& endRecvQueue) : 
+EndScene::EndScene(SdlWindow& window, SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue) :
 	window(window),
 	endRecvQueue(endRecvQueue),
 	backgroundEndTex("end_screen.png", window),
@@ -25,8 +25,8 @@ void EndScene::update() {
 	backgroundEnd.setDims(xScreen, yScreen);
 
 	arrivedPlayers.clear();
-	EndSnapshot* snap;
-	if (endRecvQueue.pop(snap)) {
+	std::shared_ptr<EndSnapshot> snap;
+	if (endRecvQueue.get(snap)) {
 	    for (auto& arrivedPlayer : snap->getFinishedQueue()) {
 	    	arrivedPlayers.push_back(arrivedPlayer);
 	    }
@@ -40,7 +40,7 @@ void EndScene::draw() {
 	window.render();
 }
 
-int EndScene::handle() {
+Scene EndScene::handle() {
 	while (SDL_PollEvent(&e) && !_done) {
 		if (e.type == SDL_QUIT) {
 			_done = true;
@@ -71,7 +71,8 @@ int EndScene::handle() {
 void EndScene::drawCars() {
 	//TODO: dibujar solo los que haya en partida y en orden de llegada
 	for (int i = 0; i < arrivedPlayers.size(); i++)	{
-		carViews.at(arrivedPlayers.at(i))->drawAt(0.5*xScreen, (0.27 + 0.14*i)*yScreen);
+		carViews.at(static_cast<const ObjectType>(arrivedPlayers.at(i)))->
+		drawAt(0.5 * xScreen, (0.27 + 0.14 * i) * yScreen);
 	}
 }
 

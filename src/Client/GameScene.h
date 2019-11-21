@@ -17,18 +17,19 @@
 #include "../Common/Event/SnapshotEvent.h"
 #include "../Common/Event/Event.h"
 #include "../Common/SafeQueue.h"
-#include "../Common/Queue.h"
 #include "PlayerDescriptor.h"
+#include "ScreenRecorder.h"
 
 
 class GameScene : public BaseScene {
 private:
 	SdlWindow& window;
 	Audio audio;
+	ScreenRecorder recorder;
 	bool isDone;
-	
-	Queue<SnapshotEvent*>& recvQueue; 
-	SafeQueue<Event*>& sendQueue;
+
+	SafeQueue<std::shared_ptr<SnapshotEvent>>& recvQueue;
+	SafeQueue<std::shared_ptr<Event>>& sendQueue;
 	PlayerDescriptor& player;
 
 	SdlTexture backgroundTex;
@@ -42,26 +43,25 @@ private:
 	BotHandler bot;
 
 	Converter conv;
-	int cameraX, cameraY;
 	int xScreen, yScreen;
-	int nextScene;
+	Scene nextScene;
 	
 	bool isGameOver;
 	bool isMapReady;
 
 public:
-	GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
-					SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
+	GameScene(SdlWindow& window, SafeQueue<std::shared_ptr<SnapshotEvent>>& recvQueue,
+			  SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
-	virtual int handle() override;
+	virtual Scene handle() override;
 	virtual ~GameScene() {}
 private:
 	void drawBackground();
 
-	void updateCars(CarStructList cars);
-	void updateGameEvents(GameEventsList gameEvents);
+	void updateCars(const CarStructList& cars);
+	void updateGameEvents(const GameEventsList& gameEvents);
 	void addObject(GameEventStruct gameEvent);
 	void removeObject(GameEventStruct gameEvent);
 	void gameOver(GameEventStruct gameEvent);

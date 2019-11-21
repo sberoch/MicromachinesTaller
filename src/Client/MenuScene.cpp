@@ -3,7 +3,7 @@
 #include "../Common/Event/EnterLobbyEvent.h"
 #include <iostream>
 
-MenuScene::MenuScene(SdlWindow& window, SafeQueue<Event*>& sendQueue) : 
+MenuScene::MenuScene(SdlWindow& window, SafeQueue<std::shared_ptr<Event>>& sendQueue) :
 	window(window),
 	sendQueue(sendQueue),
 	backgroundMenuTex("menu_background.png", window),
@@ -26,7 +26,7 @@ void MenuScene::draw() {
 	window.render();
 }
 
-int MenuScene::handle() {
+Scene MenuScene::handle() {
 	nextScene = SCENE_MENU;
 	while (SDL_PollEvent(&e) && !_done) {
 		if (e.type == SDL_QUIT) {
@@ -41,7 +41,8 @@ int MenuScene::handle() {
 				
 			} else if (insidePlayButton(x, y)) {
 				audio.playEffect(SFX_BUTTON);
-				sendQueue.push(new EnterLobbyEvent());
+				std::shared_ptr<Event> play(new EnterLobbyEvent());
+				sendQueue.push(play);
 				nextScene = SCENE_LOBBY;
 			}
 

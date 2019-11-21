@@ -6,7 +6,6 @@
 #include "SdlWindow.h"
 #include "SdlTexture.h"
 #include "../Common/SafeQueue.h"
-#include "../Common/Queue.h"
 #include "../Common/Event/Event.h"
 #include "../Common/Event/LobbySnapshot.h"
 #include "TextureCreator.h"
@@ -19,8 +18,8 @@
 class LobbyScene : public BaseScene {
 private:
     SdlWindow& window;
-    SafeQueue<Event*>& sendQueue;
-    Queue<LobbySnapshot*>& lobbyRecvQueue;
+	SafeQueue<std::shared_ptr<Event>>& sendQueue;
+	SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue;
     SdlTexture backgroundLobbyTex;
     BackgroundView backgroundLobby;
     Audio audio;
@@ -35,7 +34,7 @@ private:
 
     bool _done;
     bool fullscreen;
-    int nextScene;
+    Scene nextScene;
     int xScreen, yScreen;
     PlayerDescriptor& player;
 
@@ -44,14 +43,14 @@ private:
     int joinedRoom;
     int joinedPlayer;
 public:
-    LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
-               SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
+    LobbyScene(SdlWindow& window, SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue,
+			   SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player);
     virtual bool done() override;
     virtual void update() override;
     virtual void draw() override;
-    virtual int handle() override;
+    virtual Scene handle() override;
 private:
-    void updateRooms(RoomsMap roomsMap);
+    void updateRooms(const RoomsMap& roomsMap);
     void drawRooms();
     void drawPlayers();
     void drawArrows();

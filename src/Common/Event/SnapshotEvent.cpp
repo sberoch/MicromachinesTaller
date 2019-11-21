@@ -144,11 +144,7 @@ void SnapshotEvent::setMudSplatEvent() {
     setGameEvent(MUD_SPLAT, 0, 0, 0, 0, 0);
 }
 
-void SnapshotEvent::setPlayerId(int id) {
-    setGameEvent(ID_ASSIGN, 0, 0, 0, 0, id);
-}
-
-void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType, 
+void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType,
             int objectType, float x, float y, int angle, int id) {
     GameEventStruct gameEvent{};
     gameEvent.eventType = eventType;
@@ -198,5 +194,9 @@ const GameEventsList& SnapshotEvent::getGameEvents() {
 SnapshotEvent::SnapshotEvent(SnapshotEvent &other) {
     this->carStructList = other.carStructList;
     this->gameEventsList = other.gameEventsList;
+}
+
+void SnapshotEvent::setLapNumber(int lapNumber) {
+	setGameEvent(LAP_COMPLETED, 0, 0, 0, 0, lapNumber);
 }
 

@@ -6,9 +6,11 @@ ScreenRecorder::ScreenRecorder(int wScreen, int hScreen) :
     wScreen(std::to_string(wScreen)),
     hScreen(std::to_string(hScreen)),
     outfile("out.mp4"),
-    framerate("25") {}
+    framerate("40"),
+    _recording(false) {}
 
 void ScreenRecorder::start() {
+	_recording = true;
     std::string ffmpeg_command = getCommand();
     std::string remove_command = std::string("rm -f ") + "\"" + outfile + "\"";
 
@@ -34,8 +36,17 @@ std::string ScreenRecorder::getCommand() {
 
 ScreenRecorder::~ScreenRecorder() {
     if (process) {
-        char close_signal[] = "q";
-        ::fwrite(close_signal, 1, 1, process);
+        close();
         pclose(process);
     }
+}
+
+void ScreenRecorder::close() {
+	_recording = false;
+	char close_signal[] = "q";
+	::fwrite(close_signal, 1, 1, process);
+}
+
+bool ScreenRecorder::recording() {
+	return _recording;
 }

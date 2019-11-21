@@ -11,11 +11,15 @@ private:
     std::string outfile;
     std::string framerate;
 
+    bool _recording;
+
     FILE* process = nullptr;
 
 public:
     ScreenRecorder(int wScreen, int hScreen);
     void start();
+    bool recording();
+    void close();
     ~ScreenRecorder();
 
 private:

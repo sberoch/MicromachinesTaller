@@ -33,5 +33,5 @@ Grass::Grass(b2World* world, size_t id, int type, float x_init, float y_init, fl
 }
 
 Grass::~Grass(){
-    _body->GetWorld()->DestroyBody(_body);
+    //_body->GetWorld()->DestroyBody(_body);
 }

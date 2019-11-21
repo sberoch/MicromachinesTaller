@@ -15,25 +15,33 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 	window(xScreen, yScreen),
 	currentScene(SCENE_MENU),
 	protocol(host, port),
+	lobbyRecvQueue(false),
+	gameRecvQueue(false),
+	endRecvQueue(false),
 	sendQueue(true),
 	receiver(gameRecvQueue, lobbyRecvQueue, endRecvQueue, protocol, currentScene),
 	sender(sendQueue, protocol) {
-		scenes.insert(std::make_pair(SCENE_MENU, new MenuScene(window, sendQueue)));
-		scenes.insert(std::make_pair(SCENE_LOBBY, new LobbyScene(window, lobbyRecvQueue, sendQueue, player)));
-		scenes.insert(std::make_pair(SCENE_GAME, new GameScene(window, gameRecvQueue, sendQueue, player)));
-		scenes.insert(std::make_pair(SCENE_END, new EndScene(window, endRecvQueue)));
+		ScenePtr menu(new MenuScene(window, sendQueue));
+		ScenePtr lobby(new LobbyScene(window, lobbyRecvQueue, sendQueue, player));
+		ScenePtr game(new GameScene(window, gameRecvQueue, sendQueue, player));
+		ScenePtr end(new EndScene(window, endRecvQueue));
+		scenes.insert(std::make_pair(SCENE_MENU, menu));
+		scenes.insert(std::make_pair(SCENE_LOBBY, lobby));
+		scenes.insert(std::make_pair(SCENE_GAME, game));
+		scenes.insert(std::make_pair(SCENE_END, end));
 		
 		receiver.start();
 		sender.start();
 	}
 
 void SceneSelector::run() {
-	BaseScene* scene;
+
 	bool done = false;
 	try {
 		while(!receiver.finished() && !sender.finished()) {
 			std::clock_t begin = clock();
 
+			ScenePtr scene;
 		    scene = scenes.at(currentScene);
 		    scene->update();
 		    scene->draw();
@@ -66,8 +74,4 @@ SceneSelector::~SceneSelector() {
 	receiver.join();
 	sendQueue.push(nullptr);
 	sender.join();
-
-	for (auto& it : scenes) {
-		delete it.second;
-	}
 }
