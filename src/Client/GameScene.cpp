@@ -5,7 +5,7 @@
 
 using json = nlohmann::json;
 
-GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
+GameScene::GameScene(SdlWindow& window, SafeQueue<SnapshotEvent*>& recvQueue,
 					SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) : 
 	window(window),
 	recorder(REC_SIZE_HOR, REC_SIZE_VERT),
@@ -39,7 +39,7 @@ void GameScene::update() {
 	window.getWindowSize(&xScreen, &yScreen);
 
 	SnapshotEvent* snap;
-	while (recvQueue.pop(snap)) {
+	while (recvQueue.get(snap)) {
 		updateCars(snap->getCars());
 		updateGameEvents(snap->getGameEvents());
 		delete snap;

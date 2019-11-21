@@ -6,7 +6,6 @@
 #include "ReceiverThread.h"
 #include "SenderThread.h"
 #include "../Common/SafeQueue.h"
-#include "../Common/Queue.h"
 #include "../Common/Event/Event.h"
 #include "../Common/Event/SnapshotEvent.h"
 #include "../Common/Event/LobbySnapshot.h"
@@ -24,9 +23,9 @@ private:
 
 	Protocol protocol;
 
-	Queue<SnapshotEvent*> gameRecvQueue;
-	Queue<LobbySnapshot*> lobbyRecvQueue;
-	Queue<EndSnapshot*> endRecvQueue;
+	SafeQueue<SnapshotEvent*> gameRecvQueue;
+	SafeQueue<LobbySnapshot*> lobbyRecvQueue;
+	SafeQueue<EndSnapshot*> endRecvQueue;
 	SafeQueue<Event*> sendQueue;
 
 	ReceiverThread receiver;

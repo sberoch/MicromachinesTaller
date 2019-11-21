@@ -17,7 +17,6 @@
 #include "../Common/Event/SnapshotEvent.h"
 #include "../Common/Event/Event.h"
 #include "../Common/SafeQueue.h"
-#include "../Common/Queue.h"
 #include "PlayerDescriptor.h"
 #include "ScreenRecorder.h"
 
@@ -29,7 +28,7 @@ private:
 	ScreenRecorder recorder;
 	bool isDone;
 	
-	Queue<SnapshotEvent*>& recvQueue; 
+	SafeQueue<SnapshotEvent*>& recvQueue;
 	SafeQueue<Event*>& sendQueue;
 	PlayerDescriptor& player;
 
@@ -52,7 +51,7 @@ private:
 	bool isMapReady;
 
 public:
-	GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
+	GameScene(SdlWindow& window, SafeQueue<SnapshotEvent*>& recvQueue,
 					SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
 	virtual bool done() override;
 	virtual void update() override;

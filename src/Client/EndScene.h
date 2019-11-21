@@ -5,9 +5,9 @@
 #include "SdlWindow.h"
 #include "SdlTexture.h"
 #include "View/BackgroundView.h"
-#include "../Common/Queue.h"
 #include "../Common/Event/EndSnapshot.h"
 #include "TextureCreator.h"
+#include "../Common/SafeQueue.h"
 #include <map>
 
 class EndScene : public BaseScene {
@@ -16,7 +16,7 @@ private:
 	SdlTexture backgroundEndTex;
 	BackgroundView backgroundEnd;
 
-	Queue<EndSnapshot*>& endRecvQueue;
+	SafeQueue<EndSnapshot*>& endRecvQueue;
 
 	TextureCreator creator;
 	std::map<int, ObjectViewPtr> carViews;
@@ -28,7 +28,7 @@ private:
 	bool fullscreen;
 	int xScreen, yScreen;
 public:
-	EndScene(SdlWindow& window, Queue<EndSnapshot*>& endRecvQueue);
+	EndScene(SdlWindow& window, SafeQueue<EndSnapshot*>& endRecvQueue);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;

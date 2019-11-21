@@ -2,9 +2,9 @@
 #include "../Common/Constants.h"
 #include <iostream>
 
-ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
-				   			   Queue<LobbySnapshot*>& lobbyRecvQueue,
-				   			   Queue<EndSnapshot*>& endRecvQueue,
+ReceiverThread::ReceiverThread(SafeQueue<SnapshotEvent*>& gameRecvQueue,
+				   			   SafeQueue<LobbySnapshot*>& lobbyRecvQueue,
+				   			   SafeQueue<EndSnapshot*>& endRecvQueue,
 				   			   Protocol& protocol, Scene& currentScene) :
 	gameRecvQueue(gameRecvQueue),
 	lobbyRecvQueue(lobbyRecvQueue),

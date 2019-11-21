@@ -2,7 +2,7 @@
 #include "../Common/Constants.h"
 #include <iostream>
 
-EndScene::EndScene(SdlWindow& window, Queue<EndSnapshot*>& endRecvQueue) : 
+EndScene::EndScene(SdlWindow& window, SafeQueue<EndSnapshot*>& endRecvQueue) :
 	window(window),
 	endRecvQueue(endRecvQueue),
 	backgroundEndTex("end_screen.png", window),
@@ -26,7 +26,7 @@ void EndScene::update() {
 
 	arrivedPlayers.clear();
 	EndSnapshot* snap;
-	if (endRecvQueue.pop(snap)) {
+	if (endRecvQueue.get(snap)) {
 	    for (auto& arrivedPlayer : snap->getFinishedQueue()) {
 	    	arrivedPlayers.push_back(arrivedPlayer);
 	    }

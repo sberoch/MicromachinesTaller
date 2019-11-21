@@ -3,7 +3,7 @@
 #include "../Common/Event/CreateRoomEvent.h"
 #include "../Common/Event/PlayEvent.h"
 
-LobbyScene::LobbyScene(SdlWindow& window, Queue<LobbySnapshot*>& lobbyRecvQueue,
+LobbyScene::LobbyScene(SdlWindow& window, SafeQueue<LobbySnapshot*>& lobbyRecvQueue,
                        SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) :
         window(window),
         lobbyRecvQueue(lobbyRecvQueue),
@@ -44,7 +44,7 @@ void LobbyScene::update() {
         backgroundLobby.setDims(xScreen, yScreen);
 
         LobbySnapshot *snap;
-        if (lobbyRecvQueue.pop(snap)) {
+        while (lobbyRecvQueue.get(snap)) {
             updateRooms(snap->getRooms());
             player.globalId = snap->getMyId();
         }
