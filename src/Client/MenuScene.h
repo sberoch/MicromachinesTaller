@@ -12,7 +12,7 @@
 class MenuScene : public BaseScene {
 private:
 	SdlWindow& window;
-	SafeQueue<Event*>& sendQueue;
+	SafeQueue<std::shared_ptr<Event>>& sendQueue;
 	SdlTexture backgroundMenuTex;
 	BackgroundView backgroundMenu;
 	Audio audio;
@@ -22,7 +22,7 @@ private:
 	Scene nextScene;
 	int xScreen, yScreen;
 public:
-	MenuScene(SdlWindow& window, SafeQueue<Event*>& sendQueue);
+	MenuScene(SdlWindow& window, SafeQueue<std::shared_ptr<Event>>& sendQueue);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;

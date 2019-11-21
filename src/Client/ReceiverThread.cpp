@@ -2,10 +2,10 @@
 #include "../Common/Constants.h"
 #include <iostream>
 
-ReceiverThread::ReceiverThread(SafeQueue<SnapshotEvent*>& gameRecvQueue,
-				   			   SafeQueue<LobbySnapshot*>& lobbyRecvQueue,
-				   			   SafeQueue<EndSnapshot*>& endRecvQueue,
-				   			   Protocol& protocol, Scene& currentScene) :
+ReceiverThread::ReceiverThread(SafeQueue<std::shared_ptr<SnapshotEvent>>& gameRecvQueue,
+							   SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue,
+							   SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue,
+							   Protocol& protocol, Scene& currentScene) :
 	gameRecvQueue(gameRecvQueue),
 	lobbyRecvQueue(lobbyRecvQueue),
 	endRecvQueue(endRecvQueue),
@@ -21,13 +21,10 @@ void ReceiverThread::run() {
 	//				while (curr scene)
 	// para poder hacer lo de volver a escenas anteriores
 
-	SnapshotEvent* gameSnap;
-	LobbySnapshot* lobbySnap;
-	EndSnapshot* endSnap;
 	try {
 
 		while(_currentScene == SCENE_LOBBY || _currentScene == SCENE_MENU) {
-			lobbySnap = new LobbySnapshot(protocol);
+			std::shared_ptr<LobbySnapshot> lobbySnap(new LobbySnapshot(protocol));
 			lobbyRecvQueue.push(lobbySnap);
 
 			int id = lobbySnap->getMyId();
@@ -36,11 +33,11 @@ void ReceiverThread::run() {
 			}
 		}
 		while(_currentScene == SCENE_GAME) {
-			gameSnap = new SnapshotEvent(protocol);
+			std::shared_ptr<SnapshotEvent> gameSnap(new SnapshotEvent(protocol));
 			gameRecvQueue.push(gameSnap);
 		}
 		while(_currentScene == SCENE_END) {
-		    endSnap = new EndSnapshot(protocol);
+		    std::shared_ptr<EndSnapshot> endSnap(new EndSnapshot(protocol));
 		    endRecvQueue.push(endSnap);
 		}
 
@@ -53,8 +50,4 @@ void ReceiverThread::run() {
 }
 bool ReceiverThread::finished() const {
 	return _done;
-}
-
-void ReceiverThread::setGameMode() {
-	_isGameMode = true;
 }

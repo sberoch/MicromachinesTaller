@@ -3,8 +3,8 @@
 #include "../Common/Event/CreateRoomEvent.h"
 #include "../Common/Event/PlayEvent.h"
 
-LobbyScene::LobbyScene(SdlWindow& window, SafeQueue<LobbySnapshot*>& lobbyRecvQueue,
-                       SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) :
+LobbyScene::LobbyScene(SdlWindow& window, SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue,
+					   SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player) :
         window(window),
         lobbyRecvQueue(lobbyRecvQueue),
         sendQueue(sendQueue),
@@ -43,7 +43,7 @@ void LobbyScene::update() {
         window.getWindowSize(&xScreen, &yScreen);
         backgroundLobby.setDims(xScreen, yScreen);
 
-        LobbySnapshot *snap;
+		std::shared_ptr<LobbySnapshot> snap;
         while (lobbyRecvQueue.get(snap)) {
             updateRooms(snap->getRooms());
             player.globalId = snap->getMyId();
@@ -55,7 +55,7 @@ void LobbyScene::update() {
     }
 }
 
-void LobbyScene::updateRooms(RoomsMap roomsMap) {
+void LobbyScene::updateRooms(const RoomsMap& roomsMap) {
 
     this->roomsMap = roomsMap;
 
@@ -120,7 +120,8 @@ Scene LobbyScene::handle() {
             SDL_GetMouseState(&x, &y);
             if (insidePlayButton(x, y)) {
                 if (roomsMap.size() > 0 && selectedRoom != -1 && joinedRoom != -1) {
-                    sendQueue.push(new PlayEvent(player.globalId));
+					std::shared_ptr<Event> cmd(new PlayEvent(player.globalId));
+                    sendQueue.push(cmd);
                     audio.playEffect(SFX_BUTTON);
                     nextScene = SCENE_GAME;
                 }
@@ -135,7 +136,8 @@ Scene LobbyScene::handle() {
             }
             else if (insideCreateRoomButton(x, y)) {
                 if (roomsMap.size() < 4) {
-                    sendQueue.push(new CreateRoomEvent());
+					std::shared_ptr<Event> cmd(new CreateRoomEvent());
+					sendQueue.push(cmd);
                     audio.playEffect(SFX_BUTTON);
                 }
             }
@@ -144,7 +146,11 @@ Scene LobbyScene::handle() {
                     joinedRoom = selectedRoom;
                     joinedPlayer = selectedPlayer;
                     audio.playEffect(SFX_BUTTON);
-                    sendQueue.push(new EnterRoomEvent(player.globalId, selectedRoom, joinedPlayer));
+					std::shared_ptr<Event> cmd(new EnterRoomEvent(
+													player.globalId,
+													selectedRoom,
+													joinedPlayer));
+					sendQueue.push(cmd);
                     player.playerId = joinedPlayer;
                 }
             } else {

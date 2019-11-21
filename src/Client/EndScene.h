@@ -16,7 +16,7 @@ private:
 	SdlTexture backgroundEndTex;
 	BackgroundView backgroundEnd;
 
-	SafeQueue<EndSnapshot*>& endRecvQueue;
+	SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue;
 
 	TextureCreator creator;
 	std::map<int, ObjectViewPtr> carViews;
@@ -28,7 +28,7 @@ private:
 	bool fullscreen;
 	int xScreen, yScreen;
 public:
-	EndScene(SdlWindow& window, SafeQueue<EndSnapshot*>& endRecvQueue);
+	EndScene(SdlWindow& window, SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;

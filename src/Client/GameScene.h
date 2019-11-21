@@ -27,9 +27,9 @@ private:
 	Audio audio;
 	ScreenRecorder recorder;
 	bool isDone;
-	
-	SafeQueue<SnapshotEvent*>& recvQueue;
-	SafeQueue<Event*>& sendQueue;
+
+	SafeQueue<std::shared_ptr<SnapshotEvent>>& recvQueue;
+	SafeQueue<std::shared_ptr<Event>>& sendQueue;
 	PlayerDescriptor& player;
 
 	SdlTexture backgroundTex;
@@ -43,7 +43,6 @@ private:
 	BotHandler bot;
 
 	Converter conv;
-	int cameraX, cameraY;
 	int xScreen, yScreen;
 	Scene nextScene;
 	
@@ -51,8 +50,8 @@ private:
 	bool isMapReady;
 
 public:
-	GameScene(SdlWindow& window, SafeQueue<SnapshotEvent*>& recvQueue,
-					SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
+	GameScene(SdlWindow& window, SafeQueue<std::shared_ptr<SnapshotEvent>>& recvQueue,
+			  SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
@@ -61,8 +60,8 @@ public:
 private:
 	void drawBackground();
 
-	void updateCars(CarStructList cars);
-	void updateGameEvents(GameEventsList gameEvents);
+	void updateCars(const CarStructList& cars);
+	void updateGameEvents(const GameEventsList& gameEvents);
 	void addObject(GameEventStruct gameEvent);
 	void removeObject(GameEventStruct gameEvent);
 	void gameOver(GameEventStruct gameEvent);

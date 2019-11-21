@@ -15,18 +15,20 @@
 #include "../Common/Constants.h"
 #include <map>
 
+typedef std::shared_ptr<BaseScene> ScenePtr;
+
 class SceneSelector {
 private:
 	SdlWindow window;
-	std::map<int, BaseScene*> scenes;
+	std::map<int, ScenePtr> scenes;
 	Scene currentScene;
 
 	Protocol protocol;
 
-	SafeQueue<SnapshotEvent*> gameRecvQueue;
-	SafeQueue<LobbySnapshot*> lobbyRecvQueue;
-	SafeQueue<EndSnapshot*> endRecvQueue;
-	SafeQueue<Event*> sendQueue;
+	SafeQueue<std::shared_ptr<SnapshotEvent>> gameRecvQueue;
+	SafeQueue<std::shared_ptr<LobbySnapshot>> lobbyRecvQueue;
+	SafeQueue<std::shared_ptr<EndSnapshot>> endRecvQueue;
+	SafeQueue<std::shared_ptr<Event>> sendQueue;
 
 	ReceiverThread receiver;
 	SenderThread sender;

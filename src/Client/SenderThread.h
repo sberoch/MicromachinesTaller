@@ -8,11 +8,11 @@
 
 class SenderThread : public Thread {
 private:
-	SafeQueue<Event*>& sendQueue;
+	SafeQueue<std::shared_ptr<Event>>& sendQueue;
 	Protocol& protocol;
 	bool _done;
 public:
-	SenderThread(SafeQueue<Event*>& sendQueue, Protocol& protocol);
+	SenderThread(SafeQueue<std::shared_ptr<Event>>& sendQueue, Protocol& protocol);
 
 	bool finished() const;
 	virtual void run() override;

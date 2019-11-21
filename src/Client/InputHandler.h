@@ -14,7 +14,7 @@ private:
 	SdlWindow& window;
 	Audio& audio;
 	ScreenRecorder& recorder;
-	SafeQueue<Event*>& sendQueue;
+	SafeQueue<std::shared_ptr<Event>>& sendQueue;
 
 	SDL_Event event;
 	bool _done;
@@ -23,7 +23,7 @@ private:
 	PlayerDescriptor& player;
 public:
 	InputHandler(SdlWindow& window, Audio& audio, ScreenRecorder& recorder,
-                 SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
+				 SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player);
 	bool done();
 	void handle();
 };

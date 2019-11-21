@@ -5,7 +5,7 @@
 #define CYCLES_UNTIL_MOVE_REPEAT 3
 
 BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio, ScreenRecorder& recorder,
-            SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) :
+					   SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player) :
         gameObjects(gameObjects),
         audio(audio),
         recorder(recorder),
@@ -27,9 +27,12 @@ void BotHandler::loadMap() {
 void BotHandler::handle() {
     if (moveRepeatCounter > CYCLES_UNTIL_MOVE_REPEAT) {
         moveRepeatCounter = 0;
+
         ObjectViewPtr myCar = gameObjects.getCar(player.playerId);
         InputEnum mov = (InputEnum) lua.getNextMovement(myCar->getX(), myCar->getY(), myCar->getAngle());
-        sendQueue.push(new CommandEvent(mov, player.globalId));
+
+		std::shared_ptr<Event> cmd(new CommandEvent(mov, player.globalId));
+        sendQueue.push(cmd);
 
     } else {
         moveRepeatCounter++;

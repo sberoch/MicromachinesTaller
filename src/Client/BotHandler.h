@@ -16,7 +16,7 @@ private:
 	LuaInterpreter lua;
 	Audio& audio;
 	ScreenRecorder& recorder;
-	SafeQueue<Event*>& sendQueue;
+	SafeQueue<std::shared_ptr<Event>>& sendQueue;
 	PlayerDescriptor& player;
 	int moveRepeatCounter;
 
@@ -24,7 +24,7 @@ private:
 	bool _done;
 public:
 	BotHandler(GameObjects& gameObjects, Audio& audio, ScreenRecorder& recorder,
-		SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
+			   SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player);
 	bool done();
 	void loadMap();
 	void handle();

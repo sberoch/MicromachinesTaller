@@ -4,7 +4,7 @@
 #include <iostream>
 
 InputHandler::InputHandler(SdlWindow& window, Audio& audio, ScreenRecorder& recorder,
-                           SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) :
+						   SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player) :
 	window(window),
 	audio(audio),
 	recorder(recorder),
@@ -26,7 +26,6 @@ void InputHandler::handle() {
 	while (SDL_PollEvent(&event)) {
 		if (event.type == SDL_QUIT) {
 			_done = true;
-			//TODO: enviar especificacion de quien se va
 
 		} else if (event.type == SDL_KEYDOWN) {
 			SDL_KeyboardEvent& keyEvent = (SDL_KeyboardEvent&) event;
@@ -34,7 +33,9 @@ void InputHandler::handle() {
 				case SDLK_a: {
 					//Turn left
 					if (!left_pressed) {
-						sendQueue.push(new CommandEvent(TURN_LEFT, player.globalId));
+						std::shared_ptr<Event> cmd(
+								new CommandEvent(TURN_LEFT, player.globalId));
+						sendQueue.push(cmd);
 					}
 					left_pressed = true;
 					break;
@@ -42,7 +43,9 @@ void InputHandler::handle() {
 				case SDLK_d: {
 					//Turn right
 					if (!right_pressed) {
-						sendQueue.push(new CommandEvent(TURN_RIGHT, player.globalId));
+						std::shared_ptr<Event> cmd(
+								new CommandEvent(TURN_RIGHT, player.globalId));
+						sendQueue.push(cmd);
 					}
 					right_pressed = true;
 					break;
@@ -51,7 +54,9 @@ void InputHandler::handle() {
 					//Accelerate
 					if (!up_pressed) {
 						audio.playEffect(SFX_CAR_ENGINE);
-						sendQueue.push(new CommandEvent(ACCELERATE, player.globalId));
+						std::shared_ptr<Event> cmd(
+								new CommandEvent(ACCELERATE, player.globalId));
+						sendQueue.push(cmd);
 					}
 					up_pressed = true;
 					break;
@@ -60,7 +65,9 @@ void InputHandler::handle() {
 					//Brake
 					if (!down_pressed) {
 						audio.playEffect(SFX_CAR_BRAKE);
-						sendQueue.push(new CommandEvent(DESACCELERATE, player.globalId));
+						std::shared_ptr<Event> cmd(
+								new CommandEvent(DESACCELERATE, player.globalId));
+						sendQueue.push(cmd);
 					}
 					down_pressed = true;
 					break;
@@ -96,7 +103,9 @@ void InputHandler::handle() {
 				case SDLK_a: {
 					//Stop turning left
 					if (left_pressed) {
-						sendQueue.push(new CommandEvent(STOP_TURNING_LEFT, player.globalId));
+						std::shared_ptr<Event> cmd(
+								new CommandEvent(STOP_TURNING_LEFT, player.globalId));
+						sendQueue.push(cmd);
 					}
 					left_pressed = false;
 					break;
@@ -104,7 +113,9 @@ void InputHandler::handle() {
 				case SDLK_d: {
 					//Stop turning right
 					if (right_pressed) {
-						sendQueue.push(new CommandEvent(STOP_TURNING_RIGHT, player.globalId));
+						std::shared_ptr<Event> cmd(
+								new CommandEvent(STOP_TURNING_RIGHT, player.globalId));
+						sendQueue.push(cmd);
 					}
 					right_pressed = false;
 					break;
@@ -113,7 +124,9 @@ void InputHandler::handle() {
 					//Stop accelerating
 					if (up_pressed) {
 						audio.stopEffect(SFX_CAR_ENGINE);
-						sendQueue.push(new CommandEvent(STOP_ACCELERATING, player.globalId));
+						std::shared_ptr<Event> cmd(
+								new CommandEvent(STOP_ACCELERATING, player.globalId));
+						sendQueue.push(cmd);
 					}
 					up_pressed = false;
 					break;
@@ -121,7 +134,9 @@ void InputHandler::handle() {
 				case SDLK_s: {
 					//Stop braking
 					if (down_pressed) {
-						sendQueue.push(new CommandEvent(STOP_DESACCELERATING, player.globalId));
+						std::shared_ptr<Event> cmd(
+								new CommandEvent(STOP_DESACCELERATING, player.globalId));
+						sendQueue.push(cmd);
 					}
 					down_pressed = false;
 					break;

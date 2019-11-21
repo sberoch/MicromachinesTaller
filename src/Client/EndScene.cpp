@@ -2,7 +2,7 @@
 #include "../Common/Constants.h"
 #include <iostream>
 
-EndScene::EndScene(SdlWindow& window, SafeQueue<EndSnapshot*>& endRecvQueue) :
+EndScene::EndScene(SdlWindow& window, SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue) :
 	window(window),
 	endRecvQueue(endRecvQueue),
 	backgroundEndTex("end_screen.png", window),
@@ -25,7 +25,7 @@ void EndScene::update() {
 	backgroundEnd.setDims(xScreen, yScreen);
 
 	arrivedPlayers.clear();
-	EndSnapshot* snap;
+	std::shared_ptr<EndSnapshot> snap;
 	if (endRecvQueue.get(snap)) {
 	    for (auto& arrivedPlayer : snap->getFinishedQueue()) {
 	    	arrivedPlayers.push_back(arrivedPlayer);

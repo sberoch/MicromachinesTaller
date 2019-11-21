@@ -10,21 +10,20 @@
 
 class ReceiverThread : public Thread {
 private:
-	SafeQueue<SnapshotEvent*>& gameRecvQueue;
-	SafeQueue<LobbySnapshot*>& lobbyRecvQueue;
-	SafeQueue<EndSnapshot*>& endRecvQueue;
+	SafeQueue<std::shared_ptr<SnapshotEvent>>& gameRecvQueue;
+	SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue;
+	SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue;
 	Protocol& protocol;
 	bool _done;
 	bool _isGameMode;
 	Scene& _currentScene;
 public:
-	ReceiverThread(SafeQueue<SnapshotEvent*>& gameRecvQueue,
-				   SafeQueue<LobbySnapshot*>& lobbyRecvQueue,
-				   SafeQueue<EndSnapshot*>& endRecvQueue,
-				   Protocol& protocol, Scene& currentScene);
+	ReceiverThread(SafeQueue<std::shared_ptr<SnapshotEvent>>& gameRecvQueue,
+					SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue,
+					SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue,
+					Protocol& protocol, Scene& currentScene);
 
 	virtual void run() override;
-	void setGameMode();
 	bool finished() const;
 
 	ReceiverThread(ReceiverThread &copy) = delete;

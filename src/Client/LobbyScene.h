@@ -18,8 +18,8 @@
 class LobbyScene : public BaseScene {
 private:
     SdlWindow& window;
-    SafeQueue<Event*>& sendQueue;
-    SafeQueue<LobbySnapshot*>& lobbyRecvQueue;
+	SafeQueue<std::shared_ptr<Event>>& sendQueue;
+	SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue;
     SdlTexture backgroundLobbyTex;
     BackgroundView backgroundLobby;
     Audio audio;
@@ -43,14 +43,14 @@ private:
     int joinedRoom;
     int joinedPlayer;
 public:
-    LobbyScene(SdlWindow& window, SafeQueue<LobbySnapshot*>& lobbyRecvQueue,
-               SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
+    LobbyScene(SdlWindow& window, SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue,
+			   SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player);
     virtual bool done() override;
     virtual void update() override;
     virtual void draw() override;
     virtual Scene handle() override;
 private:
-    void updateRooms(RoomsMap roomsMap);
+    void updateRooms(const RoomsMap& roomsMap);
     void drawRooms();
     void drawPlayers();
     void drawArrows();

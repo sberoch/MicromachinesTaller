@@ -1,12 +1,10 @@
 #include "GameScene.h"
-#include "../Common/json.hpp"
-#include "../Common/Constants.h"
 #include <iostream>
 
 using json = nlohmann::json;
 
-GameScene::GameScene(SdlWindow& window, SafeQueue<SnapshotEvent*>& recvQueue,
-					SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) : 
+GameScene::GameScene(SdlWindow& window, SafeQueue<std::shared_ptr<SnapshotEvent>>& recvQueue,
+					 SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player) :
 	window(window),
 	recorder(REC_SIZE_HOR, REC_SIZE_VERT),
 	isDone(false),
@@ -38,15 +36,14 @@ void GameScene::update() {
 	audio.playMusic();
 	window.getWindowSize(&xScreen, &yScreen);
 
-	SnapshotEvent* snap;
+	std::shared_ptr<SnapshotEvent> snap;
 	while (recvQueue.get(snap)) {
 		updateCars(snap->getCars());
 		updateGameEvents(snap->getGameEvents());
-		delete snap;
 	}
 }
 
-void GameScene::updateCars(CarStructList cars) {
+void GameScene::updateCars(const CarStructList& cars) {
 	for (auto& car : cars) {
 		ObjectViewPtr carView = gameObjects.getCar(car.id);
 		carView->setRotation(car.angle);
@@ -60,7 +57,7 @@ void GameScene::updateCars(CarStructList cars) {
 	}	
 }
 
-void GameScene::updateGameEvents(GameEventsList gameEvents) {
+void GameScene::updateGameEvents(const GameEventsList& gameEvents) {
 	for (auto& gameEvent : gameEvents) {
  		switch(gameEvent.eventType) {
 			case ADD: addObject(gameEvent); break;
