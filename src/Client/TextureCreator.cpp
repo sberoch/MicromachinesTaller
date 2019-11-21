@@ -17,6 +17,7 @@
 #include "View/RoomView.h"
 #include "View/StartLineView.h"
 #include "View/ArrowView.h"
+#include "View/LapsTextView.h"
 
 TextureCreator::TextureCreator(const SdlWindow& window) :
         straightTrackTex("straight_track.png", window),
@@ -37,7 +38,8 @@ TextureCreator::TextureCreator(const SdlWindow& window) :
         room4Tex("room4.png", window),
         startLineTex("start.png", window),
         arrowTex("arrow.png", window),
-        carSelectedTex("car_selected.png", window) {}
+        carSelectedTex("car_selected.png", window),
+        lapsTextTex("laps.png", window) {}
 
 
 ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
@@ -63,6 +65,7 @@ ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
         case TYPE_START_LINE: ov.reset(new StartLineView(startLineTex, angle)); break;
         case TYPE_ARROW: ov.reset(new ArrowView(arrowTex)); break;
         case TYPE_CAR_SELECTED: ov.reset(new CarView(carSelectedTex, angle)); break;
+        case TYPE_LAPS_TEXT: ov.reset(new LapsTextView(lapsTextTex)); break;
         default: throw std::runtime_error("Texture Creator: Wrong view_id");
     }
     ov->setInitialPos(x, y);

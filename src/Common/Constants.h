@@ -25,6 +25,7 @@
 #define TYPE_GRASS 120
 #define TYPE_ARROW 121
 #define TYPE_CAR_SELECTED 122
+#define TYPE_LAPS_TEXT 123
 
 //Scenes
 enum Scene {

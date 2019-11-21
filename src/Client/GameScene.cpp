@@ -65,6 +65,7 @@ void GameScene::updateGameEvents(const GameEventsList& gameEvents) {
 			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
 			case GAME_OVER: gameOver(gameEvent); break;
+			case LAP_COMPLETED: display.setLapNumber(gameEvent.id); break; //Id is being used for the lap number.
 			default: break;
 		}
 	}
