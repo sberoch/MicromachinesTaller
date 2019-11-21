@@ -19,12 +19,14 @@
 #include "../Common/SafeQueue.h"
 #include "../Common/Queue.h"
 #include "PlayerDescriptor.h"
+#include "ScreenRecorder.h"
 
 
 class GameScene : public BaseScene {
 private:
 	SdlWindow& window;
 	Audio audio;
+	ScreenRecorder recorder;
 	bool isDone;
 	
 	Queue<SnapshotEvent*>& recvQueue; 

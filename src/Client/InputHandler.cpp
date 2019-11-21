@@ -3,10 +3,11 @@
 #include "../Common/Event/CommandEvent.h"
 #include <iostream>
 
-InputHandler::InputHandler(SdlWindow& window, Audio& audio,
+InputHandler::InputHandler(SdlWindow& window, Audio& audio, ScreenRecorder& recorder,
                            SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) :
 	window(window),
 	audio(audio),
+	recorder(recorder),
 	sendQueue(sendQueue),
 	player(player) {
 	_done = false;
@@ -77,6 +78,15 @@ void InputHandler::handle() {
 
 				case SDLK_b: {
 					player.isBot = true;
+					break;
+				}
+
+				case SDLK_v: {
+					if (!recorder.recording()) {
+						recorder.start();
+					} else {
+						recorder.close();
+					}
 					break;
 				}
 			}

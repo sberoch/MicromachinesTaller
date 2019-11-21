@@ -4,10 +4,11 @@
 
 #define CYCLES_UNTIL_MOVE_REPEAT 3
 
-BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio, 
+BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio, ScreenRecorder& recorder,
             SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) :
         gameObjects(gameObjects),
         audio(audio),
+        recorder(recorder),
         sendQueue(sendQueue),
         player(player),
         moveRepeatCounter(0),
@@ -41,6 +42,13 @@ void BotHandler::handle() {
             SDL_KeyboardEvent& keyEvent = (SDL_KeyboardEvent&) event;
             if (keyEvent.keysym.sym == SDLK_b) {
                 player.isBot = false;
+
+            } else if (keyEvent.keysym.sym == SDLK_v) {
+				if (!recorder.recording()) {
+					recorder.start();
+				} else {
+					recorder.close();
+				}
             }
         }
     }

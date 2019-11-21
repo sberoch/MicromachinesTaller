@@ -1,3 +1,5 @@
+//TODO: pasar a enums
+
 //Object types
 #define TYPE_STRAIGHT_TRACK 100
 #define TYPE_CURVE_TRACK 101
@@ -34,6 +36,10 @@
 #define SFX_CAR_BRAKE 301
 #define SFX_CAR_EXPLOSION 302
 #define SFX_BUTTON 303
+
+//Video
+#define REC_SIZE_HOR 1600
+#define REC_SIZE_VERT 900
 
 //Pixel sizes (horizontal and vertical)
 #define PIXELS_PER_BLOCK 50

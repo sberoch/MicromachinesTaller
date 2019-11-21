@@ -7,11 +7,13 @@
 #include "../Common/Event/Event.h"
 #include "../Common/SafeQueue.h"
 #include "PlayerDescriptor.h"
+#include "ScreenRecorder.h"
 
 class InputHandler {
 private:
 	SdlWindow& window;
 	Audio& audio;
+	ScreenRecorder& recorder;
 	SafeQueue<Event*>& sendQueue;
 
 	SDL_Event event;
@@ -20,7 +22,7 @@ private:
 	bool up_pressed, left_pressed, down_pressed, right_pressed;
 	PlayerDescriptor& player;
 public:
-	InputHandler(SdlWindow& window, Audio& audio,
+	InputHandler(SdlWindow& window, Audio& audio, ScreenRecorder& recorder,
                  SafeQueue<Event*>& sendQueue, PlayerDescriptor& player);
 	bool done();
 	void handle();

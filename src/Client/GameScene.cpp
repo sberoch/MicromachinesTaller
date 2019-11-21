@@ -8,6 +8,7 @@ using json = nlohmann::json;
 GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue, 
 					SafeQueue<Event*>& sendQueue, PlayerDescriptor& player) : 
 	window(window),
+	recorder(REC_SIZE_HOR, REC_SIZE_VERT),
 	isDone(false),
 	recvQueue(recvQueue),
 	sendQueue(sendQueue),
@@ -17,11 +18,11 @@ GameScene::GameScene(SdlWindow& window, Queue<SnapshotEvent*>& recvQueue,
 	background(backgroundTex),
 	display(window),
 	
-	handler(window, audio, sendQueue, player),
+	handler(window, audio, recorder, sendQueue, player),
 	creator(window),
 
 	gameObjects(creator),
-	bot(gameObjects, audio, sendQueue, player),
+	bot(gameObjects, audio, recorder, sendQueue, player),
 	conv(PIXELS_PER_BLOCK), 
 	xScreen(0),
 	yScreen(0),
