@@ -79,8 +79,8 @@ void Room::sendSnapshotToClients(std::shared_ptr<LobbySnapshot>& snapshot){
     }
 }
 
-#define X_INIT 14
-#define Y_INIT 8
+#define X_INIT 10
+#define Y_INIT 37
 
 void Room::addPlayersToJson(json& j){
     int xDeviation = 0;
