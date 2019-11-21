@@ -19,7 +19,7 @@ private:
 	SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue;
 
 	TextureCreator creator;
-	std::map<int, ObjectViewPtr> carViews;
+	std::map<ObjectType, ObjectViewPtr> carViews;
 
 	std::vector<int> arrivedPlayers;
 

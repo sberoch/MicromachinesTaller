@@ -42,7 +42,7 @@ TextureCreator::TextureCreator(const SdlWindow& window) :
         lapsTextTex("laps.png", window) {}
 
 
-ObjectViewPtr TextureCreator::create(int type, int x, int y, int angle) {
+ObjectViewPtr TextureCreator::create(ObjectType type, int x, int y, int angle) {
     ObjectViewPtr ov;
     switch (type) {
         case TYPE_STRAIGHT_TRACK: ov.reset(new StraightTrackView(straightTrackTex, angle)); break;

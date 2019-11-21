@@ -72,7 +72,7 @@ void GameScene::updateGameEvents(const GameEventsList& gameEvents) {
 }
 
 void GameScene::addObject(GameEventStruct gameEvent) {
-	ObjectViewPtr ov = creator.create(gameEvent.objectType, 
+	ObjectViewPtr ov = creator.create((ObjectType) gameEvent.objectType,
 										conv.blockToPixel(gameEvent.x), 
 										conv.blockToPixel(gameEvent.y), 
 										gameEvent.angle);

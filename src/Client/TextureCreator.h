@@ -33,7 +33,7 @@ private:
     SdlTexture lapsTextTex;
 public:
     TextureCreator(const SdlWindow& window);
-    ObjectViewPtr create(int type, int x, int y, int angle);
+    ObjectViewPtr create(ObjectType type, int x, int y, int angle);
 };
 
 #endif
