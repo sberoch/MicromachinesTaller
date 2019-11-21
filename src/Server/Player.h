@@ -5,16 +5,9 @@
 #include "../Common/Protocol.h"
 #include "../Common/Event/CommandEvent.h"
 #include "../Common/Event/SnapshotEvent.h"
+#include "../mods/DTOs.h"
 
 class Car;
-
-struct ModifierDTO {
-    size_t id;
-    size_t type;
-    float x;
-    float y;
-    float angle;
-};
 
 struct Effect {
     int type;
@@ -25,7 +18,7 @@ class Player {
 private:
     std::shared_ptr<Car> _car;
     int& inRoomId;
-    ModifierDTO* _modifierDTO;
+    ModifierDTO_t _modifierDTO;
     bool _modifierToAdd;
 
     std::vector<Effect*> _effects;

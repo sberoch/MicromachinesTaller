@@ -2,10 +2,11 @@
 #include "World.h"
 #include "../json/json.hpp"
 #include <iostream>
+#include <memory>
 
 using json = nlohmann::json;
 
-World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
+World::World(size_t n_of_cars, const std::shared_ptr<Configuration>& configuration) :
              _timeStep(1/configuration->getFPS()), _n_of_cars(n_of_cars), _configuration(configuration),
              _cars(), _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0) {
     b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
@@ -14,25 +15,14 @@ World::World(size_t n_of_cars, std::shared_ptr<Configuration> configuration) :
     _contactListener = new ContactListener(_world);
     _world->SetContactListener(_contactListener);
 
-    createTrack(_track);
-    createGrass(_grass);
+    createTrack();
+    createGrass();
 
     _modifierType.push_back(TYPE_HEALTH_POWERUP);
     _modifierType.push_back(TYPE_BOOST_POWERUP);
     _modifierType.push_back(TYPE_ROCK);
     _modifierType.push_back(TYPE_OIL);
     _modifierType.push_back(TYPE_MUD);
-}
-
-void World::_getCarConfigData(size_t id, float& x, float& y, float& angle){
-    std::ifstream i("scene.json");
-    json j;
-    i >> j;
-
-    json cars = j["cars"];
-    x = cars.at(id)["x_init"].get<float>();
-    y = cars.at(id)["y_init"].get<float>();
-    angle = cars.at(id)["angle"].get<float>();
 }
 
 json World::getCarById(int id, json cars){
@@ -48,7 +38,7 @@ json World::getCarById(int id, json cars){
 
 Car* World::createCar(size_t id, json j){
     float x_init, y_init, angle_init;
-    //_getCarConfigData(id, x_init, y_init, angle_init);
+
     json cars = j["cars"];
     json car = getCarById(id, cars);
 
@@ -61,7 +51,7 @@ Car* World::createCar(size_t id, json j){
     return newCar;
 }
 
-void World::createTrack(std::vector<Track*>& track){
+void World::createTrack(){
     std::ifstream i("map1.json");
     json j; i >> j;
 
@@ -76,15 +66,15 @@ void World::createTrack(std::vector<Track*>& track){
         angle = t["angle"].get<float>();
         type = t["type"].get<float>();
         id++;
-        Track* _track = new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration);
-        track.push_back(_track);
+        std::shared_ptr<Track> track(new Track(_world, id, type, x, y, angle * DEGTORAD, _configuration));
+        _track.push_back(track);
     }
 
-    track[0]->setAsStart();
-    track[track.size()-1]->setAsFinish();
+    _track[0]->setAsStart();
+    _track[_track.size()-1]->setAsFinish();
 }
 
-void World::createGrass(std::vector<Grass*>& grass){
+void World::createGrass(){
     std::ifstream i("map1.json");
     json j; i >> j;
 
@@ -99,8 +89,8 @@ void World::createGrass(std::vector<Grass*>& grass){
         angle = g["angle"].get<float>();
         type = g["type"].get<float>();
         id++;
-        Grass* _grass = new Grass(_world, id, type, x, y, angle * DEGTORAD, _configuration);
-        grass.push_back(_grass);
+        std::shared_ptr<Grass> grass(new Grass(_world, id, type, x, y, angle * DEGTORAD, _configuration));
+        _grass.push_back(grass);
     }
 }
 
@@ -109,29 +99,6 @@ json World::getSerializedMap() {
     json j; 
     i >> j;
     return j;
-}
-
-void World::createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle){
-    int rand = std::rand() % _track.size();
-    Track* randomTrack = _track[rand];
-
-    float xhi = randomTrack->x() - 2.5f;
-    float xlo = randomTrack->x() + 2.5f;
-
-    float yhi = randomTrack->y() - 2.5f;
-    float ylo = randomTrack->y() + 2.5f;
-
-    x = xlo + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(xhi-xlo)));
-    y = ylo + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(yhi-ylo)));
-    angle = randomTrack->angle();
-
-    int modifierType = std::rand() % _modifierType.size();
-    type = _modifierType[modifierType];
-
-    id = _maxId;
-    _maxId++;
-
-    _activeModifiers.push_back(Modifier::makeModifier(_world, type, id, x, y, angle * DEGTORAD, _configuration));
 }
 
 void World::_removeGrabbedModifiers(){
@@ -152,14 +119,12 @@ void World::_updateCarsOnGrass(){
             float minDistance = _configuration->getMaxDistToTrack();
             for (auto & j : _track){
                 float distance = j->getDistance(_car->x(), _car->y());
-                if (distance < minDistance) {
+                if (distance < minDistance)
                     minDistance = distance;
-                }
             }
 
-            if (minDistance > _configuration->getMaxDistToTrack()){
+            if (minDistance >= _configuration->getMaxDistToTrack())
                 _car->resetCar();
-            }
         }
     }
 }
@@ -174,13 +139,37 @@ void World::step(uint32_t velocityIt, uint32_t positionIt){
 }
 
 World::~World(){
-    b2Body* node = _world->GetBodyList();
-//    while (node){
-//        b2Body* b = node;
-//        node = node->GetNext();
-//        _world->DestroyBody(b);
-//    }
-
     delete _world;
 }
 
+void World::toDTO(WorldDTO_t* world){
+    for (size_t i=0; i<_cars.size(); ++i)
+        _cars[i]->carToDTO(&world->cars[i]);
+    world->cars_size = _cars.size();
+
+    for (size_t i=0; i<_track.size(); ++i)
+        _track[i]->toDTO(&world->track[i]);
+    world->track_size = _track.size();
+
+    for (size_t i=0; i<_activeModifiers.size(); ++i){
+        _activeModifiers[i]->toDTO(&world->modifiers[i]);
+    }
+
+    for (size_t i=_activeModifiers.size(); i<MAX_MODIFIERS; ++i){
+        world->modifiers[i].active = false;
+    }
+}
+
+void World::dtoToModel(WorldDTO_t* worldDTO) {
+    for (size_t i=0; i<_cars.size(); ++i){
+        _cars[i]->dtoToModel(worldDTO->cars[i]);
+    }
+
+    for (size_t i=0; i<MAX_MODIFIERS; ++i){
+        ModifierDTO modifier = worldDTO->modifiers[i];
+        if (modifier.newModifier){
+            _activeModifiers.push_back(Modifier::makeModifier(_world, modifier.type, modifier.id, modifier.x, modifier.y,
+                                                              modifier.angle * DEGTORAD, _configuration));
+        }
+    }
+}

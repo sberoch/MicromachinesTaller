@@ -8,20 +8,15 @@ Player::Player(std::shared_ptr<Car> car, int& inRoomId) :
                         _car(std::move(car)),
                         inRoomId(inRoomId),
                         _modifierToAdd(false),
-                        _modifierDTO(new ModifierDTO()),
                         done(false){}
 
 void Player::update(){
     _car->update();
-}
-
-
-void Player::handleInput(const InputEnum& input){
-    _car->handleInput(input);
 
     std::vector<Effect*> aux;
     for (int i=0; i<_effects.size(); ++i){
         _effects[i]->timeOfAction --;
+        std::cout << "ioa " << _effects[i]->timeOfAction << "!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
         if (_effects[i]->timeOfAction == 0){
             _car->stopEffect(_effects[i]->type);
             delete _effects[i];
@@ -30,6 +25,11 @@ void Player::handleInput(const InputEnum& input){
         }
     }
     _effects.swap(aux);
+}
+
+
+void Player::handleInput(const InputEnum& input){
+    _car->handleInput(input);
 }
 
 void Player::receive(std::string& received, Protocol& protocol){
@@ -45,11 +45,11 @@ void Player::_addEffect(const int& effectType, const int& timeOfAction){
 
 void Player::createModifier(const size_t& type, const size_t& id, const float& x, const float& y, const float& angle){
     _modifierToAdd = true;
-    _modifierDTO->id = id;
-    _modifierDTO->type = type;
-    _modifierDTO->x = x;
-    _modifierDTO->y = y;
-    _modifierDTO->angle = angle;
+    _modifierDTO.id = id;
+    _modifierDTO.type = type;
+    _modifierDTO.x = x;
+    _modifierDTO.y = y;
+    _modifierDTO.angle = angle;
 }
 
 
@@ -91,7 +91,7 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
     _car->resetStatus();
 
     if (_modifierToAdd){
-        snapshot->addGameItem(_modifierDTO->type, _modifierDTO->x, _modifierDTO->y, _modifierDTO->angle, _modifierDTO->id);
+        snapshot->addGameItem(_modifierDTO.type, _modifierDTO.x, _modifierDTO.y, _modifierDTO.angle, _modifierDTO.id);
         _modifierToAdd = false;
     }
 

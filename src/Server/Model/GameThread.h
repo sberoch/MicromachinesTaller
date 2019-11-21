@@ -7,9 +7,14 @@
 #include "../Network/ThClient.h"
 #include <thread>
 
+#include "../ModsThread.h"
+
 class GameThread {
 private:
     World _world;
+
+    WorldDTO_t _worldDTO;
+
     std::shared_ptr<Configuration> _configuration;
     std::list<std::shared_ptr<ClientThread>> finishedPlayers;
 
@@ -25,6 +30,9 @@ public:
     json getSerializedMap();
     std::shared_ptr<Car> createCar(int id, json j);
     void step();
+
+    //Method to apply changes in DTO to model
+    void applyPluginChanges();
 
     void startGame();
 

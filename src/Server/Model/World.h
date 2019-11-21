@@ -9,6 +9,7 @@
 #include "FixtureUserData.h"
 #include "Grass.h"
 #include "Modifier.h"
+#include "../mods/DTOs.h"
 
 using json = nlohmann::json;
 
@@ -21,8 +22,8 @@ private:
     int _n_of_cars;
     std::vector<Car*> _cars;
     void _getCarConfigData(size_t id, float& x, float& y, float& angle);
-    std::vector<Track*> _track;
-    std::vector<Grass*> _grass;
+    std::vector<std::shared_ptr<Track>> _track;
+    std::vector<std::shared_ptr<Grass>> _grass;
 
     //A vector of active modifiers to delete
     std::vector<Modifier*> _activeModifiers;
@@ -35,18 +36,22 @@ private:
     void _updateCarsOnGrass();
 
 public:
-    World(size_t n_of_cars, std::shared_ptr<Configuration> configuration);
+    World(size_t n_of_cars, const std::shared_ptr<Configuration>& configuration);
 
     json getSerializedMap();
 
-    void createTrack(std::vector<Track*>& track);
-    void createGrass(std::vector<Grass*>& grass);
+
+    void createTrack();
+    void createGrass();
     Car* createCar(size_t id, json cars);
 
     //Modifiers
     void createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle);
 
     void step(uint32_t velocityIt, uint32_t positionIt);
+
+    void toDTO(WorldDTO_t* world);
+    void dtoToModel(WorldDTO_t* worldDTO);
 
     ~World();
 

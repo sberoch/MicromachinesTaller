@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.1.0)
 project(Micromachines)
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -DDEBUG -fno-inline -std=c++11 -pthread")
+set (CMAKE_SHARED_LINKER_FLAGS "-ldl")
 
 find_package(Lua REQUIRED)
 
@@ -36,7 +37,7 @@ add_executable(mm_client ${CLIENT_SOURCES} ${COMMON_SOURCES})
 target_link_libraries(mm_client SDL2 SDL2_image SDL2_mixer lua5.3)
 
 add_executable(mm_server ${SERVER_SOURCES} ${COMMON_SOURCES})
-target_link_libraries(mm_server Box2D)
+target_link_libraries(mm_server Box2D ${CMAKE_DL_LIBS})
 
 install(FILES assets/misc/bot_functions.lua DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/misc/scene.json DESTINATION ${CMAKE_BINARY_DIR})
@@ -73,3 +74,6 @@ install(FILES assets/audio/car_brake.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/audio/car_explosion.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/audio/menu_button.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/audio/collision.wav DESTINATION ${CMAKE_BINARY_DIR})
+
+install(FILES src/mods/libs.txt DESTINATION ${CMAKE_BINARY_DIR})
+

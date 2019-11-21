@@ -4,6 +4,7 @@
 #include <string>
 #include <Box2D/Box2D.h>
 #include "Configuration.h"
+#include "../mods/DTOs.h"
 
 class Track {
 private:
@@ -40,6 +41,8 @@ public:
     const int type();
 
     bool equals(Track* other);
+
+    void toDTO(TrackDTO_t* trackDTO);
 
     ~Track();
 };

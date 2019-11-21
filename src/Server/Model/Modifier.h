@@ -6,10 +6,12 @@
 #include "Configuration.h"
 #include "FixtureUserData.h"
 #include "../../Common/Constants.h"
+#include "../mods/DTOs.h"
 
 class Modifier {
 protected:
     size_t _type, _id;
+    float _x, _y, _angle;
     b2BodyDef _bodyDef;
     b2Body* _body;
     b2FixtureDef _fixtureDef;
@@ -17,7 +19,7 @@ protected:
     bool _toDelete;
 
     Modifier(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration)
-             : _type(type), _id(id), _toDelete(false) {
+             : _type(type), _id(id), _x(x_init), _y(y_init), _angle(angle), _toDelete(false) {
         _setBodyDef(x_init, y_init, angle);
         _body = world->CreateBody(&_bodyDef);
     }
@@ -43,7 +45,15 @@ public:
         return _id;
     }
 
-public:
+    virtual void toDTO(ModifierDTO_t* modifierDTO){
+        modifierDTO->id = _id;
+        modifierDTO->x = _x;
+        modifierDTO->y = _y;
+        modifierDTO->angle = _angle;
+        modifierDTO->newModifier = false;
+        modifierDTO->active = !_toDelete;
+    }
+
     static Modifier* makeModifier(b2World* world, const size_t& type, const size_t& id, const float& x_init,
                                   const float& y_init, const float& angle, std::shared_ptr<Configuration> configuration);
 
@@ -112,7 +122,8 @@ private:
         shape.SetAsBox(configuration->getRockHalfWidth(), configuration->getRockHalfHeight());
         _fixtureDef.shape = &shape;
         _fixtureDef.density = configuration->getRockDensity();
-        _fixtureDef.isSensor = true;
+        _fixtureDef.isSensor = false;
+        _fixtureDef.restitution = 0.3f;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
         _fixture->SetUserData(new RockFUD(configuration->getRockVelToReduce(), configuration->getRockHealthToReduce(), _id));
