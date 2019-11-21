@@ -10,6 +10,7 @@ RoomController::RoomController(std::atomic_bool &running) :
             queue(false), acceptSocketRunning(running),
             stopped(false),
             listener(clientsWithNoRoom, running, *this),
+            config(new Configuration),
             collector(clientsWithNoRoom, rooms){
     listener.start();
 }
@@ -18,7 +19,7 @@ RoomController::RoomController(std::atomic_bool &running) :
 int RoomController::addRoom() {
     std::lock_guard<std::mutex> lock(this->m);
     int roomId = roomCounter.returnAndAddOne();
-    std::shared_ptr<Room> room(new Room(acceptSocketRunning, roomId, MAX_AMOUNT_OF_CLIENTS));
+    std::shared_ptr<Room> room(new Room(acceptSocketRunning, roomId, MAX_AMOUNT_OF_CLIENTS, config));
     rooms.insert({roomId, room});
     return roomId;
 }

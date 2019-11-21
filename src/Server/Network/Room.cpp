@@ -10,14 +10,15 @@
 #include "../../Common/SocketError.h"
 
 Room::Room(std::atomic_bool& acceptSocketRunning,
-        int roomId, int amountOfPlayers) : roomId(roomId),
+        int roomId, int amountOfPlayers,
+        const std::shared_ptr<Configuration>& config): roomId(roomId),
                                               maxAmountOfPlayers(amountOfPlayers),
                                               acceptSocketRunning(acceptSocketRunning),
                                               roomRunning(true),
                                               incomingEvents(false),
                                               gameStarted(false),
                                               game(new GameThread(amountOfPlayers, 
-                                                std::make_shared<Configuration>(),
+                                                    config,
                                                 acceptSocketRunning,
                                                 roomRunning,
                                                 incomingEvents,
