@@ -36,7 +36,7 @@ json World::getCarById(int id, json cars){
     return carFound;
 }
 
-Car* World::createCar(size_t id, json j){
+std::shared_ptr<Car> World::createCar(size_t id, json j){
     float x_init, y_init, angle_init;
 
     json cars = j["cars"];
@@ -46,7 +46,7 @@ Car* World::createCar(size_t id, json j){
     y_init = car["y_init"].get<float>();
     angle_init = car["angle"].get<float>();
 
-    Car* newCar = new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration);
+    std::shared_ptr<Car> newCar(new Car(_world, id, x_init, y_init, angle_init * DEGTORAD, _configuration));
     _cars.push_back(newCar);
     return newCar;
 }
