@@ -52,7 +52,7 @@ Car* World::createCar(size_t id, json j){
 }
 
 void World::createTrack(){
-    std::ifstream i("map1.json");
+    std::ifstream i("map2.json");
     json j; i >> j;
 
     size_t id = 0;
@@ -75,7 +75,7 @@ void World::createTrack(){
 }
 
 void World::createGrass(){
-    std::ifstream i("map1.json");
+    std::ifstream i("map2.json");
     json j; i >> j;
 
     size_t id = 0;
@@ -95,7 +95,7 @@ void World::createGrass(){
 }
 
 json World::getSerializedMap() {
-    std::ifstream i("map1.json");
+    std::ifstream i("map2.json");
     json j; 
     i >> j;
     return j;

@@ -5,7 +5,7 @@
 #include "../Common/Constants.h"
 
 #define MAX_CARS 4
-#define MAX_TRACKS 30
+#define MAX_TRACKS 200
 #define MAX_MODIFIERS 10
 #define MODIFIER_TYPES 5
 
