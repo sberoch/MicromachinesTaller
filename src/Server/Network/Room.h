@@ -24,7 +24,8 @@ private:
     std::shared_ptr<GameThread> game;
     std::vector<int> idsForPlayers;
 public:
-    Room(std::atomic_bool& acceptSocketRunning, int roomId, int amountOfClients);
+    Room(std::atomic_bool& acceptSocketRunning, int roomId, int amountOfClients,
+            const std::shared_ptr<Configuration>& config);
 
     void run();
 

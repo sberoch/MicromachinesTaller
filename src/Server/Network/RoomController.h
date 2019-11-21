@@ -12,6 +12,7 @@
 #include "../../Common/Event/CommandEvent.h"
 #include "../../Common/Event/LobbySnapshot.h"
 #include "Collector.h"
+#include "../Model/Configuration.h"
 
 class ClientThread;
 class Room;
@@ -27,6 +28,7 @@ private:
     std::atomic_bool stopped;
     std::mutex m;
     LobbyListener listener;
+    std::shared_ptr<Configuration> config;
     Collector collector;
 
     int getRoomIdOfClient(int clientId);
