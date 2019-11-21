@@ -118,8 +118,8 @@ int GameScene::handle() {
 
 void GameScene::drawBackground() { 
 	background.setDims(xScreen, yScreen);
-	for(int i = 0; i < 5; ++i) {
-		for(int j = 0; j < 5; ++j) {
+	for(int i = 0; i < 20; ++i) {
+		for(int j = 0; j < 20; ++j) {
 			background.drawAt(
 				-xScreen*2 + xScreen*i + display.cam_x,
 				-yScreen + yScreen*j + display.cam_y);
