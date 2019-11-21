@@ -35,7 +35,8 @@
 #define SFX_CAR_ENGINE 300
 #define SFX_CAR_BRAKE 301
 #define SFX_CAR_EXPLOSION 302
-#define SFX_BUTTON 303
+#define SFX_CAR_COLLISION 303
+#define SFX_BUTTON 304
 
 //Video
 #define REC_SIZE_HOR 1600

@@ -13,13 +13,17 @@ PlayerDisplay::PlayerDisplay(SdlWindow& window) :
 	splatTex("mud_splat.png", window),
 	splat(splatTex),
 
-	mudSplat(false), mudSplatTimer(0),
+	mudSplat(false), mudSplatTimer(0), health(100),
 	cam_x(0), cam_y(0) {}
 
-void PlayerDisplay::update(int cam_x, int cam_y, int health) {
+void PlayerDisplay::update(int cam_x, int cam_y, int newHealth) {
 	this->cam_x = cam_x;
 	this->cam_y = cam_y;
-	healthBar.resize(health);
+	healthBar.resize(newHealth);
+	if (newHealth < health) {
+		audio.playEffect(SFX_CAR_COLLISION);
+	}
+	health = newHealth;
 }
 
 void PlayerDisplay::draw() {

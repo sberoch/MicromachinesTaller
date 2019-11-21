@@ -12,6 +12,7 @@ private:
 	Mix_Chunk* carEngine = NULL;
 	Mix_Chunk* carBrake = NULL;
 	Mix_Chunk* carExplosion = NULL;
+	Mix_Chunk* carCollision = NULL;
 	Mix_Chunk* menuButton = NULL;
 
 	std::map<int, Mix_Chunk*> effects;

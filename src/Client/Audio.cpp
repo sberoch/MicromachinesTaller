@@ -30,6 +30,10 @@ Audio::Audio() {
 	if (carExplosion == NULL) printf("%s\n", Mix_GetError());
 	effects.insert(std::make_pair(SFX_CAR_EXPLOSION, carExplosion));
 
+	carCollision = Mix_LoadWAV("collision.wav");
+	if (carCollision == NULL) printf("%s\n", Mix_GetError());
+	effects.insert(std::make_pair(SFX_CAR_COLLISION, carCollision));
+
 	menuButton = Mix_LoadWAV("menu_button.wav");
 	if (menuButton == NULL) printf("%s\n", Mix_GetError());
 	effects.insert(std::make_pair(SFX_BUTTON, menuButton));

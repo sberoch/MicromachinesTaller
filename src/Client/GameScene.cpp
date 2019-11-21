@@ -79,6 +79,9 @@ void GameScene::addObject(GameEventStruct gameEvent) {
 										conv.blockToPixel(gameEvent.y), 
 										gameEvent.angle);
 	gameObjects.add(gameEvent.objectType, gameEvent.id, ov);
+	if (gameEvent.objectType == TYPE_EXPLOSION) {
+		audio.playEffect(SFX_CAR_EXPLOSION);
+	}
 }
 
 void GameScene::removeObject(GameEventStruct gameEvent) {

@@ -5,10 +5,12 @@
 #include "View/HealthBarBackView.h"
 #include "View/HealthBarFrontView.h"
 #include "View/MudSplatView.h"
+#include "Audio.h"
 
 class PlayerDisplay {
 private:
 	SdlWindow& window;
+	Audio audio;
 
 	SdlTexture healthBarBackTex;
 	HealthBarBackView healthBackground;
@@ -20,11 +22,12 @@ private:
 
 	bool mudSplat;
 	int mudSplatTimer;
+	int health;
 
 public:
 	int cam_x, cam_y;
 	PlayerDisplay(SdlWindow& window);
-	void update(int cam_x, int cam_y, int health);
+	void update(int cam_x, int cam_y, int newHealth);
 	void draw();
 	void showMudSplat();
 };
