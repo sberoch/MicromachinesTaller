@@ -35,7 +35,7 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, con
         _onGrass(false), _isMoving(false), _exploded(false),
         _tracks(),  _groundArea(),
         _currentTraction(1), _status(),
-        _maxLaps(1), _maxtracksToLap(20), _laps(0), _winner(false) {
+        _maxLaps(1), _maxtracksToLap(68), _laps(0), _winner(false) {
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
@@ -190,7 +190,7 @@ void Car::update(){
 
     _previous_x = _carBody->GetPosition().x;
     _previous_y = _carBody->GetPosition().y;
-
+    
     if (_tracks.size() > 0.8 * _maxtracksToLap && _tracks.back()->isFinish()){
         _laps ++;
         _tracks.clear();
