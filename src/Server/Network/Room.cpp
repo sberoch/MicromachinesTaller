@@ -15,14 +15,19 @@ Room::Room(std::atomic_bool& acceptSocketRunning,
                                               acceptSocketRunning(acceptSocketRunning),
                                               roomRunning(true),
                                               incomingEvents(false),
-                                              game(amountOfPlayers, std::make_shared<Configuration>()){
-}
+                                              gameStarted(false),
+                                              game(new GameThread(amountOfPlayers, 
+                                                std::make_shared<Configuration>(),
+                                                acceptSocketRunning,
+                                                roomRunning,
+                                                incomingEvents,
+                                                clients)){}
 
 void Room::run() {
     try{
-    std::cout << "Running" << std::endl;
-    startGame();
-    game.run(acceptSocketRunning,roomRunning, incomingEvents, clients);
+        std::cout << "Room started" << std::endl;
+        startGame();
+        game->start();
 
     } catch (SocketError &se) {
         roomRunning = false;
@@ -56,14 +61,10 @@ void Room::addClient(int clientId, std::shared_ptr<ClientThread> newClient) {
     }
 }
 
-void Room::joinThread() {
-    std::cout << "Joineando room: " << this->roomId << std::endl;
-    this->join();
-}
 
 
 std::shared_ptr<Car> Room::createCar(int id, json j) {
-    std::shared_ptr<Car> car(game.createCar(id, j));
+    std::shared_ptr<Car> car(game->createCar(id, j));
     return car;
 }
 
@@ -107,7 +108,7 @@ void Room::addCarToEachPlayer(const json& j){
 }
 
 void Room::startGame() {
-    json jFinal = game.getSerializedMap();
+    json jFinal = game->getSerializedMap();
     addPlayersToJson(jFinal);
 
     addCarToEachPlayer(jFinal);
@@ -116,22 +117,13 @@ void Room::startGame() {
         client.second->assignRoomQueue(&incomingEvents);
         client.second->sendStart(jFinal);
     }
-    game.startGame();
+    this->gameStarted = true;
 }
 
 bool Room::isDead() {
     return !roomRunning;
 }
 
-
-void Room::stop() {
-    this->roomRunning = false;
-    clients.clear();
-}
-
-Room::~Room() {
-    this->stop();
-}
 
 int Room::getRoomIdFromClient(int clientId) {
     return clients.at(clientId)->getIdFromRoom();
@@ -150,6 +142,20 @@ int Room::getColourFromId(int id) {
             return TYPE_CAR_GREEN;
         default:
             return -1;
+    }
+}
+
+
+Room::~Room() {
+    std::cout << "Entrando al destructor de un room" << std::endl;
+    this->roomRunning = false;
+    clients.clear();
+
+    if (this->gameStarted) {
+        game->join();
+        std::cout << "Joined" << std::endl;
+    } else {
+        std::cout << "Como el room:" << this->roomId << " no comenzo a jugar, no se joineo" << std::endl;
     }
 }
 

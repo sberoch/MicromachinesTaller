@@ -12,7 +12,7 @@
 #include "../../Common/Thread.h"
 #include "../Model/GameThread.h"
 
-class Room: public Thread{
+class Room{
 private:
     int roomId;
     int maxAmountOfPlayers;
@@ -20,22 +20,20 @@ private:
     std::atomic_bool roomRunning;
     std::unordered_map<int ,std::shared_ptr<ClientThread>> clients;
     SafeQueue<std::shared_ptr<Event>> incomingEvents;
-    GameThread game;
+    std::atomic_bool gameStarted;
+    std::shared_ptr<GameThread> game;
     std::vector<int> idsForPlayers;
 public:
     Room(std::atomic_bool& acceptSocketRunning, int roomId, int amountOfClients);
 
-    void run() override;
+    void run();
 
     void addClient(int clientId, std::shared_ptr<ClientThread> newClient);
 
     void startGame();
     bool isDead();
-    void stop();
 
     std::shared_ptr<Car> createCar(int id, json j);
-
-    ~Room() override;
 
     bool hasClient(int clientId);
     std::shared_ptr<ClientThread> eraseClientAndReturn(int clientId);
@@ -45,7 +43,6 @@ public:
     void addClientAlreadyCreated(int clientId,
                             std::shared_ptr<ClientThread> newClient);
 
-    void joinThread();
 
     int getRoomIdFromClient(int clientId);
 
@@ -54,6 +51,8 @@ public:
     void addCarToEachPlayer(const json& j);
 
     int getColourFromId(int id);
+
+    ~Room();
 };
 
 

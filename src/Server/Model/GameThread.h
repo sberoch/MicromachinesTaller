@@ -9,7 +9,7 @@
 
 #include "../ModsThread.h"
 
-class GameThread {
+class GameThread : public Thread{
 private:
     World _world;
 
@@ -17,28 +17,31 @@ private:
 
     std::shared_ptr<Configuration> _configuration;
     std::list<std::shared_ptr<ClientThread>> finishedPlayers;
+    std::atomic_bool& acceptSocketRunning;
+    std::atomic_bool& roomRunning;
+    SafeQueue<std::shared_ptr<Event>>& incomingEvents;
+    std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients;
+    std::atomic_bool gameStarted;
 
-    bool _gameToStart, _gameStarted, _gameEnded;
 public:
-    GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration);
-    void run(std::atomic_bool& acceptSocketRunning,
+    GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration,
+                std::atomic_bool& acceptSocketRunning,
              std::atomic_bool& roomRunning,
              SafeQueue<std::shared_ptr<Event>>& incomingEvents,
              std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients);
+    void run() override;
 
-    ~GameThread();
     json getSerializedMap();
     std::shared_ptr<Car> createCar(int id, json j);
     void step();
 
     //Method to apply changes in DTO to model
     void applyPluginChanges();
-
-    void startGame();
-
     void addToFinishedPlayers(
             std::unordered_map<int, std::shared_ptr<ClientThread>> &clients,
             int clientToBeRemovedId);
+
+    ~GameThread() override;
 };
 
 #endif //MICROMACHINES_GAMETHREAD_H

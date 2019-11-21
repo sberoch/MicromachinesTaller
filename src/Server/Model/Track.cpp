@@ -126,5 +126,5 @@ void Track::toDTO(TrackDTO_t* trackDTO) {
 }
 
 Track::~Track(){
-    _body->GetWorld()->DestroyBody(_body);
+   // _body->GetWorld()->DestroyBody(_body);
 }

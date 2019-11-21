@@ -141,7 +141,7 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
             snapshot->startGame(roomId);
             sendToClientsWithoutRoom(snapshot);
             sendToAllClientsWithRoom(snapshot);
-            rooms.at(roomId)->start();
+            rooms.at(roomId)->run();
             gameStarted = true;
             break;
         case COMMAND:
@@ -167,13 +167,5 @@ RoomController::~RoomController() {
     clientsWithNoRoom.clear();
 
     std::cout << "Destroying rooms" << std::endl;
-    for (auto &room: rooms) {
-        room.second->stop();
-        room.second->joinThread();
-    }
-
     rooms.clear();
 }
-
-
-
