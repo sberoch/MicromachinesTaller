@@ -1,4 +1,5 @@
-//TODO: pasar a enums
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 
 //Object types
 #define TYPE_STRAIGHT_TRACK 100
@@ -26,17 +27,21 @@
 #define TYPE_CAR_SELECTED 122
 
 //Scenes
-#define SCENE_MENU 200
-#define SCENE_LOBBY 201
-#define SCENE_GAME 202
-#define SCENE_END 203
+enum Scene {
+	SCENE_MENU,
+	SCENE_LOBBY,
+	SCENE_GAME,
+	SCENE_END
+};
 
 //Audio
-#define SFX_CAR_ENGINE 300
-#define SFX_CAR_BRAKE 301
-#define SFX_CAR_EXPLOSION 302
-#define SFX_CAR_COLLISION 303
-#define SFX_BUTTON 304
+enum SoundEffect {
+	SFX_CAR_ENGINE,
+	SFX_CAR_BRAKE,
+	SFX_CAR_EXPLOSION,
+	SFX_CAR_COLLISION,
+	SFX_BUTTON
+};
 
 //Video
 #define REC_SIZE_HOR 1600
@@ -65,3 +70,5 @@
 
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
+
+#endif // CONSTANTS_H

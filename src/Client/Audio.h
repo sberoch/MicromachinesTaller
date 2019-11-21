@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <map>
+#include "../Common/Constants.h"
 
 
 class Audio {
@@ -15,14 +16,14 @@ private:
 	Mix_Chunk* carCollision = NULL;
 	Mix_Chunk* menuButton = NULL;
 
-	std::map<int, Mix_Chunk*> effects;
+	std::map<SoundEffect, Mix_Chunk*> effects;
 public:
 	Audio();
 	~Audio();
 	void playMusic();
 	void stopMusic();
-	void playEffect(int effectID);
-	void stopEffect(int effectID);
+	void playEffect(SoundEffect effectID);
+	void stopEffect(SoundEffect effectID);
 };
 
 #endif

@@ -110,7 +110,7 @@ void LobbyScene::drawArrows() {
     }
 }
 
-int LobbyScene::handle() {
+Scene LobbyScene::handle() {
     while (SDL_PollEvent(&e) && !_done) {
         if (e.type == SDL_QUIT) {
             _done = true;

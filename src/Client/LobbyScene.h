@@ -35,7 +35,7 @@ private:
 
     bool _done;
     bool fullscreen;
-    int nextScene;
+    Scene nextScene;
     int xScreen, yScreen;
     PlayerDescriptor& player;
 
@@ -49,7 +49,7 @@ public:
     virtual bool done() override;
     virtual void update() override;
     virtual void draw() override;
-    virtual int handle() override;
+    virtual Scene handle() override;
 private:
     void updateRooms(RoomsMap roomsMap);
     void drawRooms();

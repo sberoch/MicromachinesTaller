@@ -46,7 +46,7 @@ private:
 	Converter conv;
 	int cameraX, cameraY;
 	int xScreen, yScreen;
-	int nextScene;
+	Scene nextScene;
 	
 	bool isGameOver;
 	bool isMapReady;
@@ -57,7 +57,7 @@ public:
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;
-	virtual int handle() override;
+	virtual Scene handle() override;
 	virtual ~GameScene() {}
 private:
 	void drawBackground();

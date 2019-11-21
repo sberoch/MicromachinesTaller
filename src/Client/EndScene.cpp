@@ -40,7 +40,7 @@ void EndScene::draw() {
 	window.render();
 }
 
-int EndScene::handle() {
+Scene EndScene::handle() {
 	while (SDL_PollEvent(&e) && !_done) {
 		if (e.type == SDL_QUIT) {
 			_done = true;

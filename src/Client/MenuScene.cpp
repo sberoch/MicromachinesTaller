@@ -26,7 +26,7 @@ void MenuScene::draw() {
 	window.render();
 }
 
-int MenuScene::handle() {
+Scene MenuScene::handle() {
 	nextScene = SCENE_MENU;
 	while (SDL_PollEvent(&e) && !_done) {
 		if (e.type == SDL_QUIT) {

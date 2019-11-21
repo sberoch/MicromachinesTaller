@@ -102,7 +102,7 @@ void GameScene::draw() {
 	window.render();
 }
 
-int GameScene::handle() {
+Scene GameScene::handle() {
 	if (isMapReady) {
 		if (player.isBot) {
 			bot.handle();

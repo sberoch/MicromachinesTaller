@@ -4,8 +4,8 @@
 
 ReceiverThread::ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 				   			   Queue<LobbySnapshot*>& lobbyRecvQueue,
-				   			   Queue<EndSnapshot*>& endRecvQueue, 
-				   			   Protocol& protocol, int& currentScene) :
+				   			   Queue<EndSnapshot*>& endRecvQueue,
+				   			   Protocol& protocol, Scene& currentScene) :
 	gameRecvQueue(gameRecvQueue),
 	lobbyRecvQueue(lobbyRecvQueue),
 	endRecvQueue(endRecvQueue),

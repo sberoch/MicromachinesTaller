@@ -6,6 +6,7 @@
 #include "../Common/Event/LobbySnapshot.h"
 #include "../Common/Event/EndSnapshot.h"
 #include "../Common/Queue.h"
+#include "../Common/Constants.h"
 
 class ReceiverThread : public Thread {
 private:
@@ -15,12 +16,12 @@ private:
 	Protocol& protocol;
 	bool _done;
 	bool _isGameMode;
-	int& _currentScene;
+	Scene& _currentScene;
 public:
 	ReceiverThread(Queue<SnapshotEvent*>& gameRecvQueue,
 				   Queue<LobbySnapshot*>& lobbyRecvQueue,
 				   Queue<EndSnapshot*>& endRecvQueue,
-				   Protocol& protocol, int& currentScene);
+				   Protocol& protocol, Scene& currentScene);
 
 	virtual void run() override;
 	void setGameMode();

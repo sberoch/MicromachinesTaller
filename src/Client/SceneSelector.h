@@ -13,13 +13,14 @@
 #include "../Common/Event/EndSnapshot.h"
 #include "../Common/Protocol.h"
 #include "PlayerDescriptor.h"
+#include "../Common/Constants.h"
 #include <map>
 
 class SceneSelector {
 private:
 	SdlWindow window;
 	std::map<int, BaseScene*> scenes;
-	int currentScene;
+	Scene currentScene;
 
 	Protocol protocol;
 
