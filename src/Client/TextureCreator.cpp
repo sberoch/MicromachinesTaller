@@ -39,7 +39,9 @@ TextureCreator::TextureCreator(const SdlWindow& window) :
         startLineTex("start.png", window),
         arrowTex("arrow.png", window),
         carSelectedTex("car_selected.png", window),
-        lapsTextTex("laps.png", window) {}
+        lapsTextTex("laps.png", window),
+        healthBarBackTex("health_background.png", window),
+        healthBarFrontTex("health_bar.png", window) {}
 
 
 ObjectViewPtr TextureCreator::create(ObjectType type, int x, int y, int angle) {
@@ -66,6 +68,8 @@ ObjectViewPtr TextureCreator::create(ObjectType type, int x, int y, int angle) {
         case TYPE_ARROW: ov.reset(new ArrowView(arrowTex)); break;
         case TYPE_CAR_SELECTED: ov.reset(new CarView(carSelectedTex, angle)); break;
         case TYPE_LAPS_TEXT: ov.reset(new LapsTextView(lapsTextTex)); break;
+        case TYPE_HEALTH_BAR_BACK: ov.reset(new HealthBarFrontView(healthBarBackTex)); break;
+        case TYPE_HEALTH_BAR_FRONT: ov.reset(new HealthBarFrontView(healthBarFrontTex)); break;
         default: throw std::runtime_error("Texture Creator: Wrong view_id");
     }
     ov->setInitialPos(x, y);

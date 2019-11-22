@@ -73,7 +73,6 @@ Scene EndScene::handle() {
 }
 
 void EndScene::drawCars() {
-	//TODO: dibujar solo los que haya en partida y en orden de llegada
 	for (int i = 0; i < arrivedPlayers.size(); i++)	{
 		carViews.at(static_cast<const ObjectType>(arrivedPlayers.at(i)))->
 		drawAt(0.5 * xScreen, (0.27 + 0.14 * i) * yScreen);

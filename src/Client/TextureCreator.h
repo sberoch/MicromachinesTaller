@@ -31,6 +31,8 @@ private:
     SdlTexture arrowTex;
     SdlTexture carSelectedTex;
     SdlTexture lapsTextTex;
+    SdlTexture healthBarBackTex;
+    SdlTexture healthBarFrontTex;
 public:
     TextureCreator(const SdlWindow& window);
     ObjectViewPtr create(ObjectType type, int x, int y, int angle);

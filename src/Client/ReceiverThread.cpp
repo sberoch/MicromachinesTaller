@@ -15,12 +15,6 @@ ReceiverThread::ReceiverThread(SafeQueue<std::shared_ptr<SnapshotEvent>>& gameRe
 	_currentScene(currentScene) {}
 
 void ReceiverThread::run() {
-
-	//TODO: while (!done)
-	//			switch
-	//				while (curr scene)
-	// para poder hacer lo de volver a escenas anteriores
-
 	try {
 		while(true) {
 		    switch (_currentScene) {

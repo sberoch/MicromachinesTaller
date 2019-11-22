@@ -7,11 +7,6 @@ PlayerDisplay::PlayerDisplay(SdlWindow& window) :
 	numbersTex("numbers.png", window),
 	numberView(numbersTex),
 
-	healthBarBackTex("health_background.png", window),
-	healthBackground(healthBarBackTex),
-	healthBarFrontTex("health_bar.png", window),
-	healthBar(healthBarFrontTex),
-
 	splatTex("mud_splat.png", window),
 	splat(splatTex),
 
@@ -22,6 +17,8 @@ PlayerDisplay::PlayerDisplay(SdlWindow& window) :
 	carExplodedTimer(0),
 	cam_x(0), cam_y(0) {
 	lapsText = creator.create(TYPE_LAPS_TEXT, 0, 0, 0);
+	healthBackground = creator.create(TYPE_HEALTH_BAR_BACK, 0, 0, 0);
+	healthBar = creator.create(TYPE_HEALTH_BAR_FRONT, 0, 0, 0);
 }
 
 void PlayerDisplay::update(int cam_x, int cam_y, int newHealth) {
@@ -35,7 +32,7 @@ void PlayerDisplay::update(int cam_x, int cam_y, int newHealth) {
 			exploded = false;
 		}
 	}
-	healthBar.resize(newHealth);
+	healthBar->resize(newHealth);
 	if (newHealth < health) {
 		audio.playEffect(SFX_CAR_COLLISION);
 	}
@@ -49,8 +46,8 @@ void PlayerDisplay::draw() {
 	lapsText->drawAt(xScreen*(0.1), yScreen*(0.1));
 	numberView.drawAt(xScreen*(0.18), yScreen*(0.1));
 
-	healthBackground.drawAt(xScreen*(0.85), yScreen*(0.1));
-	healthBar.drawAt(xScreen*(0.85), yScreen*(0.1));
+	healthBackground->drawAt(xScreen*(0.85), yScreen*(0.1));
+	healthBar->drawAt(xScreen*(0.85), yScreen*(0.1));
 
 	if (mudSplat) {
 		splat.setDims(xScreen, yScreen);
