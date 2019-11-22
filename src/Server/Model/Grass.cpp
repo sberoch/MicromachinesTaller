@@ -20,13 +20,15 @@ void Grass::_setFixtureDef(std::shared_ptr<Configuration> configuration){
     _body->CreateFixture(&_fixtureDef);
 
     _fixture = _body->CreateFixture(&_fixtureDef);
-    _fixture->SetUserData(new GroundAreaFUD(0.1f, true, _id));
+    _fixture->SetUserData(gaFUD.get());
 }
 
-Grass::Grass(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration) :
-            _id(id), _type(type) {
-    _setBodyDef(x_init, y_init, angle_init, configuration);
+Grass::Grass(std::shared_ptr<b2World> world, size_t id, int type, float x_init,
+        float y_init, float angle_init, std::shared_ptr<Configuration> configuration) :
+            _id(id), _type(type),
+            gaFUD(new GroundAreaFUD(0.1f, true, _id)){
 
+    _setBodyDef(x_init, y_init, angle_init, configuration);
     _body = world->CreateBody(&_bodyDef);
     _setFixtureDef(configuration);
     _body->SetUserData(this);

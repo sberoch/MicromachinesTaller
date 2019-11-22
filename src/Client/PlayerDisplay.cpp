@@ -1,7 +1,5 @@
 #include "PlayerDisplay.h"
 
-#define SPLAT_CYCLES 80
-
 PlayerDisplay::PlayerDisplay(SdlWindow& window) : 
 	window(window),
 	creator(window),
@@ -17,14 +15,26 @@ PlayerDisplay::PlayerDisplay(SdlWindow& window) :
 	splatTex("mud_splat.png", window),
 	splat(splatTex),
 
-	mudSplat(false), mudSplatTimer(0), health(100),
+	mudSplat(false),
+	mudSplatTimer(0),
+	health(100),
+	exploded(false),
+	carExplodedTimer(0),
 	cam_x(0), cam_y(0) {
 	lapsText = creator.create(TYPE_LAPS_TEXT, 0, 0, 0);
 }
 
 void PlayerDisplay::update(int cam_x, int cam_y, int newHealth) {
-	this->cam_x = cam_x;
-	this->cam_y = cam_y;
+	if (!exploded) {
+		this->cam_x = cam_x;
+		this->cam_y = cam_y;
+	} else {
+		carExplodedTimer++;
+		if (carExplodedTimer >= CAR_EXPLOSION_PENALTY) {
+			carExplodedTimer = 0;
+			exploded = false;
+		}
+	}
 	healthBar.resize(newHealth);
 	if (newHealth < health) {
 		audio.playEffect(SFX_CAR_COLLISION);
@@ -62,3 +72,11 @@ void PlayerDisplay::showMudSplat() {
 	mudSplatTimer = 0;
 	mudSplat = true;
 }
+
+void PlayerDisplay::carExploded(int exp_x, int exp_y) {
+	this->cam_x = exp_x;
+	this->cam_y = exp_y;
+	carExplodedTimer = 0;
+	exploded = true;
+}
+

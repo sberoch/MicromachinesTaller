@@ -8,7 +8,8 @@ using json = nlohmann::json;
 
 Configuration::Configuration() {
     std::ifstream i(CONFIG_FILE);
-    json j; i >> j;
+    json j;
+    i >> j;
 
     json worldConfig = j["world_configuration"];
     _gravityX = worldConfig["gravityX"].get<float>();
