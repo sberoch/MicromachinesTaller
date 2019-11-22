@@ -49,7 +49,7 @@ private:
     std::shared_ptr<CarTurningState> _turningState;
     bool _isMoving;
     bool _exploded;
-    std::vector<Status*> _status;
+    std::vector<std::shared_ptr<Status>> _status;
 
     size_t _maxLaps;
     size_t _maxtracksToLap;
@@ -69,7 +69,7 @@ private:
     void _setShapeAndFixture(const std::shared_ptr<Configuration>& configuration);
 
 public:
-    Car(b2World* world, size_t id, float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration);
+    Car(std::shared_ptr<b2World> world, size_t id, float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration);
 
     Car(const Car &other) = delete;
     Car& operator=(const Car &other) = delete;
@@ -84,7 +84,7 @@ public:
     //Contact with floor
     void setTrack(Track* track);
 
-    std::vector<Status*> getStatus();
+    std::vector<std::shared_ptr<Status>> getStatus();
     void resetStatus();
 
     void addGroundArea(GroundAreaFUD* ga);

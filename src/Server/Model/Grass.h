@@ -18,7 +18,7 @@ private:
     void _setFixtureDef(std::shared_ptr<Configuration> configuration);
 
 public:
-    Grass(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
+    Grass(std::shared_ptr<b2World> world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
     ~Grass();
 };
 

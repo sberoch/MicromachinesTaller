@@ -5,10 +5,10 @@
 
 class ContactListener : public b2ContactListener{
 private:
-    b2World *_world;
+    std::shared_ptr<b2World> _world;
 
 public:
-    explicit ContactListener(b2World *world);
+    explicit ContactListener(std::shared_ptr<b2World> world);
     void BeginContact(b2Contact *contact) override;
     void EndContact(b2Contact *contact) override;
 

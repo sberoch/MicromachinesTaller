@@ -18,7 +18,7 @@ protected:
     b2Fixture* _fixture;
     bool _toDelete;
 
-    Modifier(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration)
+    Modifier(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration)
              : _type(type), _id(id), _x(x_init), _y(y_init), _angle(angle), _toDelete(false) {
         _setBodyDef(x_init, y_init, angle);
         _body = world->CreateBody(&_bodyDef);
@@ -54,7 +54,7 @@ public:
         modifierDTO->active = !_toDelete;
     }
 
-    static Modifier* makeModifier(b2World* world, const size_t& type, const size_t& id, const float& x_init,
+    static std::shared_ptr<Modifier> makeModifier(std::shared_ptr<b2World> world, const size_t& type, const size_t& id, const float& x_init,
                                   const float& y_init, const float& angle, std::shared_ptr<Configuration> configuration);
 
     virtual ~Modifier() = default;
@@ -72,11 +72,12 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new HealthPowerupFUD(_id));
+        std::shared_ptr<HealthPowerupFUD> hpFUD(new HealthPowerupFUD(_id));
+        _fixture->SetUserData(hpFUD.get());
     }
 
 public:
-    HealthPowerup(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+    HealthPowerup(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
                  Modifier(world, type, id, x_init, y_init, angle, configuration) {
         _setFixtureDef(configuration);
 
@@ -98,11 +99,12 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new BoostPowerupFUD(configuration->getBoostPowerUpActionTime(), 10, _id));
+        std::shared_ptr<BoostPowerupFUD> bpFUD(new BoostPowerupFUD(configuration->getBoostPowerUpActionTime(), 10, _id));
+        _fixture->SetUserData(bpFUD.get());
     }
 
 public:
-    BoostPowerup(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+    BoostPowerup(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
             Modifier(world, type, id, x_init, y_init, angle, configuration) {
         _setBodyDef(x_init, y_init, angle);
 
@@ -130,7 +132,7 @@ private:
     }
 
 public:
-    Rock(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+    Rock(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
             Modifier(world, type, id, x_init, y_init, angle, configuration) {
         _setFixtureDef(configuration);
         _body->SetUserData(this);
@@ -155,7 +157,7 @@ private:
     }
 
 public:
-    Mud(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+    Mud(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
             Modifier(world, type, id, x_init, y_init, angle, configuration) {
         _setFixtureDef(configuration);
         _body->SetUserData(this);
@@ -176,11 +178,12 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new OilFUD(configuration->getOilDamping(), configuration->getOilTime(), _id));
+        std::shared_ptr<OilFUD> oilFUD(new OilFUD(configuration->getOilDamping(), configuration->getOilTime(), _id));
+        _fixture->SetUserData(oilFUD.get());
     }
 
 public:
-    Oil(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+    Oil(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
             Modifier(world, type, id, x_init, y_init, angle, configuration) {
         _setFixtureDef(configuration);
         _body->SetUserData(this);

@@ -54,7 +54,7 @@ void Player::createModifier(const size_t& type, const size_t& id, const float& x
 
 
 void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
-    std::vector<Status *> status = _car->getStatus();
+    std::vector<std::shared_ptr<Status>> status = _car->getStatus();
 
     for (size_t i=0; i<status.size(); ++i){
         switch (status[i]->status) {

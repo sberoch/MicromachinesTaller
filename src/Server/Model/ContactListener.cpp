@@ -5,7 +5,7 @@
 #include "Modifier.h"
 #include "Track.h"
 
-ContactListener::ContactListener(b2World *world) : _world(world) {}
+ContactListener::ContactListener(std::shared_ptr<b2World> world) : _world(world) {}
 
 void ContactListener::BeginContact(b2Contact *contact){
     handleContact(contact, true);

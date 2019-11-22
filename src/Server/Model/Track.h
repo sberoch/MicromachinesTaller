@@ -25,7 +25,7 @@ private:
     bool _isBetweenLimits(const float& pos, const char& xOrY);
 
 public:
-    Track(b2World* world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
+    Track(std::shared_ptr<b2World> world, size_t id, int type, float x_init, float y_init, float angle_init, std::shared_ptr<Configuration> configuration);
 
     void setAsStart();
     void setAsFinish();
