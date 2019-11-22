@@ -30,6 +30,7 @@ private:
     SafeQueue<std::shared_ptr<Event>> sendingBlockingQueue;
     EventReceiver receiver;
     EventSender sender;
+    std::shared_ptr<SnapshotEvent> clientSnapshot;
 
     //Detiene la ejecucion del cliente y pone la variable booleana en falso
     //para que el recolector de clientes muertos pueda reconocerlo como tal.

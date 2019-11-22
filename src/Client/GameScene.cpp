@@ -57,18 +57,25 @@ void GameScene::updateCars(const CarStructList& cars) {
 	}	
 }
 
+
 void GameScene::updateGameEvents(const GameEventsList& gameEvents) {
 	for (auto& gameEvent : gameEvents) {
  		switch(gameEvent.eventType) {
 			case ADD: addObject(gameEvent); break;
 			case REMOVE: removeObject(gameEvent); break;
 			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
-			case MUD_SPLAT: display.showMudSplat(); break;
+			case MUD_SPLAT: showMudSplat(gameEvent); break;
 			case GAME_OVER: gameOver(gameEvent); break;
 			case LAP_COMPLETED: lapCompleted(gameEvent); break;
 			default: break;
 		}
 	}
+}
+
+void GameScene::showMudSplat(GameEventStruct gameEvent){
+    if (gameEvent.id == player.playerId) {
+        display.showMudSplat();
+    }
 }
 
 void GameScene::addObject(GameEventStruct gameEvent) {
@@ -94,7 +101,7 @@ void GameScene::gameOver(GameEventStruct gameEvent) {
 
 void GameScene::lapCompleted(GameEventStruct gameEvent) {
 	if (gameEvent.id == player.playerId) {
-		//Number is being used here for the lap number
+		//Angle is being used here for the lap number
 		display.setLapNumber(gameEvent.angle);
 	}
 }
@@ -135,5 +142,7 @@ void GameScene::drawBackground() {
 		}
 	}
 }
+
+
 
 

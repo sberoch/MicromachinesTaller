@@ -62,10 +62,13 @@ private:
 
 	void updateCars(const CarStructList& cars);
 	void updateGameEvents(const GameEventsList& gameEvents);
+    void showMudSplat(GameEventStruct gameEvent);
 	void addObject(GameEventStruct gameEvent);
 	void removeObject(GameEventStruct gameEvent);
 	void gameOver(GameEventStruct gameEvent);
 	void lapCompleted(GameEventStruct gameEvent);
+
+
 };
 
 #endif // GAME_SCENE_H

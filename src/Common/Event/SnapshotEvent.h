@@ -56,7 +56,7 @@ public:
 	void addGameItem(int type, float x, float y, int angle, int id);
 	void removeGameItem(int type, int id);
 	void signalMapReady();
-	void setMudSplatEvent();
+	void setMudSplatEvent(int inRoomId);
 
 	void setGameOver(int inRoomId);
 	void setLapNumber(int clientIdFromRoom, int lapNumber);

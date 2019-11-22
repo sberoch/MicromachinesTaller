@@ -72,7 +72,7 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
                 snapshot->removeGameItem(TYPE_BOOST_POWERUP, status[i]->id);
                 break;
             case GRABBED_MUD :
-                snapshot->setMudSplatEvent();
+                snapshot->setMudSplatEvent(this->inRoomId);
                 snapshot->removeGameItem(TYPE_MUD, status[i]->id);
                 break;
             case GRABBED_ROCK :

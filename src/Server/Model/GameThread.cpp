@@ -64,10 +64,9 @@ void GameThread::run() {
                     ModifierDTO modifier = _worldDTO.modifiers[i];
                     if (modifier.newModifier){
                         _worldDTO.modifiers[i].newModifier = false;
-                        //TODO: HACER PARA UN UNICO JUGAR
-//                        for (auto &actualClient : clients) {
-//                            actualClient.second->createModifier(modifier.type, modifier.id, modifier.x, modifier.y, modifier.angle);
-//                        }
+                        for (auto &actualClient : clients) {
+                            actualClient.second->createModifier(modifier.type, modifier.id, modifier.x, modifier.y, modifier.angle);
+                        }
                     }
                 }
             }
