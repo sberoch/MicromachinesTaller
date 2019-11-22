@@ -109,7 +109,7 @@ public:
     b2Vec2 getLateralVelocity();
     b2Vec2 getForwardVelocity();
 
-    void resetCar();
+    void explode();
 
     virtual void handleInput(const InputEnum& input);
     virtual int update();

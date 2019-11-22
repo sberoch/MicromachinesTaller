@@ -26,7 +26,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, const std::shared
 Car::Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_init, float angle, size_t max_tracks, const std::shared_ptr<Configuration>& configuration) :
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0),
         _maxHealth(configuration->getCarMaxHealth()),
-        _health(5),
+        _health(configuration->getCarMaxHealth()),
         _maxForwardSpeed(60),
         _maxBackwardSpeed(-10),
         _maxForwardDrive(20),
@@ -60,7 +60,7 @@ void Car::setTrack(Track* track){
     _tracks.push_back(track);
 }
 
-void Car::resetCar(){
+void Car::explode(){
     _health = _maxHealth;
     if (_tracks.back()){
         b2Vec2 position = b2Vec2(_tracks.back()->x(), _tracks.back()->y());
@@ -190,7 +190,7 @@ int Car::update(){
     updateTraction();
 
     if (_exploded){
-        resetCar();
+        explode();
         _exploded = false;
     }
     if (speed() == 0)
