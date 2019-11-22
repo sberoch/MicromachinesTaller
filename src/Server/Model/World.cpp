@@ -7,11 +7,12 @@
 using json = nlohmann::json;
 
 World::World(size_t n_of_cars, const std::shared_ptr<Configuration>& configuration) :
-             _world(new b2World(b2Vec2(configuration->getGravityX(), configuration->getGravityY()))),
-             _timeStep(1/configuration->getFPS()), _n_of_cars(n_of_cars), _configuration(configuration),
-             _cars(), _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0),
-             _contactListener(new ContactListener(_world)){
+        _timeStep(1/configuration->getFPS()), _n_of_cars(n_of_cars), _configuration(configuration),
+        _cars(), _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0) {
+    b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
+    _world = std::make_shared<b2World>(gravity);
 
+    _contactListener = std::make_shared<ContactListener>(_world);
     _world->SetContactListener(_contactListener.get());
 
     createTrack();

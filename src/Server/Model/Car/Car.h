@@ -64,6 +64,7 @@ private:
     bool _onGrass;
 
     bool _winner;
+    std::shared_ptr<CarFUD> cFUD;
 
     void _setBodyDef(float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration);
     void _setShapeAndFixture(const std::shared_ptr<Configuration>& configuration);

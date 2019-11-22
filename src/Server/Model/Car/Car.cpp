@@ -11,7 +11,6 @@ void Car::_setShapeAndFixture(const std::shared_ptr<Configuration>& configuratio
     boxFixtureDef.density = configuration->getCarDensity();
     boxFixtureDef.friction = configuration->getCarFriction();
     _fixture = _carBody->CreateFixture(&boxFixtureDef);
-    std::shared_ptr<CarFUD> cFUD(new CarFUD(_id));
     _fixture->SetUserData(cFUD.get());
 }
 
@@ -36,7 +35,8 @@ Car::Car(std::shared_ptr<b2World> world, size_t id, float x_init, float y_init, 
         _onGrass(false), _isMoving(false), _exploded(false),
         _tracks(),  _groundArea(),
         _currentTraction(1), _status(),
-        _maxLaps(1), _maxtracksToLap(20), _laps(0), _winner(false) {
+        _maxLaps(1), _maxtracksToLap(20), _laps(0), _winner(false),
+        cFUD(new CarFUD(_id)){
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
