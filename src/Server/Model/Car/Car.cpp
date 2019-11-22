@@ -53,6 +53,8 @@ Car::Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_ini
 }
 
 void Car::setTrack(Track* track){
+    if (_tracks.size() > 0 && _tracks.back()->isFinish())
+        _tracks.clear();
     for (size_t i=0; i<_tracks.size(); ++i){
         if (_tracks[i]->equals(track))
             return;
@@ -60,7 +62,7 @@ void Car::setTrack(Track* track){
     _tracks.push_back(track);
 }
 
-void Car::explode(){
+void Car::resetCar() {
     _health = _maxHealth;
     if (_tracks.back()){
         b2Vec2 position = b2Vec2(_tracks.back()->x(), _tracks.back()->y());
@@ -73,6 +75,13 @@ void Car::explode(){
         b2Vec2 position = b2Vec2(_previous_x, _previous_y);
         _carBody->SetTransform(position, _previousAngle);
     }
+}
+
+void Car::explode(){
+    _exploded = true;
+    std::shared_ptr<Status> expStatus(new Status);
+    expStatus->status = EXPLODED;
+    _status.push_back(expStatus);
 }
 
 b2Vec2 Car::getLateralVelocity(){
@@ -190,9 +199,10 @@ int Car::update(){
     updateTraction();
 
     if (_exploded){
-        explode();
+        resetCar();
         _exploded = false;
     }
+
     if (speed() == 0)
         _isMoving = false;
 
@@ -265,12 +275,8 @@ void Car::crash(b2Vec2 impactVel){
     float vel = sqrt(pow(impactVel.x, 2) + pow(impactVel.y, 2));
     _health -= 2 * vel;
 
-    if (_health <= 0){
-        _exploded = true;
-        std::shared_ptr<Status> status(new Status);
-        status->status = EXPLODED;
-        _status.push_back(status);
-    }
+    if (_health <= 0)
+        explode();
 }
 
 void Car::handleHealthPowerup(size_t id){
@@ -323,12 +329,8 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
     float velToReduce = rockFud->getVelToReduce();
     int healthToReduce = rockFud->getHealthToReduce();
 
-    if (_health < healthToReduce){
-        _exploded = true;
-        std::shared_ptr<Status> expStatus(new Status);
-        expStatus->status = EXPLODED;
-        _status.push_back(expStatus);
-    }
+    if (_health <= healthToReduce)
+        explode();
     _health -= healthToReduce;
     //TODO Que baje aceleracion
 }
