@@ -85,6 +85,10 @@ void GameScene::addObject(GameEventStruct gameEvent) {
 										gameEvent.angle);
 	gameObjects.add(gameEvent.objectType, gameEvent.id, ov);
 	if (gameEvent.objectType == TYPE_EXPLOSION) {
+		if (gameEvent.id == player.playerId) {
+			display.carExploded(xScreen/2 - conv.blockToPixel(gameEvent.x),
+								yScreen/2 - conv.blockToPixel(gameEvent.y));
+		}
 		audio.playEffect(SFX_CAR_EXPLOSION);
 	}
 }

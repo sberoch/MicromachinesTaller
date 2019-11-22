@@ -62,7 +62,7 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
             case NOTHING :
                 break;
             case EXPLODED:
-                snapshot->addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), 0);
+                snapshot->addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), inRoomId);
                 break;
             case GRABBED_HEALTH_POWERUP :
                 snapshot->removeGameItem(TYPE_HEALTH_POWERUP, status[i]->id);
