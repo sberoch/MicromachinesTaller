@@ -65,7 +65,7 @@ void GameScene::updateGameEvents(const GameEventsList& gameEvents) {
 			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
 			case MUD_SPLAT: display.showMudSplat(); break;
 			case GAME_OVER: gameOver(gameEvent); break;
-			case LAP_COMPLETED: display.setLapNumber(gameEvent.id); break; //Id is being used for the lap number.
+			case LAP_COMPLETED: lapCompleted(gameEvent); break;
 			default: break;
 		}
 	}
@@ -89,6 +89,13 @@ void GameScene::removeObject(GameEventStruct gameEvent) {
 void GameScene::gameOver(GameEventStruct gameEvent) {
 	if (gameEvent.id == player.playerId) {
 		nextScene = SCENE_END;
+	}
+}
+
+void GameScene::lapCompleted(GameEventStruct gameEvent) {
+	if (gameEvent.id == player.playerId) {
+		//Number is being used here for the lap number
+		display.setLapNumber(gameEvent.angle);
 	}
 }
 
@@ -128,3 +135,5 @@ void GameScene::drawBackground() {
 		}
 	}
 }
+
+

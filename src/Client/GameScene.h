@@ -65,6 +65,7 @@ private:
 	void addObject(GameEventStruct gameEvent);
 	void removeObject(GameEventStruct gameEvent);
 	void gameOver(GameEventStruct gameEvent);
+	void lapCompleted(GameEventStruct gameEvent);
 };
 
 #endif // GAME_SCENE_H
