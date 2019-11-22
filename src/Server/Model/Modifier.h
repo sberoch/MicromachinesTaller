@@ -18,7 +18,7 @@ protected:
     b2Fixture* _fixture;
     bool _toDelete;
 
-    Modifier(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration)
+    Modifier(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration)
              : _type(type), _id(id), _x(x_init), _y(y_init), _angle(angle), _toDelete(false) {
         _setBodyDef(x_init, y_init, angle);
         _body = world->CreateBody(&_bodyDef);
@@ -54,7 +54,7 @@ public:
         modifierDTO->active = !_toDelete;
     }
 
-    static Modifier* makeModifier(b2World* world, const size_t& type, const size_t& id, const float& x_init,
+    static std::shared_ptr<Modifier> makeModifier(std::shared_ptr<b2World> world, const size_t& type, const size_t& id, const float& x_init,
                                   const float& y_init, const float& angle, std::shared_ptr<Configuration> configuration);
 
     virtual ~Modifier() = default;
@@ -62,6 +62,7 @@ public:
 
 class HealthPowerup : public Modifier{
 private:
+    std::shared_ptr<HealthPowerupFUD> hpFUD;
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
         shape.SetAsBox(configuration->getHealthPowerUpHalfWidth(), configuration->getHealthPowerUpHalfHeight());
@@ -72,14 +73,15 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new HealthPowerupFUD(_id));
+        _fixture->SetUserData(hpFUD.get());
     }
 
 public:
-    HealthPowerup(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-                 Modifier(world, type, id, x_init, y_init, angle, configuration) {
+    HealthPowerup(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init,
+            float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+                 Modifier(world, type, id, x_init, y_init, angle, configuration),
+                 hpFUD(new HealthPowerupFUD(_id)){
         _setFixtureDef(configuration);
-
         _body->SetUserData(this);
     }
 
@@ -90,6 +92,7 @@ public:
 
 class BoostPowerup : public Modifier{
 private:
+    std::shared_ptr<BoostPowerupFUD> bpFUD;
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
         shape.SetAsBox(configuration->getHealthPowerUpHalfWidth(), configuration->getHealthPowerUpHalfHeight());
@@ -98,12 +101,14 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new BoostPowerupFUD(configuration->getBoostPowerUpActionTime(), 10, _id));
+        _fixture->SetUserData(bpFUD.get());
     }
 
 public:
-    BoostPowerup(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-            Modifier(world, type, id, x_init, y_init, angle, configuration) {
+    BoostPowerup(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init,
+            float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+            Modifier(world, type, id, x_init, y_init, angle, configuration),
+            bpFUD(new BoostPowerupFUD(configuration->getBoostPowerUpActionTime(), 10, _id)){
         _setBodyDef(x_init, y_init, angle);
 
         _setFixtureDef(configuration);
@@ -117,6 +122,7 @@ public:
 
 class Rock : public Modifier{
 private:
+    std::shared_ptr<RockFUD> rFUD;
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
         shape.SetAsBox(configuration->getRockHalfWidth(), configuration->getRockHalfHeight());
@@ -126,12 +132,15 @@ private:
         _fixtureDef.restitution = 0.3f;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new RockFUD(configuration->getRockVelToReduce(), configuration->getRockHealthToReduce(), _id));
+        _fixture->SetUserData(rFUD.get());
     }
 
 public:
-    Rock(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-            Modifier(world, type, id, x_init, y_init, angle, configuration) {
+    Rock(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init,
+            float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+            Modifier(world, type, id, x_init, y_init, angle, configuration),
+            rFUD(new RockFUD(configuration->getRockVelToReduce(),
+                    configuration->getRockHealthToReduce(), _id)){
         _setFixtureDef(configuration);
         _body->SetUserData(this);
     }
@@ -143,6 +152,7 @@ public:
 
 class Mud : public Modifier{
 private:
+    std::shared_ptr<MudFUD> mFUD;
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
         shape.SetAsBox(configuration->getMudHalfWidth(), configuration->getMudHalfHeight());
@@ -151,12 +161,15 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new MudFUD(configuration->getMudTime(), _id));
+        _fixture->SetUserData(mFUD.get());
     }
 
 public:
-    Mud(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-            Modifier(world, type, id, x_init, y_init, angle, configuration) {
+    Mud(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init,
+            float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+            Modifier(world, type, id, x_init, y_init, angle, configuration),
+            mFUD(new MudFUD(configuration->getMudTime(), _id)){
+
         _setFixtureDef(configuration);
         _body->SetUserData(this);
     }
@@ -168,6 +181,7 @@ public:
 
 class Oil : public Modifier{
 private:
+    std::shared_ptr<OilFUD> oFUD;
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
         shape.SetAsBox(configuration->getOilHalfWidth(), configuration->getOilHalfHeight());
@@ -176,12 +190,14 @@ private:
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
-        _fixture->SetUserData(new OilFUD(configuration->getOilDamping(), configuration->getOilTime(), _id));
+        _fixture->SetUserData(oFUD.get());
     }
 
 public:
-    Oil(b2World* world, size_t type, size_t id, float x_init, float y_init, float angle, std::shared_ptr<Configuration> configuration) :
-            Modifier(world, type, id, x_init, y_init, angle, configuration) {
+    Oil(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init,
+            float y_init, float angle, std::shared_ptr<Configuration> configuration) :
+            Modifier(world, type, id, x_init, y_init, angle, configuration),
+            oFUD(new OilFUD(configuration->getOilDamping(), configuration->getOilTime(), _id)){
         _setFixtureDef(configuration);
         _body->SetUserData(this);
     }

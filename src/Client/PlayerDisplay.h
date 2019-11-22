@@ -32,14 +32,17 @@ private:
 	bool mudSplat;
 	int mudSplatTimer;
 	int health;
+	bool exploded;
+	int carExplodedTimer;
 
 public:
 	int cam_x, cam_y;
-	PlayerDisplay(SdlWindow& window);
+	explicit PlayerDisplay(SdlWindow& window);
 	void update(int cam_x, int cam_y, int newHealth);
 	void draw();
 	void showMudSplat();
 	void setLapNumber(int lapNumber);
+	void carExploded(int exp_x, int exp_y);
 };
 
 #endif // PLAYER_DISPLAY_H

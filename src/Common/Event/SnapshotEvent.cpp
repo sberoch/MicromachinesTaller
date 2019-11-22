@@ -140,8 +140,8 @@ void SnapshotEvent::setGameOver(int inRoomId) {
     setGameEvent(GAME_OVER, 0, 0, 0, 0, inRoomId);
 }
 
-void SnapshotEvent::setMudSplatEvent() {
-    setGameEvent(MUD_SPLAT, 0, 0, 0, 0, 0);
+void SnapshotEvent::setMudSplatEvent(int inRoomId) {
+    setGameEvent(MUD_SPLAT, 0, 0, 0, 0, inRoomId);
 }
 
 void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType,
@@ -196,7 +196,7 @@ SnapshotEvent::SnapshotEvent(SnapshotEvent &other) {
     this->gameEventsList = other.gameEventsList;
 }
 
-void SnapshotEvent::setLapNumber(int lapNumber) {
-	setGameEvent(LAP_COMPLETED, 0, 0, 0, 0, lapNumber);
+void SnapshotEvent::setLapNumber(int clientIdFromRoom, int lapNumber) {
+	setGameEvent(LAP_COMPLETED, 0, 0, 0, lapNumber, clientIdFromRoom);
 }
 

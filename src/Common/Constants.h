@@ -74,4 +74,8 @@ enum SoundEffect {
 #define DEGTORAD 0.0174532925199432957f
 #define RADTODEG 57.295779513082320876f
 
+//Player display defines
+#define SPLAT_CYCLES 80
+#define CAR_EXPLOSION_PENALTY 40
+
 #endif // CONSTANTS_H

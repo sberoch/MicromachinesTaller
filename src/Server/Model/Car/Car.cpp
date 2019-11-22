@@ -11,7 +11,7 @@ void Car::_setShapeAndFixture(const std::shared_ptr<Configuration>& configuratio
     boxFixtureDef.density = configuration->getCarDensity();
     boxFixtureDef.friction = configuration->getCarFriction();
     _fixture = _carBody->CreateFixture(&boxFixtureDef);
-    _fixture->SetUserData(new CarFUD(_id));
+    _fixture->SetUserData(cFUD.get());
 }
 
 void Car::_setBodyDef(float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration){
@@ -22,7 +22,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, const std::shared
     _carBodyDef.angle = angle;
 }
 
-Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration) :
+Car::Car(std::shared_ptr<b2World> world, size_t id, float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration) :
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0),
         _maxHealth(configuration->getCarMaxHealth()),
         _health(configuration->getCarMaxHealth()),
@@ -35,7 +35,8 @@ Car::Car(b2World* world, size_t id, float x_init, float y_init, float angle, con
         _onGrass(false), _isMoving(false), _exploded(false),
         _tracks(),  _groundArea(),
         _currentTraction(1), _status(),
-        _maxLaps(1), _maxtracksToLap(68), _laps(0), _winner(false) {
+        _maxLaps(3), _maxtracksToLap(68), _laps(0), _winner(false),
+        cFUD(new CarFUD(_id)){
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
     _carBody->SetLinearVelocity( b2Vec2( configuration->getLinearVelocityInit(), configuration->getLinearVelocityInit() ) ); //not moving
@@ -151,7 +152,7 @@ void Car::updateTraction(){
 void Car::addGroundArea(GroundAreaFUD* ga){
     _groundArea = ga;
     if (ga->grass){
-        Status* status = new Status;
+        std::shared_ptr<Status> status(new Status);
         status->status = ON_GRASS;
         _status.push_back(status);
         _onGrass = true;
@@ -174,7 +175,7 @@ void Car::handleInput(const InputEnum& input){
         _turningState = turningState;
 }
 
-void Car::update(){
+int Car::update(){
     _state->update(*this);
     _turningState->update(*this);
     updateFriction();
@@ -184,7 +185,6 @@ void Car::update(){
         resetCar();
         _exploded = false;
     }
-
     if (speed() == 0)
         _isMoving = false;
 
@@ -198,10 +198,11 @@ void Car::update(){
 
     if (_laps == _maxLaps) {
         _winner;
-        Status* status = new Status;
+        std::shared_ptr<Status> status(new Status);
         status->status = WINNED;
         _status.push_back(status);
     }
+    return _laps;
 }
 
 const float Car::x(){
@@ -258,14 +259,14 @@ void Car::crash(b2Vec2 impactVel){
 
     if (_health <= 0){
         _exploded = true;
-        Status* status = new Status;
+        std::shared_ptr<Status> status(new Status);
         status->status = EXPLODED;
         _status.push_back(status);
     }
 }
 
 void Car::handleHealthPowerup(size_t id){
-    Status* status = new Status;
+    std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_HEALTH_POWERUP;
     status->id = id;
     _status.push_back(status);
@@ -277,7 +278,7 @@ void Car::handleHealthPowerup(size_t id){
 }
 
 void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
-    Status* status = new Status;
+    std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_BOOST_POWERUP;
     status->timeOfAction = bpuFud->getActionTime();
     status->id = id;
@@ -288,14 +289,14 @@ void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
 }
 
 void Car::handleMud(MudFUD* mudFud, size_t id){
-    Status* status = new Status;
+    std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_MUD;
     status->id = id;
     _status.push_back(status);
 }
 
 void Car::handleOil(OilFUD* oilFud, size_t id){
-    Status* status = new Status;
+    std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_OIL;
     status->id = id;
     status->timeOfAction = oilFud->getActionTime();
@@ -307,7 +308,7 @@ void Car::handleOil(OilFUD* oilFud, size_t id){
 }
 
 void Car::handleRock(RockFUD* rockFud, size_t id){
-    Status* status = new Status;
+    std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_ROCK;
     status->id = id;
     _status.push_back(status);
@@ -316,7 +317,7 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
 
     if (_health < healthToReduce){
         _exploded = true;
-        auto* expStatus = new Status;
+        std::shared_ptr<Status> expStatus(new Status);
         expStatus->status = EXPLODED;
         _status.push_back(expStatus);
     }
@@ -339,14 +340,11 @@ void Car::stopEffect(const int& effectType){
     }
 }
 
-std::vector<Status*> Car::getStatus(){
+std::vector<std::shared_ptr<Status>> Car::getStatus(){
     return _status;
 }
 
 void Car::resetStatus(){
-    for (size_t i=0; i<_status.size(); ++i){
-        delete _status[i];
-    }
     _status.clear();
 }
 

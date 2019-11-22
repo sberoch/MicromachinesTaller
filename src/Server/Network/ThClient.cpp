@@ -99,9 +99,15 @@ void ClientThread::assignIdFromRoom(int idFromRoom){
     this->idFromRoom = idFromRoom;
 }
 
-void ClientThread::update(){
-    player.update();
+bool ClientThread::update(){
+    int newNumberOfLaps = player.update();
+    bool lapCompleted = numberOfLaps != newNumberOfLaps;
+    if (lapCompleted)
+        numberOfLaps = newNumberOfLaps;
+
+    return lapCompleted;
 }
+
 
 int ClientThread::getIdFromRoom() {
     return this->idFromRoom;
@@ -140,5 +146,11 @@ ClientThread::~ClientThread() {
     std::cout << "Destruyendo client thread con clientId: " << clientId << std::endl;
     stop();
 }
+
+int ClientThread::getNumberOfLaps() {
+    return this->numberOfLaps;
+}
+
+
 
 

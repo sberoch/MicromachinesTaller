@@ -57,18 +57,25 @@ void GameScene::updateCars(const CarStructList& cars) {
 	}	
 }
 
+
 void GameScene::updateGameEvents(const GameEventsList& gameEvents) {
 	for (auto& gameEvent : gameEvents) {
  		switch(gameEvent.eventType) {
 			case ADD: addObject(gameEvent); break;
 			case REMOVE: removeObject(gameEvent); break;
 			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
-			case MUD_SPLAT: display.showMudSplat(); break;
+			case MUD_SPLAT: showMudSplat(gameEvent); break;
 			case GAME_OVER: gameOver(gameEvent); break;
-			case LAP_COMPLETED: display.setLapNumber(gameEvent.id); break; //Id is being used for the lap number.
+			case LAP_COMPLETED: lapCompleted(gameEvent); break;
 			default: break;
 		}
 	}
+}
+
+void GameScene::showMudSplat(GameEventStruct gameEvent){
+    if (gameEvent.id == player.playerId) {
+        display.showMudSplat();
+    }
 }
 
 void GameScene::addObject(GameEventStruct gameEvent) {
@@ -78,6 +85,10 @@ void GameScene::addObject(GameEventStruct gameEvent) {
 										gameEvent.angle);
 	gameObjects.add(gameEvent.objectType, gameEvent.id, ov);
 	if (gameEvent.objectType == TYPE_EXPLOSION) {
+		if (gameEvent.id == player.playerId) {
+			display.carExploded(xScreen/2 - conv.blockToPixel(gameEvent.x),
+								yScreen/2 - conv.blockToPixel(gameEvent.y));
+		}
 		audio.playEffect(SFX_CAR_EXPLOSION);
 	}
 }
@@ -89,6 +100,13 @@ void GameScene::removeObject(GameEventStruct gameEvent) {
 void GameScene::gameOver(GameEventStruct gameEvent) {
 	if (gameEvent.id == player.playerId) {
 		nextScene = SCENE_END;
+	}
+}
+
+void GameScene::lapCompleted(GameEventStruct gameEvent) {
+	if (gameEvent.id == player.playerId) {
+		//Angle is being used here for the lap number
+		display.setLapNumber(gameEvent.angle);
 	}
 }
 
@@ -128,3 +146,7 @@ void GameScene::drawBackground() {
 		}
 	}
 }
+
+
+
+

@@ -7,13 +7,13 @@
 using json = nlohmann::json;
 
 World::World(size_t n_of_cars, const std::shared_ptr<Configuration>& configuration) :
-             _timeStep(1/configuration->getFPS()), _n_of_cars(n_of_cars), _configuration(configuration),
-             _cars(), _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0) {
+        _timeStep(1/configuration->getFPS()), _n_of_cars(n_of_cars), _configuration(configuration),
+        _cars(), _track(), _grass(), _activeModifiers(), _modifierType(), _maxId(0) {
     b2Vec2 gravity(configuration->getGravityX(), configuration->getGravityY());
-    _world = new b2World(gravity);
+    _world = std::make_shared<b2World>(gravity);
 
-    _contactListener = new ContactListener(_world);
-    _world->SetContactListener(_contactListener);
+    _contactListener = std::make_shared<ContactListener>(_world);
+    _world->SetContactListener(_contactListener.get());
 
     createTrack();
     createGrass();
@@ -102,12 +102,10 @@ json World::getSerializedMap() {
 }
 
 void World::_removeGrabbedModifiers(){
-    std::vector<Modifier*> aux;
+    std::vector<std::shared_ptr<Modifier>> aux;
     for (size_t i=0; i<_activeModifiers.size(); ++i){
-        Modifier* modifier = _activeModifiers[i];
-        if (modifier->toDelete())
-            delete modifier;
-        else
+        std::shared_ptr<Modifier> modifier = _activeModifiers[i];
+        if (!modifier->toDelete())
             aux.push_back(modifier);
     }
     _activeModifiers.swap(aux);
@@ -138,9 +136,7 @@ void World::step(uint32_t velocityIt, uint32_t positionIt){
     _updateCarsOnGrass();
 }
 
-World::~World(){
-    delete _world;
-}
+World::~World()= default;
 
 void World::toDTO(WorldDTO_t* world){
     for (size_t i=0; i<_cars.size(); ++i)

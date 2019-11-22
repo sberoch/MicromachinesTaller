@@ -5,7 +5,7 @@
 #include "Modifier.h"
 #include "Track.h"
 
-ContactListener::ContactListener(b2World *world) : _world(world) {}
+ContactListener::ContactListener(std::shared_ptr<b2World> world) : _world(world) {}
 
 void ContactListener::BeginContact(b2Contact *contact){
     handleContact(contact, true);
@@ -25,10 +25,10 @@ void ContactListener::carVsGroundArea(b2Fixture* carFixture, b2Fixture* groundAr
 }
 
 void ContactListener::handleContact(b2Contact* contact, bool began){
-    b2Fixture* a = contact->GetFixtureA();
-    b2Fixture* b = contact->GetFixtureB();
-    auto* fudA = (FixtureUserData*) a->GetUserData();
-    auto* fudB = (FixtureUserData*) b->GetUserData();
+    b2Fixture* a = (b2Fixture*) contact->GetFixtureA();
+    b2Fixture* b = (b2Fixture*) contact->GetFixtureB();
+    FixtureUserData* fudA = (FixtureUserData*) a->GetUserData();
+    FixtureUserData* fudB = (FixtureUserData*) b->GetUserData();
 
     if (!fudA || !fudB){
         return;

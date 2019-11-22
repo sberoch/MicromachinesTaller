@@ -17,11 +17,13 @@ private:
 	ObjectMap interactablesMap;
 	ObjectMap miscMap;
 
+	int explosionsCounter;
+
 public:
 	GameObjects(TextureCreator& creator);
 
 	void draw(int cameraX, int cameraY);
-	void add(int type, int id, ObjectViewPtr obj);
+	void add(int type, int id, const ObjectViewPtr& obj);
 	void remove(int type, int id);
 	ObjectViewPtr getCar(int id);
 	ObjectViewPtr getTrack(int id);

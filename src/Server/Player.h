@@ -41,7 +41,7 @@ public:
 
     void assignCarId(int id);
 
-    void update();
+    int update();
 
     bool finishedPlaying();
 };

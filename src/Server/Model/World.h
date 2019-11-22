@@ -15,7 +15,7 @@ using json = nlohmann::json;
 
 class World {
 private:
-    b2World* _world;
+    std::shared_ptr<b2World> _world;
     float _timeStep;
     std::shared_ptr<Configuration> _configuration;
 
@@ -26,11 +26,11 @@ private:
     std::vector<std::shared_ptr<Grass>> _grass;
 
     //A vector of active modifiers to delete
-    std::vector<Modifier*> _activeModifiers;
+    std::vector<std::shared_ptr<Modifier>> _activeModifiers;
     std::vector<int> _modifierType;
     size_t _maxId;
 
-    ContactListener* _contactListener;
+    std::shared_ptr<ContactListener> _contactListener;
 
     void _removeGrabbedModifiers();
     void _updateCarsOnGrass();

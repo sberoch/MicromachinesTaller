@@ -2,7 +2,8 @@
 #include <iostream>
 
 GameObjects::GameObjects(TextureCreator& creator) :
-	creator(creator) {}
+	creator(creator),
+	explosionsCounter(0) {}
 
 
 void GameObjects::draw(int cameraX, int cameraY) {
@@ -26,7 +27,7 @@ void GameObjects::draw(int cameraX, int cameraY) {
 	}
 }
 
-void GameObjects::add(int type, int id, ObjectViewPtr obj) {
+void GameObjects::add(int type, int id, const ObjectViewPtr& obj) {
 	switch(type) {
 		case TYPE_STRAIGHT_TRACK: case TYPE_CURVE_TRACK: {
 			tracksMap.insert(std::make_pair(id, obj));
@@ -45,13 +46,16 @@ void GameObjects::add(int type, int id, ObjectViewPtr obj) {
 			break;
 		}
 		case TYPE_EXPLOSION: {
-			miscMap.insert(std::make_pair(id, obj));
+			miscMap.insert(std::make_pair(explosionsCounter, obj));
+			explosionsCounter++;
 			break;
 		}
 		case TYPE_START_LINE: {
 			decorationsMap.insert(std::make_pair(id, obj));
 			break;
 		}
+		default:
+			break;
 	}
 }
 
@@ -81,6 +85,8 @@ void GameObjects::remove(int type, int id) {
 			decorationsMap.erase(id);
 			break;
 		}
+		default:
+			break;
 	}
 }
 

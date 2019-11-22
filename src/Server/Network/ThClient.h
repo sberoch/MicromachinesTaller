@@ -24,11 +24,13 @@ private:
     Protocol protocol;
     int clientId;
     int idFromRoom;
+    int numberOfLaps;
     Player player;
     SafeQueue<std::shared_ptr<Event>>* receivingNonBlockingQueue;
     SafeQueue<std::shared_ptr<Event>> sendingBlockingQueue;
     EventReceiver receiver;
     EventSender sender;
+    std::shared_ptr<SnapshotEvent> clientSnapshot;
 
     //Detiene la ejecucion del cliente y pone la variable booleana en falso
     //para que el recolector de clientes muertos pueda reconocerlo como tal.
@@ -63,7 +65,7 @@ public:
     void createModifier(const size_t& type, const size_t& id, const float& x,
             const float& y, const float& angle);
 
-    void update();
+    bool update();
 
     void assignIdFromRoom(int idFromRoom);
 
@@ -74,6 +76,8 @@ public:
     void sendEndEvent(const std::shared_ptr<EndSnapshot> &endSnapshot);
 
     int getClientId();
+
+    int getNumberOfLaps();
 };
 
 

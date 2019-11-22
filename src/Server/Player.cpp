@@ -10,8 +10,8 @@ Player::Player(std::shared_ptr<Car> car, int& inRoomId) :
                         _modifierToAdd(false),
                         done(false){}
 
-void Player::update(){
-    _car->update();
+int Player::update(){
+    int numberOfLaps = _car->update();
 
     std::vector<Effect*> aux;
     for (int i=0; i<_effects.size(); ++i){
@@ -25,6 +25,7 @@ void Player::update(){
         }
     }
     _effects.swap(aux);
+    return numberOfLaps;
 }
 
 
@@ -54,14 +55,14 @@ void Player::createModifier(const size_t& type, const size_t& id, const float& x
 
 
 void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
-    std::vector<Status *> status = _car->getStatus();
+    std::vector<std::shared_ptr<Status>> status = _car->getStatus();
 
     for (size_t i=0; i<status.size(); ++i){
         switch (status[i]->status) {
             case NOTHING :
                 break;
             case EXPLODED:
-                snapshot->addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), 0);
+                snapshot->addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), inRoomId);
                 break;
             case GRABBED_HEALTH_POWERUP :
                 snapshot->removeGameItem(TYPE_HEALTH_POWERUP, status[i]->id);
@@ -71,7 +72,7 @@ void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
                 snapshot->removeGameItem(TYPE_BOOST_POWERUP, status[i]->id);
                 break;
             case GRABBED_MUD :
-                snapshot->setMudSplatEvent();
+                snapshot->setMudSplatEvent(this->inRoomId);
                 snapshot->removeGameItem(TYPE_MUD, status[i]->id);
                 break;
             case GRABBED_ROCK :
