@@ -175,7 +175,7 @@ void Car::handleInput(const InputEnum& input){
         _turningState = turningState;
 }
 
-void Car::update(){
+int Car::update(){
     _state->update(*this);
     _turningState->update(*this);
     updateFriction();
@@ -185,7 +185,6 @@ void Car::update(){
         resetCar();
         _exploded = false;
     }
-
     if (speed() == 0)
         _isMoving = false;
 
@@ -203,6 +202,7 @@ void Car::update(){
         status->status = WINNED;
         _status.push_back(status);
     }
+    return _laps;
 }
 
 const float Car::x(){

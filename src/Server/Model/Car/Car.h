@@ -111,7 +111,7 @@ public:
     void resetCar();
 
     virtual void handleInput(const InputEnum& input);
-    virtual void update();
+    virtual int update();
 
     const float x();
     const float y();

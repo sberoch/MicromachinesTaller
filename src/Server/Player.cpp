@@ -10,8 +10,8 @@ Player::Player(std::shared_ptr<Car> car, int& inRoomId) :
                         _modifierToAdd(false),
                         done(false){}
 
-void Player::update(){
-    _car->update();
+int Player::update(){
+    int numberOfLaps = _car->update();
 
     std::vector<Effect*> aux;
     for (int i=0; i<_effects.size(); ++i){
@@ -25,6 +25,7 @@ void Player::update(){
         }
     }
     _effects.swap(aux);
+    return numberOfLaps;
 }
 
 

@@ -59,7 +59,7 @@ public:
 	void setMudSplatEvent();
 
 	void setGameOver(int inRoomId);
-	void setLapNumber(int lapNumber);
+	void setLapNumber(int clientIdFromRoom, int lapNumber);
 	
 	const GameEventsList& getGameEvents();
 

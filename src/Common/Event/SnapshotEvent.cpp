@@ -196,7 +196,7 @@ SnapshotEvent::SnapshotEvent(SnapshotEvent &other) {
     this->gameEventsList = other.gameEventsList;
 }
 
-void SnapshotEvent::setLapNumber(int lapNumber) {
-	setGameEvent(LAP_COMPLETED, 0, 0, 0, 0, lapNumber);
+void SnapshotEvent::setLapNumber(int clientIdFromRoom, int lapNumber) {
+	setGameEvent(LAP_COMPLETED, 0, 0, 0, lapNumber, clientIdFromRoom);
 }
 

@@ -45,10 +45,13 @@ void GameThread::run() {
                 clients.at(clientId)->handleInput((InputEnum) event->j["cmd_id"].get<int>());
             }
 
-            for (auto& client: clients){
-                client.second->update();
+            for (auto& client: clients) {
+                bool lapCompleted = client.second->update();
+                if (lapCompleted) {
+                    int numberOfLapsFromClient = client.second->getNumberOfLaps();
+                    snapshot->setLapNumber(client.second->getIdFromRoom(), numberOfLapsFromClient);
+                }
             }
-
             step();
 
             //MODS CODE
@@ -61,9 +64,10 @@ void GameThread::run() {
                     ModifierDTO modifier = _worldDTO.modifiers[i];
                     if (modifier.newModifier){
                         _worldDTO.modifiers[i].newModifier = false;
-                        for (auto &actualClient : clients) {
-                            actualClient.second->createModifier(modifier.type, modifier.id, modifier.x, modifier.y, modifier.angle);
-                        }
+                        //TODO: HACER PARA UN UNICO JUGAR
+//                        for (auto &actualClient : clients) {
+//                            actualClient.second->createModifier(modifier.type, modifier.id, modifier.x, modifier.y, modifier.angle);
+//                        }
                     }
                 }
             }

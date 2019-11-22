@@ -24,6 +24,7 @@ private:
     Protocol protocol;
     int clientId;
     int idFromRoom;
+    int numberOfLaps;
     Player player;
     SafeQueue<std::shared_ptr<Event>>* receivingNonBlockingQueue;
     SafeQueue<std::shared_ptr<Event>> sendingBlockingQueue;
@@ -63,7 +64,7 @@ public:
     void createModifier(const size_t& type, const size_t& id, const float& x,
             const float& y, const float& angle);
 
-    void update();
+    bool update();
 
     void assignIdFromRoom(int idFromRoom);
 
@@ -74,6 +75,8 @@ public:
     void sendEndEvent(const std::shared_ptr<EndSnapshot> &endSnapshot);
 
     int getClientId();
+
+    int getNumberOfLaps();
 };
 
 
