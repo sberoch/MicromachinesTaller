@@ -128,6 +128,3 @@ void Track::toDTO(TrackDTO_t* trackDTO) {
     trackDTO->start = this->isStart();
 }
 
-Track::~Track(){
-   // _body->GetWorld()->DestroyBody(_body);
-}

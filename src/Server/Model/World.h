@@ -10,6 +10,7 @@
 #include "Grass.h"
 #include "Modifier.h"
 #include "../mods/DTOs.h"
+#include "DestructionListener.h"
 
 using json = nlohmann::json;
 
@@ -20,8 +21,8 @@ private:
     std::shared_ptr<Configuration> _configuration;
 
     int _n_of_cars;
-    std::vector<Car*> _cars;
-    void _getCarConfigData(size_t id, float& x, float& y, float& angle);
+    std::vector<std::shared_ptr<Car>> _cars;
+
     std::vector<std::shared_ptr<Track>> _track;
     std::vector<std::shared_ptr<Grass>> _grass;
 
@@ -43,7 +44,7 @@ public:
 
     void createTrack();
     void createGrass();
-    Car* createCar(size_t id, json cars);
+    std::shared_ptr<Car> createCar(size_t id, json cars);
 
     //Modifiers
     void createRandomModifier(size_t& type, size_t& id, float& x, float& y, float& angle);

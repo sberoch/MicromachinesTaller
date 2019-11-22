@@ -33,7 +33,3 @@ Grass::Grass(std::shared_ptr<b2World> world, size_t id, int type, float x_init,
     _setFixtureDef(configuration);
     _body->SetUserData(this);
 }
-
-Grass::~Grass(){
-    //_body->GetWorld()->DestroyBody(_body);
-}

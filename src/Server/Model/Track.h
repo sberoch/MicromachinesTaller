@@ -46,7 +46,7 @@ public:
 
     void toDTO(TrackDTO_t* trackDTO);
 
-    ~Track();
+    ~Track() = default;
 };
 
 #endif //MICROMACHINES_TRACK_H
