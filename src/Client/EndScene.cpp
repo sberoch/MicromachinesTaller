@@ -9,7 +9,8 @@ EndScene::EndScene(SdlWindow& window, SafeQueue<std::shared_ptr<EndSnapshot>>& e
 	backgroundEnd(backgroundEndTex),
 	creator(window),
 	_done(false),
-	fullscreen(true) {
+	fullscreen(true),
+	nextScene(SCENE_END) {
 		carViews.insert({TYPE_CAR_RED, creator.create(TYPE_CAR_RED, 0, 0, 270)});
     	carViews.insert({TYPE_CAR_BLUE, creator.create(TYPE_CAR_BLUE, 0, 0, 270)});
    		carViews.insert({TYPE_CAR_YELLOW, creator.create(TYPE_CAR_YELLOW, 0, 0, 270)});
@@ -50,6 +51,9 @@ Scene EndScene::handle() {
 			SDL_GetMouseState(&x, &y);
 			if (insideQuitButton(x, y)) {
 				_done = true;
+
+			} else if (insideMenuButton(x, y)) {
+				nextScene = SCENE_MENU;
 			}
 
 		} else if (e.type == SDL_KEYDOWN) {
@@ -65,7 +69,7 @@ Scene EndScene::handle() {
 			}
 		}
 	}
-	return SCENE_END;
+	return nextScene;
 }
 
 void EndScene::drawCars() {
@@ -78,5 +82,10 @@ void EndScene::drawCars() {
 
 bool EndScene::insideQuitButton(int x, int y) {
 	Area playBtn(0.75*xScreen, 0.75*yScreen, 0.25*xScreen, 0.2*yScreen);
+	return playBtn.isInside(x, y);
+}
+
+bool EndScene::insideMenuButton(int x, int y) {
+	Area playBtn(0.15*xScreen, 0.75*yScreen, 0.25*xScreen, 0.2*yScreen);
 	return playBtn.isInside(x, y);
 }
