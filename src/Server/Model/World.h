@@ -36,8 +36,6 @@ private:
     void _removeGrabbedModifiers();
     void _updateCarsOnGrass();
 
-    b2World* _world;
-
 public:
     World(size_t n_of_cars, const std::shared_ptr<Configuration>& configuration);
 

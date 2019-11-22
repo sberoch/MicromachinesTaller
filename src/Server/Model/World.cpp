@@ -15,9 +15,6 @@ World::World(size_t n_of_cars, const std::shared_ptr<Configuration>& configurati
     _contactListener = std::make_shared<ContactListener>(_world);
     _world->SetContactListener(_contactListener.get());
 
-    _destructionListener = new DestructionListener();
-    _world->SetDestructionListener(_destructionListener);
-
     createTrack();
     createGrass();
 

@@ -23,7 +23,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, const std::shared
 }
 
 
-Car::Car(b2World* world, size_t& id, float& x_init, float& y_init, float angle, size_t max_tracks, const std::shared_ptr<Configuration>& configuration) :
+Car::Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_init, float angle, size_t max_tracks, const std::shared_ptr<Configuration>& configuration) :
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0),
         _maxHealth(configuration->getCarMaxHealth()),
         _health(configuration->getCarMaxHealth()),
@@ -347,10 +347,6 @@ std::vector<std::shared_ptr<Status>> Car::getStatus(){
 
 void Car::resetStatus(){
     _status.clear();
-}
-
-Car::~Car(){
-    _carBody->GetWorld()->DestroyBody(_carBody);
 }
 
 void Car::assignId(int id) {

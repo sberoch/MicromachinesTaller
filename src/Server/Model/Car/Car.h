@@ -70,7 +70,7 @@ private:
     void _setShapeAndFixture(const std::shared_ptr<Configuration>& configuration);
 
 public:
-    Car(b2World* world, size_t& id, float& x_init, float& y_init, float angle, size_t max_tracks, const std::shared_ptr<Configuration>& configuration);
+    Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_init, float angle, size_t max_tracks, const std::shared_ptr<Configuration>& configuration);
 
     Car(const Car &other) = delete;
     Car& operator=(const Car &other) = delete;
@@ -127,7 +127,7 @@ public:
     void carToDTO(CarDTO_t* carDTO);
     void dtoToModel(const CarDTO_t& carDTO);
 
-    ~Car();
+    ~Car() = default;
 };
 
 class CarMovingState{
