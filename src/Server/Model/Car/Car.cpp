@@ -29,7 +29,8 @@ Car::Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_ini
         _health(configuration->getCarMaxHealth()),
         _maxForwardSpeed(60),
         _maxBackwardSpeed(-10),
-        _maxDriveForce(20),
+        _maxForwardDrive(20),
+        _maxBackwardDrive(10),
         _desiredTorque(25),
         _maxLateralImpulse(configuration->getCarMaxLateralImpulse()),
         _angularImpulse(configuration->getCarAngularImpulse()),
@@ -52,6 +53,8 @@ Car::Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_ini
 }
 
 void Car::setTrack(Track* track){
+    if (_tracks.size() > 0 && _tracks.back()->isFinish())
+        _tracks.clear();
     for (size_t i=0; i<_tracks.size(); ++i){
         if (_tracks[i]->equals(track))
             return;
@@ -59,7 +62,7 @@ void Car::setTrack(Track* track){
     _tracks.push_back(track);
 }
 
-void Car::resetCar(){
+void Car::resetCar() {
     _health = _maxHealth;
     if (_tracks.back()){
         b2Vec2 position = b2Vec2(_tracks.back()->x(), _tracks.back()->y());
@@ -72,6 +75,13 @@ void Car::resetCar(){
         b2Vec2 position = b2Vec2(_previous_x, _previous_y);
         _carBody->SetTransform(position, _previousAngle);
     }
+}
+
+void Car::explode(){
+    _exploded = true;
+    std::shared_ptr<Status> expStatus(new Status);
+    expStatus->status = EXPLODED;
+    _status.push_back(expStatus);
 }
 
 b2Vec2 Car::getLateralVelocity(){
@@ -93,10 +103,13 @@ void Car::accelerate(){
 
     //apply necessary force
     float force = 0;
+    if (_maxForwardDrive < 0)
+        return;
+
     if (_maxForwardSpeed > currentSpeed)
-        force = _maxDriveForce;
+        force = _maxForwardDrive;
     else if (_maxForwardSpeed < currentSpeed)
-        force = -_maxDriveForce;
+        force = -_maxForwardDrive;
     else
         return;
     _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
@@ -110,11 +123,14 @@ void Car::desaccelerate(){
     float currentSpeed = b2Dot(getForwardVelocity(), currentForwardNormal);
 
     //apply necessary force
+    if (_maxForwardDrive < 0)
+        return;
+
     float force = 0;
     if ( _maxBackwardSpeed > currentSpeed )
-        force = 15;
+        force = _maxBackwardDrive;
     else if ( _maxBackwardSpeed < currentSpeed )
-        force = -15;
+        force = -_maxBackwardDrive;
     else
         return;
     _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
@@ -186,6 +202,7 @@ int Car::update(){
         resetCar();
         _exploded = false;
     }
+
     if (speed() == 0)
         _isMoving = false;
 
@@ -236,13 +253,13 @@ void Car::carToDTO(CarDTO_t* carDTO) {
     carDTO->y = this->y();
     carDTO->angle = this->angle();
     carDTO->health = this->health();
-    carDTO->maxForwardSpeed = _maxForwardSpeed;
+    carDTO->maxForwardDrive = _maxForwardDrive;
     carDTO->lapsCompleted = _laps;
 }
 
 void Car::dtoToModel(const CarDTO_t& carDTO) {
     _health = carDTO.health;
-    _maxForwardSpeed = carDTO.maxForwardSpeed;
+    _maxForwardDrive = carDTO.maxForwardDrive;
     _laps = carDTO.lapsCompleted;
 }
 
@@ -258,12 +275,8 @@ void Car::crash(b2Vec2 impactVel){
     float vel = sqrt(pow(impactVel.x, 2) + pow(impactVel.y, 2));
     _health -= 2 * vel;
 
-    if (_health <= 0){
-        _exploded = true;
-        std::shared_ptr<Status> status(new Status);
-        status->status = EXPLODED;
-        _status.push_back(status);
-    }
+    if (_health <= 0)
+        explode();
 }
 
 void Car::handleHealthPowerup(size_t id){
@@ -286,7 +299,7 @@ void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
     _status.push_back(status);
 
     _maxForwardSpeed += 100;//bpuFud->getSpeedToIncrease();
-    _maxDriveForce = 30;
+    _maxForwardDrive = 30;
 }
 
 void Car::handleMud(MudFUD* mudFud, size_t id){
@@ -316,12 +329,8 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
     float velToReduce = rockFud->getVelToReduce();
     int healthToReduce = rockFud->getHealthToReduce();
 
-    if (_health < healthToReduce){
-        _exploded = true;
-        std::shared_ptr<Status> expStatus(new Status);
-        expStatus->status = EXPLODED;
-        _status.push_back(expStatus);
-    }
+    if (_health <= healthToReduce)
+        explode();
     _health -= healthToReduce;
     //TODO Que baje aceleracion
 }
@@ -330,7 +339,7 @@ void Car::stopEffect(const int& effectType){
     switch (effectType) {
         case TYPE_BOOST_POWERUP :
             _maxForwardSpeed -= 100;
-            _maxDriveForce = 20;
+            _maxForwardDrive= 20;
             break;
         case TYPE_OIL :
             _angularImpulse = 0.9;

@@ -10,7 +10,6 @@
 #include "Grass.h"
 #include "Modifier.h"
 #include "../mods/DTOs.h"
-#include "DestructionListener.h"
 
 using json = nlohmann::json;
 

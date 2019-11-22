@@ -36,7 +36,8 @@ private:
 
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
-    float _maxDriveForce;
+    float _maxForwardDrive;
+    float _maxBackwardDrive;
     float _desiredTorque;
     float _maxLateralImpulse;
     float _angularImpulse;
@@ -108,6 +109,7 @@ public:
     b2Vec2 getLateralVelocity();
     b2Vec2 getForwardVelocity();
 
+    void explode();
     void resetCar();
 
     virtual void handleInput(const InputEnum& input);

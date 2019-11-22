@@ -13,7 +13,8 @@ typedef struct CarDTO {
     float x;
     float y;
     float angle;
-    float maxForwardSpeed;
+    float _maxForwardSpeed;
+    float maxForwardDrive;
     float lapsCompleted;
     size_t health;
     int id;
