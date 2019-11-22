@@ -22,25 +22,22 @@ void ReceiverThread::run() {
 	// para poder hacer lo de volver a escenas anteriores
 
 	try {
-
-		while(_currentScene == SCENE_LOBBY || _currentScene == SCENE_MENU) {
-			std::shared_ptr<LobbySnapshot> lobbySnap(new LobbySnapshot(protocol));
-			lobbyRecvQueue.push(lobbySnap);
-
-			int id = lobbySnap->getMyId();
-			if (lobbySnap->gameStarted(id)) {
-				_currentScene = SCENE_GAME;
-			}
+		while(true) {
+		    switch (_currentScene) {
+		    	case SCENE_MENU: case SCENE_LOBBY: {
+		    		receiveLobbySnapshots();
+		    		break;
+		    	}
+		    	case SCENE_GAME: {
+		    		receiveGameSnapshots();
+		    		break;
+		    	}
+		    	case SCENE_END: {
+		    		receiveEndSnapshots();
+		    		break;
+		    	}
+		    }
 		}
-		while(_currentScene == SCENE_GAME) {
-			std::shared_ptr<SnapshotEvent> gameSnap(new SnapshotEvent(protocol));
-			gameRecvQueue.push(gameSnap);
-		}
-		while(_currentScene == SCENE_END) {
-		    std::shared_ptr<EndSnapshot> endSnap(new EndSnapshot(protocol));
-		    endRecvQueue.push(endSnap);
-		}
-
 	} catch (std::exception &e) {
 		std::cerr << "Error from Receiver Thread" << e.what() << std::endl;
 	} catch (...){
@@ -48,6 +45,28 @@ void ReceiverThread::run() {
 	}
 	_done = true;
 }
+
+void ReceiverThread::receiveLobbySnapshots() {
+	std::shared_ptr<LobbySnapshot> lobbySnap(new LobbySnapshot(protocol));
+	lobbyRecvQueue.push(lobbySnap);
+
+	int id = lobbySnap->getMyId();
+	if (lobbySnap->gameStarted(id)) {
+		_currentScene = SCENE_GAME;
+	}
+}
+
+void ReceiverThread::receiveGameSnapshots() {
+	std::shared_ptr<SnapshotEvent> gameSnap(new SnapshotEvent(protocol));
+	gameRecvQueue.push(gameSnap);
+}
+
+void ReceiverThread::receiveEndSnapshots() {
+	std::shared_ptr<EndSnapshot> endSnap(new EndSnapshot(protocol));
+	endRecvQueue.push(endSnap);
+}
+
+
 bool ReceiverThread::finished() const {
 	return _done;
 }
