@@ -21,7 +21,8 @@ ClientThread::ClientThread(Protocol protocol, RoomController& controller, int cl
         sender(std::ref(this->protocol), sendingBlockingQueue,
                    acceptSocketRunning, keepTalking),
         receiver(std::ref(this->protocol), this->receivingNonBlockingQueue,
-                     acceptSocketRunning, keepTalking){}
+                     acceptSocketRunning, keepTalking),
+        idFromRoom(-1), numberOfLaps(3) {}
 
 
 void ClientThread::run() {
@@ -101,7 +102,8 @@ void ClientThread::assignIdFromRoom(int idFromRoom){
 
 bool ClientThread::update(){
     int newNumberOfLaps = player.update();
-    bool lapCompleted = numberOfLaps != newNumberOfLaps;
+    bool lapCompleted = false;
+    lapCompleted = numberOfLaps != newNumberOfLaps;
     if (lapCompleted)
         numberOfLaps = newNumberOfLaps;
 
