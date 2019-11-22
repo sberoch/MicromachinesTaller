@@ -26,10 +26,11 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, const std::shared
 Car::Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_init, float angle, size_t max_tracks, const std::shared_ptr<Configuration>& configuration) :
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0),
         _maxHealth(configuration->getCarMaxHealth()),
-        _health(configuration->getCarMaxHealth()),
+        _health(5),
         _maxForwardSpeed(60),
         _maxBackwardSpeed(-10),
-        _maxDriveForce(20),
+        _maxForwardDrive(20),
+        _maxBackwardDrive(10),
         _desiredTorque(25),
         _maxLateralImpulse(configuration->getCarMaxLateralImpulse()),
         _angularImpulse(configuration->getCarAngularImpulse()),
@@ -93,10 +94,13 @@ void Car::accelerate(){
 
     //apply necessary force
     float force = 0;
+    if (_maxForwardDrive < 0)
+        return;
+
     if (_maxForwardSpeed > currentSpeed)
-        force = _maxDriveForce;
+        force = _maxForwardDrive;
     else if (_maxForwardSpeed < currentSpeed)
-        force = -_maxDriveForce;
+        force = -_maxForwardDrive;
     else
         return;
     _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
@@ -110,11 +114,14 @@ void Car::desaccelerate(){
     float currentSpeed = b2Dot(getForwardVelocity(), currentForwardNormal);
 
     //apply necessary force
+    if (_maxForwardDrive < 0)
+        return;
+
     float force = 0;
     if ( _maxBackwardSpeed > currentSpeed )
-        force = 15;
+        force = _maxBackwardDrive;
     else if ( _maxBackwardSpeed < currentSpeed )
-        force = -15;
+        force = -_maxBackwardDrive;
     else
         return;
     _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
@@ -236,13 +243,13 @@ void Car::carToDTO(CarDTO_t* carDTO) {
     carDTO->y = this->y();
     carDTO->angle = this->angle();
     carDTO->health = this->health();
-    carDTO->maxForwardSpeed = _maxForwardSpeed;
+    carDTO->maxForwardDrive = _maxForwardDrive;
     carDTO->lapsCompleted = _laps;
 }
 
 void Car::dtoToModel(const CarDTO_t& carDTO) {
     _health = carDTO.health;
-    _maxForwardSpeed = carDTO.maxForwardSpeed;
+    _maxForwardDrive = carDTO.maxForwardDrive;
     _laps = carDTO.lapsCompleted;
 }
 
@@ -286,7 +293,7 @@ void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
     _status.push_back(status);
 
     _maxForwardSpeed += 100;//bpuFud->getSpeedToIncrease();
-    _maxDriveForce = 30;
+    _maxForwardDrive = 30;
 }
 
 void Car::handleMud(MudFUD* mudFud, size_t id){
@@ -330,7 +337,7 @@ void Car::stopEffect(const int& effectType){
     switch (effectType) {
         case TYPE_BOOST_POWERUP :
             _maxForwardSpeed -= 100;
-            _maxDriveForce = 20;
+            _maxForwardDrive= 20;
             break;
         case TYPE_OIL :
             _angularImpulse = 0.9;

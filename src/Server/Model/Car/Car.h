@@ -36,7 +36,8 @@ private:
 
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
-    float _maxDriveForce;
+    float _maxForwardDrive;
+    float _maxBackwardDrive;
     float _desiredTorque;
     float _maxLateralImpulse;
     float _angularImpulse;
