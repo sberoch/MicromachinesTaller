@@ -42,7 +42,7 @@ void GameThread::run() {
             while (incomingEvents.get(event)) {
                 std::cout << "---Command: " << event->j["cmd_id"].get<int>() << std::endl;
                 int clientId = event->j["client_id"];
-                clients[clientId]->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+                clients.at(clientId)->handleInput((InputEnum) event->j["cmd_id"].get<int>());
             }
 
             for (auto& client: clients){

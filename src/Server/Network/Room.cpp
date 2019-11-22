@@ -96,7 +96,7 @@ void Room::addPlayersToJson(json& j){
         jActual["y_init"] = Y_INIT + yDeviation;
         jActual["angle"] = 180;
         j["cars"].push_back(jActual);
-        xDeviation++;
+        xDeviation += 2;
     }
 }
 
