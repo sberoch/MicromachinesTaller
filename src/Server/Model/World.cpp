@@ -15,6 +15,9 @@ World::World(size_t n_of_cars, const std::shared_ptr<Configuration>& configurati
     _contactListener = new ContactListener(_world);
     _world->SetContactListener(_contactListener);
 
+    _destructionListener = new DestructionListener();
+    _world->SetDestructionListener(_destructionListener);
+
     createTrack();
     createGrass();
 
@@ -139,6 +142,8 @@ void World::step(uint32_t velocityIt, uint32_t positionIt){
 }
 
 World::~World(){
+    delete _contactListener;
+    delete _destructionListener;
     delete _world;
 }
 

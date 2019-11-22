@@ -10,12 +10,13 @@
 #include "Grass.h"
 #include "Modifier.h"
 #include "../mods/DTOs.h"
+#include "DestructionListener.h"
 
 using json = nlohmann::json;
 
 class World {
 private:
-    b2World* _world;
+
     float _timeStep;
     std::shared_ptr<Configuration> _configuration;
 
@@ -31,9 +32,12 @@ private:
     size_t _maxId;
 
     ContactListener* _contactListener;
+    DestructionListener* _destructionListener;
 
     void _removeGrabbedModifiers();
     void _updateCarsOnGrass();
+
+    b2World* _world;
 
 public:
     World(size_t n_of_cars, const std::shared_ptr<Configuration>& configuration);
