@@ -8,7 +8,7 @@
 #include "Room.h"
 
 Collector::Collector(std::unordered_map<int, std::shared_ptr<ClientThread>>& clients,
-                     std::unordered_map<int, std::shared_ptr<Room>>& rooms):
+                     std::map<int, std::shared_ptr<Room>>& rooms):
                      clients(clients),
                      rooms(rooms),
                      clientId(-1),
@@ -35,20 +35,21 @@ void Collector::collectDeadClients(){
         }
     }
 
-    for (auto &actualRoom: rooms) {
-        if (actualRoom.second->isDead()) {
-            actualRoom.second = nullptr;
-        }
-    }
+//    for (auto &actualRoom: rooms) {
+//        if (actualRoom.second->isDead()) {
+//            actualRoom.second = nullptr;
+//        }
+//    }
 
     eraseNulls(clients);
-    eraseNulls(rooms);
+    //eraseNulls(rooms);
 }
 
 void Collector::eraseRoom() {
-    if (roomId != -1)
+    if (roomId != -1){
         rooms.erase(roomId);
-    else
+        rooms.insert({roomId, nullptr});
+    } else
         throw std::runtime_error("Se intento eliminar un room con id -1.");
 }
 

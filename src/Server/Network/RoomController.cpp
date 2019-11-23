@@ -12,26 +12,47 @@ RoomController::RoomController(std::atomic_bool &running) :
             listener(clientsWithNoRoom, running, *this),
             config(new Configuration),
             collector(clientsWithNoRoom, rooms){
+
+    rooms.insert({0, nullptr});
+    rooms.insert({1, nullptr});
+    rooms.insert({2, nullptr});
+    rooms.insert({3, nullptr});
+
     listener.start();
+}
+
+int RoomController::getAFreeRoomId() {
+    int freeId = -1;
+    for (auto& actualRoom: rooms){
+        if (actualRoom.second == nullptr){
+            freeId = actualRoom.first;
+            break;
+        }
+    }
+
+    if (freeId == -1)
+        throw std::runtime_error ("Error al obtener una free id para el room.");
+
+    return freeId;
 }
 
 
 int RoomController::addRoom() {
     std::lock_guard<std::mutex> lock(this->m);
-    int roomId = roomCounter.returnAndAddOne();
+    int roomId = getAFreeRoomId();
     std::shared_ptr<Room> room(new Room(acceptSocketRunning,
             roomId, MAX_AMOUNT_OF_CLIENTS, config, *this));
-    rooms.insert({roomId, room});
+    rooms.at(roomId) = room;
     return roomId;
 }
 
 void RoomController::collectDeadClients(){
-    collector.collectDeadClients();
+    //collector.collectDeadClients();
 }
 
 int RoomController::getRoomIdOfClient(int clientId) {
     for (auto &room: rooms) {
-        if (room.second->hasClient(clientId)) {
+        if (room.second && room.second->hasClient(clientId)) {
             return room.first;
         }
     }
@@ -41,7 +62,7 @@ int RoomController::getRoomIdOfClient(int clientId) {
 
 int RoomController::getIdFromRoom(int clientId) {
     for (auto &room: rooms) {
-        if (room.second->hasClient(clientId)) {
+        if (room.second && room.second->hasClient(clientId)) {
             return room.second->getRoomIdFromClient(clientId);
         }
     }
@@ -100,7 +121,8 @@ void RoomController::sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> sna
 void RoomController::sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot){
     std::lock_guard<std::mutex> lock(this->m);
     for (auto& actualRoom: rooms){
-        actualRoom.second->sendSnapshotToClients(snapshot);
+        if (actualRoom.second)
+            actualRoom.second->sendSnapshotToClients(snapshot);
     }
 }
 
@@ -169,6 +191,7 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
 }
 
 void RoomController::eraseRoom(int roomId){
+    auto room = rooms.at(roomId);
     collector.assignRoomId(roomId);
     collector.start();
     listener.eraseRoomFromSnapshot(roomId);
@@ -188,3 +211,5 @@ RoomController::~RoomController() {
     std::cout << "Destroying rooms" << std::endl;
     rooms.clear();
 }
+
+

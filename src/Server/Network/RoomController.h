@@ -21,10 +21,9 @@ class Collector;
 class RoomController {
 private:
     std::unordered_map<int, std::shared_ptr<ClientThread>> clientsWithNoRoom;
-    std::unordered_map<int, std::shared_ptr<Room>> rooms;
+    std::map<int, std::shared_ptr<Room>> rooms;
     SafeQueue<std::string> queue;
     SafeCounter clientCounter;
-    SafeCounter roomCounter;
     std::atomic_bool& acceptSocketRunning;
     std::atomic_bool stopped;
     std::mutex m;
@@ -62,6 +61,8 @@ public:
     int getIdFromRoom(int clientId);
 
     void addExistentClient(const std::shared_ptr<ClientThread>& client);
+
+    int getAFreeRoomId();
 
     void eraseRoom(int roomId);
 };
