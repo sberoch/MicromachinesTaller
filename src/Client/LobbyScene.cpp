@@ -46,8 +46,8 @@ void LobbyScene::update() {
 
 		std::shared_ptr<LobbySnapshot> snap;
         while (lobbyRecvQueue.get(snap)) {
-            updateRooms(snap->getRooms());
             player.globalId = snap->getMyId();
+            updateRooms(snap->getRooms());
         }
     } catch (std::exception &e) {
         std::cerr << "Error from lobby scene" << e.what() << std::endl;
@@ -59,18 +59,21 @@ void LobbyScene::update() {
 void LobbyScene::updateRooms(const RoomsMap& roomsMap) {
 
     this->roomsMap = roomsMap;
+    bool gameStartedWithMeInIt = false;
 
     //Check if any game started and if i'm in it.
     for (auto& room : roomsMap) {
         if (room.second.gameStarted) {
             for (auto& playerId : room.second.players) {
                 if (playerId == player.globalId) {
-                    nextScene = SCENE_GAME;
-                    selectedRoom = -1;
-                    selectedPlayer = -1;
+                    gameStartedWithMeInIt = true;
                 }
             }
         }
+    }
+
+    if (gameStartedWithMeInIt) {
+        clearLobby();
     }
 }
 
@@ -127,8 +130,7 @@ Scene LobbyScene::handle() {
                     sendQueue.push(cmd);
                     audio.playEffect(SFX_BUTTON);
                     nextScene = SCENE_GAME;
-                    selectedRoom = -1;
-                    selectedPlayer = -1;
+                    clearLobby();
                 }
             }
             else if (insideUserButton(x, y)) {
@@ -236,4 +238,13 @@ void LobbyScene::checkInsideAnyPlayer(int x, int y) {
             }
         }
     }
+}
+
+void LobbyScene::clearLobby() {
+    selectedRoom = -1;
+    selectedPlayer = -1;
+    joinedRoom = -1;
+    joinedPlayer = -1;
+    this->roomsMap.clear();
+    lobbyRecvQueue.clear();
 }

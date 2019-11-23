@@ -61,6 +61,7 @@ private:
     bool insideJoinRoomButton(int x, int y);
     void checkInsideAnyRoom(int x, int y);
     void checkInsideAnyPlayer(int x, int y);
+    void clearLobby();
 };
 
 #endif // LOBBY_SCENE_H
