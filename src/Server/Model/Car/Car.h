@@ -34,6 +34,16 @@ class Car{
 private:
     size_t _id;
 
+    float _currentForwardSpeed;
+    float _currentForwardDrive;
+    float _currentBackwardSpeed;
+    float _currentBackwardDrive;
+
+    float _maxForwardSpeedOnGrass;
+    float _maxForwardDriveOnGrass;
+    float _maxBackwardSpeedOnGrass;
+    float _maxBackwardDriveOnGrass;
+
     float _maxForwardSpeed;
     float _maxBackwardSpeed;
     float _maxForwardDrive;
@@ -103,6 +113,8 @@ public:
     void handleMud(MudFUD* mudFud, size_t id);
     void handleOil(OilFUD* oilFud, size_t id);
     void handleRock(RockFUD* rockFud, size_t id);
+
+    void handleGrass();
 
     void stopEffect(const int& effectType);
 

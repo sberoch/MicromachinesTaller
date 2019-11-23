@@ -27,10 +27,9 @@ Car::Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_ini
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0),
         _maxHealth(configuration->getCarMaxHealth()),
         _health(configuration->getCarMaxHealth()),
-        _maxForwardSpeed(60),
-        _maxBackwardSpeed(-10),
-        _maxForwardDrive(20),
-        _maxBackwardDrive(10),
+        _maxForwardSpeed(60), _maxBackwardSpeed(-10), _maxForwardDrive(20), _maxBackwardDrive(10),
+        _maxForwardSpeedOnGrass(30), _maxForwardDriveOnGrass(10), _maxBackwardSpeedOnGrass(-2), _maxBackwardDriveOnGrass(1),
+        _currentForwardSpeed(60), _currentForwardDrive(20), _currentBackwardSpeed(-10), _currentBackwardDrive(10),
         _desiredTorque(25),
         _maxLateralImpulse(configuration->getCarMaxLateralImpulse()),
         _angularImpulse(configuration->getCarAngularImpulse()),
@@ -103,13 +102,15 @@ void Car::accelerate(){
 
     //apply necessary force
     float force = 0;
-    if (_maxForwardDrive < 0)
+    if (_currentForwardDrive < 0){
+        std::cout << "Current forward drive is less than 0\n";
         return;
+    }
 
-    if (_maxForwardSpeed > currentSpeed)
-        force = _maxForwardDrive;
-    else if (_maxForwardSpeed < currentSpeed)
-        force = -_maxForwardDrive;
+    if (_currentForwardSpeed > currentSpeed)
+        force = _currentForwardDrive;
+    else if (_currentForwardSpeed < currentSpeed)
+        force = -_currentForwardDrive;
     else
         return;
     _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
@@ -123,14 +124,11 @@ void Car::desaccelerate(){
     float currentSpeed = b2Dot(getForwardVelocity(), currentForwardNormal);
 
     //apply necessary force
-    if (_maxForwardDrive < 0)
-        return;
-
     float force = 0;
-    if ( _maxBackwardSpeed > currentSpeed )
-        force = _maxBackwardDrive;
-    else if ( _maxBackwardSpeed < currentSpeed )
-        force = -_maxBackwardDrive;
+    if ( _currentBackwardSpeed > currentSpeed )
+        force = _currentBackwardDrive;
+    else if ( _currentBackwardSpeed < currentSpeed )
+        force = -_currentBackwardDrive;
     else
         return;
     _carBody->ApplyForce(force * currentForwardNormal, _carBody->GetWorldCenter(), true);
@@ -169,12 +167,25 @@ void Car::updateTraction(){
 void Car::addGroundArea(GroundAreaFUD* ga){
     _groundArea = ga;
     if (ga->grass){
-        std::shared_ptr<Status> status(new Status);
-        status->status = ON_GRASS;
-        _status.push_back(status);
         _onGrass = true;
+        _currentForwardSpeed = _maxForwardSpeedOnGrass + (_currentForwardSpeed - _maxForwardSpeed);
+        _currentForwardDrive = _maxForwardDriveOnGrass + (_currentForwardDrive - _maxForwardDrive);
     } else {
         _onGrass = false;
+
+        if (_maxForwardSpeed + (_currentForwardSpeed - _maxForwardSpeed) > 0)
+            _currentForwardSpeed = _maxForwardSpeed + (_currentForwardSpeed - _maxForwardSpeed);
+        else
+            _currentForwardSpeed = _maxForwardSpeed;
+        if (_maxForwardDrive + (_currentForwardDrive - _maxForwardDrive) > 0)
+            _currentForwardDrive = _maxForwardDrive + (_currentForwardDrive - _maxForwardDrive);
+        else
+            _currentForwardDrive = _maxForwardDrive;
+        //TODO see if this collides with other features
+        std::cout << "\nCurrent speed " << _currentForwardSpeed << " " << _currentForwardDrive << '\n';
+        if (_currentForwardSpeed < 0){
+            std::cout << "0\n";
+        }
     }
 }
 
@@ -298,8 +309,8 @@ void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
     status->id = id;
     _status.push_back(status);
 
-    _maxForwardSpeed += 100;//bpuFud->getSpeedToIncrease();
-    _maxForwardDrive = 30;
+    _currentForwardSpeed += 100;//bpuFud->getSpeedToIncrease();
+    _currentForwardDrive = 30;
 }
 
 void Car::handleMud(MudFUD* mudFud, size_t id){
@@ -338,14 +349,11 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
 void Car::stopEffect(const int& effectType){
     switch (effectType) {
         case TYPE_BOOST_POWERUP :
-            _maxForwardSpeed -= 100;
-            _maxForwardDrive= 20;
+            _currentForwardSpeed -= 100;
+            _currentForwardDrive = 20;
             break;
         case TYPE_OIL :
             _angularImpulse = 0.9;
-            break;
-        case TYPE_GRASS :
-            //If it is still in grass after n steps reduce vel in half
             break;
     }
 }
