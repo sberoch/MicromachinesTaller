@@ -24,8 +24,18 @@ Configuration::Configuration() {
     _carHalfWidth = carConfig["carHalfWidth"].get<float>();
     _carHalfHeight = carConfig["carHalfHeight"].get<float>();
     _maxHealth = carConfig["maxHealth"].get<float>();
-    _maxForwardVelocity = carConfig["maxForwardVelocity"].get<float>();
-    _maxBackwardsVelocity = carConfig["maxBackwardsVelocity"].get<float>();
+    _maxForwardSpeed = carConfig["maxForwardSpeed"].get<float>();
+    _maxForwardDrive = carConfig["maxForwardDrive"].get<float>();
+    _maxBackwardsSpeed = carConfig["maxBackwardsSpeed"].get<float>();
+    _maxBackwardDrive = carConfig["maxForwardDrive"].get<float>();
+    _maxForwardSpeedOnGrass = carConfig["maxForwardSpeedOnGrass"].get<float>();
+    _maxForwardDriveOnGrass = carConfig["maxForwardDriveOnGrass"].get<float>();
+    _maxBackwardSpeedOnGrass = carConfig["maxBackwardSpeedOnGrass"].get<float>();
+    _maxBackwardDriveOnGrass = carConfig["maxBackwardDriveOnGrass"].get<float>();
+    _currentForwardSpeed = carConfig["currentForwardSpeed"].get<float>();
+    _currentForwardDrive = carConfig["currentForwardDrive"].get<float>();
+    _currentBackwardSpeed = carConfig["currentBackwardSpeed"].get<float>();
+    _currentBackwardDrive = carConfig["currentBackwardDrive"].get<float>();
     _maxLateralImpulse = carConfig["maxLateralImpulse"].get<float>();
     _maxDriveForce = carConfig["maxDriveForce"].get<float>();
     _angularImpulse = carConfig["angularImpulse"].get<float>();
@@ -125,20 +135,56 @@ float Configuration::getCarMaxHealth(){
     return _maxHealth;
 }
 
-float Configuration::getCarMaxForwardVelocity(){
-    return _maxForwardVelocity;
+float Configuration::getMaxForwardSpeed(){
+    return _maxForwardSpeed;
 }
 
-float Configuration::getCarMaxBackwardsVelocity(){
-    return _maxBackwardsVelocity;
+float Configuration::getMaxForwardDrive(){
+    return _maxForwardDrive;
+}
+
+float Configuration::getMaxBackwardsSpeed(){
+    return _maxBackwardsSpeed;
+}
+
+float Configuration::getMaxBackwardDrive(){
+    return _maxBackwardDrive;
+}
+
+float Configuration::getMaxForwardSpeedOnGrass(){
+    return _maxForwardSpeedOnGrass;
+}
+
+float Configuration::getMaxForwardDriveOnGrass(){
+    return _maxForwardDriveOnGrass;
+}
+
+float Configuration::getMaxBackwardSpeedOnGrass(){
+    return _maxBackwardSpeedOnGrass;
+}
+
+float Configuration::getMaxBackwardDriveOnGrass(){
+    return _maxBackwardDriveOnGrass;
+}
+
+float Configuration::getCurrentForwardSpeed(){
+    return _currentForwardSpeed;
+}
+
+float Configuration::getCurrentForwardDrive(){
+    return _currentForwardDrive;
+}
+
+float Configuration::getCurrentBackwardSpeed(){
+    return _currentBackwardSpeed;
+}
+
+float Configuration::getCurrentBackwardDrive(){
+    return _currentBackwardDrive;
 }
 
 float Configuration::getCarMaxLateralImpulse(){
     return _maxLateralImpulse;
-}
-
-float Configuration::getCarMaxDriveForce(){
-    return _maxDriveForce;
 }
 
 float Configuration::getCarAngularImpulse(){
