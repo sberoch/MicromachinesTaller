@@ -3,11 +3,11 @@
 
 #include <cstdio>
 #include <string>
+#include "SdlWindow.h"
 
 class ScreenRecorder {
 private:
-    std::string wScreen;
-    std::string hScreen;
+    SdlWindow& window;
     std::string outfile;
     std::string framerate;
 
@@ -16,7 +16,7 @@ private:
     FILE* process = nullptr;
 
 public:
-    ScreenRecorder(int wScreen, int hScreen);
+    ScreenRecorder(SdlWindow& window);
     void start();
     bool recording();
     void close();

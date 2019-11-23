@@ -6,7 +6,7 @@ using json = nlohmann::json;
 GameScene::GameScene(SdlWindow& window, SafeQueue<std::shared_ptr<SnapshotEvent>>& recvQueue,
 					 SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player) :
 	window(window),
-	recorder(REC_SIZE_HOR, REC_SIZE_VERT),
+	recorder(window),
 	isDone(false),
 	recvQueue(recvQueue),
 	sendQueue(sendQueue),

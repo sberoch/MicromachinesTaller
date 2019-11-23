@@ -2,9 +2,8 @@
 #include <stdexcept>
 #include <iostream>
 
-ScreenRecorder::ScreenRecorder(int wScreen, int hScreen) :
-    wScreen(std::to_string(wScreen)),
-    hScreen(std::to_string(hScreen)),
+ScreenRecorder::ScreenRecorder(SdlWindow& window) :
+    window(window),
     outfile("out.mp4"),
     framerate("40"),
     _recording(false) {}
@@ -15,7 +14,7 @@ void ScreenRecorder::start() {
     std::string remove_command = std::string("rm -f ") + "\"" + outfile + "\"";
 
     if (std::system(remove_command.c_str()) != 0) {
-        throw std::runtime_error("ScreenRecorder: couldn't delete old outfile.");
+        throw std::runtime_error("Error al borrar el archivo antiguo");
     }
 
     process = ::popen(ffmpeg_command.c_str(), "w");
@@ -25,8 +24,11 @@ void ScreenRecorder::start() {
 }
 
 std::string ScreenRecorder::getCommand() {
-    std::string command = "ffmpeg -loglevel quiet";
-    std::string video_size = " -video_size " + wScreen + "x" + hScreen;
+    int wScreen, hScreen;
+    window.getWindowSize(&wScreen, &hScreen);
+
+    std::string command = "ffmpeg";
+    std::string video_size = " -video_size " + std::to_string(wScreen) + "x" + std::to_string(hScreen);
     std::string framerate_c = " -framerate " + framerate;
     std::string device = " -f x11grab";
     std::string offset = " -i :0.0+0,0";
