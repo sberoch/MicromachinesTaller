@@ -405,56 +405,6 @@ void Car::assignId(int id) {
     this->_id = id;
 }
 
-//////////////////////// CAR MOVING STATE ///////////////////////////
 
 
 
-//////////////////////// CAR TURNING STATE ///////////////////////////
-
-class NotTurningState : public CarTurningState{
-public:
-    std::shared_ptr<CarTurningState> handleInput(Car& car, const InputEnum& input){
-        return makeTurningState(input);
-    }
-
-    void update(Car& car){
-        //Continue in straight direction
-
-    }
-};
-
-class TurningLeftState : public CarTurningState {
-public:
-    std::shared_ptr<CarTurningState> handleInput(Car& car, const InputEnum& input){
-        return makeTurningState(input);
-    }
-
-    void update(Car& car){
-        //Turn left
-        car.turnLeft();
-    }
-};
-
-class TurningRightState : public CarTurningState {
-public:
-    std::shared_ptr<CarTurningState> handleInput(Car& car, const InputEnum& input){
-        return makeTurningState(input);
-    }
-
-    void update(Car& car){
-        //Turn right
-        car.turnRight();
-    }
-};
-
-std::shared_ptr<CarTurningState> CarTurningState::makeTurningState(const InputEnum& input){
-    if (input == STOP_TURNING_LEFT || input == STOP_TURNING_RIGHT) {
-        return std::shared_ptr<CarTurningState>(new NotTurningState());
-    } else if (input == TURN_RIGHT) {
-        return std::shared_ptr<CarTurningState>(new TurningRightState());
-    } else if(input == TURN_LEFT) {
-        return std::shared_ptr<CarTurningState>(new TurningLeftState());
-    }
-
-    return nullptr;
-}

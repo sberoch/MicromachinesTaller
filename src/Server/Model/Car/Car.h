@@ -9,8 +9,8 @@
 #include "../Track.h"
 #include "../mods/DTOs.h"
 
-//class CarMovingState;
-#include "CarMovingState.h"
+#include "MovingState/CarMovingState.h"
+#include "TurningState/CarTurningState.h"
 
 enum StatusType {
     GRABBED_HEALTH_POWERUP,
@@ -145,14 +145,6 @@ public:
     void dtoToModel(const CarDTO_t& carDTO);
 
     ~Car() = default;
-};
-
-class CarTurningState {
-public:
-    static std::shared_ptr<CarTurningState> makeTurningState(const InputEnum& input);
-    virtual std::shared_ptr<CarTurningState> handleInput(Car& car, const InputEnum& input) = 0;
-    virtual void update(Car& car) = 0;
-    virtual ~CarTurningState(){}
 };
 
 #endif //MICROMACHINES_CAR_H
