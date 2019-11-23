@@ -166,26 +166,43 @@ void Car::updateTraction(){
 
 void Car::addGroundArea(GroundAreaFUD* ga){
     _groundArea = ga;
+
+    float speedToModify = 0;
+    if (onGrass())
+        speedToModify = _currentForwardSpeed - _maxForwardSpeedOnGrass;
+    else
+        speedToModify = _currentForwardSpeed - _maxForwardSpeed;
+
+    float driveToModify = 0;
+    if (onGrass())
+        driveToModify = _currentForwardDrive - _maxForwardDriveOnGrass;
+    else
+        driveToModify = _currentForwardDrive - _maxForwardDrive;
+
     if (ga->grass){
         _onGrass = true;
-        _currentForwardSpeed = _maxForwardSpeedOnGrass + (_currentForwardSpeed - _maxForwardSpeed);
-        _currentForwardDrive = _maxForwardDriveOnGrass + (_currentForwardDrive - _maxForwardDrive);
+
+        if (_maxForwardSpeedOnGrass + speedToModify > 0)
+            _currentForwardSpeed = _maxForwardSpeedOnGrass + speedToModify;
+        else
+            _currentForwardSpeed = _maxForwardSpeedOnGrass;
+
+        if (_maxForwardDriveOnGrass + driveToModify > 0)
+            _currentForwardDrive = _maxForwardDriveOnGrass + driveToModify;
+        else
+            _currentForwardDrive = _maxForwardDriveOnGrass;
     } else {
         _onGrass = false;
 
-        if (_maxForwardSpeed + (_currentForwardSpeed - _maxForwardSpeed) > 0)
-            _currentForwardSpeed = _maxForwardSpeed + (_currentForwardSpeed - _maxForwardSpeed);
+        if (_maxForwardSpeed + speedToModify > 0)
+            _currentForwardSpeed = _maxForwardSpeed + speedToModify;
         else
             _currentForwardSpeed = _maxForwardSpeed;
-        if (_maxForwardDrive + (_currentForwardDrive - _maxForwardDrive) > 0)
-            _currentForwardDrive = _maxForwardDrive + (_currentForwardDrive - _maxForwardDrive);
+
+        if (_maxForwardDrive + driveToModify > 0)
+            _currentForwardDrive = _maxForwardDrive + driveToModify;
         else
             _currentForwardDrive = _maxForwardDrive;
-        //TODO see if this collides with other features
-        std::cout << "\nCurrent speed " << _currentForwardSpeed << " " << _currentForwardDrive << '\n';
-        if (_currentForwardSpeed < 0){
-            std::cout << "0\n";
-        }
     }
 }
 
@@ -349,8 +366,8 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
 void Car::stopEffect(const int& effectType){
     switch (effectType) {
         case TYPE_BOOST_POWERUP :
-            _currentForwardSpeed -= 100;
-            _currentForwardDrive = 20;
+            _currentForwardSpeed = _maxForwardSpeed;
+            _currentForwardDrive = _maxForwardDrive;
             break;
         case TYPE_OIL :
             _angularImpulse = 0.9;
