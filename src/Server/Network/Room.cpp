@@ -24,7 +24,8 @@ Room::Room(std::atomic_bool& acceptSocketRunning,
                                                 roomRunning,
                                                 incomingEvents,
                                                 clients,
-                                                controller)){}
+                                                controller,
+                                                roomId)){}
 
 void Room::run() {
     try{

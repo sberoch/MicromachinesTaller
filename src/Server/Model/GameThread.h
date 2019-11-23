@@ -22,6 +22,7 @@ private:
     SafeQueue<std::shared_ptr<Event>>& incomingEvents;
     std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients;
     RoomController& controller;
+    int roomId;
 
 public:
     GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration,
@@ -29,7 +30,8 @@ public:
              std::atomic_bool& roomRunning,
              SafeQueue<std::shared_ptr<Event>>& incomingEvents,
              std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients,
-             RoomController& controller);
+             RoomController& controller,
+             int roomId);
 
     void run() override;
 

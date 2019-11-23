@@ -16,7 +16,8 @@ GameThread::GameThread(size_t n_of_players,
                     std::atomic_bool& roomRunning,
                     SafeQueue<std::shared_ptr<Event>>& incomingEvents,
                     std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients,
-                    RoomController& controller) :
+                    RoomController& controller,
+                    int roomId) :
                                              _configuration(configuration),
                                              _world(n_of_players, configuration),
                                              _worldDTO(),
@@ -24,7 +25,8 @@ GameThread::GameThread(size_t n_of_players,
                                              roomRunning(roomRunning),
                                              incomingEvents(incomingEvents),
                                              clients(clients),
-                                             controller(controller){
+                                             controller(controller),
+                                             roomId(roomId){
 
 }
 
@@ -159,6 +161,9 @@ void GameThread::handleEvent(const std::shared_ptr<Event>& event) {
             std::shared_ptr<ClientThread> finishedPlayer = finishedPlayers.at(clientId);
             controller.addExistentClient(finishedPlayer);
             finishedPlayers.erase(clientId);
+            if (clients.empty() && finishedPlayers.empty()){
+                controller.eraseRoom(roomId);
+            }
             break;
         }
         default:

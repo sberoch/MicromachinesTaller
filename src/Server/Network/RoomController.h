@@ -61,6 +61,8 @@ public:
     int getIdFromRoom(int clientId);
 
     void addExistentClient(const std::shared_ptr<ClientThread>& client);
+
+    void eraseRoom(int roomId);
 };
 
 
