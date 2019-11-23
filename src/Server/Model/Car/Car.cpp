@@ -322,7 +322,7 @@ void Car::handleHealthPowerup(size_t id){
 void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_BOOST_POWERUP;
-    status->timeOfAction = bpuFud->getActionTime();
+    status->timeOfAction = 125; //bpuFud->getActionTime();
     status->id = id;
     _status.push_back(status);
 
@@ -352,6 +352,7 @@ void Car::handleOil(OilFUD* oilFud, size_t id){
 void Car::handleRock(RockFUD* rockFud, size_t id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_ROCK;
+    status->timeOfAction = 125;
     status->id = id;
     _status.push_back(status);
     float velToReduce = rockFud->getVelToReduce();
@@ -360,7 +361,11 @@ void Car::handleRock(RockFUD* rockFud, size_t id){
     if (_health <= healthToReduce)
         explode();
     _health -= healthToReduce;
-    //TODO Que baje aceleracion
+
+    if (_currentForwardSpeed > 10 && _currentForwardDrive > 5){
+        _currentForwardSpeed -= 10;
+        _currentForwardDrive -= 5;
+    }
 }
 
 void Car::stopEffect(const int& effectType){
@@ -371,6 +376,10 @@ void Car::stopEffect(const int& effectType){
             break;
         case TYPE_OIL :
             _angularImpulse = 0.9;
+            break;
+        case TYPE_ROCK:
+            _currentForwardSpeed += 10;
+            _currentForwardDrive += 5;
             break;
     }
 }
