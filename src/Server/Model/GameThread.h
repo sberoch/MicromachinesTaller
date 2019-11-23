@@ -19,6 +19,7 @@ private:
     std::unordered_map<int, std::shared_ptr<ClientThread>> finishedPlayers;
     std::atomic_bool& acceptSocketRunning;
     std::atomic_bool& roomRunning;
+    std::atomic_bool& gameStarted;
     SafeQueue<std::shared_ptr<Event>>& incomingEvents;
     std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients;
     RoomController& controller;
@@ -26,8 +27,9 @@ private:
 
 public:
     GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration,
-                std::atomic_bool& acceptSocketRunning,
+             std::atomic_bool& acceptSocketRunning,
              std::atomic_bool& roomRunning,
+             std::atomic_bool& gameStarted,
              SafeQueue<std::shared_ptr<Event>>& incomingEvents,
              std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients,
              RoomController& controller,

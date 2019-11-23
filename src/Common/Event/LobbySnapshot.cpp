@@ -94,6 +94,10 @@ void LobbySnapshot::createRoom(int room_id) {
             std::move(players), std::move(selectedCars));
 }
 
+void LobbySnapshot::eraseRoom(int roomId){
+    this->roomsMap.erase(roomId);
+}
+
 
 void LobbySnapshot::removeIdFromOldRoom(int player_id){
     for (auto& actualRoom: roomsMap){

@@ -165,7 +165,9 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
 }
 
 void RoomController::eraseRoom(int roomId){
-    //this->rooms.erase(roomId);
+    collector.assignRoomId(roomId);
+    collector.start();
+    listener.eraseRoom(roomId);
 }
 
 

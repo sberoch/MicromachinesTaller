@@ -14,6 +14,7 @@ GameThread::GameThread(size_t n_of_players,
                     const std::shared_ptr<Configuration>& configuration,
                     std::atomic_bool& acceptSocketRunning,
                     std::atomic_bool& roomRunning,
+                    std::atomic_bool& gameStarted,
                     SafeQueue<std::shared_ptr<Event>>& incomingEvents,
                     std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients,
                     RoomController& controller,
@@ -23,6 +24,7 @@ GameThread::GameThread(size_t n_of_players,
                                              _worldDTO(),
                                              acceptSocketRunning(acceptSocketRunning),
                                              roomRunning(roomRunning),
+                                             gameStarted(gameStarted),
                                              incomingEvents(incomingEvents),
                                              clients(clients),
                                              controller(controller),
@@ -112,7 +114,7 @@ void GameThread::run() {
             std::cout << "SocketErrorFromGameTrhead" << se.what() <<std::endl;
         } catch (std::exception &e){
             roomRunning = false;
-            std::cout << "Excepcion desde game thread: " << std::endl;
+            std::cout << "Excepcion desde game thread: " << e.what() <<std::endl;
         } catch (...) {
             roomRunning = false;
             std::cerr << "Game Thread: UnknownException.\n";
@@ -153,8 +155,10 @@ void GameThread::handleEvent(const std::shared_ptr<Event>& event) {
 
     switch (type){
         case COMMAND: {
-            std::shared_ptr<ClientThread> client = clients.at(clientId);
-            client->handleEvent(event);
+            if (clients.count(clientId)){
+                std::shared_ptr<ClientThread> client = clients.at(clientId);
+                client->handleEvent(event);
+            }
             break;
         }
         case MENU: {

@@ -10,7 +10,9 @@
 Collector::Collector(std::unordered_map<int, std::shared_ptr<ClientThread>>& clients,
                      std::unordered_map<int, std::shared_ptr<Room>>& rooms):
                      clients(clients),
-                     rooms(rooms){}
+                     rooms(rooms),
+                     clientId(-1),
+                     roomId(-1){}
 
 template<class T1, class T2>
 void eraseNulls(std::unordered_map<T1, T2>& map) {
@@ -41,6 +43,21 @@ void Collector::collectDeadClients(){
 
     eraseNulls(clients);
     eraseNulls(rooms);
+}
+
+void Collector::eraseRoom() {
+    if (roomId != -1)
+        rooms.erase(roomId);
+    else
+        throw std::runtime_error("Se intento eliminar un room con id -1.");
+}
+
+void Collector::assignRoomId(int roomId){
+    this->roomId = roomId;
+}
+
+void Collector::run() {
+    eraseRoom();
 }
 
 Collector::~Collector() = default;

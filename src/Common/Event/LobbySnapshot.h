@@ -37,9 +37,10 @@ public:
     const RoomsMap& getRooms();
     int getMyId();
     bool gameStarted(int player_id);
+    void eraseRoom(int roomId);
+    void setPlayerId(int id);
 
     virtual ~LobbySnapshot() = default;
-    void setPlayerId(int id);
 
 private:
     void addRoom(int id, bool gameStarted, std::list<int> players, std::vector<bool> selectedCars);
