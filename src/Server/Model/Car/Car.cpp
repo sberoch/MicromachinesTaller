@@ -407,51 +407,6 @@ void Car::assignId(int id) {
 
 //////////////////////// CAR MOVING STATE ///////////////////////////
 
-class NegAcceleratingState : public CarMovingState {
-public:
-    std::shared_ptr<CarMovingState> handleInput(Car& car, const InputEnum& input){
-        return makeMovingState(input);
-    }
-
-    void update(Car& car){
-        car.desaccelerate();
-    }
-};
-
-class AcceleratingState : public CarMovingState {
-public:
-    std::shared_ptr<CarMovingState> handleInput(Car& car, const InputEnum& input){
-        return makeMovingState(input);
-    }
-
-    void update(Car& car) {
-        //Accelerate
-        car.accelerate();
-    }
-};
-
-class WithoutAcceleratingState : public CarMovingState {
-public:
-    std::shared_ptr<CarMovingState> handleInput(Car& car, const InputEnum& input){
-        return makeMovingState(input);
-    }
-
-    void update(Car& car) {
-        //Rozamiento con el piso???
-        //car.friction();
-    }
-};
-
-std::shared_ptr<CarMovingState> CarMovingState::makeMovingState(const InputEnum& input){
-    if (input == STOP_ACCELERATING || input == STOP_DESACCELERATING){
-        return std::shared_ptr<CarMovingState>(new WithoutAcceleratingState());
-    } else if (input == ACCELERATE) {
-        return std::shared_ptr<CarMovingState>(new AcceleratingState());
-    } else if(input == DESACCELERATE) {
-        return std::shared_ptr<CarMovingState>(new NegAcceleratingState());
-    }
-    return nullptr;
-}
 
 
 //////////////////////// CAR TURNING STATE ///////////////////////////

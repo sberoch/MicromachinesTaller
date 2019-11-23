@@ -9,6 +9,9 @@
 #include "../Track.h"
 #include "../mods/DTOs.h"
 
+//class CarMovingState;
+#include "CarMovingState.h"
+
 enum StatusType {
     GRABBED_HEALTH_POWERUP,
     GRABBED_BOOST_POWERUP,
@@ -142,14 +145,6 @@ public:
     void dtoToModel(const CarDTO_t& carDTO);
 
     ~Car() = default;
-};
-
-class CarMovingState{
-public:
-    static std::shared_ptr<CarMovingState> makeMovingState(const InputEnum& input);
-    virtual std::shared_ptr<CarMovingState> handleInput(Car& car, const InputEnum& input) = 0;
-    virtual void update(Car& car) = 0;
-    virtual ~CarMovingState(){}
 };
 
 class CarTurningState {
