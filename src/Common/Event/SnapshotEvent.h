@@ -14,7 +14,7 @@ enum SnapshotGameEventType {
     MAP_LOAD_FINISHED = 2,
 	MUD_SPLAT = 3,
 	GAME_OVER = 4,
-	LAP_COMPLETED = 5
+	LAP_COMPLETED = 5,
 };
 
 struct GameEventStruct {

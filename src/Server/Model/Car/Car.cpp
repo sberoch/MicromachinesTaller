@@ -45,7 +45,7 @@ Car::Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_ini
         _onGrass(false), _isMoving(false), _exploded(false),
         _tracks(),  _groundArea(),
         _currentTraction(1), _status(),
-        _maxLaps(3), _maxtracksToLap(max_tracks), _laps(0), _winner(false),
+        _maxLaps(1), _maxtracksToLap(max_tracks), _laps(0), _winner(false),
         cFUD(new CarFUD(_id)){
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);

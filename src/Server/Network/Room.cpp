@@ -11,7 +11,8 @@
 
 Room::Room(std::atomic_bool& acceptSocketRunning,
         int roomId, int amountOfPlayers,
-        const std::shared_ptr<Configuration>& config): roomId(roomId),
+        const std::shared_ptr<Configuration>& config,
+        RoomController& controller): roomId(roomId),
                                               maxAmountOfPlayers(amountOfPlayers),
                                               acceptSocketRunning(acceptSocketRunning),
                                               roomRunning(true),
@@ -21,8 +22,11 @@ Room::Room(std::atomic_bool& acceptSocketRunning,
                                                     config,
                                                 acceptSocketRunning,
                                                 roomRunning,
+                                                gameStarted,
                                                 incomingEvents,
-                                                clients)){}
+                                                clients,
+                                                controller,
+                                                roomId)){}
 
 void Room::run() {
     try{

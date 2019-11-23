@@ -10,6 +10,7 @@
 #include "PlayEvent.h"
 #include "CreateRoomEvent.h"
 #include "LobbySnapshot.h"
+#include "GoBackToMenuEvent.h"
 #include <memory>
 #include <iostream>
 
@@ -28,20 +29,19 @@ std::shared_ptr<Event> EventCreator::makeEvent(const std::string& recvdEvent){
             return std::shared_ptr<Event>(new SnapshotEvent);
         case ENTER_LOBBY:
             return std::shared_ptr<Event>(new EnterLobbyEvent);
-
         case ENTER_ROOM:
             id = j["client_id"].get<int>();
             selectedRoom = j["selected_room"].get<int>();
             selectedPlayer = j["selected_player"].get<int>();
             return std::shared_ptr<Event>(new EnterRoomEvent(id, selectedRoom, selectedPlayer));
-
         case CREATE_ROOM:
             return std::shared_ptr<Event>(new CreateRoomEvent);
-
-        case PLAY: {
+        case PLAY:
             id = j["client_id"].get<int>();
             return std::shared_ptr<Event>(new PlayEvent(id));
-        }
+        case MENU:
+            id = j["client_id"].get<int>();
+            return std::shared_ptr<Event>(new GoBackToMenuEvent(id));
 
         default:
             throw std::runtime_error("Wrong event type");

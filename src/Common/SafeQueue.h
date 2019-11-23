@@ -25,6 +25,7 @@ public:
 	bool get(T& elem);
 	bool empty();
 	uint32_t size();
+	void clear();
 
 	SafeQueue(SafeQueue&& otra) = delete;
     SafeQueue(const SafeQueue& otra) = delete;
@@ -76,6 +77,13 @@ template<class T>
 bool SafeQueue<T>::get(T &elem) {
     this->pop(elem);
     return !(elem == NULL);
+}
+
+template<class T>
+void SafeQueue<T>::clear() {
+    while (!elems.empty()) {
+        elems.pop();
+    }
 }
 
 #endif // BLOCKING_QUEUE_H

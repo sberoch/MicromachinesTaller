@@ -4,12 +4,16 @@ _n_accelerate = 0
 _n_turn_right = 0
 _n_turn_left = 0
 _n_desaccelerate = 0
+_n_stop_turn_right = 0
+_n_stop_turn_left = 0
 
 _prev_x = 0
 _prev_y = 0
 _isFirstMove = true
 _MAX_VEL_ON_TURNS = 25
 _justDesaccelerated = false
+_justTurnedLeft = false
+_justTurnedRight = false
 
 tracks = nil
 firstAssigned = false
@@ -25,13 +29,15 @@ function addToTrackTable(trackX, trackY, trackAngle)
 end
 
 --Set constants
-function setupInitialValues(halfHorSizeTr, halfVertSizeTr, n_acc, n_tr, n_tl, n_desacc)
+function setupInitialValues(halfHorSizeTr, halfVertSizeTr, n_acc, n_tr, n_tl, n_desacc, n_stop_tr, n_stop_tl)
 	_halfHorSizeTr = halfHorSizeTr
 	_halfVertSizeTr = halfVertSizeTr
 	_n_accelerate = n_acc
 	_n_turn_right = n_tr
 	_n_turn_left = n_tl
 	_n_desaccelerate = n_desacc
+	_n_stop_turn_right = n_stop_tr
+	_n_stop_turn_left = n_stop_tl
 	current = first
 end
 
@@ -61,19 +67,28 @@ function getNextMovement(carX, carY, carAngle)
 			avgX, avgY = getAvgPoint(tr.x, tr.y, second.x, second.y)
 
 
-			--check angle diff with average point and return action
+			--check angle diff with average point
 			diff = getDifferenceAngle(carX, carY, carAngle, avgX, avgY)
 			print(string.format("angleDiff: %s", diff))
 			velocity = getVelocity(carX, carY)
+
+			--return action
 			if shouldBrake(velocity, diff) then
+				_justTurnedLeft = false
+				_justTurnedRight = false
 				_justDesaccelerated = true
 				return _n_desaccelerate
+
 			elseif velocity == 0 then
+				_justTurnedLeft = false
+				_justTurnedRight = false
 				_justDesaccelerated = false
 				return _n_accelerate
+
 			else
 				_justDesaccelerated = false
 				return getMoveFromAngleDiff(diff)
+
 			end
 		end
 	end
@@ -93,14 +108,32 @@ end
 
 function getMoveFromAngleDiff(angleDiff)
 	if (angleDiff < -15) then
+		_justTurnedLeft = true
+		_justTurnedRight = false
 		print(string.format("L"))
 		return _n_turn_left
+
 	elseif (angleDiff > 15) then
+		_justTurnedLeft = false
+		_justTurnedRight = true
 		print(string.format("R"))
 		return _n_turn_right
+
 	else
-		print(string.format("A"))
-		return _n_accelerate
+		if _justTurnedLeft then
+			_justTurnedLeft = false
+			return _n_stop_turn_left
+
+		elseif _justTurnedRight then
+			_justTurnedRight = false
+			return _n_stop_turn_right
+
+		else
+			_justTurnedLeft = false
+			_justTurnedRight = false
+			print(string.format("A"))
+			return _n_accelerate
+		end
 	end
 end
 

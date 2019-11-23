@@ -17,6 +17,7 @@ private:
 	bool _done;
 	bool _isGameMode;
 	Scene& _currentScene;
+
 public:
 	ReceiverThread(SafeQueue<std::shared_ptr<SnapshotEvent>>& gameRecvQueue,
 					SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue,
@@ -28,6 +29,11 @@ public:
 
 	ReceiverThread(ReceiverThread &copy) = delete;
 	ReceiverThread& operator=(const ReceiverThread &c) = delete;
+
+private:
+	void receiveLobbySnapshots();
+	void receiveGameSnapshots();
+	void receiveEndSnapshots();
 };
 
 #endif // RECEIVER_THREAD_H

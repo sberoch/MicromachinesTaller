@@ -17,7 +17,8 @@ enum Type {
     ENTER_ROOM = 3,
     CREATE_ROOM = 4,
     PLAY = 5,
-    LOBBY_SNAPSHOT = 6
+    LOBBY_SNAPSHOT = 6,
+    MENU = 7
 };
 
 class Event {

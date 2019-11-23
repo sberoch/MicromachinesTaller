@@ -39,14 +39,15 @@ bool LobbyScene::done() {
 }
 
 void LobbyScene::update() {
+    nextScene = SCENE_LOBBY;
     try {
         window.getWindowSize(&xScreen, &yScreen);
         backgroundLobby.setDims(xScreen, yScreen);
 
 		std::shared_ptr<LobbySnapshot> snap;
         while (lobbyRecvQueue.get(snap)) {
-            updateRooms(snap->getRooms());
             player.globalId = snap->getMyId();
+            updateRooms(snap->getRooms());
         }
     } catch (std::exception &e) {
         std::cerr << "Error from lobby scene" << e.what() << std::endl;
@@ -58,16 +59,21 @@ void LobbyScene::update() {
 void LobbyScene::updateRooms(const RoomsMap& roomsMap) {
 
     this->roomsMap = roomsMap;
+    bool gameStartedWithMeInIt = false;
 
     //Check if any game started and if i'm in it.
     for (auto& room : roomsMap) {
         if (room.second.gameStarted) {
             for (auto& playerId : room.second.players) {
                 if (playerId == player.globalId) {
-                    nextScene = SCENE_GAME;
+                    gameStartedWithMeInIt = true;
                 }
             }
         }
+    }
+
+    if (gameStartedWithMeInIt) {
+        clearLobby();
     }
 }
 
@@ -124,6 +130,7 @@ Scene LobbyScene::handle() {
                     sendQueue.push(cmd);
                     audio.playEffect(SFX_BUTTON);
                     nextScene = SCENE_GAME;
+                    clearLobby();
                 }
             }
             else if (insideUserButton(x, y)) {
@@ -221,12 +228,23 @@ void LobbyScene::checkInsideAnyPlayer(int x, int y) {
     for (int i = 0; i < 4; ++i) {
 
         Area btn(0.65*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
-        bool alreadyPicked = roomsMap.at(selectedRoom).selectedCars.at(i);
-        bool canChange = (joinedPlayer == -1) || (joinedRoom != selectedRoom); 
+        if (selectedRoom != -1) {
+            bool alreadyPicked = roomsMap.at(selectedRoom).selectedCars.at(i);
+            bool canChange = (joinedPlayer == -1) || (joinedRoom != selectedRoom);
 
-        if (btn.isInside(x, y) && !alreadyPicked && canChange) {
-            audio.playEffect(SFX_BUTTON);
-            selectedPlayer = i;
+            if (btn.isInside(x, y) && !alreadyPicked && canChange) {
+                audio.playEffect(SFX_BUTTON);
+                selectedPlayer = i;
+            }
         }
     }
+}
+
+void LobbyScene::clearLobby() {
+    selectedRoom = -1;
+    selectedPlayer = -1;
+    joinedRoom = -1;
+    joinedPlayer = -1;
+    this->roomsMap.clear();
+    lobbyRecvQueue.clear();
 }

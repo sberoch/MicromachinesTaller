@@ -10,7 +10,7 @@
 #include "../../Common/Event/EventCreator.h"
 
 
-ClientThread::ClientThread(Protocol protocol, RoomController& controller, int clientId,
+ClientThread::ClientThread(Protocol protocol, int clientId,
         std::atomic_bool& acceptSocketRunning):
         keepTalking(true),
         protocol(std::move(protocol)),
@@ -52,7 +52,9 @@ void ClientThread::sendEvent(const std::shared_ptr<Event>& event) {
     event->send(this->protocol);
 }
 
-void ClientThread::handleInput(const InputEnum &input) {
+void ClientThread::handleEvent(const std::shared_ptr<Event>& event) {
+    std::cout << "---Command: " << event->j["cmd_id"].get<int>() << std::endl;
+    auto input = (InputEnum) event->j["cmd_id"].get<int>();
     this->player.handleInput(input);
 }
 
@@ -132,9 +134,12 @@ void ClientThread::start() {
     this->run();
 }
 
-//Detiene la ejecucion del cliente y pone la variable booleana en falso
-//para que el recolector de clientes muertos pueda reconocerlo como tal.
-//PRIVADA.
+int ClientThread::getNumberOfLaps() {
+    return this->numberOfLaps;
+}
+
+
+
 void ClientThread::stop(){
     protocol.forceShutDown();
     sendingBlockingQueue.push(nullptr);
@@ -144,14 +149,14 @@ void ClientThread::stop(){
     receiver.join();
 }
 
+
+
 ClientThread::~ClientThread() {
     std::cout << "Destruyendo client thread con clientId: " << clientId << std::endl;
     stop();
 }
 
-int ClientThread::getNumberOfLaps() {
-    return this->numberOfLaps;
-}
+
 
 
 

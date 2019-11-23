@@ -19,7 +19,8 @@ RoomController::RoomController(std::atomic_bool &running) :
 int RoomController::addRoom() {
     std::lock_guard<std::mutex> lock(this->m);
     int roomId = roomCounter.returnAndAddOne();
-    std::shared_ptr<Room> room(new Room(acceptSocketRunning, roomId, MAX_AMOUNT_OF_CLIENTS, config));
+    std::shared_ptr<Room> room(new Room(acceptSocketRunning,
+            roomId, MAX_AMOUNT_OF_CLIENTS, config, *this));
     rooms.insert({roomId, room});
     return roomId;
 }
@@ -70,10 +71,17 @@ void RoomController::addClientToRoom(int newRoomId, int clientId, int playerIdIn
 void RoomController::addClient(int clientId, Protocol protocol) {
     std::lock_guard<std::mutex> lock(this->m);
     std::shared_ptr<ClientThread> client(new ClientThread(std::move(protocol),
-            *this, clientId,acceptSocketRunning));
+            clientId,acceptSocketRunning));
     clientsWithNoRoom.insert({clientId, client});
     client->assignRoomQueue(listener.getReceivingQueue());
     client->start();
+    collectDeadClients();
+}
+
+void RoomController::addExistentClient(const std::shared_ptr<ClientThread>& client){
+    std::lock_guard<std::mutex> lock(this->m);
+    clientsWithNoRoom.insert({client->getClientId(), client});
+    client->assignRoomQueue(listener.getReceivingQueue());
     collectDeadClients();
 }
 
@@ -154,6 +162,12 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
     }
 
     return gameStarted;
+}
+
+void RoomController::eraseRoom(int roomId){
+    collector.assignRoomId(roomId);
+    collector.start();
+    listener.eraseRoom(roomId);
 }
 
 

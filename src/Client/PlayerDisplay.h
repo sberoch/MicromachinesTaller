@@ -16,15 +16,11 @@ private:
 
 	TextureCreator creator;
 	ObjectViewPtr lapsText;
+	ObjectViewPtr healthBackground;
+	ObjectViewPtr healthBar;
 
 	SdlTexture numbersTex;
 	NumberView numberView;
-
-	//TODO: creator para estos
-	SdlTexture healthBarBackTex;
-	HealthBarBackView healthBackground;
-	SdlTexture healthBarFrontTex;
-	HealthBarFrontView healthBar;
 
 	SdlTexture splatTex;
 	MudSplatView splat;

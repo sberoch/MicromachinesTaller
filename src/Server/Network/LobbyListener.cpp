@@ -14,12 +14,13 @@ LobbyListener::LobbyListener(
                                     incomingEvents(true),
                                     running(running),
                                     listening(true),
-                                    controller(controller){}
+                                    controller(controller),
+                                    snapshot(new LobbySnapshot){}
 
 void LobbyListener::run() {
     std::shared_ptr<Event> event;
     std::cout << "Lobby listener started" << std::endl;
-    std::shared_ptr<LobbySnapshot> snapshot(new LobbySnapshot);
+
     while (listening && running) {
         try {
             incomingEvents.pop(event);
@@ -29,7 +30,6 @@ void LobbyListener::run() {
             else
                 listening = false;
 
-            //controller.collectDeadClients();
         } catch (SocketError &se) {
             listening = false;
             std::cout << "Lobby listener (SE): " << se.what() << std::endl;
@@ -50,6 +50,10 @@ SafeQueue<std::shared_ptr<Event>>* LobbyListener::getReceivingQueue() {
 void LobbyListener::stop(){
     listening = false;
     incomingEvents.push(nullptr);
+}
+
+void LobbyListener::eraseRoom(int roomId){
+    snapshot->eraseRoom(roomId);
 }
 
 LobbyListener::~LobbyListener() = default;

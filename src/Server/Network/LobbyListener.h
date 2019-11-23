@@ -10,6 +10,7 @@
 #include "../../Common/Thread.h"
 #include "../../Common/SafeQueue.h"
 #include "../../Common/Event/Event.h"
+#include "../../Common/Event/LobbySnapshot.h"
 
 class RoomController;
 class ClientThread;
@@ -21,6 +22,7 @@ private:
     std::atomic_bool& running;
     std::atomic_bool listening;
     RoomController& controller;
+    std::shared_ptr<LobbySnapshot> snapshot;
 
 public:
     LobbyListener(std::unordered_map<int, std::shared_ptr<ClientThread>>& clientsWithNoRoom,
@@ -36,6 +38,8 @@ public:
     void collectDeadClients();
 
     void stop();
+
+    void eraseRoom(int roomId);
 };
 
 
