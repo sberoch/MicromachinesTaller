@@ -1,10 +1,14 @@
 #include "EndScene.h"
 #include "../Common/Constants.h"
+#include "../Common/Event/GoBackToMenuEvent.h"
 #include <iostream>
 
-EndScene::EndScene(SdlWindow& window, SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue) :
+EndScene::EndScene(SdlWindow& window, SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue,
+                   SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player) :
 	window(window),
 	endRecvQueue(endRecvQueue),
+	sendQueue(sendQueue),
+	player(player),
 	backgroundEndTex("end_screen.png", window),
 	backgroundEnd(backgroundEndTex),
 	creator(window),
@@ -53,6 +57,8 @@ Scene EndScene::handle() {
 				_done = true;
 
 			} else if (insideMenuButton(x, y)) {
+			    std::shared_ptr<Event> menuEvent(new GoBackToMenuEvent(player.globalId));
+			    sendQueue.push(menuEvent);
 				nextScene = SCENE_MENU;
 			}
 

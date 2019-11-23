@@ -16,19 +16,21 @@ private:
     WorldDTO_t _worldDTO;
 
     std::shared_ptr<Configuration> _configuration;
-    std::list<std::shared_ptr<ClientThread>> finishedPlayers;
+    std::unordered_map<int, std::shared_ptr<ClientThread>> finishedPlayers;
     std::atomic_bool& acceptSocketRunning;
     std::atomic_bool& roomRunning;
     SafeQueue<std::shared_ptr<Event>>& incomingEvents;
     std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients;
-    std::atomic_bool gameStarted;
+    RoomController& controller;
 
 public:
     GameThread(size_t n_of_players, const std::shared_ptr<Configuration>& configuration,
                 std::atomic_bool& acceptSocketRunning,
              std::atomic_bool& roomRunning,
              SafeQueue<std::shared_ptr<Event>>& incomingEvents,
-             std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients);
+             std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients,
+             RoomController& controller);
+
     void run() override;
 
     json getSerializedMap();
@@ -42,6 +44,8 @@ public:
             int clientToBeRemovedId);
 
     ~GameThread() override;
+
+    void handleEvent(const std::shared_ptr<Event>& event);
 };
 
 #endif //MICROMACHINES_GAMETHREAD_H

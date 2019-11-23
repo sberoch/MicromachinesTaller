@@ -8,6 +8,7 @@
 #include "../Common/Event/EndSnapshot.h"
 #include "TextureCreator.h"
 #include "../Common/SafeQueue.h"
+#include "PlayerDescriptor.h"
 #include <map>
 
 class EndScene : public BaseScene {
@@ -17,6 +18,8 @@ private:
 	BackgroundView backgroundEnd;
 
 	SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue;
+    SafeQueue<std::shared_ptr<Event>>& sendQueue;
+    PlayerDescriptor& player;
 
 	TextureCreator creator;
 	std::map<ObjectType, ObjectViewPtr> carViews;
@@ -29,7 +32,8 @@ private:
 	Scene nextScene;
 	int xScreen, yScreen;
 public:
-	EndScene(SdlWindow& window, SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue);
+	EndScene(SdlWindow& window, SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue,
+             SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player);
 	virtual bool done() override;
 	virtual void update() override;
 	virtual void draw() override;

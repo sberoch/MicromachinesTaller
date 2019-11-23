@@ -15,21 +15,22 @@ GameThread::GameThread(size_t n_of_players,
                     std::atomic_bool& acceptSocketRunning,
                     std::atomic_bool& roomRunning,
                     SafeQueue<std::shared_ptr<Event>>& incomingEvents,
-                    std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients) :
+                    std::unordered_map<int ,std::shared_ptr<ClientThread>>& clients,
+                    RoomController& controller) :
                                              _configuration(configuration),
                                              _world(n_of_players, configuration),
                                              _worldDTO(),
                                              acceptSocketRunning(acceptSocketRunning),
                                              roomRunning(roomRunning),
                                              incomingEvents(incomingEvents),
-                                             clients(clients) {
+                                             clients(clients),
+                                             controller(controller){
 
 }
 
 void GameThread::run() {
     std::cout << "Running GameThread" << std::endl;
     ModsThread modsThread("libs.txt", &_worldDTO);
-    gameStarted = true;
     std::shared_ptr<Event> event;
     std::shared_ptr<EndSnapshot> endSnapshot(new EndSnapshot);
 
@@ -40,9 +41,7 @@ void GameThread::run() {
             std::clock_t begin = clock();
 
             while (incomingEvents.get(event)) {
-                std::cout << "---Command: " << event->j["cmd_id"].get<int>() << std::endl;
-                int clientId = event->j["client_id"];
-                clients.at(clientId)->handleInput((InputEnum) event->j["cmd_id"].get<int>());
+                handleEvent(event);
             }
 
             for (auto& client: clients) {
@@ -83,8 +82,8 @@ void GameThread::run() {
             }
 
             for (auto& actualFinishedPlayer: finishedPlayers){
-                if (clients.count(actualFinishedPlayer->getClientId()))
-                    clients.erase(actualFinishedPlayer->getClientId());
+                if (clients.count(actualFinishedPlayer.second->getClientId()))
+                    clients.erase(actualFinishedPlayer.second->getClientId());
             }
 
             for (auto &actualClient : clients) {
@@ -93,7 +92,7 @@ void GameThread::run() {
 
 
             for (auto &actualFinishedPlayer: finishedPlayers) {
-                actualFinishedPlayer->sendEndEvent(endSnapshot);
+                actualFinishedPlayer.second->sendEndEvent(endSnapshot);
             }
 
             i++;
@@ -117,6 +116,7 @@ void GameThread::run() {
             std::cerr << "Game Thread: UnknownException.\n";
         }
     }
+
     std::cout << "GameThread ready to be joined" << std::endl;
 }
 
@@ -141,7 +141,29 @@ std::shared_ptr<Car> GameThread::createCar(int id, json j){
 void GameThread::addToFinishedPlayers(
         std::unordered_map<int, std::shared_ptr<ClientThread>> &clients,
         int clientToBeRemovedId) {
-    finishedPlayers.push_back(clients.at(clientToBeRemovedId));
+    finishedPlayers.insert({clientToBeRemovedId, clients.at(clientToBeRemovedId)});
+}
+
+void GameThread::handleEvent(const std::shared_ptr<Event>& event) {
+    Type type = (Type) event->j["type"].get<int>();
+    int clientId = event->j["client_id"].get<int>();
+
+
+    switch (type){
+        case COMMAND: {
+            std::shared_ptr<ClientThread> client = clients.at(clientId);
+            client->handleEvent(event);
+            break;
+        }
+        case MENU: {
+            std::shared_ptr<ClientThread> finishedPlayer = finishedPlayers.at(clientId);
+            controller.addExistentClient(finishedPlayer);
+            finishedPlayers.erase(clientId);
+            break;
+        }
+        default:
+            throw std::runtime_error("Handle event error, tipo no conocido");
+    }
 }
 
 

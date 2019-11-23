@@ -24,7 +24,7 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 		ScenePtr menu(new MenuScene(window, sendQueue));
 		ScenePtr lobby(new LobbyScene(window, lobbyRecvQueue, sendQueue, player));
 		ScenePtr game(new GameScene(window, gameRecvQueue, sendQueue, player));
-		ScenePtr end(new EndScene(window, endRecvQueue));
+		ScenePtr end(new EndScene(window, endRecvQueue, sendQueue, player));
 		scenes.insert(std::make_pair(SCENE_MENU, menu));
 		scenes.insert(std::make_pair(SCENE_LOBBY, lobby));
 		scenes.insert(std::make_pair(SCENE_GAME, game));

@@ -29,7 +29,6 @@ void LobbyListener::run() {
             else
                 listening = false;
 
-            //controller.collectDeadClients();
         } catch (SocketError &se) {
             listening = false;
             std::cout << "Lobby listener (SE): " << se.what() << std::endl;

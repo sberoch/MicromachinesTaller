@@ -30,7 +30,6 @@ private:
     SafeQueue<std::shared_ptr<Event>> sendingBlockingQueue;
     EventReceiver receiver;
     EventSender sender;
-    std::shared_ptr<SnapshotEvent> clientSnapshot;
 
     //Detiene la ejecucion del cliente y pone la variable booleana en falso
     //para que el recolector de clientes muertos pueda reconocerlo como tal.
@@ -38,18 +37,16 @@ private:
 public:
     //Inicializa la variable atomica booleana y el atendedor de clientes.
     //Para este ultimo mueve el socket de la comunicacion.
-    ClientThread(Protocol protocol, RoomController& controller, int clientId,
-                    std::atomic_bool& acceptSocketRunning);
+    ClientThread(Protocol protocol, int clientId, std::atomic_bool& acceptSocketRunning);
     void start();
     void run();
 
     //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
     bool isDead();
 
-    ~ClientThread();
 
     void sendEvent(const std::shared_ptr<Event>& event);
-    void handleInput(const InputEnum& input);
+    void handleEvent(const std::shared_ptr<Event>& event);
     void sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot);
     void sendStart(json j);
 
@@ -78,6 +75,8 @@ public:
     int getClientId();
 
     int getNumberOfLaps();
+
+    ~ClientThread();
 };
 
 

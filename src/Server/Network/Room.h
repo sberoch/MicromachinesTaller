@@ -12,6 +12,7 @@
 #include "../../Common/Thread.h"
 #include "../Model/GameThread.h"
 
+
 class Room{
 private:
     int roomId;
@@ -25,7 +26,8 @@ private:
     std::vector<int> idsForPlayers;
 public:
     Room(std::atomic_bool& acceptSocketRunning, int roomId, int amountOfClients,
-            const std::shared_ptr<Configuration>& config);
+            const std::shared_ptr<Configuration>& config,
+            RoomController& controller);
 
     void run();
 

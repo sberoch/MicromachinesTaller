@@ -59,6 +59,8 @@ public:
     void addClientToRoom(int roomId, int clientId, int playerIdInRoom);
 
     int getIdFromRoom(int clientId);
+
+    void addExistentClient(const std::shared_ptr<ClientThread>& client);
 };
 
 
