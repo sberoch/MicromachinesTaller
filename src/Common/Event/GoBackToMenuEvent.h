@@ -11,7 +11,7 @@
 class GoBackToMenuEvent : public Event {
 private:
 public:
-    explicit GoBackToMenuEvent(int clientId);
+    GoBackToMenuEvent(int clientId);
     void send(Protocol &protocol) override;
     ~GoBackToMenuEvent() override;
 };

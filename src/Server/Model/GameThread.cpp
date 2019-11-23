@@ -48,66 +48,69 @@ void GameThread::run() {
                 handleEvent(event);
             }
 
-            for (auto& client: clients) {
-                bool lapCompleted = client.second->update();
-                if (lapCompleted) {
-                    int numberOfLapsFromClient = client.second->getNumberOfLaps();
-                    snapshot->setLapNumber(client.second->getIdFromRoom(), numberOfLapsFromClient);
+            if (roomRunning) {
+                for (auto &client: clients) {
+                    bool lapCompleted = client.second->update();
+                    if (lapCompleted) {
+                        int numberOfLapsFromClient = client.second->getNumberOfLaps();
+                        snapshot->setLapNumber(client.second->getIdFromRoom(), numberOfLapsFromClient);
+                    }
                 }
-            }
-            step();
+                step();
 
-            //MODS CODE
-            //TODO refactor
-            if ((i % _configuration->getModifiersCreationFrequency()) == 0){
-                modsThread.run();
-                applyPluginChanges();
+                //MODS CODE
+                //TODO refactor
+                if ((i % _configuration->getModifiersCreationFrequency()) == 0) {
+                    modsThread.run();
+                    applyPluginChanges();
 
-                for (size_t i=0; i<MAX_MODIFIERS; ++i){
-                    ModifierDTO modifier = _worldDTO.modifiers[i];
-                    if (modifier.newModifier){
-                        _worldDTO.modifiers[i].newModifier = false;
-                        for (auto &actualClient : clients) {
-                            actualClient.second->createModifier(modifier.type, modifier.id, modifier.x, modifier.y, modifier.angle);
+                    for (size_t i = 0; i < MAX_MODIFIERS; ++i) {
+                        ModifierDTO modifier = _worldDTO.modifiers[i];
+                        if (modifier.newModifier) {
+                            _worldDTO.modifiers[i].newModifier = false;
+                            for (auto &actualClient : clients) {
+                                actualClient.second->createModifier(modifier.type, modifier.id, modifier.x, modifier.y,
+                                                                    modifier.angle);
+                            }
                         }
                     }
                 }
-            }
 
-            for (auto &actualClient : clients) {
-                actualClient.second->modifySnapshotFromClient(snapshot);
-                if (actualClient.second->finishedPlaying()){
-                    std::cout << "Player finished" << std::endl;
-                    int clientId = actualClient.first;
-                    actualClient.second->sendSnapshot(snapshot);
-                    addToFinishedPlayers(clients, clientId);
-                    endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
+                for (auto &actualClient : clients) {
+                    actualClient.second->modifySnapshotFromClient(snapshot);
+                    if (actualClient.second->finishedPlaying()) {
+                        std::cout << "Player finished" << std::endl;
+                        int clientId = actualClient.first;
+                        actualClient.second->sendSnapshot(snapshot);
+                        addToFinishedPlayers(clients, clientId);
+                        endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
+                    }
                 }
-            }
 
-            for (auto& actualFinishedPlayer: finishedPlayers){
-                if (clients.count(actualFinishedPlayer.second->getClientId()))
-                    clients.erase(actualFinishedPlayer.second->getClientId());
-            }
+                for (auto &actualFinishedPlayer: finishedPlayers) {
+                    if (clients.count(actualFinishedPlayer.second->getClientId()))
+                        clients.erase(actualFinishedPlayer.second->getClientId());
+                }
 
-            for (auto &actualClient : clients) {
-                actualClient.second->sendSnapshot(snapshot);
-            }
+                for (auto &actualClient : clients) {
+                    actualClient.second->sendSnapshot(snapshot);
+                }
 
 
-            for (auto &actualFinishedPlayer: finishedPlayers) {
-                actualFinishedPlayer.second->sendEndEvent(endSnapshot);
-            }
+                for (auto &actualFinishedPlayer: finishedPlayers) {
+                    actualFinishedPlayer.second->sendEndEvent(endSnapshot);
+                }
 
-            i++;
+                i++;
 
-            std::clock_t end = clock();
-            double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
-            double frames = _configuration->getFPS();
-            if (execTime < frames) {
-                int to_sleep = (frames - execTime);
-                std::this_thread::sleep_for(
-                        std::chrono::milliseconds(to_sleep));
+                std::clock_t end = clock();
+                double execTime = double(end - begin) / (CLOCKS_PER_SEC / 1000);
+                double frames = _configuration->getFPS();
+                if (execTime < frames) {
+                    int to_sleep = (frames - execTime);
+                    std::this_thread::sleep_for(
+                            std::chrono::milliseconds(to_sleep));
+                }
             }
         } catch (SocketError &se) {
             roomRunning = false;
@@ -148,10 +151,10 @@ void GameThread::addToFinishedPlayers(
     finishedPlayers.insert({clientToBeRemovedId, clients.at(clientToBeRemovedId)});
 }
 
+
 void GameThread::handleEvent(const std::shared_ptr<Event>& event) {
     Type type = (Type) event->j["type"].get<int>();
     int clientId = event->j["client_id"].get<int>();
-
 
     switch (type){
         case COMMAND: {
@@ -164,8 +167,8 @@ void GameThread::handleEvent(const std::shared_ptr<Event>& event) {
         case MENU: {
             std::shared_ptr<ClientThread> finishedPlayer = finishedPlayers.at(clientId);
             controller.addExistentClient(finishedPlayer);
-            finishedPlayers.erase(clientId);
-            if (clients.empty() && finishedPlayers.empty()){
+            if (clients.empty()){
+                finishedPlayers.clear();
                 controller.eraseRoom(roomId);
             }
             break;
