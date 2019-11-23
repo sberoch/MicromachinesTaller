@@ -8,6 +8,8 @@ class SDL_Texture;
 
 class SdlWindow {
 public:
+    int width;
+    int height;
     /**
      * Ctor standalone
      */
@@ -20,8 +22,6 @@ public:
     void getWindowSize(int* x, int* y);
     SDL_Renderer* getRenderer() const;
 private:
-    int width;
-    int height;
     SDL_Window* window;
     SDL_Renderer* renderer;
 };
