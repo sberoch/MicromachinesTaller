@@ -33,6 +33,7 @@ bool GameScene::done() {
 }
 
 void GameScene::update() {
+    nextScene = SCENE_GAME;
 	audio.playMusic();
 	window.getWindowSize(&xScreen, &yScreen);
 

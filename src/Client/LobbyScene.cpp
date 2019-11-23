@@ -39,6 +39,7 @@ bool LobbyScene::done() {
 }
 
 void LobbyScene::update() {
+    nextScene = SCENE_LOBBY;
     try {
         window.getWindowSize(&xScreen, &yScreen);
         backgroundLobby.setDims(xScreen, yScreen);
@@ -65,6 +66,8 @@ void LobbyScene::updateRooms(const RoomsMap& roomsMap) {
             for (auto& playerId : room.second.players) {
                 if (playerId == player.globalId) {
                     nextScene = SCENE_GAME;
+                    selectedRoom = -1;
+                    selectedPlayer = -1;
                 }
             }
         }
@@ -124,6 +127,8 @@ Scene LobbyScene::handle() {
                     sendQueue.push(cmd);
                     audio.playEffect(SFX_BUTTON);
                     nextScene = SCENE_GAME;
+                    selectedRoom = -1;
+                    selectedPlayer = -1;
                 }
             }
             else if (insideUserButton(x, y)) {
@@ -221,12 +226,14 @@ void LobbyScene::checkInsideAnyPlayer(int x, int y) {
     for (int i = 0; i < 4; ++i) {
 
         Area btn(0.65*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
-        bool alreadyPicked = roomsMap.at(selectedRoom).selectedCars.at(i);
-        bool canChange = (joinedPlayer == -1) || (joinedRoom != selectedRoom); 
+        if (selectedRoom != -1) {
+            bool alreadyPicked = roomsMap.at(selectedRoom).selectedCars.at(i);
+            bool canChange = (joinedPlayer == -1) || (joinedRoom != selectedRoom);
 
-        if (btn.isInside(x, y) && !alreadyPicked && canChange) {
-            audio.playEffect(SFX_BUTTON);
-            selectedPlayer = i;
+            if (btn.isInside(x, y) && !alreadyPicked && canChange) {
+                audio.playEffect(SFX_BUTTON);
+                selectedPlayer = i;
+            }
         }
     }
 }

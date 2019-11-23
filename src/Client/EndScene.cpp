@@ -26,6 +26,7 @@ bool EndScene::done() {
 }
 
 void EndScene::update() {
+    nextScene = SCENE_END;
 	window.getWindowSize(&xScreen, &yScreen);
 	backgroundEnd.setDims(xScreen, yScreen);
 
