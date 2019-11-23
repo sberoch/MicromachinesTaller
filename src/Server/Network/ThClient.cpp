@@ -22,7 +22,7 @@ ClientThread::ClientThread(Protocol protocol, int clientId,
                    acceptSocketRunning, keepTalking),
         receiver(std::ref(this->protocol), this->receivingNonBlockingQueue,
                      acceptSocketRunning, keepTalking),
-        idFromRoom(-1), numberOfLaps(3) {}
+        idFromRoom(-1), numberOfLaps(0) {}
 
 
 void ClientThread::run() {
@@ -78,6 +78,9 @@ void ClientThread::sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot) 
     //std::cout << "Sent\n";
 }
 
+void ClientThread::assignClientId(int newId) {
+    this->clientId = newId;
+}
 
 void ClientThread::assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue) {
     this->receivingNonBlockingQueue = receiveingQueue;
@@ -130,6 +133,12 @@ void ClientThread::sendEndEvent(const std::shared_ptr <EndSnapshot> &endSnapshot
     this->sendingBlockingQueue.push(endSnapshotCopy);
 }
 
+
+void ClientThread::restart() {
+    this->idFromRoom = -1;
+    this->numberOfLaps = 0;
+}
+
 void ClientThread::start() {
     this->run();
 }
@@ -155,6 +164,9 @@ ClientThread::~ClientThread() {
     std::cout << "Destruyendo client thread con clientId: " << clientId << std::endl;
     stop();
 }
+
+
+
 
 
 

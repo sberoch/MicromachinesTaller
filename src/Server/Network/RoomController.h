@@ -23,6 +23,7 @@ private:
     std::unordered_map<int, std::shared_ptr<ClientThread>> clientsWithNoRoom;
     std::unordered_map<int, std::shared_ptr<Room>> rooms;
     SafeQueue<std::string> queue;
+    SafeCounter clientCounter;
     SafeCounter roomCounter;
     std::atomic_bool& acceptSocketRunning;
     std::atomic_bool stopped;
@@ -40,7 +41,7 @@ public:
 
    int addRoom();
 
-   void addClient(int clientId, Protocol protocol);
+   void addClient(Protocol protocol);
 
    //Devuelve si se dio el comando play o no.
    bool handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot);

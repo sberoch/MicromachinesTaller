@@ -68,8 +68,9 @@ void RoomController::addClientToRoom(int newRoomId, int clientId, int playerIdIn
     }
 }
 
-void RoomController::addClient(int clientId, Protocol protocol) {
+void RoomController::addClient(Protocol protocol) {
     std::lock_guard<std::mutex> lock(this->m);
+    int clientId = clientCounter.returnAndAddOne();
     std::shared_ptr<ClientThread> client(new ClientThread(std::move(protocol),
             clientId,acceptSocketRunning));
     clientsWithNoRoom.insert({clientId, client});
@@ -80,6 +81,9 @@ void RoomController::addClient(int clientId, Protocol protocol) {
 
 void RoomController::addExistentClient(const std::shared_ptr<ClientThread>& client){
     std::lock_guard<std::mutex> lock(this->m);
+    int newId = clientCounter.returnAndAddOne();
+    client->assignClientId(newId);
+    client->restart();
     clientsWithNoRoom.insert({client->getClientId(), client});
     client->assignRoomQueue(listener.getReceivingQueue());
     collectDeadClients();
@@ -167,7 +171,7 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
 void RoomController::eraseRoom(int roomId){
     collector.assignRoomId(roomId);
     collector.start();
-    listener.eraseRoom(roomId);
+    listener.eraseRoomFromSnapshot(roomId);
 }
 
 
