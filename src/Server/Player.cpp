@@ -114,3 +114,11 @@ void Player::assignCarAndId(std::shared_ptr<Car> newCar) {
 bool Player::finishedPlaying() {
     return done;
 }
+
+void Player::setDone(bool newDone) {
+    this->done = newDone;
+}
+
+void Player::resetLaps() {
+    //this->_car->resetLaps();
+}
