@@ -18,7 +18,6 @@ enum StatusType {
     GRABBED_MUD,
     GRABBED_ROCK,
     GRABBED_OIL,
-    ON_GRASS,
     EXPLODED,
     WINNED,
     NOTHING
@@ -51,6 +50,7 @@ private:
     float _maxBackwardSpeed;
     float _maxForwardDrive;
     float _maxBackwardDrive;
+
     float _desiredTorque;
     float _maxLateralImpulse;
     float _angularImpulse;
@@ -73,23 +73,24 @@ private:
     float _previous_x, _previous_y, _previousAngle;
 
     GroundAreaFUD* _groundArea;
-    float _currentTraction;
     std::vector<Track*> _tracks;
     bool _onGrass;
 
     bool _winner;
     std::shared_ptr<CarFUD> cFUD;
 
-    void _setBodyDef(float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration);
+    void _setBodyDef(float& x_init, float& y_init, float& angle, const std::shared_ptr<Configuration>& configuration);
     void _setShapeAndFixture(const std::shared_ptr<Configuration>& configuration);
 
+    void modifySpeed(const bool& onGrass, float& speedToModify, float& maxSpeedOnGrass, float& maxSpeedOnTrack,
+                     float& driveToModify, float& maxDriveOnGrass, float& maxDriveOnTrack);
+
 public:
-    Car(const std::shared_ptr<b2World>& world, size_t& id, float& x_init, float& y_init, float angle, size_t max_tracks, const std::shared_ptr<Configuration>& configuration);
+    Car(const std::shared_ptr<b2World>& world, size_t& id, float& x_init, float& y_init, float angle,
+        size_t max_tracks, const std::shared_ptr<Configuration>& configuration);
 
     Car(const Car &other) = delete;
     Car& operator=(const Car &other) = delete;
-    Car(Car&& other);
-    Car& operator=(Car&& other);
 
     void accelerate();
     void desaccelerate();
@@ -104,20 +105,17 @@ public:
 
     void addGroundArea(GroundAreaFUD* ga);
     void removeGroundArea(GroundAreaFUD* ga);
-    void updateTraction();
     void updateFriction();
 
     //Crashing
     void crash(b2Vec2 impactVel);
 
     //Modifiers
-    void handleHealthPowerup(size_t id);
-    void handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id);
-    void handleMud(MudFUD* mudFud, size_t id);
-    void handleOil(OilFUD* oilFud, size_t id);
-    void handleRock(RockFUD* rockFud, size_t id);
-
-    void handleGrass();
+    void handleHealthPowerup(const size_t& id);
+    void handleBoostPowerup(BoostPowerupFUD* bpuFud, const size_t& id);
+    void handleMud(MudFUD* mudFud, const size_t& id);
+    void handleOil(OilFUD* oilFud, const size_t& id);
+    void handleRock(RockFUD* rockFud, const size_t& id);
 
     void stopEffect(const int& effectType);
 
@@ -135,11 +133,10 @@ public:
     const float angle();
     const float health();
     const float speed();
+    const b2Vec2 linearVelocity();
+    const bool onGrass();
 
     void assignId(int id);
-    const b2Vec2 linearVelocity();
-    b2Body* body() const;
-    const bool onGrass();
 
     void carToDTO(CarDTO_t* carDTO);
     void dtoToModel(const CarDTO_t& carDTO);

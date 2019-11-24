@@ -14,7 +14,7 @@ void Car::_setShapeAndFixture(const std::shared_ptr<Configuration>& configuratio
     _fixture->SetUserData(cFUD.get());
 }
 
-void Car::_setBodyDef(float x_init, float y_init, float angle, const std::shared_ptr<Configuration>& configuration){
+void Car::_setBodyDef(float& x_init, float& y_init, float& angle, const std::shared_ptr<Configuration>& configuration){
     _carBodyDef.type = b2_dynamicBody;
     _carBodyDef.linearDamping = configuration->getLinearDamping();
     _carBodyDef.angularDamping = configuration->getAngularDamping();
@@ -43,8 +43,7 @@ Car::Car(const std::shared_ptr<b2World>& world, size_t& id, float& x_init, float
         _maxLateralImpulse(configuration->getCarMaxLateralImpulse()),
         _angularImpulse(configuration->getCarAngularImpulse()),
         _onGrass(false), _isMoving(false), _exploded(false),
-        _tracks(),  _groundArea(),
-        _currentTraction(1), _status(),
+        _tracks(),  _groundArea(), _status(),
         _maxLaps(1), _maxtracksToLap(max_tracks), _laps(0), _winner(false),
         cFUD(new CarFUD(_id)){
     _setBodyDef(x_init, y_init, angle, configuration);
@@ -110,12 +109,10 @@ void Car::accelerate(){
     float currentSpeed = b2Dot(getForwardVelocity(), currentForwardNormal);
 
     //apply necessary force
-    float force = 0;
-    if (_currentForwardDrive < 0){
-        std::cout << "Current forward drive is less than 0\n";
+    if (_currentForwardDrive < 0)
         return;
-    }
 
+    float force = 0;
     if (_currentForwardSpeed > currentSpeed)
         force = _currentForwardDrive;
     else if (_currentForwardSpeed < currentSpeed)
@@ -133,6 +130,9 @@ void Car::desaccelerate(){
     float currentSpeed = b2Dot(getForwardVelocity(), currentForwardNormal);
 
     //apply necessary force
+    if (_currentBackwardDrive < 0)
+        return;
+
     float force = 0;
     if ( _currentBackwardSpeed > currentSpeed )
         force = _currentBackwardDrive;
@@ -166,53 +166,52 @@ void Car::updateFriction(){
     _carBody->ApplyForce(dragForceMagnitude * currentForwardNormal, _carBody->GetWorldCenter(), true);
 }
 
-void Car::updateTraction(){
-    if (_groundArea)
-        _currentTraction = _groundArea->frictionModifier;
-    else
-        _currentTraction = 1;
+void Car::modifySpeed(const bool& onGrass, float& speedToModify, float& maxSpeedOnGrass, float& maxSpeedOnTrack,
+                      float& driveToModify, float& maxDriveOnGrass, float& maxDriveOnTrack) {
+    float speedModifier = 0;
+    float driveModifier = 0;
+    if (this->onGrass()){
+        speedModifier = speedToModify - maxSpeedOnGrass;
+        driveModifier = driveToModify - maxDriveOnGrass;
+    } else {
+        speedModifier = speedToModify - maxSpeedOnTrack;
+        driveModifier = driveToModify - maxDriveOnTrack;
+    }
+
+    if (onGrass){
+        _onGrass = true;
+
+        if (maxSpeedOnGrass + speedModifier > 0)
+            speedToModify = maxSpeedOnGrass + speedModifier;
+        else
+            speedToModify = maxSpeedOnGrass;
+
+        if (maxDriveOnGrass + driveModifier > 0)
+            driveToModify = maxDriveOnGrass + driveModifier;
+        else
+            driveToModify = maxDriveOnGrass;
+    } else {
+        _onGrass = false;
+
+        if (maxSpeedOnTrack + speedModifier > 0)
+            speedToModify = maxSpeedOnTrack + speedModifier;
+        else
+            speedToModify = maxSpeedOnTrack;
+
+        if (maxDriveOnTrack + driveModifier > 0)
+            driveToModify = maxDriveOnTrack + driveModifier;
+        else
+            driveToModify = maxDriveOnTrack;
+    }
 }
 
 void Car::addGroundArea(GroundAreaFUD* ga){
     _groundArea = ga;
 
-    float speedToModify = 0;
-    if (onGrass())
-        speedToModify = _currentForwardSpeed - _maxForwardSpeedOnGrass;
-    else
-        speedToModify = _currentForwardSpeed - _maxForwardSpeed;
-
-    float driveToModify = 0;
-    if (onGrass())
-        driveToModify = _currentForwardDrive - _maxForwardDriveOnGrass;
-    else
-        driveToModify = _currentForwardDrive - _maxForwardDrive;
-
-    if (ga->grass){
-        _onGrass = true;
-
-        if (_maxForwardSpeedOnGrass + speedToModify > 0)
-            _currentForwardSpeed = _maxForwardSpeedOnGrass + speedToModify;
-        else
-            _currentForwardSpeed = _maxForwardSpeedOnGrass;
-
-        if (_maxForwardDriveOnGrass + driveToModify > 0)
-            _currentForwardDrive = _maxForwardDriveOnGrass + driveToModify;
-        else
-            _currentForwardDrive = _maxForwardDriveOnGrass;
-    } else {
-        _onGrass = false;
-
-        if (_maxForwardSpeed + speedToModify > 0)
-            _currentForwardSpeed = _maxForwardSpeed + speedToModify;
-        else
-            _currentForwardSpeed = _maxForwardSpeed;
-
-        if (_maxForwardDrive + driveToModify > 0)
-            _currentForwardDrive = _maxForwardDrive + driveToModify;
-        else
-            _currentForwardDrive = _maxForwardDrive;
-    }
+    modifySpeed(ga->isGrass(), _currentForwardSpeed, _maxForwardSpeedOnGrass, _maxForwardSpeed,
+                _currentForwardDrive, _maxForwardDriveOnGrass, _maxForwardDrive);
+    modifySpeed(ga->isGrass(), _currentBackwardSpeed, _maxBackwardSpeedOnGrass, _maxBackwardSpeed,
+                _currentBackwardDrive, _maxBackwardDriveOnGrass, _maxBackwardDrive);
 }
 
 void Car::removeGroundArea(GroundAreaFUD* ga){
@@ -221,11 +220,11 @@ void Car::removeGroundArea(GroundAreaFUD* ga){
 
 void Car::handleInput(const InputEnum& input){
     std::shared_ptr<CarMovingState> state = _state->handleInput(*this, input);
-    if (state != NULL)
+    if (state != nullptr)
         _state = state;
     
     std::shared_ptr<CarTurningState> turningState = _turningState->handleInput(*this, input);
-    if (turningState != NULL)
+    if (turningState != nullptr)
         _turningState = turningState;
 }
 
@@ -233,7 +232,6 @@ int Car::update(){
     _state->update(*this);
     _turningState->update(*this);
     updateFriction();
-    updateTraction();
 
     if (_exploded){
         resetCar();
@@ -300,10 +298,6 @@ void Car::dtoToModel(const CarDTO_t& carDTO) {
     _laps = carDTO.lapsCompleted;
 }
 
-b2Body* Car::body() const {
-    return _carBody;
-}
-
 const bool Car::onGrass(){
     return _onGrass;
 }
@@ -316,7 +310,7 @@ void Car::crash(b2Vec2 impactVel){
         explode();
 }
 
-void Car::handleHealthPowerup(size_t id){
+void Car::handleHealthPowerup(const size_t& id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_HEALTH_POWERUP;
     status->id = id;
@@ -328,7 +322,7 @@ void Car::handleHealthPowerup(size_t id){
         _health = _maxHealth;
 }
 
-void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
+void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, const size_t& id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_BOOST_POWERUP;
     status->timeOfAction = 125; //bpuFud->getActionTime();
@@ -339,14 +333,14 @@ void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, size_t id){
     _currentForwardDrive = 30;
 }
 
-void Car::handleMud(MudFUD* mudFud, size_t id){
+void Car::handleMud(MudFUD* mudFud, const size_t& id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_MUD;
     status->id = id;
     _status.push_back(status);
 }
 
-void Car::handleOil(OilFUD* oilFud, size_t id){
+void Car::handleOil(OilFUD* oilFud, const size_t& id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_OIL;
     status->id = id;
@@ -358,7 +352,7 @@ void Car::handleOil(OilFUD* oilFud, size_t id){
     _carBody->ApplyAngularImpulse(randImpulse, true);
 }
 
-void Car::handleRock(RockFUD* rockFud, size_t id){
+void Car::handleRock(RockFUD* rockFud, const size_t& id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_ROCK;
     status->timeOfAction = 125;
