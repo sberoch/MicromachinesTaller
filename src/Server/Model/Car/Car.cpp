@@ -180,28 +180,12 @@ void Car::modifySpeed(const bool& onGrass, float& speedToModify, float& maxSpeed
 
     if (onGrass){
         _onGrass = true;
-
-        if (maxSpeedOnGrass + speedModifier > 0)
-            speedToModify = maxSpeedOnGrass + speedModifier;
-        else
-            speedToModify = maxSpeedOnGrass;
-
-        if (maxDriveOnGrass + driveModifier > 0)
-            driveToModify = maxDriveOnGrass + driveModifier;
-        else
-            driveToModify = maxDriveOnGrass;
+        (maxSpeedOnGrass + speedModifier > 0) ? (speedToModify = maxSpeedOnGrass + speedModifier) : (speedToModify = maxSpeedOnGrass);
+        (maxDriveOnGrass + driveModifier > 0) ? (driveToModify = maxDriveOnGrass + driveModifier) : (driveToModify = maxDriveOnGrass);
     } else {
         _onGrass = false;
-
-        if (maxSpeedOnTrack + speedModifier > 0)
-            speedToModify = maxSpeedOnTrack + speedModifier;
-        else
-            speedToModify = maxSpeedOnTrack;
-
-        if (maxDriveOnTrack + driveModifier > 0)
-            driveToModify = maxDriveOnTrack + driveModifier;
-        else
-            driveToModify = maxDriveOnTrack;
+        (maxSpeedOnTrack + speedModifier > 0) ? (speedToModify = maxSpeedOnTrack + speedModifier) : (speedToModify = maxSpeedOnTrack);
+        (maxDriveOnTrack + driveModifier > 0) ? (driveToModify = maxDriveOnTrack + driveModifier) : (driveToModify = maxDriveOnTrack);
     }
 }
 
@@ -364,9 +348,9 @@ void Car::handleRock(RockFUD* rockFud, const size_t& id){
     int healthToReduce = rockFud->getHealthToReduce();
     int driveToReduce = rockFud->getDriveToReduce();
 
-    if (_health <= healthToReduce)
-        explode();
     _health -= healthToReduce;
+    if (_health <= 0)
+        explode();
 
     if (_currentForwardSpeed > velToReduce && _currentForwardDrive > driveToReduce){
         _currentForwardSpeed -= velToReduce;
@@ -377,15 +361,15 @@ void Car::handleRock(RockFUD* rockFud, const size_t& id){
 void Car::stopEffect(const int& effectType){
     switch (effectType) {
         case TYPE_BOOST_POWERUP :
-            _currentForwardSpeed = _maxForwardSpeed;
-            _currentForwardDrive = _maxForwardDrive;
+            _currentForwardSpeed = (this->onGrass()) ? _maxForwardSpeedOnGrass : _maxForwardSpeed;
+            _currentForwardDrive = (this->onGrass()) ? _maxForwardDriveOnGrass : _maxForwardDrive;
             break;
         case TYPE_OIL :
             _angularImpulse = 0.9;
             break;
         case TYPE_ROCK:
-            _currentForwardSpeed += 10;
-            _currentForwardDrive += 5;
+            _currentForwardSpeed = (this->onGrass()) ? _maxForwardSpeedOnGrass : _maxForwardSpeed;
+            _currentForwardDrive = (this->onGrass()) ? _maxForwardDriveOnGrass : _maxForwardDrive;
             break;
     }
 }
