@@ -75,6 +75,8 @@ private:
     float _rockDensity;
     float _velToReduce;
     float _healthToReduce;
+    int _rockTimeOfAction;
+    int _rockDriveToReduce;
 
     float _mudHalfWidth;
     float _mudHalfHeight;
@@ -153,6 +155,8 @@ public:
     float getRockDensity();
     float getRockVelToReduce();
     float getRockHealthToReduce();
+    int getRockTimeOfAction();
+    int getRockDriveToReduce();
 
     float getMudHalfWidth();
     float getMudHalfHeight();

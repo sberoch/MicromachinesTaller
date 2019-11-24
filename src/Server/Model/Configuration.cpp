@@ -86,7 +86,9 @@ Configuration::Configuration() {
     _rockHalfWidth = rockConfig["halfWidth"].get<float>();
     _rockHalfHeight = rockConfig["halfHeight"].get<float>();
     _rockDensity = rockConfig["density"].get<float>();
+    _rockTimeOfAction = rockConfig["timeOfAction"].get<int>();
     _velToReduce = rockConfig["velToReduce"].get<float>();
+    _rockDriveToReduce = rockConfig["driveToReduce"].get<int>();
     _healthToReduce = rockConfig["healthToReduce"].get<float>();
 
     json oilConfig = j["oilConfiguration"];
@@ -330,6 +332,15 @@ float Configuration::getRockHealthToReduce(){
     return _healthToReduce;
 }
 
+int Configuration::getRockTimeOfAction() {
+    return _rockTimeOfAction;
+}
+
+int Configuration::getRockDriveToReduce() {
+    return _rockDriveToReduce;
+}
+
+///////////////   MUD   /////////////////
 float Configuration::getMudHalfWidth(){
     return _mudHalfWidth;
 }

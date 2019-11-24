@@ -337,6 +337,7 @@ void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, const size_t& id){
 void Car::handleMud(MudFUD* mudFud, const size_t& id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_MUD;
+    status->timeOfAction = 0;
     status->id = id;
     _status.push_back(status);
 }
@@ -356,19 +357,20 @@ void Car::handleOil(OilFUD* oilFud, const size_t& id){
 void Car::handleRock(RockFUD* rockFud, const size_t& id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_ROCK;
-    status->timeOfAction = 125;
+    status->timeOfAction = rockFud->getTimeOfAction();
     status->id = id;
     _status.push_back(status);
     float velToReduce = rockFud->getVelToReduce();
     int healthToReduce = rockFud->getHealthToReduce();
+    int driveToReduce = rockFud->getDriveToReduce();
 
     if (_health <= healthToReduce)
         explode();
     _health -= healthToReduce;
 
-    if (_currentForwardSpeed > 10 && _currentForwardDrive > 5){
-        _currentForwardSpeed -= 10;
-        _currentForwardDrive -= 5;
+    if (_currentForwardSpeed > velToReduce && _currentForwardDrive > driveToReduce){
+        _currentForwardSpeed -= velToReduce;
+        _currentForwardDrive -= driveToReduce;
     }
 }
 

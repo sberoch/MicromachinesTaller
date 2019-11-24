@@ -112,9 +112,12 @@ class RockFUD : public FixtureUserData {
 public:
     float velToReduce;
     float healthToReduce;
+    int _timeOfAction;
+    int _driveToReduce;
 
-    RockFUD(float velToReduce, float healthToReduce, size_t id) : FixtureUserData(FUD_ROCK, id),
-                                                                  velToReduce(velToReduce), healthToReduce(healthToReduce) {}
+    RockFUD(float velToReduce, float healthToReduce, int driveToReduce, int timeOfAction, size_t id) :
+            FixtureUserData(FUD_ROCK, id), velToReduce(velToReduce),
+            healthToReduce(healthToReduce), _driveToReduce(driveToReduce), _timeOfAction(timeOfAction) {}
 
     float getVelToReduce(){
         return velToReduce;
@@ -122,6 +125,14 @@ public:
 
     float getHealthToReduce(){
         return healthToReduce;
+    }
+
+    int getTimeOfAction(){
+        return _timeOfAction;
+    }
+
+    int getDriveToReduce(){
+        return _driveToReduce;
     }
 };
 

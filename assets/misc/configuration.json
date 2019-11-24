@@ -82,7 +82,9 @@
     "halfWidth" : 0.5,
     "halfHeight" : 0.5,
     "density" : 1,
+    "timeOfAction" : 125,
     "velToReduce" : 10,
+    "driveToReduce" : 5,
     "healthToReduce" : 10
   },
   "oilConfiguration" :

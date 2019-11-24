@@ -141,8 +141,8 @@ public:
     Rock(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init,
             float y_init, float angle, std::shared_ptr<Configuration> configuration) :
             Modifier(world, type, id, x_init, y_init, angle, configuration),
-            rFUD(new RockFUD(configuration->getRockVelToReduce(),
-                    configuration->getRockHealthToReduce(), _id)){
+            rFUD(new RockFUD(configuration->getRockVelToReduce(), configuration->getRockHealthToReduce(),
+                                configuration->getRockDriveToReduce(), configuration->getRockTimeOfAction(), _id)){
         _setFixtureDef(configuration);
         _body->SetUserData(this);
     }
