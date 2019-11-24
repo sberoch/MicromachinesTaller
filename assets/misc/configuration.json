@@ -58,7 +58,8 @@
     {
       "halfWidth" : 0.5,
       "halfHeight" : 0.5,
-      "density" : 1
+      "density" : 1,
+      "healthToIncrease" : 20
     },
   "boostPowerupConfiguration" :
   {

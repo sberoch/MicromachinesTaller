@@ -61,6 +61,7 @@ private:
     float _healthPowerUpHalfWidth;
     float _healthPowerUpHalfHeight;
     float _healthPowerUpDensity;
+    float _healthToIncrease;
 
     float _boostPowerUpHalfWidth;
     float _boostPowerUpHalfHeight;
@@ -136,6 +137,7 @@ public:
     float getHealthPowerUpHalfWidth();
     float getHealthPowerUpHalfHeight();
     float getHealthPowerUpDensity();
+    int getHealthToIncrease();
 
     float getBoostPowerUpHalfWidth();
     float getBoostPowerUpHalfHeight();

@@ -66,6 +66,7 @@ Configuration::Configuration() {
     _healthPowerUpHalfWidth = healthPUConfig["halfWidth"].get<float>();
     _healthPowerUpHalfHeight = healthPUConfig["halfHeight"].get<float>();
     _healthPowerUpDensity = healthPUConfig["density"].get<float>();
+    _healthToIncrease = healthPUConfig["healthToIncrease"].get<int>();
 
     json boostPUConfig = j["boostPowerupConfiguration"];
     _boostPowerUpHalfWidth = boostPUConfig["halfWidth"].get<float>();
@@ -274,6 +275,10 @@ float Configuration::getHealthPowerUpHalfHeight(){
 
 float Configuration::getHealthPowerUpDensity(){
     return _healthPowerUpDensity;
+}
+
+int Configuration::getHealthToIncrease() {
+    return _healthToIncrease;
 }
 
 float Configuration::getBoostPowerUpHalfWidth(){

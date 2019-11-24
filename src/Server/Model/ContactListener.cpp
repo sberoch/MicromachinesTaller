@@ -54,29 +54,29 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
 
     } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_HEALTH_POWERUP){
         Car* car = (Car*) a->GetBody()->GetUserData();
-        HealthPowerup* hpu = (HealthPowerup*) b->GetBody()->GetUserData();
+        auto* hpu = (HealthPowerup*) b->GetBody()->GetUserData();
 
         contact->SetEnabled(false);
 
         if (began){
             hpu->markToDelete();
-            car->handleHealthPowerup(hpu->getId());
+            car->handleHealthPowerup((HealthPowerupFUD*) fudB, hpu->getId());
         }
 
     } else if (fudA->getType() == FUD_HEALTH_POWERUP && fudB->getType() == FUD_CAR){
         Car* car = (Car*) b->GetBody()->GetUserData();
-        HealthPowerup* hpu = (HealthPowerup*) a->GetBody()->GetUserData();
+        auto* hpu = (HealthPowerup*) a->GetBody()->GetUserData();
 
         contact->SetEnabled(false);
 
         if(began){
             hpu->markToDelete();
-            car->handleHealthPowerup(hpu->getId());
+            car->handleHealthPowerup((HealthPowerupFUD*) fudA, hpu->getId());
         }
 
     } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_BOOST_POWERUP){
         Car* car = (Car*) a->GetBody()->GetUserData();
-        BoostPowerup* bpu = (BoostPowerup*) b->GetBody()->GetUserData();
+        auto* bpu = (BoostPowerup*) b->GetBody()->GetUserData();
 
         contact->SetEnabled(false);
 
@@ -87,7 +87,7 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
 
     } else if (fudA->getType() == FUD_BOOST_POWERUP && fudB->getType() == FUD_CAR){
         Car* car = (Car*) b->GetBody()->GetUserData();
-        BoostPowerup* bpu = (BoostPowerup*) a->GetBody()->GetUserData();
+        auto* bpu = (BoostPowerup*) a->GetBody()->GetUserData();
 
         contact->SetEnabled(false);
 
@@ -98,7 +98,7 @@ void ContactListener::handleContact(b2Contact* contact, bool began){
 
     } else if (fudA->getType() == FUD_CAR && fudB->getType() == FUD_MUD){
         Car* car = (Car*) a->GetBody()->GetUserData();
-        Mud* mud = (Mud*) b->GetBody()->GetUserData();
+        auto mud = (Mud*) b->GetBody()->GetUserData();
 
         contact->SetEnabled(false);
 

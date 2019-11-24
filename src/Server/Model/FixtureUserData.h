@@ -46,8 +46,16 @@ public:
 };
 
 class HealthPowerupFUD : public FixtureUserData {
+private:
+    int _healthToIncrease;
+
 public:
-    HealthPowerupFUD(size_t id) : FixtureUserData(FUD_HEALTH_POWERUP, id) {}
+    HealthPowerupFUD(size_t id, int healthToIncrease) : FixtureUserData(FUD_HEALTH_POWERUP, id),
+                                                        _healthToIncrease(healthToIncrease) {}
+
+    int getHealthToIncrease(){
+        return _healthToIncrease;
+    }
 };
 
 class BoostPowerupFUD : public FixtureUserData {

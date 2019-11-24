@@ -310,14 +310,14 @@ void Car::crash(b2Vec2 impactVel){
         explode();
 }
 
-void Car::handleHealthPowerup(const size_t& id){
+void Car::handleHealthPowerup(HealthPowerupFUD* hpu, const size_t& id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_HEALTH_POWERUP;
     status->id = id;
     _status.push_back(status);
 
-    if ((_health + 10) < _maxHealth)
-        _health += 10;
+    if ((_health + hpu->getHealthToIncrease()) < _maxHealth)
+        _health += hpu->getHealthToIncrease();
     else
         _health = _maxHealth;
 }

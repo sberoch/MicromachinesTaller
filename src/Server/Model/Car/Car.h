@@ -111,7 +111,7 @@ public:
     void crash(b2Vec2 impactVel);
 
     //Modifiers
-    void handleHealthPowerup(const size_t& id);
+    void handleHealthPowerup(HealthPowerupFUD* hpu, const size_t& id);
     void handleBoostPowerup(BoostPowerupFUD* bpuFud, const size_t& id);
     void handleMud(MudFUD* mudFud, const size_t& id);
     void handleOil(OilFUD* oilFud, const size_t& id);

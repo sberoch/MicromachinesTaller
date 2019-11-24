@@ -80,7 +80,7 @@ public:
     HealthPowerup(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init,
             float y_init, float angle, std::shared_ptr<Configuration> configuration) :
                  Modifier(world, type, id, x_init, y_init, angle, configuration),
-                 hpFUD(new HealthPowerupFUD(_id)){
+                 hpFUD(new HealthPowerupFUD(_id, configuration->getHealthToIncrease())){
         _setFixtureDef(configuration);
         _body->SetUserData(this);
     }
