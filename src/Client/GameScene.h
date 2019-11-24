@@ -48,6 +48,7 @@ private:
 	
 	bool isGameOver;
 	bool isMapReady;
+	bool carExploded;
 
 public:
 	GameScene(SdlWindow& window, SafeQueue<std::shared_ptr<SnapshotEvent>>& recvQueue,
@@ -67,6 +68,7 @@ private:
 	void removeObject(GameEventStruct gameEvent);
 	void gameOver(GameEventStruct gameEvent);
 	void lapCompleted(GameEventStruct gameEvent);
+	void carExplosion(GameEventStruct gameEvent);
 
 
 };

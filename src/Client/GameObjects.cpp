@@ -17,7 +17,8 @@ void GameObjects::draw(int cameraX, int cameraY) {
 		it.second->drawAt(cameraX, cameraY);
 	}
 	for (auto& it : carsMap) {
-		it.second->drawAt(cameraX, cameraY);
+		if (drawableCarsMap.at(it.first))
+			it.second->drawAt(cameraX, cameraY);
 	}
 	for (auto& it : miscMap) {
 		it.second->drawAt(cameraX, cameraY);
@@ -43,6 +44,7 @@ void GameObjects::add(int type, int id, const ObjectViewPtr& obj) {
 		}
 		case TYPE_CAR_RED: case TYPE_CAR_BLUE: case TYPE_CAR_YELLOW: case TYPE_CAR_GREEN: {
 			carsMap.insert(std::make_pair(id, obj));
+			drawableCarsMap.insert(std::make_pair(id, true));
 			break;
 		}
 		case TYPE_EXPLOSION: {
@@ -75,6 +77,7 @@ void GameObjects::remove(int type, int id) {
 		}
 		case TYPE_CAR_RED: case TYPE_CAR_BLUE: case TYPE_CAR_YELLOW: case TYPE_CAR_GREEN: {
 			carsMap.erase(id);
+			drawableCarsMap.erase(id);
 			break;
 		}
 		case TYPE_EXPLOSION: {
@@ -141,10 +144,21 @@ ObjectMap& GameObjects::getAllInteractables() {
 	return interactablesMap;
 }
 
+void GameObjects::hideCar(int playerId) {
+	drawableCarsMap.at(playerId) = false;
+}
+
+void GameObjects::showCar(int playerId) {
+	if (drawableCarsMap.count(playerId)) {
+		drawableCarsMap.at(playerId) = true;
+	}
+}
+
 void GameObjects::clear() {
 	tracksMap.clear();
 	decorationsMap.clear();
 	carsMap.clear();
+	drawableCarsMap.clear();
 	boostsMap.clear();
 	interactablesMap.clear();
 	miscMap.clear();

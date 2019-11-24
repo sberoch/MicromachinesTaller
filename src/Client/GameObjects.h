@@ -17,6 +17,8 @@ private:
 	ObjectMap interactablesMap;
 	ObjectMap miscMap;
 
+	std::map<int, bool> drawableCarsMap;
+
 	int explosionsCounter;
 
 public:
@@ -36,6 +38,8 @@ public:
 	ObjectMap& getAllBoosts();
 	ObjectMap& getAllInteractables();
 
+	void hideCar(int playerId);
+	void showCar(int playerId);
 	void clear();
 };
 
