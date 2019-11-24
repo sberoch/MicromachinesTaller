@@ -19,6 +19,7 @@ Configuration::Configuration() {
     _positionIterations = worldConfig["positionIterations"].get<float>();
     _maxDistToTrack = worldConfig["maxDistToTrack"].get<float>();
     _modifiersCreationFrequency = worldConfig["modifiersCreationFrequency"].get<int>();
+    _mapToUse = worldConfig["mapToUse"].get<std::string>();
 
     json carConfig = j["car_configuration"];
     _carHalfWidth = carConfig["carHalfWidth"].get<float>();
@@ -119,6 +120,10 @@ float Configuration::getMaxDistToTrack(){
 
 int Configuration::getModifiersCreationFrequency(){
     return _modifiersCreationFrequency;
+}
+
+std::string Configuration::getMapToUse() {
+    return _mapToUse;
 }
 
 //Car

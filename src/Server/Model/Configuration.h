@@ -14,6 +14,7 @@ private:
     float _positionIterations;
     float _maxDistToTrack;
     int _modifiersCreationFrequency;
+    std::string _mapToUse;
 
     //Car
     float _carHalfWidth;
@@ -92,6 +93,7 @@ public:
     float getPositionIterations();
     float getMaxDistToTrack();
     int getModifiersCreationFrequency();
+    std::string getMapToUse();
 
     float getCarWidth();
     float getCarHeight();
