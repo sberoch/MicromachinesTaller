@@ -73,6 +73,8 @@ Configuration::Configuration() {
     _boostPowerUpHalfHeight = boostPUConfig["halfHeight"].get<float>();
     _boostPowerUpDensity = boostPUConfig["density"].get<float>();
     _boostPowerUpActionTime = boostPUConfig["actionTime"].get<float>();
+    _boostSpeedToIncrease = boostPUConfig["speedToIncrease"].get<float>();
+    _boostNewDrive = boostPUConfig["newDrive"].get<float>();
 
     json mudConfig = j["mudConfiguration"];
     _mudHalfWidth = mudConfig["halfWidth"].get<float>();
@@ -281,6 +283,8 @@ int Configuration::getHealthToIncrease() {
     return _healthToIncrease;
 }
 
+
+///////////////   BOOST   /////////////////
 float Configuration::getBoostPowerUpHalfWidth(){
     return _boostPowerUpHalfWidth;
 }
@@ -297,6 +301,15 @@ float Configuration::getBoostPowerUpActionTime() {
     return _boostPowerUpActionTime;
 }
 
+float Configuration::getBoostSpeedToIncrease() {
+    return _boostSpeedToIncrease;
+}
+
+float Configuration::getBoostNewDrive() {
+    return _boostNewDrive;
+}
+
+///////////////   ROCK   /////////////////
 float Configuration::getRockHalfWidth(){
     return _rockHalfWidth;
 }

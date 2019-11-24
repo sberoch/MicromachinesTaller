@@ -67,6 +67,8 @@ private:
     float _boostPowerUpHalfHeight;
     float _boostPowerUpDensity;
     float _boostPowerUpActionTime;
+    float _boostSpeedToIncrease;
+    float _boostNewDrive;
 
     float _rockHalfWidth;
     float _rockHalfHeight;
@@ -143,6 +145,8 @@ public:
     float getBoostPowerUpHalfHeight();
     float getBoostPowerUpDensity();
     float getBoostPowerUpActionTime();
+    float getBoostSpeedToIncrease();
+    float getBoostNewDrive();
 
     float getRockHalfWidth();
     float getRockHalfHeight();

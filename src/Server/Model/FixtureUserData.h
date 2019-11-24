@@ -61,16 +61,23 @@ public:
 class BoostPowerupFUD : public FixtureUserData {
 public:
     float time;
-    int speedToIncrease;
+    float _speedToIncrease;
+    float _newDrive;
 
-    BoostPowerupFUD(float time, int speedToIncrease, size_t id) : FixtureUserData(FUD_BOOST_POWERUP, id), time(time), speedToIncrease(speedToIncrease) {}
+    BoostPowerupFUD(float time, float speedToIncrease, float newDrive, size_t& id) :
+                    FixtureUserData(FUD_BOOST_POWERUP, id),
+                    time(time), _speedToIncrease(speedToIncrease), _newDrive(newDrive) {}
 
     float getActionTime(){
         return time;
     }
 
-    int getSpeedToIncrease(){
-        return speedToIncrease;
+    float getSpeedToIncrease(){
+        return _speedToIncrease;
+    }
+
+    float getNewDrive(){
+        return _newDrive;
     }
 };
 

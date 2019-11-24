@@ -95,9 +95,9 @@ private:
     std::shared_ptr<BoostPowerupFUD> bpFUD;
     void _setFixtureDef(std::shared_ptr<Configuration> configuration){
         b2PolygonShape shape;
-        shape.SetAsBox(configuration->getHealthPowerUpHalfWidth(), configuration->getHealthPowerUpHalfHeight());
+        shape.SetAsBox(configuration->getBoostPowerUpHalfWidth(), configuration->getBoostPowerUpHalfHeight());
         _fixtureDef.shape = &shape;
-        _fixtureDef.density = configuration->getHealthPowerUpDensity();
+        _fixtureDef.density = configuration->getBoostPowerUpDensity();
         _fixtureDef.isSensor = true;
 
         _fixture = _body->CreateFixture(&_fixtureDef);
@@ -108,7 +108,9 @@ public:
     BoostPowerup(std::shared_ptr<b2World> world, size_t type, size_t id, float x_init,
             float y_init, float angle, std::shared_ptr<Configuration> configuration) :
             Modifier(world, type, id, x_init, y_init, angle, configuration),
-            bpFUD(new BoostPowerupFUD(configuration->getBoostPowerUpActionTime(), 10, _id)){
+            bpFUD(new BoostPowerupFUD(configuration->getBoostPowerUpActionTime(),
+                                      configuration->getBoostSpeedToIncrease(),
+                                      configuration->getBoostNewDrive(), _id)){
         _setBodyDef(x_init, y_init, angle);
 
         _setFixtureDef(configuration);

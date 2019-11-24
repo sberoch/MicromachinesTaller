@@ -314,6 +314,7 @@ void Car::handleHealthPowerup(HealthPowerupFUD* hpu, const size_t& id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_HEALTH_POWERUP;
     status->id = id;
+    status->timeOfAction = 0;
     _status.push_back(status);
 
     if ((_health + hpu->getHealthToIncrease()) < _maxHealth)
@@ -325,12 +326,12 @@ void Car::handleHealthPowerup(HealthPowerupFUD* hpu, const size_t& id){
 void Car::handleBoostPowerup(BoostPowerupFUD* bpuFud, const size_t& id){
     std::shared_ptr<Status> status(new Status);
     status->status = GRABBED_BOOST_POWERUP;
-    status->timeOfAction = 125; //bpuFud->getActionTime();
+    status->timeOfAction = bpuFud->getActionTime();
     status->id = id;
     _status.push_back(status);
 
-    _currentForwardSpeed += 100;//bpuFud->getSpeedToIncrease();
-    _currentForwardDrive = 30;
+    _currentForwardSpeed += bpuFud->getSpeedToIncrease();
+    _currentForwardDrive = bpuFud->getNewDrive();
 }
 
 void Car::handleMud(MudFUD* mudFud, const size_t& id){
