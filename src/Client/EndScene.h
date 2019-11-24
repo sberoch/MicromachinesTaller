@@ -9,6 +9,7 @@
 #include "TextureCreator.h"
 #include "../Common/SafeQueue.h"
 #include "PlayerDescriptor.h"
+#include "Audio.h"
 #include <map>
 
 class EndScene : public BaseScene {
@@ -16,6 +17,7 @@ private:
 	SdlWindow& window;
 	SdlTexture backgroundEndTex;
 	BackgroundView backgroundEnd;
+	Audio audio;
 
 	SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue;
     SafeQueue<std::shared_ptr<Event>>& sendQueue;

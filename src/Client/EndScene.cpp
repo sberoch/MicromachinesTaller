@@ -55,9 +55,11 @@ Scene EndScene::handle() {
 			int x, y;
 			SDL_GetMouseState(&x, &y);
 			if (insideQuitButton(x, y)) {
+				audio.playEffect(SFX_BUTTON);
 				_done = true;
 
 			} else if (insideMenuButton(x, y)) {
+				audio.playEffect(SFX_BUTTON);
 			    std::shared_ptr<Event> menuEvent(new GoBackToMenuEvent(player.globalId));
 			    sendQueue.push(menuEvent);
 				nextScene = SCENE_MENU;
@@ -92,6 +94,6 @@ bool EndScene::insideQuitButton(int x, int y) {
 }
 
 bool EndScene::insideMenuButton(int x, int y) {
-	Area playBtn(0.15*xScreen, 0.75*yScreen, 0.25*xScreen, 0.2*yScreen);
+	Area playBtn(0.05*xScreen, 0.75*yScreen, 0.25*xScreen, 0.2*yScreen);
 	return playBtn.isInside(x, y);
 }

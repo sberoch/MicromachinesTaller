@@ -34,6 +34,7 @@ bool GameScene::done() {
 
 void GameScene::update() {
     nextScene = SCENE_GAME;
+    isGameOver = false;
 	audio.playMusic();
 	window.getWindowSize(&xScreen, &yScreen);
 
@@ -61,15 +62,17 @@ void GameScene::updateCars(const CarStructList& cars) {
 
 void GameScene::updateGameEvents(const GameEventsList& gameEvents) {
 	for (auto& gameEvent : gameEvents) {
- 		switch(gameEvent.eventType) {
-			case ADD: addObject(gameEvent); break;
-			case REMOVE: removeObject(gameEvent); break;
-			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
-			case MUD_SPLAT: showMudSplat(gameEvent); break;
-			case GAME_OVER: gameOver(gameEvent); break;
-			case LAP_COMPLETED: lapCompleted(gameEvent); break;
-			default: break;
-		}
+ 		if (!isGameOver) {
+ 			switch(gameEvent.eventType) {
+				case ADD: addObject(gameEvent); break;
+				case REMOVE: removeObject(gameEvent); break;
+				case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
+				case MUD_SPLAT: showMudSplat(gameEvent); break;
+				case GAME_OVER: gameOver(gameEvent); break;
+				case LAP_COMPLETED: lapCompleted(gameEvent); break;
+				default: break;
+			}
+ 		}
 	}
 }
 
@@ -101,6 +104,11 @@ void GameScene::removeObject(GameEventStruct gameEvent) {
 void GameScene::gameOver(GameEventStruct gameEvent) {
 	if (gameEvent.id == player.playerId) {
 		nextScene = SCENE_END;
+		display.clear();
+		gameObjects.clear();
+		audio.stopMusic();
+		isGameOver = true;
+		isMapReady = false;
 	}
 }
 

@@ -141,3 +141,12 @@ ObjectMap& GameObjects::getAllInteractables() {
 	return interactablesMap;
 }
 
+void GameObjects::clear() {
+	tracksMap.clear();
+	decorationsMap.clear();
+	carsMap.clear();
+	boostsMap.clear();
+	interactablesMap.clear();
+	miscMap.clear();
+}
+

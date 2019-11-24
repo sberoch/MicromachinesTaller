@@ -35,6 +35,8 @@ public:
 	ObjectMap& getAllCars();
 	ObjectMap& getAllBoosts();
 	ObjectMap& getAllInteractables();
+
+	void clear();
 };
 
 #endif // GAME_OBJECTS_H

@@ -77,3 +77,14 @@ void PlayerDisplay::carExploded(int exp_x, int exp_y) {
 	exploded = true;
 }
 
+void PlayerDisplay::clear() {
+	this->cam_x = 0;
+	this->cam_y = 0;
+	carExplodedTimer = 0;
+	exploded = false;
+	mudSplatTimer = 0;
+	mudSplat = false;
+	numberView.setNumber(0);
+	health = 100;
+}
+

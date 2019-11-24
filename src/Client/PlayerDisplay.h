@@ -39,6 +39,7 @@ public:
 	void showMudSplat();
 	void setLapNumber(int lapNumber);
 	void carExploded(int exp_x, int exp_y);
+	void clear();
 };
 
 #endif // PLAYER_DISPLAY_H
