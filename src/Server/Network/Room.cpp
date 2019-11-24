@@ -143,7 +143,7 @@ int Room::getColourFromId(int id) {
 
 
 Room::~Room() {
-    std::cout << "Entrando al destructor de un room" << std::endl;
+    std::cout << "Entrando al destructor del room: " << roomId << std::endl;
     this->roomRunning = false;
     clients.clear();
 

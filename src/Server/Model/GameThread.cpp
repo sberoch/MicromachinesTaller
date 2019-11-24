@@ -38,6 +38,7 @@ void GameThread::run() {
     ModsThread modsThread("libs.txt", &_worldDTO);
     std::shared_ptr<Event> event;
     std::shared_ptr<EndSnapshot> endSnapshot(new EndSnapshot);
+    gameStarted = true;
 
     int i = 0;
     while (roomRunning && acceptSocketRunning) {
@@ -112,7 +113,6 @@ void GameThread::run() {
                     std::this_thread::sleep_for(
                             std::chrono::milliseconds(to_sleep));
                 }
-                std::cout << "Finished players size:" << finishedPlayers.size() << std::endl;
             }
         } catch (SocketError &se) {
             roomRunning = false;
