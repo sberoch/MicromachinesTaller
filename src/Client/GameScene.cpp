@@ -26,7 +26,8 @@ GameScene::GameScene(SdlWindow& window, SafeQueue<std::shared_ptr<SnapshotEvent>
 	yScreen(0),
 	nextScene(SCENE_GAME),
 	isGameOver(false),
-	isMapReady(false) {}
+	isMapReady(false),
+	carExploded(false) {}
 
 bool GameScene::done() {
 	return isDone;
@@ -34,8 +35,15 @@ bool GameScene::done() {
 
 void GameScene::update() {
     nextScene = SCENE_GAME;
+    isGameOver = false;
 	audio.playMusic();
 	window.getWindowSize(&xScreen, &yScreen);
+
+	//If my car exploded, check if it is ready to draw again.
+	if(!display.hasMyCarExploded()) {
+		gameObjects.showCar(player.playerId);
+		carExploded = false;
+	}
 
 	std::shared_ptr<SnapshotEvent> snap;
 	while (recvQueue.get(snap)) {
@@ -61,15 +69,17 @@ void GameScene::updateCars(const CarStructList& cars) {
 
 void GameScene::updateGameEvents(const GameEventsList& gameEvents) {
 	for (auto& gameEvent : gameEvents) {
- 		switch(gameEvent.eventType) {
-			case ADD: addObject(gameEvent); break;
-			case REMOVE: removeObject(gameEvent); break;
-			case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
-			case MUD_SPLAT: showMudSplat(gameEvent); break;
-			case GAME_OVER: gameOver(gameEvent); break;
-			case LAP_COMPLETED: lapCompleted(gameEvent); break;
-			default: break;
-		}
+ 		if (!isGameOver) {
+ 			switch(gameEvent.eventType) {
+				case ADD: addObject(gameEvent); break;
+				case REMOVE: removeObject(gameEvent); break;
+				case MAP_LOAD_FINISHED: isMapReady = true; bot.loadMap(); break;
+				case MUD_SPLAT: showMudSplat(gameEvent); break;
+				case GAME_OVER: gameOver(gameEvent); break;
+				case LAP_COMPLETED: lapCompleted(gameEvent); break;
+				default: break;
+			}
+ 		}
 	}
 }
 
@@ -86,11 +96,7 @@ void GameScene::addObject(GameEventStruct gameEvent) {
 										gameEvent.angle);
 	gameObjects.add(gameEvent.objectType, gameEvent.id, ov);
 	if (gameEvent.objectType == TYPE_EXPLOSION) {
-		if (gameEvent.id == player.playerId) {
-			display.carExploded(xScreen/2 - conv.blockToPixel(gameEvent.x),
-								yScreen/2 - conv.blockToPixel(gameEvent.y));
-		}
-		audio.playEffect(SFX_CAR_EXPLOSION);
+		carExplosion(gameEvent);
 	}
 }
 
@@ -101,6 +107,11 @@ void GameScene::removeObject(GameEventStruct gameEvent) {
 void GameScene::gameOver(GameEventStruct gameEvent) {
 	if (gameEvent.id == player.playerId) {
 		nextScene = SCENE_END;
+		display.clear();
+		gameObjects.clear();
+		audio.stopMusic();
+		isGameOver = true;
+		isMapReady = false;
 	}
 }
 
@@ -120,7 +131,7 @@ void GameScene::draw() {
 }
 
 Scene GameScene::handle() {
-	if (isMapReady) {
+	if (isMapReady && !carExploded) {
 		if (player.isBot) {
 			bot.handle();
 			if (bot.done()) {
@@ -148,6 +159,18 @@ void GameScene::drawBackground() {
 	}
 }
 
+void GameScene::carExplosion(GameEventStruct gameEvent) {
+	if (gameEvent.id == player.playerId) {
+			//Center the camera in the explosion.
+			display.carExploded(xScreen/2 - conv.blockToPixel(gameEvent.x),
+								yScreen/2 - conv.blockToPixel(gameEvent.y));
+			//Hide the exploded car.
+			gameObjects.hideCar(player.playerId);
+			//Remove its movement.
+			carExploded = true;
 
+	}
+	audio.playEffect(SFX_CAR_EXPLOSION);
+}
 
 

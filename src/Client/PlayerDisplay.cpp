@@ -25,6 +25,7 @@ void PlayerDisplay::update(int cam_x, int cam_y, int newHealth) {
 	if (!exploded) {
 		this->cam_x = cam_x;
 		this->cam_y = cam_y;
+
 	} else {
 		carExplodedTimer++;
 		if (carExplodedTimer >= CAR_EXPLOSION_PENALTY) {
@@ -75,5 +76,21 @@ void PlayerDisplay::carExploded(int exp_x, int exp_y) {
 	this->cam_y = exp_y;
 	carExplodedTimer = 0;
 	exploded = true;
+}
+
+bool PlayerDisplay::hasMyCarExploded() {
+	return exploded;
+}
+
+
+void PlayerDisplay::clear() {
+	this->cam_x = 0;
+	this->cam_y = 0;
+	carExplodedTimer = 0;
+	exploded = false;
+	mudSplatTimer = 0;
+	mudSplat = false;
+	numberView.setNumber(0);
+	health = 100;
 }
 

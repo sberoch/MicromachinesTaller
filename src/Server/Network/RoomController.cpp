@@ -191,10 +191,11 @@ bool RoomController::handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot
 }
 
 void RoomController::eraseRoom(int roomId){
-    auto room = rooms.at(roomId);
-    collector.assignRoomId(roomId);
-    collector.start();
+    std::shared_ptr<Collector> newCollector(new Collector(clientsWithNoRoom, rooms));
+    newCollector->assignRoomId(roomId);
+    newCollector->start();
     listener.eraseRoomFromSnapshot(roomId);
+    newCollector->join();
 }
 
 
