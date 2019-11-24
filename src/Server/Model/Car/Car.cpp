@@ -23,7 +23,7 @@ void Car::_setBodyDef(float x_init, float y_init, float angle, const std::shared
 }
 
 
-Car::Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_init, float angle, size_t max_tracks, const std::shared_ptr<Configuration>& configuration) :
+Car::Car(const std::shared_ptr<b2World>& world, size_t& id, float& x_init, float& y_init, float angle, size_t max_tracks, const std::shared_ptr<Configuration>& configuration) :
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0),
         _maxHealth(configuration->getCarMaxHealth()),
         _health(configuration->getCarMaxHealth()),
@@ -61,10 +61,10 @@ Car::Car(std::shared_ptr<b2World> world, size_t& id, float& x_init, float& y_ini
 }
 
 void Car::setTrack(Track* track){
-    if (_tracks.size() > 0 && _tracks.back()->isFinish())
+    if (!_tracks.empty() && _tracks.back()->isFinish())
         _tracks.clear();
-    for (size_t i=0; i<_tracks.size(); ++i){
-        if (_tracks[i]->equals(track))
+    for (auto & _track : _tracks){
+        if (_track->equals(track))
             return;
     }
     _tracks.push_back(track);
@@ -74,9 +74,9 @@ void Car::resetCar() {
     _health = _maxHealth;
     if (_tracks.back()){
         b2Vec2 position = b2Vec2(_tracks.back()->x(), _tracks.back()->y());
-        float angleCorrection = 0;
+        float angleCorrection = 180 * DEGTORAD;
         if (_tracks.back()->type() == TYPE_CURVE_TRACK)
-            angleCorrection = 45 * DEGTORAD;
+            angleCorrection = (45 + 180) * DEGTORAD;
         _carBody->SetTransform(position, _tracks.back()->angle() + angleCorrection);
         _carBody->SetLinearVelocity(b2Vec2(0, 0));
     } else {

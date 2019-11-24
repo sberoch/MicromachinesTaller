@@ -161,12 +161,13 @@ void SnapshotEvent::setMap(const json& jMap) {
 	//TODO: esto del clientId deberia venir de afuera
 	std::cout << "Sending map\n";
 	for (auto& car : jMap["cars"]) {
-        setGameEvent(ADD, 
-        			car["color"],
-        			car["x_init"],
-               		car["y_init"],
-               		car["angle"],
-               		car["id_from_room"]);
+	    if (car["id_from_room"] != -1)
+            setGameEvent(ADD,
+                        car["color"],
+                        car["x_init"],
+                        car["y_init"],
+                        car["angle"],
+                        car["id_from_room"]);
     }
     int id = 0;
     for (auto& track : jMap["tracks"])  {

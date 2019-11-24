@@ -4,6 +4,7 @@
 #include "../Player.h"
 #include "../../Common/SocketError.h"
 #include <iostream>
+#include <utility>
 #include "../../Common/Event/EventCreator.h"
 #include "../Network/ThClient.h"
 #include "../../Common/Event/EndSnapshot.h"
@@ -59,15 +60,14 @@ void GameThread::run() {
                 step();
 
                 //MODS CODE
-                //TODO refactor
                 if ((i % _configuration->getModifiersCreationFrequency()) == 0) {
                     modsThread.run();
                     applyPluginChanges();
 
-                    for (size_t i = 0; i < MAX_MODIFIERS; ++i) {
-                        ModifierDTO modifier = _worldDTO.modifiers[i];
+                    for (size_t j = 0; j < MAX_MODIFIERS; ++j) {
+                        ModifierDTO modifier = _worldDTO.modifiers[j];
                         if (modifier.newModifier) {
-                            _worldDTO.modifiers[i].newModifier = false;
+                            _worldDTO.modifiers[j].newModifier = false;
                             for (auto &actualClient : clients) {
                                 actualClient.second->createModifier(modifier.type, modifier.id, modifier.x, modifier.y,
                                                                     modifier.angle);

@@ -1,8 +1,37 @@
-{
+{   "cars": [
+    {
+      "id_from_room": -1,
+      "color": -1,
+      "x_init": 14,
+      "y_init": 11.5,
+      "angle": 180
+    },
+    {
+      "id_from_room": -1,
+      "color": -1,
+      "x_init": 16,
+      "y_init": 11.5,
+      "angle": 180
+    },
+    {
+      "id_from_room": -1,
+      "color": -1,
+      "x_init": 13.5,
+      "y_init": 14.5,
+      "angle": 200
+    },
+    {
+      "id_from_room": -1,
+      "color": -1,
+      "x_init": 15.5,
+      "y_init": 14.5,
+      "angle": 200
+    }
+  ],
   "startLine": {
       "type": 119,
       "x": 15,
-      "y": 15,
+      "y": 10,
       "angle": 0
   },
   "tracks": [
