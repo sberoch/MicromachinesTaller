@@ -39,7 +39,7 @@ public:
 
     void stop();
 
-    void eraseRoom(int roomId);
+    void eraseRoomFromSnapshot(int roomId);
 };
 
 

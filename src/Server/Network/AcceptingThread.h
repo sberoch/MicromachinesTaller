@@ -23,7 +23,6 @@ private:
     Socket &acceptSocket;
     std::atomic_bool running;
     RoomController roomController;
-    SafeCounter clientCounter;
 
 public:
     //Asigna las referencias al socket aceptador y al archivo.

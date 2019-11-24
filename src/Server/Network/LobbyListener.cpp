@@ -52,7 +52,7 @@ void LobbyListener::stop(){
     incomingEvents.push(nullptr);
 }
 
-void LobbyListener::eraseRoom(int roomId){
+void LobbyListener::eraseRoomFromSnapshot(int roomId){
     snapshot->eraseRoom(roomId);
 }
 

@@ -50,8 +50,8 @@ public:
     void sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot);
     void sendStart(json j);
 
+    void assignClientId(int newId);
     void assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue);
-
     void assignCar(const std::shared_ptr<Car>& car);
 
     void sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot);
@@ -75,6 +75,8 @@ public:
     int getClientId();
 
     int getNumberOfLaps();
+
+    void restart();
 
     ~ClientThread();
 };

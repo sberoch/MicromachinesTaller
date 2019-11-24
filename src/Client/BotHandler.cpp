@@ -2,7 +2,7 @@
 #include "TextureCreator.h"
 #include <iostream>
 
-#define CYCLES_UNTIL_MOVE_REPEAT 3
+#define CYCLES_UNTIL_MOVE_REPEAT -1
 
 BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio, ScreenRecorder& recorder,
 					   SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player) :
