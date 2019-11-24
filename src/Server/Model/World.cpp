@@ -26,14 +26,10 @@ World::World(size_t n_of_cars, const std::shared_ptr<Configuration>& configurati
 }
 
 json World::getCarById(int id, json cars){
-    json carFound;
-
     for (auto& actualCar: cars){
-        if (actualCar["id_from_room"] == id){
-            carFound = actualCar;
-        }
+        if (actualCar["id_from_room"] == id)
+            return actualCar;
     }
-    return carFound;
 }
 
 std::shared_ptr<Car> World::createCar(size_t id, json j){

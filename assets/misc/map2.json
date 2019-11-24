@@ -1,4 +1,34 @@
 {
+  "cars": [
+    {
+      "id_from_room": -1,
+      "color": -1,
+      "x_init": 9,
+      "y_init": 36.5,
+      "angle": 180
+    },
+    {
+      "id_from_room": -1,
+      "color": -1,
+      "x_init": 11,
+      "y_init": 36.5,
+      "angle": 180
+    },
+    {
+      "id_from_room": -1,
+      "color": -1,
+      "x_init": 9,
+      "y_init": 39,
+      "angle": 180
+    },
+    {
+      "id_from_room": -1,
+      "color": -1,
+      "x_init": 11,
+      "y_init": 39,
+      "angle": 180
+    }
+  ],
   "startLine": {
     "type": 119,
     "x": 10,
