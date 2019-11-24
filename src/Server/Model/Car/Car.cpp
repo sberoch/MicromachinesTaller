@@ -238,7 +238,7 @@ int Car::update(){
         _exploded = false;
     }
 
-    if (speed() == 0)
+    if (speed() < 1)
         _isMoving = false;
 
     _previous_x = _carBody->GetPosition().x;
