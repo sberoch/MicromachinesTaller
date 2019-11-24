@@ -47,8 +47,7 @@ void Collector::collectDeadClients(){
 
 void Collector::eraseRoom() {
     if (roomId != -1){
-        rooms.erase(roomId);
-        rooms.insert({roomId, nullptr});
+        rooms.at(roomId) = nullptr;
     } else
         throw std::runtime_error("Se intento eliminar un room con id -1.");
 }

@@ -38,6 +38,7 @@ public:
     //Inicializa la variable atomica booleana y el atendedor de clientes.
     //Para este ultimo mueve el socket de la comunicacion.
     ClientThread(Protocol protocol, int clientId, std::atomic_bool& acceptSocketRunning);
+
     void start();
     void run();
 
