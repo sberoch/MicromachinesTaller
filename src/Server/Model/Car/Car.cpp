@@ -74,9 +74,9 @@ void Car::resetCar() {
     _health = _maxHealth;
     if (_tracks.back()){
         b2Vec2 position = b2Vec2(_tracks.back()->x(), _tracks.back()->y());
-        float angleCorrection = 0;
+        float angleCorrection = 180 * DEGTORAD;
         if (_tracks.back()->type() == TYPE_CURVE_TRACK)
-            angleCorrection = 45 * DEGTORAD;
+            angleCorrection = (45 + 180) * DEGTORAD;
         _carBody->SetTransform(position, _tracks.back()->angle() + angleCorrection);
         _carBody->SetLinearVelocity(b2Vec2(0, 0));
     } else {
