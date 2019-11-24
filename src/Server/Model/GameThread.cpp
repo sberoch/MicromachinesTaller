@@ -37,6 +37,7 @@ void GameThread::run() {
     ModsThread modsThread("libs.txt", &_worldDTO);
     std::shared_ptr<Event> event;
     std::shared_ptr<EndSnapshot> endSnapshot(new EndSnapshot);
+    bool thereWasAPlayerAdded = false;
 
     int i = 0;
     while (roomRunning && acceptSocketRunning) {
@@ -84,6 +85,7 @@ void GameThread::run() {
                         actualClient.second->sendSnapshot(snapshot);
                         addToFinishedPlayers(clients, clientId);
                         endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
+                        thereWasAPlayerAdded = true;
                     }
                 }
 
@@ -96,9 +98,11 @@ void GameThread::run() {
                     actualClient.second->sendSnapshot(snapshot);
                 }
 
-
-                for (auto &actualFinishedPlayer: finishedPlayers) {
-                    actualFinishedPlayer.second->sendEndEvent(endSnapshot);
+                if (thereWasAPlayerAdded) {
+                    for (auto &actualFinishedPlayer: finishedPlayers) {
+                        actualFinishedPlayer.second->sendEndEvent(endSnapshot);
+                    }
+                    thereWasAPlayerAdded = false;
                 }
 
                 i++;
@@ -169,6 +173,7 @@ void GameThread::handleEvent(const std::shared_ptr<Event>& event) {
             controller.addExistentClient(finishedPlayer);
             if (clients.empty()){
                 finishedPlayers.clear();
+                incomingEvents.clear();
                 controller.eraseRoom(roomId);
             }
             break;

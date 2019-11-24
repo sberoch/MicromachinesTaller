@@ -43,6 +43,7 @@ void ClientThread::run() {
 
 
 
+
 //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
 bool ClientThread::isDead(){
     return !keepTalking;
@@ -137,6 +138,8 @@ void ClientThread::sendEndEvent(const std::shared_ptr <EndSnapshot> &endSnapshot
 void ClientThread::restart() {
     this->idFromRoom = -1;
     this->numberOfLaps = 0;
+    this->receivingNonBlockingQueue->clear();
+    this->sendingBlockingQueue.clear();
 }
 
 void ClientThread::start() {
@@ -164,6 +167,7 @@ ClientThread::~ClientThread() {
     std::cout << "Destruyendo client thread con clientId: " << clientId << std::endl;
     stop();
 }
+
 
 
 
