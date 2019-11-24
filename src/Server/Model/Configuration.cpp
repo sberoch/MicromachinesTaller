@@ -20,6 +20,7 @@ Configuration::Configuration() {
     _maxDistToTrack = worldConfig["maxDistToTrack"].get<float>();
     _modifiersCreationFrequency = worldConfig["modifiersCreationFrequency"].get<int>();
     _mapToUse = worldConfig["mapToUse"].get<std::string>();
+    _maxLaps = worldConfig["maxLaps"].get<int>();
 
     json carConfig = j["car_configuration"];
     _carHalfWidth = carConfig["carHalfWidth"].get<float>();
@@ -99,6 +100,7 @@ Configuration::Configuration() {
     _newDamping = oilConfig["damping"].get<float>();
 }
 
+///////////////   GENERAL   /////////////////
 float Configuration::getGravityX(){
     return _gravityX;
 }
@@ -131,8 +133,11 @@ std::string Configuration::getMapToUse() {
     return _mapToUse;
 }
 
-//Car
+int Configuration::getMaxLaps() {
+    return _maxLaps;
+}
 
+///////////////   CAR   /////////////////
 float Configuration::getCarWidth(){
     return _carHalfWidth;
 }
@@ -229,6 +234,7 @@ float Configuration::getAngularVelocityInit(){
     return _angularVelocityInit;
 }
 
+///////////////   TRACK   /////////////////
 float Configuration::getTrackWidth(){
     return _trackHalfWidth;
 }
@@ -249,6 +255,7 @@ float Configuration::getTrackRestitution(){
     return _trackRestitution;
 }
 
+///////////////   GRASS   /////////////////
 float Configuration::getGrassWidth(){
     return _grassHalfWidth;
 }
@@ -269,6 +276,7 @@ float Configuration::getGrassRestitution(){
     return _grassRestitution;
 }
 
+///////////////   HEALTHPU   /////////////////
 float Configuration::getHealthPowerUpHalfWidth(){
     return _healthPowerUpHalfWidth;
 }
@@ -357,6 +365,7 @@ float Configuration::getMudTime(){
     return _mudTime;
 }
 
+///////////////   OIL   /////////////////
 float Configuration::getOilHalfWidth(){
     return _oilHalfWidth;
 }

@@ -23,7 +23,8 @@ void Car::_setBodyDef(float& x_init, float& y_init, float& angle, const std::sha
 }
 
 
-Car::Car(const std::shared_ptr<b2World>& world, size_t& id, float& x_init, float& y_init, float angle, size_t max_tracks, const std::shared_ptr<Configuration>& configuration) :
+Car::Car(const std::shared_ptr<b2World>& world, size_t& id, float& x_init, float& y_init, float angle,
+         const size_t& max_tracks, const std::shared_ptr<Configuration>& configuration) :
         _id(id), _previous_x(x_init), _previous_y(y_init), _previousAngle(0),
         _maxHealth(configuration->getCarMaxHealth()),
         _health(configuration->getCarMaxHealth()),
@@ -41,10 +42,10 @@ Car::Car(const std::shared_ptr<b2World>& world, size_t& id, float& x_init, float
         _currentBackwardDrive(configuration->getMaxBackwardDrive()),
         _desiredTorque(configuration->getCarDesiredTorque()),
         _maxLateralImpulse(configuration->getCarMaxLateralImpulse()),
-        _angularImpulse(configuration->getCarAngularImpulse()),
+        _maxAngularImpulse(configuration->getCarAngularImpulse()), _angularImpulse(configuration->getCarAngularImpulse()),
         _onGrass(false), _isMoving(false), _exploded(false),
         _tracks(),  _groundArea(), _status(),
-        _maxLaps(1), _maxtracksToLap(max_tracks), _laps(0), _winner(false),
+        _maxLaps(configuration->getMaxLaps()), _maxtracksToLap(max_tracks), _laps(0), _winner(false),
         cFUD(new CarFUD(_id)){
     _setBodyDef(x_init, y_init, angle, configuration);
     _carBody = world->CreateBody(&_carBodyDef);
@@ -272,13 +273,13 @@ void Car::carToDTO(CarDTO_t* carDTO) {
     carDTO->y = this->y();
     carDTO->angle = this->angle();
     carDTO->health = this->health();
-    carDTO->maxForwardDrive = _maxForwardDrive;
+    carDTO->maxForwardDrive = _currentForwardDrive;
     carDTO->lapsCompleted = _laps;
 }
 
 void Car::dtoToModel(const CarDTO_t& carDTO) {
     _health = carDTO.health;
-    _maxForwardDrive = carDTO.maxForwardDrive;
+    _currentForwardDrive = carDTO.maxForwardDrive;
     _laps = carDTO.lapsCompleted;
 }
 
@@ -365,7 +366,7 @@ void Car::stopEffect(const int& effectType){
             _currentForwardDrive = (this->onGrass()) ? _maxForwardDriveOnGrass : _maxForwardDrive;
             break;
         case TYPE_OIL :
-            _angularImpulse = 0.9;
+            _angularImpulse = _maxAngularImpulse;
             break;
         case TYPE_ROCK:
             _currentForwardSpeed = (this->onGrass()) ? _maxForwardSpeedOnGrass : _maxForwardSpeed;

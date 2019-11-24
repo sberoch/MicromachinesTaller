@@ -53,6 +53,7 @@ private:
 
     float _desiredTorque;
     float _maxLateralImpulse;
+    float _maxAngularImpulse;
     float _angularImpulse;
     size_t _maxHealth;
 
@@ -87,7 +88,7 @@ private:
 
 public:
     Car(const std::shared_ptr<b2World>& world, size_t& id, float& x_init, float& y_init, float angle,
-        size_t max_tracks, const std::shared_ptr<Configuration>& configuration);
+        const size_t& max_tracks, const std::shared_ptr<Configuration>& configuration);
 
     Car(const Car &other) = delete;
     Car& operator=(const Car &other) = delete;
