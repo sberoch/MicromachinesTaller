@@ -335,6 +335,7 @@ void Car::handleOil(OilFUD* oilFud, const size_t& id){
     _status.push_back(status);
 
     _angularImpulse = 0;
+    srand(time(NULL));
     float randImpulse = -1 + static_cast <float> (std::rand()) /( static_cast <float> (RAND_MAX/(1-(-1))));
     _carBody->ApplyAngularImpulse(randImpulse, true);
 }
