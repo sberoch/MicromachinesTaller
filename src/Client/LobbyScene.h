@@ -12,8 +12,8 @@
 #include "Audio.h"
 #include "View/BackgroundView.h"
 #include "PlayerDescriptor.h"
+#include "View/LobbyWarningView.h"
 #include <vector>
-
 
 class LobbyScene : public BaseScene {
 private:
@@ -31,6 +31,8 @@ private:
     std::vector<ObjectViewPtr> playerViews;
     ObjectViewPtr arrow;
     ObjectViewPtr carSelected;
+    SdlTexture warningLobbyTex;
+    LobbyWarningView startedGameWarningView;
 
     bool _done;
     bool fullscreen;
@@ -58,6 +60,7 @@ private:
     void drawRooms();
     void drawPlayers();
     void drawArrows();
+    void drawExtra();
     bool insidePlayButton(int x, int y);
     bool insideUserButton(int x, int y);
     bool insideBotButton(int x, int y);
