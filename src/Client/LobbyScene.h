@@ -42,6 +42,7 @@ private:
     int selectedPlayer;
     int joinedRoom;
     int joinedPlayer;
+    std::vector<bool> startedRooms;
 
 public:
     LobbyScene(SdlWindow& window, SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue,

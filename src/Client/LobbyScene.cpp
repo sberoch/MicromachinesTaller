@@ -32,6 +32,10 @@ LobbyScene::LobbyScene(SdlWindow& window, SafeQueue<std::shared_ptr<LobbySnapsho
 
     arrow = creator.create(TYPE_ARROW, 0, 0, 0);
     carSelected = creator.create(TYPE_CAR_SELECTED, 0, 0, 270);
+
+	for (int i = 0; i < 4; ++i) {
+		startedRooms.push_back(false);
+	}
 }
 
 bool LobbyScene::done() {
@@ -55,6 +59,7 @@ void LobbyScene::updateRooms(const RoomsMap& roomsMap) {
     this->roomsMap = roomsMap;
     bool gameStartedWithMeInIt = false;
 
+    int i = 0;
     //Check if any game started and if i'm in it.
     for (auto& room : roomsMap) {
         if (room.second.gameStarted) {
@@ -64,7 +69,9 @@ void LobbyScene::updateRooms(const RoomsMap& roomsMap) {
                     break;
                 }
             }
+            startedRooms.at(i) = true;
         }
+        i++;
     }
 
     if (gameStartedWithMeInIt) {
@@ -205,7 +212,7 @@ void LobbyScene::checkInsideAnyRoom(int x, int y) {
 
         Area btn(0.15*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
 
-        if (btn.isInside(x, y)) {
+        if (btn.isInside(x, y) && !startedRooms.at(i)) {
             if (joinedRoom == i) {
                 selectedPlayer = joinedPlayer;
             } else {
@@ -239,6 +246,9 @@ void LobbyScene::clearLobby() {
     selectedPlayer = -1;
     joinedRoom = -1;
     joinedPlayer = -1;
+	for (int i = 0; i < 4; ++i) {
+		startedRooms.at(i) = false;
+	}
     this->roomsMap.clear();
     lobbyRecvQueue.clear();
 }
