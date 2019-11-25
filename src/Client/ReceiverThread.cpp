@@ -60,7 +60,6 @@ void ReceiverThread::receiveEndSnapshots() {
 	endRecvQueue.push(endSnap);
 }
 
-
 bool ReceiverThread::finished() const {
 	return _done;
 }

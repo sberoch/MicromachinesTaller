@@ -23,11 +23,11 @@ private:
 	int xScreen, yScreen;
 public:
 	MenuScene(SdlWindow& window, SafeQueue<std::shared_ptr<Event>>& sendQueue);
-	virtual bool done() override;
-	virtual void update() override;
-	virtual void draw() override;
-	virtual Scene handle() override;
-	virtual ~MenuScene() {}
+	bool done() override;
+	void update() override;
+	void draw() override;
+	Scene handle() override;
+	~MenuScene() override = default;
 private:
 	bool insidePlayButton(int x, int y);
 	bool insideQuitButton(int x, int y);

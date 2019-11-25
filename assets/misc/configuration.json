@@ -8,7 +8,7 @@
       "positionIterations" : 3,
       "maxDistToTrack" : 5,
       "modifiersCreationFrequency" : 150,
-      "mapToUse" : "map2.json",
+      "mapToUse" : "map1.json",
       "maxLaps" : 3
     },
   "car_configuration":

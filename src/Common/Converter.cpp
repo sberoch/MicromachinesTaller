@@ -1,6 +1,5 @@
 #include "Converter.h"
 #include <cmath>
-#include <iostream>
 
 Converter::Converter(int pixelesPerBlock) : 
 	pixelesPerBlock(pixelesPerBlock) {}

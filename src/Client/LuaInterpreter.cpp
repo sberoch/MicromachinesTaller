@@ -25,7 +25,7 @@ void LuaInterpreter::setupInitialValues() {
 	lua_call(L, 8, 0);
 }
 
-void LuaInterpreter::addToTrackTable(ObjectViewPtr track) {
+void LuaInterpreter::addToTrackTable(const ObjectViewPtr& track) {
 	lua_getglobal(L, "addToTrackTable");
 	lua_pushnumber(L, track->getX());
 	lua_pushnumber(L, track->getY());

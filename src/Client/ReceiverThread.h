@@ -24,7 +24,7 @@ public:
 					SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue,
 					Protocol& protocol, Scene& currentScene);
 
-	virtual void run() override;
+	void run() override;
 	bool finished() const;
 
 	ReceiverThread(ReceiverThread &copy) = delete;

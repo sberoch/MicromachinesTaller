@@ -19,7 +19,7 @@ public:
 	~LuaInterpreter();
 
 	int getNextMovement(int carX, int carY, int carAngle);
-	void addToTrackTable(ObjectViewPtr track);
+	void addToTrackTable(const ObjectViewPtr& track);
 	void setupInitialValues();
 
 };

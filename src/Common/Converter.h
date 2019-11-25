@@ -5,7 +5,7 @@ class Converter {
 private:
 	int pixelesPerBlock;
 public:
-	Converter(int pixelesPerBlock);
+	explicit Converter(int pixelesPerBlock);
 	int blockToPixel(float coord);
 	float pixelToBlock(int coord);
 };

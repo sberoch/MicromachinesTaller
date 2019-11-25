@@ -35,8 +35,6 @@ SceneSelector::SceneSelector(int xScreen, int yScreen,
 	}
 
 void SceneSelector::run() {
-
-	bool done = false;
 	try {
 		while(!receiver.finished() && !sender.finished()) {
 			std::clock_t begin = clock();
@@ -47,8 +45,7 @@ void SceneSelector::run() {
 		    scene->draw();
 		    currentScene = scene->handle();
 		    if (scene->done()) {
-		    	done = true;
-		    	protocol.forceShutDown(); //No estoy seguro de que vaya aca
+		    	protocol.forceShutDown();
 		    }
 
 		    //Check exec time and sleep
@@ -58,9 +55,8 @@ void SceneSelector::run() {
 	    }
 	} catch (SocketError& se) {
 		std::cerr << "Socket error captured in SceneSelector" << std::endl;
-		done = true;
 	} catch (std::exception &e) {
-		std::cerr << "Excepction from scene selector: " << e.what() << std::endl;
+		std::cerr << "Exception from scene selector: " << e.what() << std::endl;
 	} catch (...){
         std::cerr << "Unknown error from scene selector" << std::endl;
     }

@@ -94,54 +94,11 @@ void GameObjects::remove(int type, int id) {
 }
 
 ObjectViewPtr GameObjects::getCar(int id) {
-	ObjectViewPtr ret = carsMap.at(id);
-	if (ret == nullptr) 
-		throw std::runtime_error("GameObjects: object not found");
-	return ret;
-}
-
-ObjectViewPtr GameObjects::getBoost(int id) {
-	ObjectViewPtr ret = boostsMap.at(id);
-	if (ret == nullptr) 
-		throw std::runtime_error("GameObjects: object not found");
-	return ret;
-}
-
-ObjectViewPtr GameObjects::getInteractable(int id) {
-	ObjectViewPtr ret = interactablesMap.at(id);
-	if (ret == nullptr) 
-		throw std::runtime_error("GameObjects: object not found");
-	return ret;
-}
-
-ObjectViewPtr GameObjects::getTrack(int id) {
-	ObjectViewPtr ret = tracksMap.at(id);
-	if (ret == nullptr) 
-		throw std::runtime_error("GameObjects: object not found");
-	return ret;
-}
-
-ObjectViewPtr GameObjects::getMisc(int id) {
-	ObjectViewPtr ret = miscMap.at(id);
-	if (ret == nullptr) 
-		throw std::runtime_error("GameObjects: object not found");
-	return ret;
+	return carsMap.at(id);
 }
 
 ObjectMap& GameObjects::getAllTracks() {
 	return tracksMap;
-}
-
-ObjectMap& GameObjects::getAllCars() {
-	return carsMap;
-}
-
-ObjectMap& GameObjects::getAllBoosts() {
-	return boostsMap;
-}
-
-ObjectMap& GameObjects::getAllInteractables() {
-	return interactablesMap;
 }
 
 void GameObjects::hideCar(int playerId) {

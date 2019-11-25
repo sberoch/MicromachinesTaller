@@ -1,5 +1,4 @@
 #include "MenuScene.h"
-#include "../Common/Constants.h"
 #include "../Common/Event/EnterLobbyEvent.h"
 #include <iostream>
 

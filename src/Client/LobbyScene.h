@@ -42,13 +42,16 @@ private:
     int selectedPlayer;
     int joinedRoom;
     int joinedPlayer;
+
 public:
     LobbyScene(SdlWindow& window, SafeQueue<std::shared_ptr<LobbySnapshot>>& lobbyRecvQueue,
 			   SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player);
-    virtual bool done() override;
-    virtual void update() override;
-    virtual void draw() override;
-    virtual Scene handle() override;
+    bool done() override;
+    void update() override;
+    void draw() override;
+    Scene handle() override;
+    ~LobbyScene() override = default;
+
 private:
     void updateRooms(const RoomsMap& roomsMap);
     void drawRooms();

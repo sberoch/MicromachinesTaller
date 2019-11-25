@@ -40,24 +40,18 @@ bool LobbyScene::done() {
 
 void LobbyScene::update() {
     nextScene = SCENE_LOBBY;
-    try {
-        window.getWindowSize(&xScreen, &yScreen);
-        backgroundLobby.setDims(xScreen, yScreen);
 
-		std::shared_ptr<LobbySnapshot> snap;
-        while (lobbyRecvQueue.get(snap)) {
-            player.globalId = snap->getMyId();
-            updateRooms(snap->getRooms());
-        }
-    } catch (std::exception &e) {
-        std::cerr << "Error from lobby scene" << e.what() << std::endl;
-    } catch (...){
-        std::cerr << "Unknown error from lobby scene" << std::endl;
+    window.getWindowSize(&xScreen, &yScreen);
+    backgroundLobby.setDims(xScreen, yScreen);
+
+    std::shared_ptr<LobbySnapshot> snap;
+    while (lobbyRecvQueue.get(snap)) {
+    	player.globalId = snap->getMyId();
+    	updateRooms(snap->getRooms());
     }
 }
 
 void LobbyScene::updateRooms(const RoomsMap& roomsMap) {
-
     this->roomsMap = roomsMap;
     bool gameStartedWithMeInIt = false;
 
@@ -67,6 +61,7 @@ void LobbyScene::updateRooms(const RoomsMap& roomsMap) {
             for (auto& playerId : room.second.players) {
                 if (playerId == player.globalId) {
                     gameStartedWithMeInIt = true;
+                    break;
                 }
             }
         }
@@ -103,7 +98,6 @@ void LobbyScene::drawPlayers() {
                 carSelected->drawAt(0.76*xScreen, (0.22 + 0.1*i)*yScreen);
             }
         }
-
     }
 }
 
@@ -125,7 +119,7 @@ Scene LobbyScene::handle() {
             int x, y;
             SDL_GetMouseState(&x, &y);
             if (insidePlayButton(x, y)) {
-                if (roomsMap.size() > 0 && selectedRoom != -1 && joinedRoom != -1) {
+                if (!roomsMap.empty() && selectedRoom != -1 && joinedRoom != -1) {
 					std::shared_ptr<Event> cmd(new PlayEvent(player.globalId));
                     sendQueue.push(cmd);
                     audio.playEffect(SFX_BUTTON);
@@ -149,7 +143,7 @@ Scene LobbyScene::handle() {
                 }
             }
             else if (insideJoinRoomButton(x, y)) {
-                if (roomsMap.size() > 0 && selectedRoom != -1 && selectedPlayer != -1) {
+                if (!roomsMap.empty() && selectedRoom != -1 && selectedPlayer != -1) {
                     joinedRoom = selectedRoom;
                     joinedPlayer = selectedPlayer;
                     audio.playEffect(SFX_BUTTON);

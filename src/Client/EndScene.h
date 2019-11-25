@@ -36,11 +36,11 @@ private:
 public:
 	EndScene(SdlWindow& window, SafeQueue<std::shared_ptr<EndSnapshot>>& endRecvQueue,
              SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player);
-	virtual bool done() override;
-	virtual void update() override;
-	virtual void draw() override;
-	virtual Scene handle() override;
-	virtual ~EndScene() {}
+	bool done() override;
+	void update() override;
+	void draw() override;
+	Scene handle() override;
+	~EndScene() override = default;
 private:
 	bool insideQuitButton(int x, int y);
 	bool insideMenuButton(int x, int y);

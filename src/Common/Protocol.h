@@ -23,12 +23,9 @@ public:
 
     std::string receive();
 
-    void send(std::string message);
+    void send(const std::string& message);
 
     void forceShutDown();
-
-    std::vector<std::string> splitCommand(std::string &message,
-                                          char delim);
 };
 
 

@@ -16,7 +16,7 @@ private:
     FILE* process = nullptr;
 
 public:
-    ScreenRecorder(SdlWindow& window);
+    explicit ScreenRecorder(SdlWindow& window);
     void start();
     bool recording();
     void close();

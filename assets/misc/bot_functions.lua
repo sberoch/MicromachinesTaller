@@ -24,7 +24,7 @@ first = nil
 function addToTrackTable(trackX, trackY, trackAngle)
 	tracks = {next = tracks, x = trackX, y = trackY, angle = trackAngle}
 	if not firstAssigned then
-		first = tracks --TODO: chequear esto si first no es first
+		first = tracks
 	end
 end
 
@@ -44,7 +44,6 @@ end
 
 --main function, returns the next movement to be done by the bot
 function getNextMovement(carX, carY, carAngle)
-	print(string.format("\n__step__"))
 	local diff = 0
 	local velocity = 0
 	local tr = tracks
@@ -69,7 +68,6 @@ function getNextMovement(carX, carY, carAngle)
 
 			--check angle diff with average point
 			diff = getDifferenceAngle(carX, carY, carAngle, avgX, avgY)
-			print(string.format("angleDiff: %s", diff))
 			velocity = getVelocity(carX, carY)
 
 			--return action
@@ -94,13 +92,11 @@ function getNextMovement(carX, carY, carAngle)
 	end
 
 	--Not inside, go back to current track
-	--//TODO: desacc outside of track
 	velocity = getVelocity(carX, carY)
 	if velocity == 0 then
 		return _n_accelerate
 	end
 
-	print(string.format("Should go back to current at x: %s, y: %s", current.x, current.y))
 	diff = getDifferenceAngle(carX, carY, carAngle, current.x, current.y)
 	return getMoveFromAngleDiff(diff)
 end
@@ -110,13 +106,11 @@ function getMoveFromAngleDiff(angleDiff)
 	if (angleDiff < -15) then
 		_justTurnedLeft = true
 		_justTurnedRight = false
-		print(string.format("L"))
 		return _n_turn_left
 
 	elseif (angleDiff > 15) then
 		_justTurnedLeft = false
 		_justTurnedRight = true
-		print(string.format("R"))
 		return _n_turn_right
 
 	else
@@ -131,7 +125,6 @@ function getMoveFromAngleDiff(angleDiff)
 		else
 			_justTurnedLeft = false
 			_justTurnedRight = false
-			print(string.format("A"))
 			return _n_accelerate
 		end
 	end
@@ -160,7 +153,6 @@ function getDifferenceAngle(carX, carY, carAngle, trackX, trackY)
 	--angle 0 is north
 	carAngle = carAngle + 180
 	carAngle = carAngle % 360
-	print(string.format("Car angle: %s", carAngle))
 
 	--get angle from points
 	local deg = math.deg
@@ -169,7 +161,6 @@ function getDifferenceAngle(carX, carY, carAngle, trackX, trackY)
 	if res >= 180 then
 		res = res - 360
 	end
-	print(string.format("Angle between dots: %s", res))
 
 	--get diff
 	local diff = res - carAngle
@@ -178,7 +169,6 @@ function getDifferenceAngle(carX, carY, carAngle, trackX, trackY)
 	elseif (diff <= -180) then
 		diff = diff + 360
 	end
-	--print(string.format("Angle diff: %s", diff))
 	return diff
 end
 
@@ -203,10 +193,9 @@ function shouldBrake(velocity, angleDiff)
 	return ((velocity > _MAX_VEL_ON_TURNS) and ((angleDiff > 35) or (angleDiff < -35)) and (not _justDesaccelerated))
 end
 
---Average with ponderance on first point.
 --Used to get the next point the car should aim to.
 function getAvgPoint(x1, y1, x2, y2)
-	local avgX = (3*x1 + x2)/4
-	local avgY = (3*y1 + y2)/4
+	local avgX = (x1 + x2)/2
+	local avgY = (y1 + y2)/2
 	return avgX, avgY
 end

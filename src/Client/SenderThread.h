@@ -15,7 +15,7 @@ public:
 	SenderThread(SafeQueue<std::shared_ptr<Event>>& sendQueue, Protocol& protocol);
 
 	bool finished() const;
-	virtual void run() override;
+	void run() override;
 };
 
 #endif // SENDER_THREAD_H

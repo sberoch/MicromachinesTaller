@@ -9,7 +9,7 @@ public:
 	virtual void update() = 0;
 	virtual void draw() = 0;
 	virtual Scene handle() = 0;
-	virtual ~BaseScene() {}
+	virtual ~BaseScene() = default;
 };
 
 #endif // BASE_SCENE_H

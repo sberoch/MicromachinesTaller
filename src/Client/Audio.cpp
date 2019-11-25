@@ -71,8 +71,10 @@ void Audio::stopEffect(SoundEffect effectID) {
 Audio::~Audio() {
 	Mix_FreeMusic(backgroundMusic);
 	backgroundMusic = NULL;
-	for (auto& it : effects) {
-		delete it.second;
-	}
+	Mix_FreeChunk(carBrake);
+	Mix_FreeChunk(carCollision);
+	Mix_FreeChunk(carExplosion);
+	Mix_FreeChunk(carEngine);
+	Mix_FreeChunk(menuButton);
 	Mix_Quit();
 }

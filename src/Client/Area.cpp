@@ -1,9 +1,7 @@
 #include "Area.h"
 #include <iostream>
 
-Area::Area() {
-	x = 0; y = 0; width = 0; height = 0;
-}
+Area::Area() : x(0), y(0), width(0), height(0) {}
 
 void Area::set(int x, int y, int width, int height) {
 	this->x = x; this->y = y;
@@ -11,8 +9,7 @@ void Area::set(int x, int y, int width, int height) {
 }
 
 Area::Area(int x, int y, int width, int height) :
-	x(x), y(y), width(width), height(height){
-}
+	x(x), y(y), width(width), height(height) {}
 	
 int Area::getX() const {
 	return this->x;

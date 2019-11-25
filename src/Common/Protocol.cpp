@@ -20,7 +20,7 @@ Protocol::Protocol(const std::string& portName, const std::string& hostNumber){
     this->socket.connectToServer(portName, hostNumber);
 }
 
-std::string Protocol::receive(){
+std::string Protocol::receive() {
     int32_t ret = 0;
     char *data = (char*)&ret;
 
@@ -35,13 +35,12 @@ std::string Protocol::receive(){
     socket.receive(buffer, sizeIncoming);
 
     std::string message(buffer);
-
     return message;
 }
 
 //Se envia la longitud como entero de 4 bytes y luego
 //el mensaje verdadero
-void Protocol::send(std::string message) {
+void Protocol::send(const std::string& message) {
     int messageLength = message.size();
 
     uint32_t number = htonl(messageLength);
@@ -54,17 +53,6 @@ void Protocol::send(std::string message) {
 
 void Protocol::forceShutDown() {
     this->socket.stop();
-}
-
-std::vector<std::string> Protocol::splitCommand(std::string &message,
-                                                char delim) {
-    std::string aux;
-    std::stringstream fullLine(message);
-    std::vector<std::string> strings;
-    while (getline(fullLine, aux, delim)) {
-        strings.push_back(aux);
-    }
-    return strings;
 }
 
 Protocol::~Protocol() = default;

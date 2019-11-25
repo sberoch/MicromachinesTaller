@@ -1,7 +1,7 @@
 #include "Thread.h"
 
-Thread::Thread() {}
-Thread::~Thread() {}
+Thread::Thread() = default;
+Thread::~Thread() = default;
 
 Thread::Thread(Thread&& origen) {
     this->thread = std::move(origen.thread);

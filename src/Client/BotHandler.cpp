@@ -2,7 +2,7 @@
 #include "TextureCreator.h"
 #include <iostream>
 
-#define CYCLES_UNTIL_MOVE_REPEAT 3
+#define CYCLES_UNTIL_MOVE_REPEAT 1
 
 BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio, ScreenRecorder& recorder,
 					   SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player) :
@@ -25,19 +25,29 @@ void BotHandler::loadMap() {
 }
 
 void BotHandler::handle() {
+    handleBotNextMovement();
+    handleOtherEvents();
+}
+
+void BotHandler::handleBotNextMovement() {
     if (moveRepeatCounter > CYCLES_UNTIL_MOVE_REPEAT) {
         moveRepeatCounter = 0;
 
         ObjectViewPtr myCar = gameObjects.getCar(player.playerId);
         InputEnum mov = (InputEnum) lua.getNextMovement(myCar->getX(), myCar->getY(), myCar->getAngle());
+        if (mov == ACCELERATE) {
+            audio.playEffect(SFX_CAR_ENGINE);
+        }
 
-		std::shared_ptr<Event> cmd(new CommandEvent(mov, player.globalId));
+        std::shared_ptr<Event> cmd(new CommandEvent(mov, player.globalId));
         sendQueue.push(cmd);
 
     } else {
         moveRepeatCounter++;
     }
+}
 
+void BotHandler::handleOtherEvents() {
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
             _done = true;
@@ -47,11 +57,11 @@ void BotHandler::handle() {
                 player.isBot = false;
 
             } else if (keyEvent.keysym.sym == SDLK_v) {
-				if (!recorder.recording()) {
-					recorder.start();
-				} else {
-					recorder.close();
-				}
+                if (!recorder.recording()) {
+                    recorder.start();
+                } else {
+                    recorder.close();
+                }
             }
         }
     }

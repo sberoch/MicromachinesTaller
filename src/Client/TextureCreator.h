@@ -34,7 +34,7 @@ private:
     SdlTexture healthBarBackTex;
     SdlTexture healthBarFrontTex;
 public:
-    TextureCreator(const SdlWindow& window);
+    explicit TextureCreator(const SdlWindow& window);
     ObjectViewPtr create(ObjectType type, int x, int y, int angle);
 };
 

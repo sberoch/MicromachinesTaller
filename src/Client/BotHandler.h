@@ -29,6 +29,10 @@ public:
 	void loadMap();
 	void handle();
 
+private:
+	void handleBotNextMovement();
+	void handleOtherEvents();
+
 };
 
 #endif // BOT_HANDLER_H

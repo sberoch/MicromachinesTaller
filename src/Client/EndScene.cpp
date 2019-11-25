@@ -46,6 +46,13 @@ void EndScene::draw() {
 	window.render();
 }
 
+void EndScene::drawCars() {
+	for (int i = 0; i < arrivedPlayers.size(); i++)	{
+		carViews.at(static_cast<const ObjectType>(arrivedPlayers.at(i)))->
+				drawAt(0.5 * xScreen, (0.27 + 0.14 * i) * yScreen);
+	}
+}
+
 Scene EndScene::handle() {
 	while (SDL_PollEvent(&e) && !_done) {
 		if (e.type == SDL_QUIT) {
@@ -79,13 +86,6 @@ Scene EndScene::handle() {
 		}
 	}
 	return nextScene;
-}
-
-void EndScene::drawCars() {
-	for (int i = 0; i < arrivedPlayers.size(); i++)	{
-		carViews.at(static_cast<const ObjectType>(arrivedPlayers.at(i)))->
-		drawAt(0.5 * xScreen, (0.27 + 0.14 * i) * yScreen);
-	}
 }
 
 bool EndScene::insideQuitButton(int x, int y) {

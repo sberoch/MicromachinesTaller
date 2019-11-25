@@ -27,17 +27,10 @@ void PlayerDisplay::update(int cam_x, int cam_y, int newHealth) {
 		this->cam_y = cam_y;
 
 	} else {
-		carExplodedTimer++;
-		if (carExplodedTimer >= CAR_EXPLOSION_PENALTY) {
-			carExplodedTimer = 0;
-			exploded = false;
-		}
+		updateCarExplosion();
 	}
-	healthBar->resize(newHealth);
-	if (newHealth < health) {
-		audio.playEffect(SFX_CAR_COLLISION);
-	}
-	health = newHealth;
+	updateHealth(newHealth);
+	updateMudSplat();
 }
 
 void PlayerDisplay::draw() {
@@ -54,11 +47,6 @@ void PlayerDisplay::draw() {
 		splat.setDims(xScreen, yScreen);
 		splat.drawAt(xScreen/2, yScreen/2);
 		mudSplatTimer++;
-	}
-
-	if (mudSplatTimer >= SPLAT_CYCLES) {
-		mudSplat = false;
-		mudSplatTimer = 0;
 	}
 }
 
@@ -92,5 +80,28 @@ void PlayerDisplay::clear() {
 	mudSplat = false;
 	numberView.setNumber(0);
 	health = 100;
+}
+
+void PlayerDisplay::updateHealth(int newHealth) {
+	healthBar->resize(newHealth);
+	if (newHealth < health) {
+		audio.playEffect(SFX_CAR_COLLISION);
+	}
+	health = newHealth;
+}
+
+void PlayerDisplay::updateMudSplat() {
+	if (mudSplatTimer >= SPLAT_CYCLES) {
+		mudSplat = false;
+		mudSplatTimer = 0;
+	}
+}
+
+void PlayerDisplay::updateCarExplosion() {
+	carExplodedTimer++;
+	if (carExplodedTimer >= CAR_EXPLOSION_PENALTY) {
+		carExplodedTimer = 0;
+		exploded = false;
+	}
 }
 

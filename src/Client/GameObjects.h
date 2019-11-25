@@ -27,16 +27,9 @@ public:
 	void draw(int cameraX, int cameraY);
 	void add(int type, int id, const ObjectViewPtr& obj);
 	void remove(int type, int id);
-	ObjectViewPtr getCar(int id);
-	ObjectViewPtr getTrack(int id);
-	ObjectViewPtr getBoost(int id);
-	ObjectViewPtr getInteractable(int id);
-	ObjectViewPtr getMisc(int id);
 
+	ObjectViewPtr getCar(int id);
 	ObjectMap& getAllTracks();
-	ObjectMap& getAllCars();
-	ObjectMap& getAllBoosts();
-	ObjectMap& getAllInteractables();
 
 	void hideCar(int playerId);
 	void showCar(int playerId);

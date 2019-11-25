@@ -1,5 +1,4 @@
 #include "GameScene.h"
-#include <iostream>
 
 using json = nlohmann::json;
 
@@ -83,13 +82,13 @@ void GameScene::updateGameEvents(const GameEventsList& gameEvents) {
 	}
 }
 
-void GameScene::showMudSplat(GameEventStruct gameEvent){
+void GameScene::showMudSplat(const GameEventStruct& gameEvent){
     if (gameEvent.id == player.playerId) {
         display.showMudSplat();
     }
 }
 
-void GameScene::addObject(GameEventStruct gameEvent) {
+void GameScene::addObject(const GameEventStruct& gameEvent) {
 	ObjectViewPtr ov = creator.create((ObjectType) gameEvent.objectType,
 										conv.blockToPixel(gameEvent.x), 
 										conv.blockToPixel(gameEvent.y), 
@@ -100,26 +99,40 @@ void GameScene::addObject(GameEventStruct gameEvent) {
 	}
 }
 
-void GameScene::removeObject(GameEventStruct gameEvent) {
+void GameScene::removeObject(const GameEventStruct& gameEvent) {
 	gameObjects.remove(gameEvent.objectType, gameEvent.id);
 }
 
-void GameScene::gameOver(GameEventStruct gameEvent) {
+void GameScene::gameOver(const GameEventStruct& gameEvent) {
 	if (gameEvent.id == player.playerId) {
 		nextScene = SCENE_END;
 		display.clear();
 		gameObjects.clear();
 		audio.stopMusic();
+		audio.stopEffect(SFX_CAR_ENGINE);
 		isGameOver = true;
 		isMapReady = false;
 	}
 }
 
-void GameScene::lapCompleted(GameEventStruct gameEvent) {
+void GameScene::lapCompleted(const GameEventStruct& gameEvent) {
 	if (gameEvent.id == player.playerId) {
 		//Angle is being used here for the lap number
 		display.setLapNumber(gameEvent.angle);
 	}
+}
+
+void GameScene::carExplosion(const GameEventStruct& gameEvent) {
+	if (gameEvent.id == player.playerId) {
+		//Center the camera in the explosion.
+		display.carExploded(xScreen/2 - conv.blockToPixel(gameEvent.x),
+							yScreen/2 - conv.blockToPixel(gameEvent.y));
+		//Hide the exploded car.
+		gameObjects.hideCar(player.playerId);
+		//Remove its movement.
+		carExploded = true;
+	}
+	audio.playEffect(SFX_CAR_EXPLOSION);
 }
 
 void GameScene::draw() {
@@ -157,20 +170,6 @@ void GameScene::drawBackground() {
 				-yScreen + yScreen*j + display.cam_y);
 		}
 	}
-}
-
-void GameScene::carExplosion(GameEventStruct gameEvent) {
-	if (gameEvent.id == player.playerId) {
-			//Center the camera in the explosion.
-			display.carExploded(xScreen/2 - conv.blockToPixel(gameEvent.x),
-								yScreen/2 - conv.blockToPixel(gameEvent.y));
-			//Hide the exploded car.
-			gameObjects.hideCar(player.playerId);
-			//Remove its movement.
-			carExploded = true;
-
-	}
-	audio.playEffect(SFX_CAR_EXPLOSION);
 }
 
 

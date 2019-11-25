@@ -46,10 +46,6 @@ enum SoundEffect {
 	SFX_BUTTON
 };
 
-//Video
-#define REC_SIZE_HOR 1600
-#define REC_SIZE_VERT 900
-
 //Pixel sizes (horizontal and vertical)
 #define PIXELS_PER_BLOCK 50
 

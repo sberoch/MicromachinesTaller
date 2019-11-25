@@ -53,22 +53,22 @@ private:
 public:
 	GameScene(SdlWindow& window, SafeQueue<std::shared_ptr<SnapshotEvent>>& recvQueue,
 			  SafeQueue<std::shared_ptr<Event>>& sendQueue, PlayerDescriptor& player);
-	virtual bool done() override;
-	virtual void update() override;
-	virtual void draw() override;
-	virtual Scene handle() override;
-	virtual ~GameScene() {}
+	bool done() override;
+	void update() override;
+	void draw() override;
+	Scene handle() override;
+	~GameScene() override = default;
 private:
 	void drawBackground();
 
 	void updateCars(const CarStructList& cars);
 	void updateGameEvents(const GameEventsList& gameEvents);
-    void showMudSplat(GameEventStruct gameEvent);
-	void addObject(GameEventStruct gameEvent);
-	void removeObject(GameEventStruct gameEvent);
-	void gameOver(GameEventStruct gameEvent);
-	void lapCompleted(GameEventStruct gameEvent);
-	void carExplosion(GameEventStruct gameEvent);
+    void showMudSplat(const GameEventStruct& gameEvent);
+	void addObject(const GameEventStruct& gameEvent);
+	void removeObject(const GameEventStruct& gameEvent);
+	void gameOver(const GameEventStruct& gameEvent);
+	void lapCompleted(const GameEventStruct& gameEvent);
+	void carExplosion(const GameEventStruct& gameEvent);
 
 
 };

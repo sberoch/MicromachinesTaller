@@ -41,6 +41,11 @@ public:
 	void carExploded(int exp_x, int exp_y);
 	void clear();
 	bool hasMyCarExploded();
+
+private:
+	void updateHealth(int newHealth);
+	void updateMudSplat();
+	void updateCarExplosion();
 };
 
 #endif // PLAYER_DISPLAY_H
