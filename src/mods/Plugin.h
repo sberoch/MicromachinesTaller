@@ -5,11 +5,9 @@
 #include <string>
 
 class Plugin {
-
 public:
-    virtual std::string message(void) = 0;
-
     virtual void run(WorldDTO* world) = 0;
+    virtual ~Plugin() = default;
 };
 
 #endif

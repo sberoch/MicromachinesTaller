@@ -4,7 +4,6 @@
 
 ModsThread::ModsThread(const std::string& libs_filename, WorldDTO_t* worldDTO) : unique_signal(42), _worldDTO(worldDTO) {
     try {
-        std::cout << "Opening: " << libs_filename << std::endl;
         std::ifstream fs(libs_filename);
         std::string tmp;
 
@@ -24,7 +23,6 @@ ModsThread::ModsThread(const std::string& libs_filename, WorldDTO_t* worldDTO) :
 }
 
 void ModsThread::run() {
-    //TODO: see why p is hpu
     plugins.clear();
     // instantiate!
     for (auto& l : libs)
@@ -33,7 +31,6 @@ void ModsThread::run() {
     // call each plugin's run func.
     for (Plugin* p : plugins) {
         if (p == nullptr) continue;
-        std::cout << p->message() << std::endl;
         p->run(_worldDTO);
         delete p;
     }
@@ -53,7 +50,6 @@ Plugin* ModsThread::instantiate(const dynamic_lib_handle handle) {
 }
 
 dynamic_lib_handle ModsThread::load_lib(const std::string &path) {
-    std::cout << "Trying to open: " << path << std::endl;
     void* shared_lib = dlopen(path.data(), RTLD_NOW);
     const char* err = dlerror();
     if (!shared_lib) {

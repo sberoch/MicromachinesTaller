@@ -24,13 +24,10 @@ public:
         _modifierTypes[4] = TYPE_ROCK;
     }
 
-    std::string message(void) {
-        return "Hello. I'm Test Plugin2\n";
-    }
-
     void run(WorldDTO* world){
         int inactiveModifier = getInactiveModifier(world);
         if (inactiveModifier != -1){
+            srand(time(NULL));
             int rand = std::rand() % world->track_size;
 
             TrackDTO randomTrack = world->track[rand];
@@ -47,7 +44,7 @@ public:
             world->modifiers[inactiveModifier].angle = randomTrack.angle;
 
             int modifierType = std::rand() % MODIFIER_TYPES;
-            world->modifiers[inactiveModifier].type = _modifierTypes[modifierType];//_modifierType[modifierType];
+            world->modifiers[inactiveModifier].type = _modifierTypes[modifierType];
 
             world->modifiers[inactiveModifier].newModifier = true;
             world->modifiers[inactiveModifier].active = true;
@@ -56,6 +53,8 @@ public:
             world->max_id++;
         }
     }
+
+    ~Plugin2() = default;
 };
 
 extern "C" Plugin* factory(void) {
