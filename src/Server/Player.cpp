@@ -14,14 +14,13 @@ int Player::update(){
     int numberOfLaps = _car->update();
 
     std::vector<Effect*> aux;
-    for (int i=0; i<_effects.size(); ++i){
-        _effects[i]->timeOfAction --;
-        std::cout << "ioa " << _effects[i]->timeOfAction << "!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-        if (_effects[i]->timeOfAction == 0){
-            _car->stopEffect(_effects[i]->type);
-            delete _effects[i];
+    for (auto & _effect : _effects){
+        _effect->timeOfAction --;
+        if (_effect->timeOfAction == 0){
+            _car->stopEffect(_effect->type);
+            delete _effect;
         } else {
-            aux.push_back(_effects[i]);
+            aux.push_back(_effect);
         }
     }
     _effects.swap(aux);
@@ -38,7 +37,7 @@ void Player::receive(std::string& received, Protocol& protocol){
 }
 
 void Player::_addEffect(const int& effectType, const int& timeOfAction){
-    Effect* effect = new Effect;
+    auto* effect = new Effect;
     effect->type = effectType;
     effect->timeOfAction = timeOfAction;
     _effects.push_back(effect);
@@ -57,30 +56,30 @@ void Player::createModifier(const size_t& type, const size_t& id, const float& x
 void Player::modifySnapshot(const std::shared_ptr<SnapshotEvent>& snapshot){
     std::vector<std::shared_ptr<Status>> status = _car->getStatus();
 
-    for (size_t i=0; i<status.size(); ++i){
-        switch (status[i]->status) {
+    for (auto & statu : status){
+        switch (statu->status) {
             case NOTHING :
                 break;
             case EXPLODED:
                 snapshot->addGameItem(TYPE_EXPLOSION, _car->x(), _car->y(), _car->angle(), inRoomId);
                 break;
             case GRABBED_HEALTH_POWERUP :
-                snapshot->removeGameItem(TYPE_HEALTH_POWERUP, status[i]->id);
+                snapshot->removeGameItem(TYPE_HEALTH_POWERUP, statu->id);
                 break;
             case GRABBED_BOOST_POWERUP :
-                _addEffect(TYPE_BOOST_POWERUP, status[i]->timeOfAction);
-                snapshot->removeGameItem(TYPE_BOOST_POWERUP, status[i]->id);
+                _addEffect(TYPE_BOOST_POWERUP, statu->timeOfAction);
+                snapshot->removeGameItem(TYPE_BOOST_POWERUP, statu->id);
                 break;
             case GRABBED_MUD :
                 snapshot->setMudSplatEvent(this->inRoomId);
-                snapshot->removeGameItem(TYPE_MUD, status[i]->id);
+                snapshot->removeGameItem(TYPE_MUD, statu->id);
                 break;
             case GRABBED_ROCK :
-                snapshot->removeGameItem(TYPE_ROCK, status[i]->id);
+                snapshot->removeGameItem(TYPE_ROCK, statu->id);
                 break;
             case GRABBED_OIL :
-                _addEffect(TYPE_OIL, status[i]->timeOfAction);
-                snapshot->removeGameItem(TYPE_OIL, status[i]->id);
+                _addEffect(TYPE_OIL, statu->timeOfAction);
+                snapshot->removeGameItem(TYPE_OIL, statu->id);
                 break;
             case WINNED :
                 done = true;
