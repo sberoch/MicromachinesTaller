@@ -13,12 +13,4 @@ int SafeCounter::returnValueAndAddOne() {
     return actualInt;
 }
 
-
-bool SafeCounter::anyCreated() {
-    std::lock_guard<std::mutex> lock(this->m);
-    return count == 0;
-}
-
-SafeCounter::~SafeCounter() {
-
-}
+SafeCounter::~SafeCounter() = default;
