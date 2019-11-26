@@ -27,7 +27,7 @@ Configuration::Configuration() {
     _maxForwardSpeed = carConfig["maxForwardSpeed"].get<float>();
     _maxForwardDrive = carConfig["maxForwardDrive"].get<float>();
     _maxBackwardsSpeed = carConfig["maxBackwardsSpeed"].get<float>();
-    _maxBackwardDrive = carConfig["maxForwardDrive"].get<float>();
+    _maxBackwardDrive = carConfig["maxBackwardDrive"].get<float>();
     _maxForwardSpeedOnGrass = carConfig["maxForwardSpeedOnGrass"].get<float>();
     _maxForwardDriveOnGrass = carConfig["maxForwardDriveOnGrass"].get<float>();
     _maxBackwardSpeedOnGrass = carConfig["maxBackwardSpeedOnGrass"].get<float>();
