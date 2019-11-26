@@ -4,11 +4,15 @@
 
 int main(int argc, char const *argv[]) {
 	try {
-		const std::string hostName = "localhost";//std::string(argv[1]);
-        const std::string portNumber = "8888";//std::string(argv[2]);
+		if (argc != 5) {
+			std::cerr << "Uso: mm_client <hostname> <port> <window width> <window height>\n";
+			return 1;
+		}
+		const std::string hostName = std::string(argv[1]);
+        const std::string portNumber = std::string(argv[2]);
 
-        int wScreen = 800;//atoi(argv[3]);
-        int hScreen = 600;//atoi(argv[4]);
+        int wScreen = atoi(argv[3]);
+        int hScreen = atoi(argv[4]);
 
 		SceneSelector sceneSelector(wScreen, hScreen, hostName, portNumber);
 		sceneSelector.run();
