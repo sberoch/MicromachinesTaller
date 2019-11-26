@@ -217,18 +217,19 @@ bool LobbyScene::insideJoinRoomButton(int x, int y) {
 }
 
 void LobbyScene::checkInsideAnyRoom(int x, int y) {
-    for (int i = 0; i < roomsMap.size(); ++i) {
+    for (auto& room : roomsMap) {
 
-        Area btn(0.15*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
+        Area btn(0.15*xScreen, (0.17 + 0.1*room.second.id)*yScreen, 
+                                0.2*xScreen, 0.1*yScreen);
 
         if (btn.isInside(x, y)) {
-            if (!startedRooms.at(i)) {
-                if (joinedRoom == i) {
+            if (!startedRooms.at(room.second.id)) {
+                if (joinedRoom == room.second.id) {
                     selectedPlayer = joinedPlayer;
                 } else {
                     selectedPlayer = -1;
                 }
-                selectedRoom = i;
+                selectedRoom = room.second.id;
 
             } else {
                 startedGameWarningView.show();
