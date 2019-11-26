@@ -27,23 +27,28 @@ class AcceptingThread {
 
 
 
-class Room {
+class GameThread {
     +virtual void run();
-    +virtual ~Room();
+    +virtual ~GameThread();
 }
 
-class Client {
+class Collector {
     +virtual void run();
-    +virtual ~Client();
+    +virtual ~Collector();
+}
+
+class LobbyListener {
+    +virtual void run();
+    +virtual ~LobbyListener();
 }
 
 
 Thread <|-down- ReceiverThread: Inheritance
 Thread <|-down- SenderThread: Inheritance
 Thread <|-down- AcceptingThread: Inheritance
-Thread <|-down- Client: Inheritance
-Thread <|-down- Room: Inheritance
-Room "1" *-down- "1" Game: -game
+Thread <|-down- GameThread: Inheritance
+Thread <|-down- Collector: Inheritance
+Thread <|-down- LobbyListener: Inheritance
 
 
 @enduml

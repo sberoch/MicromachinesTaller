@@ -17,13 +17,18 @@ class RoomController {
 }
 
 class LobbyListener {
-    
+    +void start()
+    +void run()
+    +~LobbyListener();
 }
 
 class Collector {
     -map<idRoom, room>& rooms
     -map<idClient, client>& clientWithoutRoom 
-    +collectDeadThreads()
+    -int roomIdToBeErased;
+    +start()
+    +run()
+    +assignRoomIdToBeErased()
 }
 
 class Room {
@@ -39,14 +44,16 @@ class Room {
 class Client
 class SafeCounter {
     -int count
-    +returnAndAddOne()
+    +getValueAndAddOne()
 }
 
 
 RoomController "1" *-down- "many" Room: -rooms
 RoomController "1" *-down- "many" Client: -clientsWithoutRoom
-RoomController "1" *-down- "1" SafeCounter: -safeCounter
+RoomController "1" *-down- "1" SafeCounter: -clientCounter
 RoomController "1" *-down- "1" LobbyListener: -listener
-RoomController "1" *-down- "1" Collector: -collector
+RoomController "1" *-down- "many" Collector: -collector
+Client "1" *-down- "1" EventSender: -sender
+Client "1" *-down- "1" EventReceiver: -receiver
 
 @enduml
