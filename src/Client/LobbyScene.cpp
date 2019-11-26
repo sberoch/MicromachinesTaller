@@ -11,6 +11,8 @@ LobbyScene::LobbyScene(SdlWindow& window, SafeQueue<std::shared_ptr<LobbySnapsho
         backgroundLobbyTex("lobby.png", window),
         backgroundLobby(backgroundLobbyTex),
         creator(window),
+        warningLobbyTex("lobby_warning.png", window),
+        startedGameWarningView(warningLobbyTex),
         _done(false),
         fullscreen(true),
         nextScene(SCENE_LOBBY),
@@ -85,6 +87,7 @@ void LobbyScene::draw() {
     drawRooms();
     drawPlayers();
     drawArrows();
+    drawExtra();
     window.render();
 }
 
@@ -114,6 +117,12 @@ void LobbyScene::drawArrows() {
     }
     if (selectedPlayer != -1) {
         arrow->drawAt(0.62*xScreen, (0.22 + 0.1*selectedPlayer)*yScreen);
+    }
+}
+
+void LobbyScene::drawExtra() {
+    if (startedGameWarningView.showing()) {
+        startedGameWarningView.drawAt(0.5*xScreen, 0.5*yScreen);
     }
 }
 
@@ -212,15 +221,19 @@ void LobbyScene::checkInsideAnyRoom(int x, int y) {
 
         Area btn(0.15*xScreen, (0.17 + 0.1*i)*yScreen, 0.2*xScreen, 0.1*yScreen);
 
-        if (btn.isInside(x, y) && !startedRooms.at(i)) {
-            if (joinedRoom == i) {
-                selectedPlayer = joinedPlayer;
+        if (btn.isInside(x, y)) {
+            if (!startedRooms.at(i)) {
+                if (joinedRoom == i) {
+                    selectedPlayer = joinedPlayer;
+                } else {
+                    selectedPlayer = -1;
+                }
+                selectedRoom = i;
+
             } else {
-                selectedPlayer = -1;
+                startedGameWarningView.show();
             }
-            
             audio.playEffect(SFX_BUTTON);
-            selectedRoom = i;
         }
     }
 }

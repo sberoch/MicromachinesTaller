@@ -79,3 +79,4 @@ install(FILES assets/audio/menu_button.wav DESTINATION ${CMAKE_BINARY_DIR})
 install(FILES assets/audio/collision.wav DESTINATION ${CMAKE_BINARY_DIR})
 
 install(FILES src/mods/libs.txt DESTINATION ${CMAKE_BINARY_DIR})
+
