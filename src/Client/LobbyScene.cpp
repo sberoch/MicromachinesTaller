@@ -92,8 +92,8 @@ void LobbyScene::draw() {
 }
 
 void LobbyScene::drawRooms() {
-    for (int i = 0; i < roomsMap.size(); ++i) {
-        roomViews.at(i)->drawAt(0.26*xScreen, (0.22 + 0.1*i)*yScreen);
+    for (auto& room : roomsMap) {
+        roomViews.at(room.second.id)->drawAt(0.26*xScreen, (0.22 + 0.1*room.second.id)*yScreen);
     }
 }
 
