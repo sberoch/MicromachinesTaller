@@ -2,7 +2,7 @@
 #include "Configuration.h"
 #include <iostream>
 
-#define CONFIG_FILE "configuration.json"
+#define CONFIG_FILE MISC_DIR + std::string("configuration.json")
 
 using json = nlohmann::json;
 

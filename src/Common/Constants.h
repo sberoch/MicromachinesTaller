@@ -79,4 +79,6 @@ enum SoundEffect {
 #define SOUNDS_DIR "/var/Micromachines/assets/audio/"
 #define MISC_DIR "/var/Micromachines/assets/misc/"
 
+#define LIBS_SRC "/etc/Micromachines/"
+
 #endif // CONSTANTS_H

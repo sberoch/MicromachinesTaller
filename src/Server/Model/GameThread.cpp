@@ -35,7 +35,7 @@ GameThread::GameThread(size_t n_of_players,
 
 void GameThread::run() {
     std::cout << "Running GameThread" << std::endl;
-    ModsThread modsThread("libs.txt", &_worldDTO);
+    ModsThread modsThread(LIBS_SRC + std::string("libs.txt"), &_worldDTO);
     std::shared_ptr<Event> event;
     std::shared_ptr<EndSnapshot> endSnapshot(new EndSnapshot);
     gameStarted = true;

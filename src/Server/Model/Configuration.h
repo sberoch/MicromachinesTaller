@@ -2,6 +2,7 @@
 #define MICROMACHINES_CONFIGURATION_H
 
 #include "../json/json.hpp"
+#include "../../Common/Constants.h"
 
 //Class to get configuration options in json file
 class Configuration {
