@@ -1,2 +1,2 @@
-src/mods/Plugin1.so
-src/mods/Plugin2.so
+/etc/Micromachines/Plugin1.so
+/etc/Micromachines/Plugin2.so
