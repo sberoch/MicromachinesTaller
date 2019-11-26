@@ -1,5 +1,6 @@
 #include "BotHandler.h"
 #include "TextureCreator.h"
+#include "../Common/Constants.h"
 #include <iostream>
 
 #define CYCLES_UNTIL_MOVE_REPEAT 1
@@ -13,7 +14,7 @@ BotHandler::BotHandler(GameObjects& gameObjects, Audio& audio, ScreenRecorder& r
         player(player),
         moveRepeatCounter(0),
         _done(false) {
-    lua.open("bot_functions.lua");
+    lua.open((MISC_DIR + std::string("bot_functions.lua")).c_str());
 }
 
 void BotHandler::loadMap() {

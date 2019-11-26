@@ -11,7 +11,7 @@ GameScene::GameScene(SdlWindow& window, SafeQueue<std::shared_ptr<SnapshotEvent>
 	sendQueue(sendQueue),
 	player(player),
 
-	backgroundTex("background.png", window),
+	backgroundTex(IMAGES_DIR + std::string("background.png"), window),
 	background(backgroundTex),
 	display(window),
 	

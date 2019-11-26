@@ -14,27 +14,27 @@ Audio::Audio() {
 
 	Mix_AllocateChannels(16);
 
-	backgroundMusic = Mix_LoadMUS("background.wav");
+	backgroundMusic = Mix_LoadMUS((SOUNDS_DIR + std::string("background.wav")).c_str());
 	if(backgroundMusic == NULL) printf("%s\n", Mix_GetError());
 	Mix_VolumeMusic(MIX_MAX_VOLUME/5);
 
-	carEngine = Mix_LoadWAV("car_engine.wav");
+	carEngine = Mix_LoadWAV((SOUNDS_DIR + std::string("car_engine.wav")).c_str());
 	if (carEngine == NULL) printf("%s\n", Mix_GetError());
 	effects.insert(std::make_pair(SFX_CAR_ENGINE, carEngine));
 
-	carBrake = Mix_LoadWAV("car_brake.wav");
+	carBrake = Mix_LoadWAV((SOUNDS_DIR + std::string("car_brake.wav")).c_str());
 	if (carBrake == NULL) printf("%s\n", Mix_GetError());
 	effects.insert(std::make_pair(SFX_CAR_BRAKE, carBrake));
 
-	carExplosion = Mix_LoadWAV("car_explosion.wav");
+	carExplosion = Mix_LoadWAV((SOUNDS_DIR + std::string("car_explosion.wav")).c_str());
 	if (carExplosion == NULL) printf("%s\n", Mix_GetError());
 	effects.insert(std::make_pair(SFX_CAR_EXPLOSION, carExplosion));
 
-	carCollision = Mix_LoadWAV("collision.wav");
+	carCollision = Mix_LoadWAV((SOUNDS_DIR + std::string("collision.wav")).c_str());
 	if (carCollision == NULL) printf("%s\n", Mix_GetError());
 	effects.insert(std::make_pair(SFX_CAR_COLLISION, carCollision));
 
-	menuButton = Mix_LoadWAV("menu_button.wav");
+	menuButton = Mix_LoadWAV((SOUNDS_DIR + std::string("menu_button.wav")).c_str());
 	if (menuButton == NULL) printf("%s\n", Mix_GetError());
 	effects.insert(std::make_pair(SFX_BUTTON, menuButton));
 }

@@ -5,7 +5,7 @@
 ScreenRecorder::ScreenRecorder(SdlWindow& window) :
     window(window),
     outfile("out.mp4"),
-    framerate("40"),
+    framerate("25"),
     _recording(false) {}
 
 void ScreenRecorder::start() {

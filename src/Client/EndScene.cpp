@@ -9,7 +9,7 @@ EndScene::EndScene(SdlWindow& window, SafeQueue<std::shared_ptr<EndSnapshot>>& e
 	endRecvQueue(endRecvQueue),
 	sendQueue(sendQueue),
 	player(player),
-	backgroundEndTex("end_screen.png", window),
+	backgroundEndTex(IMAGES_DIR + std::string("end_screen.png"), window),
 	backgroundEnd(backgroundEndTex),
 	creator(window),
 	_done(false),

@@ -4,10 +4,10 @@ PlayerDisplay::PlayerDisplay(SdlWindow& window) :
 	window(window),
 	creator(window),
 
-	numbersTex("numbers.png", window),
+	numbersTex(IMAGES_DIR + std::string("numbers.png"), window),
 	numberView(numbersTex),
 
-	splatTex("mud_splat.png", window),
+	splatTex(IMAGES_DIR + std::string("mud_splat.png"), window),
 	splat(splatTex),
 
 	mudSplat(false),
