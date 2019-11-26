@@ -139,7 +139,6 @@ void ClientThread::restart() {
     this->idFromRoom = -1;
     this->numberOfLaps = 0;
     this->player.setDone(false);
-    //this->player.resetLaps();
     this->receivingNonBlockingQueue->clear();
     this->sendingBlockingQueue.clear();
 }

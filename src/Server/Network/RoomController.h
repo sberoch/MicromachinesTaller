@@ -22,6 +22,7 @@ class RoomController {
 private:
     std::unordered_map<int, std::shared_ptr<ClientThread>> clientsWithNoRoom;
     std::map<int, std::shared_ptr<Room>> rooms;
+    std::list<std::shared_ptr<Collector>> collectors;
     SafeQueue<std::string> queue;
     SafeCounter clientCounter;
     std::atomic_bool& acceptSocketRunning;

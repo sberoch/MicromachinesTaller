@@ -14,35 +14,13 @@ Collector::Collector(std::unordered_map<int, std::shared_ptr<ClientThread>>& cli
                      clientId(-1),
                      roomId(-1){}
 
-template<class T1, class T2>
-void eraseNulls(std::unordered_map<T1, T2>& map) {
-    std::vector<T1> idsToEliminate;
-    for (auto &actual : map){
-        if (actual.second == NULL){
-            idsToEliminate.push_back(actual.first);
+
+void Collector::collectDeadRooms(){
+    for (auto &actualRoom: rooms) {
+        if (actualRoom.second->isDead()) {
+            actualRoom.second = nullptr;
         }
     }
-
-    for (auto &actualId: idsToEliminate){
-        map.erase(actualId);
-    }
-}
-
-void Collector::collectDeadClients(){
-    for (auto &actualClient: clients) {
-        if (actualClient.second->isDead()) {
-            actualClient.second = nullptr;
-        }
-    }
-
-//    for (auto &actualRoom: rooms) {
-//        if (actualRoom.second->isDead()) {
-//            actualRoom.second = nullptr;
-//        }
-//    }
-
-    eraseNulls(clients);
-    //eraseNulls(rooms);
 }
 
 void Collector::eraseRoom() {

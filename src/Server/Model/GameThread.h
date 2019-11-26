@@ -50,6 +50,10 @@ public:
     ~GameThread() override;
 
     void handleEvent(const std::shared_ptr<Event>& event);
+
+    void removeDeadClients();
+
+    void checkIfRoomMustBeClosed();
 };
 
 #endif //MICROMACHINES_GAMETHREAD_H
