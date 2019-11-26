@@ -33,8 +33,6 @@ SnapshotEvent::SnapshotEvent(Protocol &protocol) {
     std::string serialized = protocol.receive();
     this->j = json::parse(serialized);
 
-    std::cout << serialized << std::endl;
-
     for (auto& car : j["cars"]) {
         setCar(car["x"],
                car["y"],
@@ -144,7 +142,6 @@ void SnapshotEvent::setMudSplatEvent(int inRoomId) {
     setGameEvent(MUD_SPLAT, 0, 0, 0, 0, inRoomId);
 }
 
-
 void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType,
             int objectType, float x, float y, int angle, int id) {
     GameEventStruct gameEvent{};
@@ -158,8 +155,6 @@ void SnapshotEvent::setGameEvent(SnapshotGameEventType eventType,
 }
 
 void SnapshotEvent::setMap(const json& jMap) {
-	//TODO: esto del clientId deberia venir de afuera
-	std::cout << "Sending map\n";
 	for (auto& car : jMap["cars"]) {
 	    if (car["id_from_room"] != -1)
             setGameEvent(ADD,

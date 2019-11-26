@@ -1,13 +1,7 @@
 #include "GameThread.h"
-#include "../../Common/Socket.h"
-#include "../../Common/Protocol.h"
-#include "../Player.h"
 #include "../../Common/SocketError.h"
 #include <iostream>
-#include <utility>
-#include "../../Common/Event/EventCreator.h"
 #include "../Network/ThClient.h"
-#include "../../Common/Event/EndSnapshot.h"
 
 using namespace std::chrono;
 
@@ -54,58 +48,18 @@ void GameThread::run() {
             }
 
             if (roomRunning) {
-                for (auto &client: clients) {
-                    bool lapCompleted = client.second->update();
-                    if (lapCompleted) {
-                        int numberOfLapsFromClient = client.second->getNumberOfLaps();
-                        snapshot->setLapNumber(client.second->getIdFromRoom(), numberOfLapsFromClient);
-                    }
-                }
+                checkLapCompletion(snapshot);
                 step();
-
-                //MODS CODE
-                if ((i % _configuration->getModifiersCreationFrequency()) == 0) {
-                    modsThread.run();
-                    applyPluginChanges();
-
-                    for (size_t j = 0; j < MAX_MODIFIERS; ++j) {
-                        ModifierDTO modifier = _worldDTO.modifiers[j];
-                        if (modifier.newModifier) {
-                            _worldDTO.modifiers[j].newModifier = false;
-                            for (auto &actualClient : clients) {
-                                actualClient.second->createModifier(modifier.type, modifier.id, modifier.x, modifier.y,
-                                                                    modifier.angle);
-                            }
-                        }
-                    }
-                }
-
-                for (auto &actualClient : clients) {
-                    actualClient.second->modifySnapshotFromClient(snapshot);
-                    if (actualClient.second->finishedPlaying()) {
-                        std::cout << "Player finished" << std::endl;
-                        int clientId = actualClient.first;
-                        actualClient.second->sendSnapshot(snapshot);
-                        addToFinishedPlayers(clients, clientId);
-                        endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
-                    }
-                }
-
-                for (auto &actualFinishedPlayer: finishedPlayers) {
-                    if (clients.count(actualFinishedPlayer.second->getClientId()))
-                        clients.erase(actualFinishedPlayer.second->getClientId());
-                }
+                createModifiers(modsThread, i);
+				addPlayerModificationToSnapshot(snapshot, endSnapshot);
+                eraseFinishedPlayersFromClients();
 
                 for (auto &actualClient : clients) {
                     actualClient.second->sendSnapshot(snapshot);
                 }
-
-
                 for (auto &actualFinishedPlayer: finishedPlayers) {
                     actualFinishedPlayer.second->sendEndEvent(endSnapshot);
                 }
-
-
                 i++;
 
                 std::clock_t end = clock();
@@ -214,6 +168,55 @@ void GameThread::checkIfRoomMustBeClosed() {
         roomRunning = false;
         controller.eraseRoom(roomId);
     }
+}
+
+void GameThread::createModifiers(ModsThread& modsThread, int step) {
+	if ((step % _configuration->getModifiersCreationFrequency()) == 0) {
+		modsThread.run();
+		applyPluginChanges();
+
+		for (size_t j = 0; j < MAX_MODIFIERS; ++j) {
+			ModifierDTO modifier = _worldDTO.modifiers[j];
+			if (modifier.newModifier) {
+				_worldDTO.modifiers[j].newModifier = false;
+				for (auto &actualClient : clients) {
+					actualClient.second->createModifier(modifier.type, modifier.id, modifier.x, modifier.y,
+														modifier.angle);
+				}
+			}
+		}
+	}
+}
+
+void GameThread::addPlayerModificationToSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot,
+												 const std::shared_ptr<EndSnapshot>& endSnapshot) {
+	for (auto &actualClient : clients) {
+		actualClient.second->modifySnapshotFromClient(snapshot);
+		if (actualClient.second->finishedPlaying()) {
+			std::cout << "Player finished" << std::endl;
+			int clientId = actualClient.first;
+			actualClient.second->sendSnapshot(snapshot);
+			addToFinishedPlayers(clients, clientId);
+			endSnapshot->addPlayerFinished(actualClient.second->getIdFromRoom());
+		}
+	}
+}
+
+void GameThread::checkLapCompletion(const std::shared_ptr<SnapshotEvent> &snapshot) {
+	for (auto &client: clients) {
+		bool lapCompleted = client.second->update();
+		if (lapCompleted) {
+			int numberOfLapsFromClient = client.second->getNumberOfLaps();
+			snapshot->setLapNumber(client.second->getIdFromRoom(), numberOfLapsFromClient);
+		}
+	}
+}
+
+void GameThread::eraseFinishedPlayersFromClients() {
+	for (auto &actualFinishedPlayer: finishedPlayers) {
+		if (clients.count(actualFinishedPlayer.second->getClientId()))
+			clients.erase(actualFinishedPlayer.second->getClientId());
+	}
 }
 
 

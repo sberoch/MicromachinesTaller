@@ -33,7 +33,7 @@ void ReceiverThread::run() {
 		    }
 		}
 	} catch (std::exception &e) {
-		std::cerr << "Error from Receiver Thread" << e.what() << std::endl;
+		std::cerr << e.what() << std::endl;
 	} catch (...){
         std::cerr << "Unknown error from Receiver Thread" << std::endl;
 	}

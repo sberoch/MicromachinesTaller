@@ -54,6 +54,17 @@ public:
     void removeDeadClients();
 
     void checkIfRoomMustBeClosed();
+
+private:
+
+	void createModifiers(ModsThread &modsThread, int step);
+
+	void addPlayerModificationToSnapshot(const std::shared_ptr<SnapshotEvent> &snapshot,
+										 const std::shared_ptr<EndSnapshot> &endSnapshot);
+
+	void checkLapCompletion(const std::shared_ptr<SnapshotEvent> &snapshot);
+
+	void eraseFinishedPlayersFromClients();
 };
 
 #endif //MICROMACHINES_GAMETHREAD_H

@@ -30,7 +30,6 @@ void EndSnapshot::addPlayerFinished(int idFromRoom){
 
 void EndSnapshot::send(Protocol &protocol) {
     std::string message = j.dump();
-    std::cout << "End snapshot: " << message << std::endl;
     protocol.send(message);
 }
 
