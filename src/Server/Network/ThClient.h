@@ -31,22 +31,13 @@ private:
     EventReceiver receiver;
     EventSender sender;
 
-    //Detiene la ejecucion del cliente y pone la variable booleana en falso
-    //para que el recolector de clientes muertos pueda reconocerlo como tal.
     void stop();
 public:
-    //Inicializa la variable atomica booleana y el atendedor de clientes.
-    //Para este ultimo mueve el socket de la comunicacion.
     ClientThread(Protocol protocol, int clientId, std::atomic_bool& acceptSocketRunning);
 
-    void start();
     void run();
-
-    //Si el cliente ya produjo el stop o termino de hablar, devuelve true.
     bool isDead();
 
-
-    void sendEvent(const std::shared_ptr<Event>& event);
     void handleEvent(const std::shared_ptr<Event>& event);
     void sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot);
     void sendStart(json j);
@@ -54,29 +45,21 @@ public:
     void assignClientId(int newId);
     void assignRoomQueue(SafeQueue<std::shared_ptr<Event>>* receiveingQueue);
     void assignCar(const std::shared_ptr<Car>& car);
+    void assignIdFromRoom(int newIdFromRoom);
+
+    int getClientId();
+    int getNumberOfLaps();
+    int getIdFromRoom();
 
     void sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot);
-
-    void
-    modifySnapshotFromClient(const std::shared_ptr<SnapshotEvent> &snapshot);
-
+    void modifySnapshotFromClient(const std::shared_ptr<SnapshotEvent> &snapshot);
     void createModifier(const size_t& type, const size_t& id, const float& x,
             const float& y, const float& angle);
 
     bool update();
-
-    void assignIdFromRoom(int idFromRoom);
-
-    int getIdFromRoom();
-
     bool finishedPlaying();
 
     void sendEndEvent(const std::shared_ptr<EndSnapshot> &endSnapshot);
-
-    int getClientId();
-
-    int getNumberOfLaps();
-
     void restart();
 
     ~ClientThread();

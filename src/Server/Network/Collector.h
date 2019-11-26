@@ -18,7 +18,7 @@ private:
     std::unordered_map<int, std::shared_ptr<ClientThread>>& clients;
     std::map<int, std::shared_ptr<Room>>& rooms;
     int clientId;
-    int roomId;
+    int roomIdToErase;
 public:
     Collector(std::unordered_map<int, std::shared_ptr<ClientThread>>& clients,
               std::map<int, std::shared_ptr<Room>>& rooms);
@@ -26,14 +26,9 @@ public:
     void run() override;
 
     void eraseRoom();
+    void assignRoomIdToErase(int roomToBeErased);
 
-    void collectDeadClients();
-
-    ~Collector();
-
-    void assignRoomId(int roomId);
-
-    void collectDeadRooms();
+    ~Collector() override;
 };
 
 

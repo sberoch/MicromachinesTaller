@@ -14,11 +14,7 @@ private:
     std::mutex m;
 public:
     SafeCounter();
-
-    bool anyCreated();
-
-    int returnAndAddOne();
-
+    int returnValueAndAddOne();
     ~SafeCounter();
 };
 

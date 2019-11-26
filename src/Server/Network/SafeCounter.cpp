@@ -6,7 +6,7 @@
 
 SafeCounter::SafeCounter(): count(0) {}
 
-int SafeCounter::returnAndAddOne() {
+int SafeCounter::returnValueAndAddOne() {
     std::lock_guard<std::mutex> lock(this->m);
     int actualInt = count;
     this->count++;

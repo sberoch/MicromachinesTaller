@@ -90,7 +90,7 @@ void Room::addPlayersToJson(json& j){
     for (auto& client: clients){
         int id = client.second->getIdFromRoom();
         j["cars"].at(i)["id_from_room"] = id;
-        j["cars"].at(i)["color"] = getColourFromId(id);
+        j["cars"].at(i)["color"] = getColourFromInRoomId(id);
         ++i;
     }
 }
@@ -126,7 +126,7 @@ int Room::getRoomIdFromClient(int clientId) {
 }
 
 
-int Room::getColourFromId(int id) {
+int Room::getColourFromInRoomId(int id) {
     switch(id){
         case 0:
             return TYPE_CAR_RED;
@@ -149,9 +149,9 @@ Room::~Room() {
 
     if (this->gameStarted) {
         game->join();
-        std::cout << "Joined" << std::endl;
+        std::cout << "Room: " << this->roomId << " joined."<< std::endl;
     } else {
-        std::cout << "Como el room:" << this->roomId << " no comenzo a jugar, no se joineo" << std::endl;
+        std::cout << "No se joineo el room: " << this->roomId << " porque el juego no comenzo."<< std::endl;
     }
 }
 

@@ -47,15 +47,7 @@ public:
    bool handleInput(json j, std::shared_ptr<LobbySnapshot> snapshot);
 
     void sendToClientsWithoutRoom(std::shared_ptr<LobbySnapshot> snapshot);
-
-   ~RoomController();
-
-    void sendToClientsFromRoom(int roomId, std::shared_ptr<LobbySnapshot> snapshot);
-
-    void
-    sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot);
-
-    void collectDeadClients();
+    void sendToAllClientsWithRoom(std::shared_ptr<LobbySnapshot> snapshot);
 
     void addClientToRoom(int roomId, int clientId, int playerIdInRoom);
 
@@ -66,6 +58,8 @@ public:
     int getAFreeRoomId();
 
     void eraseRoom(int roomId);
+
+    ~RoomController();
 };
 
 

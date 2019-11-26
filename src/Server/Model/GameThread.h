@@ -56,7 +56,6 @@ public:
     void checkIfRoomMustBeClosed();
 
 private:
-
 	void createModifiers(ModsThread &modsThread, int step);
 
 	void addPlayerModificationToSnapshot(const std::shared_ptr<SnapshotEvent> &snapshot,

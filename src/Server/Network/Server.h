@@ -14,10 +14,8 @@ private:
     Socket acceptSocket;
 public:
     explicit Server(const char* portNumber);
-
-    ~Server();
-
     void run();
+    ~Server();
 };
 
 

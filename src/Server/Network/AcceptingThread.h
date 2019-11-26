@@ -29,11 +29,10 @@ public:
     explicit AcceptingThread(Socket &acceptSocket);
 
     //Realiza el ciclo aceptador con el recolector de clientes muertos hasta
-    //que se cierra el socket aceptador. Luego de esto, se mata a todos los
-    //clientes restantes liberando los recursos.
+    //que se cierra el socket aceptador. Luego de esto, se mata a todos los rooms
+    //y clientes sin room. Los rooms matan a sus propios clientes.
     void run() override;
 
-    //Detiene a todos los clientes que siguen en ejecucion.
     ~AcceptingThread() override;
 };
 

@@ -26,7 +26,7 @@ ClientThread::ClientThread(Protocol protocol, int clientId,
 
 
 void ClientThread::run() {
-    std::cout << "Client started" << std::endl;
+    std::cout << "Client started." << std::endl;
     try {
         try {
             this->sender.start();
@@ -42,19 +42,11 @@ void ClientThread::run() {
 }
 
 
-
-
-//Si el cliente ya produjo el stop o termino de hablar, devuelve true.
 bool ClientThread::isDead(){
     return !keepTalking;
 }
 
-void ClientThread::sendEvent(const std::shared_ptr<Event>& event) {
-    event->send(this->protocol);
-}
-
 void ClientThread::handleEvent(const std::shared_ptr<Event>& event) {
-    std::cout << "---Command: " << event->j["cmd_id"].get<int>() << std::endl;
     auto input = (InputEnum) event->j["cmd_id"].get<int>();
     this->player.handleInput(input);
 }
@@ -76,7 +68,6 @@ void ClientThread::sendSnapshot(const std::shared_ptr<SnapshotEvent>& snapshot) 
     std::shared_ptr<SnapshotEvent> newSnap(new SnapshotEvent(*snapshot.get()));
     std::shared_ptr<Event> event(newSnap);
     this->sendingBlockingQueue.push(event);
-    //std::cout << "Sent\n";
 }
 
 void ClientThread::assignClientId(int newId) {
@@ -94,7 +85,6 @@ void ClientThread::sendStart(json j) {
 }
 
 void ClientThread::sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot){
-    std::cout << "Enviando desde cliente: " << clientId << std::endl;
     std::shared_ptr<LobbySnapshot> newSnap(new LobbySnapshot(*snapshot.get()));
     newSnap->setPlayerId(this->clientId);
     std::shared_ptr<Event> event(newSnap);
@@ -102,8 +92,8 @@ void ClientThread::sendLobbySnapshot(std::shared_ptr<LobbySnapshot>& snapshot){
 }
 
 
-void ClientThread::assignIdFromRoom(int idFromRoom){
-    this->idFromRoom = idFromRoom;
+void ClientThread::assignIdFromRoom(int newIdFromRoom){
+    this->idFromRoom = newIdFromRoom;
 }
 
 bool ClientThread::update(){
@@ -138,13 +128,9 @@ void ClientThread::sendEndEvent(const std::shared_ptr <EndSnapshot> &endSnapshot
 void ClientThread::restart() {
     this->idFromRoom = -1;
     this->numberOfLaps = 0;
-    this->player.setDone(false);
+    this->player.setPlayerReadyToPlayAgain();
     this->receivingNonBlockingQueue->clear();
     this->sendingBlockingQueue.clear();
-}
-
-void ClientThread::start() {
-    this->run();
 }
 
 int ClientThread::getNumberOfLaps() {

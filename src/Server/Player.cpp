@@ -114,10 +114,6 @@ bool Player::finishedPlaying() {
     return done;
 }
 
-void Player::setDone(bool newDone) {
-    this->done = newDone;
-}
-
-void Player::resetLaps() {
-    //this->_car->resetLaps();
+void Player::setPlayerReadyToPlayAgain() {
+    this->done = false;
 }

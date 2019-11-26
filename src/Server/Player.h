@@ -38,13 +38,8 @@ public:
     std::shared_ptr<SnapshotEvent> sendStart(json j);
 
     void assignCarAndId(std::shared_ptr<Car> newCar);
-    void setDone(bool newDone);
-    void resetLaps();
-
-    void assignCarId(int id);
-
+    void setPlayerReadyToPlayAgain();
     int update();
-
     bool finishedPlaying();
 };
 

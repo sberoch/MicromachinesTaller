@@ -12,26 +12,19 @@ Collector::Collector(std::unordered_map<int, std::shared_ptr<ClientThread>>& cli
                      clients(clients),
                      rooms(rooms),
                      clientId(-1),
-                     roomId(-1){}
+                     roomIdToErase(-1){}
 
 
-void Collector::collectDeadRooms(){
-    for (auto &actualRoom: rooms) {
-        if (actualRoom.second->isDead()) {
-            actualRoom.second = nullptr;
-        }
-    }
-}
 
 void Collector::eraseRoom() {
-    if (roomId != -1){
-        rooms.at(roomId) = nullptr;
+    if (roomIdToErase != -1){
+        rooms.at(roomIdToErase) = nullptr;
     } else
         throw std::runtime_error("Se intento eliminar un room con id -1.");
 }
 
-void Collector::assignRoomId(int roomId){
-    this->roomId = roomId;
+void Collector::assignRoomIdToErase(int roomToBeErased){
+    this->roomIdToErase = roomToBeErased;
 }
 
 void Collector::run() {

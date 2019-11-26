@@ -30,16 +30,11 @@ public:
 
     void run() override;
 
-    void createRoom();
-    ~LobbyListener() override;
-
     SafeQueue<std::shared_ptr<Event>>* getReceivingQueue();
-
-    void collectDeadClients();
-
     void stop();
-
     void eraseRoomFromSnapshot(int roomId);
+
+    ~LobbyListener() override;
 };
 
 

@@ -19,9 +19,7 @@ void EventReceiver::run() {
     EventCreator creator;
     while(acceptSocketRunning && clientStillTalking) {
         try {
-            std::cout << "Receiving" << std::endl;
             std::string recvEvent = protocol.receive();
-            std::cout << "Received: " << recvEvent << std::endl;
             if (!recvEvent.empty()){
                 std::shared_ptr<Event> event(creator.makeEvent(recvEvent));
                 receivingNonBlockingQueue->push(event);

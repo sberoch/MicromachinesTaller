@@ -53,7 +53,7 @@ public:
 
     void addCarToEachPlayer(const json& j);
 
-    int getColourFromId(int id);
+    int getColourFromInRoomId(int id);
 
     ~Room();
 };
