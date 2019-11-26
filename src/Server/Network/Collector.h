@@ -32,6 +32,8 @@ public:
     ~Collector();
 
     void assignRoomId(int roomId);
+
+    void collectDeadRooms();
 };
 
 

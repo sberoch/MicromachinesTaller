@@ -33,6 +33,8 @@ GameThread::GameThread(size_t n_of_players,
 
 }
 
+
+
 void GameThread::run() {
     std::cout << "Running GameThread" << std::endl;
     ModsThread modsThread(LIBS_SRC + std::string("libs.txt"), &_worldDTO);
@@ -44,6 +46,7 @@ void GameThread::run() {
     while (roomRunning && acceptSocketRunning) {
         try {
             std::shared_ptr<SnapshotEvent> snapshot(new SnapshotEvent);
+            removeDeadClients();
             std::clock_t begin = clock();
 
             while (incomingEvents.get(event)) {
@@ -170,16 +173,46 @@ void GameThread::handleEvent(const std::shared_ptr<Event>& event) {
             std::shared_ptr<ClientThread> finishedPlayer = finishedPlayers.at(clientId);
             controller.addExistentClient(finishedPlayer);
             finishedPlayers.erase(clientId);
-
-            if (clients.empty() && finishedPlayers.empty()){
-                finishedPlayers.clear();
-                incomingEvents.clear();
-                controller.eraseRoom(roomId);
-            }
+            checkIfRoomMustBeClosed();
             break;
         }
         default:
             throw std::runtime_error("Handle event error, tipo no conocido");
+    }
+}
+
+
+void GameThread::removeDeadClients(){
+    bool thereWasADeadOne = false;
+    for (auto &actualClient: clients) {
+        if (actualClient.second->isDead()) {
+            actualClient.second = nullptr;
+            thereWasADeadOne = true;
+        }
+    }
+
+    if (thereWasADeadOne){
+        std::vector<int> idsToEliminate;
+        for (auto &actual : clients){
+            if (actual.second == NULL){
+                idsToEliminate.push_back(actual.first);
+            }
+        }
+
+        for (auto &actualId: idsToEliminate){
+            clients.erase(actualId);
+        }
+
+        checkIfRoomMustBeClosed();
+    }
+}
+
+void GameThread::checkIfRoomMustBeClosed() {
+    if (clients.empty() && finishedPlayers.empty()){
+        finishedPlayers.clear();
+        incomingEvents.clear();
+        roomRunning = false;
+        controller.eraseRoom(roomId);
     }
 }
 

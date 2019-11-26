@@ -195,7 +195,7 @@ void RoomController::eraseRoom(int roomId){
     newCollector->assignRoomId(roomId);
     newCollector->start();
     listener.eraseRoomFromSnapshot(roomId);
-    newCollector->join();
+    collectors.push_back(newCollector);
 }
 
 
@@ -211,6 +211,10 @@ RoomController::~RoomController() {
 
     std::cout << "Destroying rooms" << std::endl;
     rooms.clear();
+
+    for (auto& collector: collectors){
+        collector->join();
+    }
 }
 
 
