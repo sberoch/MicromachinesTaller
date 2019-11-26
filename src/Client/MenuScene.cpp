@@ -1,11 +1,12 @@
 #include "MenuScene.h"
 #include "../Common/Event/EnterLobbyEvent.h"
+#include "../Common/Constants.h"
 #include <iostream>
 
 MenuScene::MenuScene(SdlWindow& window, SafeQueue<std::shared_ptr<Event>>& sendQueue) :
 	window(window),
 	sendQueue(sendQueue),
-	backgroundMenuTex("menu_background.png", window),
+	backgroundMenuTex(IMAGES_DIR + std::string("menu_background.png"), window),
 	backgroundMenu(backgroundMenuTex),
 	_done(false),
 	fullscreen(true) {}

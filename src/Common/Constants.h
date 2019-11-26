@@ -26,7 +26,8 @@ enum ObjectType {
 	TYPE_GRASS = 120,
 	TYPE_ARROW = 121,
 	TYPE_CAR_SELECTED = 122,
-	TYPE_LAPS_TEXT = 123
+	TYPE_LAPS_TEXT = 123,
+	TYPE_CAR = 124
 };
 
 //Scenes
@@ -73,5 +74,9 @@ enum SoundEffect {
 //Player display defines
 #define SPLAT_CYCLES 80
 #define CAR_EXPLOSION_PENALTY 40
+
+#define IMAGES_DIR "/var/Micromachines/assets/images/"
+#define SOUNDS_DIR "/var/Micromachines/assets/audio/"
+#define MISC_DIR "/var/Micromachines/assets/misc/"
 
 #endif // CONSTANTS_H

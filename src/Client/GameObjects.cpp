@@ -75,7 +75,7 @@ void GameObjects::remove(int type, int id) {
 			interactablesMap.erase(id);
 			break;
 		}
-		case TYPE_CAR_RED: case TYPE_CAR_BLUE: case TYPE_CAR_YELLOW: case TYPE_CAR_GREEN: {
+		case TYPE_CAR: case TYPE_CAR_RED: case TYPE_CAR_BLUE: case TYPE_CAR_YELLOW: case TYPE_CAR_GREEN: {
 			carsMap.erase(id);
 			drawableCarsMap.erase(id);
 			break;

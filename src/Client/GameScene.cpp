@@ -112,6 +112,8 @@ void GameScene::gameOver(const GameEventStruct& gameEvent) {
 		audio.stopEffect(SFX_CAR_ENGINE);
 		isGameOver = true;
 		isMapReady = false;
+	} else {
+		gameObjects.remove(TYPE_CAR, gameEvent.id);
 	}
 }
 

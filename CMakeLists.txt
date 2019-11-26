@@ -41,7 +41,6 @@ target_link_libraries(mm_server Box2D ${CMAKE_DL_LIBS})
 
 message("[INFO] Installation")
 INSTALL(TARGETS mm_client mm_server DESTINATION /usr/bin)
-INSTALL(DIRECTORY assets DESTINATION /etc/Micromachines)
 INSTALL(DIRECTORY assets DESTINATION /var/Micromachines)
 INSTALL(FILES src/mods/libs.txt DESTINATION /etc/Micromachines)
 
